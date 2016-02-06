@@ -37,11 +37,18 @@ gem 'administrate', '~> 0.1.3'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
+  gem 'rspec-rails', '~> 3.4'
+  gem 'spring-commands-rspec'
+end
+
+group :test do
+  gem 'shoulda-matchers', '~> 3.1', require: false
 end
 
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> in views
   gem 'web-console', '~> 2.0'
+  gem 'guard-rspec', require: false
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

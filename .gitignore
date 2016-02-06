@@ -39,3 +39,6 @@ bower.json
 
 # Ignore RubyMine
 /.idea
+
+# Ignore Spring
+/spring-*

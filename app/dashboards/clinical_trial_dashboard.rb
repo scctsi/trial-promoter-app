@@ -8,12 +8,12 @@ class ClinicalTrialDashboard < Administrate::BaseDashboard
   # which determines how the attribute is displayed
   # on pages throughout the dashboard.
   ATTRIBUTE_TYPES = {
-    id: Field::Number,
+    id: Field::Number.with_options(title: "Database ID"),
     title: Field::String,
-    pi_first_name: Field::String,
-    pi_last_name: Field::String,
-    url: Field::String,
-    nct_id: Field::String,
+    pi_first_name: Field::String.with_options(title: "PI First Name"),
+    pi_last_name: Field::String.with_options(title: "PI Last Name"),
+    url: Field::String.with_options(title: "URL"),
+    nct_id: Field::String.with_options(title: "NCT Number"),
     disease: Field::String,
     created_at: Field::DateTime,
     updated_at: Field::DateTime,
@@ -25,10 +25,12 @@ class ClinicalTrialDashboard < Administrate::BaseDashboard
   # By default, it's limited to four items to reduce clutter on index pages.
   # Feel free to add, remove, or rearrange items.
   COLLECTION_ATTRIBUTES = [
-    :id,
     :title,
     :pi_first_name,
     :pi_last_name,
+    :url,
+    :disease,
+    :nct_id
   ]
 
   # SHOW_PAGE_ATTRIBUTES
