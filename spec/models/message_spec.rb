@@ -6,6 +6,7 @@ describe Message do
   it { is_expected.to belong_to :clinical_trial }
   it { is_expected.to belong_to :message_template }
 
+  
 #   it 'saves the content as a string' do
 #     message = Message.new(:campaign => 'trial-promoter', :medium => 'paid', :content => 'Some content')
 

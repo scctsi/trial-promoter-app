@@ -5,22 +5,28 @@ RSpec.describe MessageTemplate do
   it { is_expected.to validate_presence_of :platform }
   
   context 'containing variables' do
-    it 'lowercases the pi_first_name variable' do
+    it 'downcases the pi_first_name variable' do
       message_template = MessageTemplate.new(content: 'This is a message_template containing a {PI_first_name} variable')
       
       expect(message_template.content).to eq('This is a message_template containing a {pi_first_name} variable')
     end
 
-    it 'lowercases the pi_last_name variable' do
+    it 'downcases the pi_last_name variable' do
       message_template = MessageTemplate.new(content: 'This is a message_template containing a {pi_last_NAME} variable')
       
       expect(message_template.content).to eq('This is a message_template containing a {pi_last_name} variable')
     end
 
-    it 'lowercases the disease variable' do
+    it 'downcases the disease variable' do
       message_template = MessageTemplate.new(content: 'This is a message_template containing a {Disease} variable')
       
       expect(message_template.content).to eq('This is a message_template containing a {disease} variable')
+    end
+
+    it 'downcases the url variable' do
+      message_template = MessageTemplate.new(content: 'This is a message_template containing a {URL} variable')
+      
+      expect(message_template.content).to eq('This is a message_template containing a {url} variable')
     end
     
     it 'strips out whitespace in the pi_first_name variable' do
@@ -40,6 +46,12 @@ RSpec.describe MessageTemplate do
       
       expect(message_template.content).to eq('This is a message_template containing a {disease} variable with whitespace')
     end
+
+    it 'strips out whitespace in the url variable' do
+      message_template = MessageTemplate.new(content: 'This is a message_template containing a { url } variable with whitespace')
+      
+      expect(message_template.content).to eq('This is a message_template containing a {url} variable with whitespace')
+    end
     
     it 'strips out whitespace and downcases multiple and different variables' do
       message_template = MessageTemplate.new(content: 'This is a message_template containing {  Disease}, {PI_first_name }, {PI_LAST_NAME  } variables')
@@ -54,6 +66,16 @@ RSpec.describe MessageTemplate do
     end
   end
   
+  context 'generating messages' do
+    it 'replaces the variables in the message template with the value of the attributes in the supplied clinical trial' do
+      clinical_trial = ClinicalTrial.new(pi_first_name: 'First', pi_last_name: 'Last', disease: 'Disease', url: 'http://www.url.com')
+      message_template = MessageTemplate.new(content: 'This is a message template containing {pi_first_name}, {pi_last_name}, { Disease}, {URL} variables')
+      
+      message = message_template.generate_message(clinical_trial)
+
+      expect(message.content).to eq("This is a message template containing #{clinical_trial.pi_first_name}, #{clinical_trial.pi_last_name}, #{clinical_trial.disease}, #{clinical_trial.url} variables")
+    end
+  end
 
   # it { is_expected.to have_many :messages }
 #   it 'saves the content as a string' do
