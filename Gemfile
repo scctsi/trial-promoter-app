@@ -33,6 +33,7 @@ gem 'bcrypt', '~> 3.1.7'
 # gem 'capistrano-rails', group: :development
 
 gem 'administrate', '~> 0.1.3'
+gem 'bitly'
 gem 'figaro'
 
 group :development, :test do
@@ -50,8 +51,8 @@ end
 
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> in views
-  gem 'web-console', '~> 2.0'
   gem 'guard-rspec', require: false
+  gem 'web-console', '~> 2.0'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
