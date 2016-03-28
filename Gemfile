@@ -38,6 +38,8 @@ gem 'figaro'
 gem 'httparty'
 gem 'enumerize'
 gem 'grape'
+gem 'rack-cors', :require => 'rack/cors'
+gem 'grape-active_model_serializers'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

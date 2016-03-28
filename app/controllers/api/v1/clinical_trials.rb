@@ -5,8 +5,8 @@ module API
 
       resource :clinical_trials do
         desc "Return all clinical trials"
-        get "", root: :graduates do
-          Graduate.all
+        get "", root: :clinical_trials do
+          ClinicalTrial.all
         end
         # desc "Return a graduate"
         # params do
