@@ -1,0 +1,53 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.bufferapp.com/1/updates/55f8a111b762b0cf06d79116.json?access_token=1/2852dbc6f3e36697fed6177f806a2b2f
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: Awesome
+    headers:
+      Content-Type:
+      - application/json;charset=UTF-8
+      Date:
+      - Fri, 25 Mar 2016 19:55:07 GMT
+      Server:
+      - Apache
+      Vary:
+      - Accept-Encoding,User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      Content-Length:
+      - '707'
+      Connection:
+      - keep-alive
+    body:
+      encoding: ASCII-8BIT
+      string: '{"_id":"55f8a111b762b0cf06d79116","analytics_last":1443068364,"clicks_caveat":false,"client_id":"5410cae21b4158424e547cc3","created_at":1442357521,"day":"Thursday
+        17th September","due_at":1442500500,"due_time":"7:35 am","id":"55f8a111b762b0cf06d79116","profile_id":"55a3fced120542fa11397b99","profile_service":"twitter","scheduled_at":1442500500,"sent_at":1442500522,"service_link":"https:\/\/twitter.com\/USCTrials\/status\/644520020861681664","service_update_id":"644520020861681664","shared_now":false,"statistics":{"retweets":0,"favorites":0,"mentions":0,"clicks":1,"reach":7},"status":"sent","text":"Never
+        underestimate the power of people. We''re looking for participants @KeckMedUSC.
+        #LiverDisease #ClinicalTrial http:\/\/bit.ly\/1KvZHqF","text_formatted":"Never
+        underestimate the power of people. We&#039;re looking for participants @<a
+        class=\"username\" href=\"https:\/\/twitter.com\/KeckMedUSC\" rel=\"external
+        nofollow\" target=\"_blank\">KeckMedUSC<\/a>. <a href=\"https:\/\/twitter.com\/#!\/search?q=%23LiverDisease\"
+        title=\"#LiverDisease\" class=\"hashtag\" rel=\"external nofollow\" target=\"_blank\">#LiverDisease<\/a>
+        <a href=\"https:\/\/twitter.com\/#!\/search?q=%23ClinicalTrial\" title=\"#ClinicalTrial\"
+        class=\"hashtag\" rel=\"external nofollow\" target=\"_blank\">#ClinicalTrial<\/a>
+        <a class=\"url\" href=\"http:\/\/bit.ly\/1KvZHqF\" rel=\"external nofollow\"
+        target=\"_blank\">http:\/\/bit.ly\/1KvZHqF<\/a>","text_md5":"d668f4710fa72329455da2a2cc3e855a","type":"link","updated_at":1443068364,"user_id":"53275ff5c441ced7264e4ca3","via":"api"}'
+    http_version: 
+  recorded_at: Fri, 25 Mar 2016 19:55:07 GMT
+recorded_with: VCR 3.0.1

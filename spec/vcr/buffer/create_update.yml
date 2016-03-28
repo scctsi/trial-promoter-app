@@ -1,0 +1,45 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.bufferapp.com/1/updates/create.json
+    body:
+      encoding: UTF-8
+      string: profile_ids[]=53275ff6c441ced7264e4ca5&text=Some%20text&shorten=true&access_token=1%2F2852dbc6f3e36697fed6177f806a2b2f
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: Awesome
+    headers:
+      Content-Type:
+      - application/json;charset=UTF-8
+      Date:
+      - Fri, 25 Mar 2016 20:04:48 GMT
+      Server:
+      - Apache
+      Vary:
+      - Accept-Encoding,User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      Content-Length:
+      - '415'
+      Connection:
+      - keep-alive
+    body:
+      encoding: ASCII-8BIT
+      string: '{"updates":[{"_id":"56f599e00df548cf14099c86","clicks_caveat":false,"client_id":"5410cae21b4158424e547cc3","created_at":1458936288,"day":"Today","due_at":1458939900,"due_time":"2:05
+        pm","id":"56f599e00df548cf14099c86","library_update_id":"","perm_approvable":false,"perm_editable":true,"pinned":false,"profile_id":"53275ff6c441ced7264e4ca5","profile_service":"twitter","shared_now":false,"status":"buffer","text":"Some
+        text","text_formatted":"Some text","text_md5":"9db5682a4d778ca2cb79580bdb67083f","type":"text","updated_at":1458936288,"user_id":"53275ff5c441ced7264e4ca3","via":"api"}],"buffer_percentage":0.05,"buffer_count":1,"success":true,"message":"One
+        more tweet in your Buffer. Keep it topped up!","code":false}'
+    http_version: 
+  recorded_at: Fri, 25 Mar 2016 20:04:49 GMT
+recorded_with: VCR 3.0.1

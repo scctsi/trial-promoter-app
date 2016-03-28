@@ -3,7 +3,8 @@ require 'rails_helper'
 RSpec.describe MessageTemplate do
   it { is_expected.to validate_presence_of :content }
   it { is_expected.to validate_presence_of :platform }
-  
+  it { should enumerize(:platform).in(:twitter, :facebook).with_predicates(true) }
+
   context 'containing variables' do
     it 'downcases the pi_first_name variable' do
       message_template = MessageTemplate.new(content: 'This is a message_template containing a {PI_first_name} variable')
@@ -68,8 +69,6 @@ RSpec.describe MessageTemplate do
   
   context 'generating messages' do
     it 'replaces the variables in the message template with the value of the attributes of the supplied clinical trial and shortens the url of the supplied clinical trial' do
-      WebMock.allow_net_connect!
-      
       clinical_trial = ClinicalTrial.new(pi_first_name: 'First', pi_last_name: 'Last', disease: 'Disease', url: 'http://www.url.com')
       message_template = MessageTemplate.new(content: 'This is a message template containing {pi_first_name}, {pi_last_name}, { Disease}, {URL} variables')
       shortened_url = ''
@@ -82,9 +81,7 @@ RSpec.describe MessageTemplate do
         message = message_template.generate_message(clinical_trial)
       end
 
-      expect(message.content).to eq("This is a message template containing #{clinical_trial.pi_first_name}, #{clinical_trial.pi_last_name}, #{clinical_trial.disease}, #{shortened_url} variables")
-
-      WebMock.disable_net_connect!
+      expect(message.text).to eq("This is a message template containing #{clinical_trial.pi_first_name}, #{clinical_trial.pi_last_name}, #{clinical_trial.disease}, #{shortened_url} variables")
     end
   end
 

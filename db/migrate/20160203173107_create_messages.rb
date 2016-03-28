@@ -3,13 +3,11 @@ class CreateMessages < ActiveRecord::Migration
     create_table :messages do |t|
       t.references :clinical_trial
       t.references :message_template
-      t.text :content
+      t.text :text
       t.string :tracking_url, limit: 2000
+      t.string :status
 
-      t.datetime :sent_to_buffer_at
-      t.datetime :sent_from_buffer_at
-      t.string :buffer_update_id
-      t.string :platform_update_id
+      t.text :buffer_profile_ids
       # t.datetime "scheduled_at"
       # t.string   "campaign"
       # t.string   "medium"

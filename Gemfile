@@ -32,9 +32,12 @@ gem 'bcrypt', '~> 3.1.7'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
-gem 'administrate', '~> 0.1.3'
+gem 'administrate', '0.1.4'
 gem 'bitly'
 gem 'figaro'
+gem 'httparty'
+gem 'enumerize'
+gem 'grape'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -43,6 +46,10 @@ group :development, :test do
   gem 'spring-commands-rspec'
   gem 'vcr'
   gem 'webmock'
+  gem 'airborne'
+  gem 'rspec-activemodel-mocks'
+  gem 'database_cleaner'
+  gem 'factory_girl_rails'
 end
 
 group :test do

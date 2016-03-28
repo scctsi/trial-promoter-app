@@ -1,6 +1,9 @@
 class MessageTemplate < ActiveRecord::Base
+  extend Enumerize
+
   validates :content, presence: true
   validates :platform, presence: true
+  enumerize :platform, in: [:twitter, :facebook], predicates: true
 
   STANDARD_VARIABLES = [/{\s*pi_first_name\s*}/i, /{\s*pi_last_name\s*}/i, /{\s*disease\s*}/i, /{\s*url\s*}/i]
     
@@ -22,19 +25,19 @@ class MessageTemplate < ActiveRecord::Base
   
   def generate_message(clinical_trial)
     url_shortener = UrlShortener.new
-    message = Message.new(content: self.content)
+    message = Message.new(text: self.content)
     
     STANDARD_VARIABLES.each do |variable|
-      matches = message.content.scan(variable)
+      matches = message.text.scan(variable)
       
       if matches.size > 0
         # The attribute name that we need to substitute is the variable without the sorrounding curly braces
         # Example when the variable is {pi_first_name}, we need to get the value of pi_first_name from the clinical trial
         attribute_name = matches[0].gsub('{', '').gsub('}', '')
         if matches[0] == '{url}' # Shorten the url
-          message.content.gsub!(matches[0], url_shortener.shorten(clinical_trial.url))
+          message.text.gsub!(matches[0], url_shortener.shorten(clinical_trial.url))
         else
-          message.content.gsub!(matches[0], clinical_trial.send(attribute_name))
+          message.text.gsub!(matches[0], clinical_trial.send(attribute_name))
         end
           
       end

@@ -11,10 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160203182328) do
+ActiveRecord::Schema.define(version: 20160325172424) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "buffer_updates", force: :cascade do |t|
+    t.string   "buffer_id"
+    t.string   "status"
+    t.integer  "message_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "clinical_trials", force: :cascade do |t|
     t.string   "title",         limit: 1000
@@ -37,14 +45,20 @@ ActiveRecord::Schema.define(version: 20160203182328) do
   create_table "messages", force: :cascade do |t|
     t.integer  "clinical_trial_id"
     t.integer  "message_template_id"
-    t.text     "content"
+    t.text     "text"
     t.string   "tracking_url",        limit: 2000
-    t.datetime "sent_to_buffer_at"
-    t.datetime "sent_from_buffer_at"
-    t.string   "buffer_update_id"
-    t.string   "platform_update_id"
+    t.string   "status"
+    t.text     "buffer_profile_ids"
     t.datetime "created_at",                       null: false
     t.datetime "updated_at",                       null: false
+  end
+
+  create_table "statistics", force: :cascade do |t|
+    t.string   "source"
+    t.text     "data"
+    t.integer  "message_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
 end

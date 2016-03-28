@@ -26,6 +26,7 @@ Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 ActiveRecord::Migration.maintain_test_schema!
 
 require 'shoulda/matchers'
+require 'airborne'
 
 Shoulda::Matchers.configure do |config|
   config.integrate do |with|
@@ -62,4 +63,15 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+  
+  # Additional factory_girl configuration
+  config.include FactoryGirl::Syntax::Methods
+  config.before(:suite) do
+    begin
+      DatabaseCleaner.start
+      FactoryGirl.lint
+    ensure
+      DatabaseCleaner.clean
+    end
+  end
 end
