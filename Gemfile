@@ -40,6 +40,8 @@ gem 'enumerize'
 gem 'grape'
 gem 'rack-cors', :require => 'rack/cors'
 gem 'grape-active_model_serializers'
+gem 'grape-swagger', github: 'LeFnord/grape-swagger', ref: 'f82887f'
+gem 'grape-swagger-rails'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -48,10 +50,10 @@ group :development, :test do
   gem 'spring-commands-rspec'
   gem 'vcr'
   gem 'webmock'
-  gem 'airborne'
   gem 'rspec-activemodel-mocks'
   gem 'database_cleaner'
   gem 'factory_girl_rails'
+  gem 'airborne'
 end
 
 group :test do

@@ -45,6 +45,7 @@ guard :rspec, cmd: "spring rspec" do
   dsl.watch_spec_files_for(rails.app_files)
   dsl.watch_spec_files_for(rails.views)
 
+  # TODO: Add a watch for the Grape API files
   watch(rails.controllers) do |m|
     [
       rspec.spec.("routing/#{m[1]}_routing"),
