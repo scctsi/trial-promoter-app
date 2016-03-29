@@ -25,14 +25,15 @@ ActiveRecord::Schema.define(version: 20160325172424) do
   end
 
   create_table "clinical_trials", force: :cascade do |t|
-    t.string   "title",         limit: 1000
+    t.string   "title",            limit: 1000
     t.string   "pi_first_name"
     t.string   "pi_last_name"
-    t.string   "url",           limit: 2000
+    t.string   "url",              limit: 2000
     t.string   "nct_id"
     t.string   "disease"
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.datetime "last_promoted_at"
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
   end
 
   create_table "message_templates", force: :cascade do |t|

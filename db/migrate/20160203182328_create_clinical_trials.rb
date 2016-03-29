@@ -7,6 +7,7 @@ class CreateClinicalTrials < ActiveRecord::Migration
       t.string :url, limit: 2000
       t.string :nct_id
       t.string :disease
+      t.datetime :last_promoted_at
 
       t.timestamps null: false
     end
