@@ -1,1 +1,2 @@
-buffer_access_token: ""
+buffer_access_token: "<Instructions can be found in the README>"
+twitter_analytics_csv_file_location: "<Web accessible location where twitter analytics file can be downloaded>"
