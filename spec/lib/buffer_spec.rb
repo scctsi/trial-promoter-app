@@ -24,14 +24,14 @@ RSpec.describe Buffer do
 
     expect(Buffer).to have_received(:post).with('https://api.bufferapp.com/1/updates/create.json', {:body => Buffer.post_request_body_for_create(@message)})
     expect(@message.buffer_update).not_to be_nil
-    # The response returned from Buffer contains an ID that we need to store in a newly created buffer_update
+    # The response returned from Buffer contains a Buffer ID that we need to store in a newly created buffer_update
     expect(@message.buffer_update.buffer_id).to eq('56f599e00df548cf14099c86')
     # The message and the new Buffer update should be persisted
     expect(@message.persisted?).to be_truthy
     expect(@message.buffer_update.persisted?).to be_truthy
   end
   
-  it "uses the Buffer API to get an update to the status (pending, sent) of a BufferUpdate and simultaneously updates the statistics for the corresponding message" do
+  it "uses the Buffer API to get an update to the status (pending, sent) of a BufferUpdate and simultaneously updates the metrics for the corresponding message" do
     buffer_id = '55f8a111b762b0cf06d79116'
     @message.buffer_update = BufferUpdate.new(:buffer_id => buffer_id)
 
@@ -41,9 +41,11 @@ RSpec.describe Buffer do
     
     expect(Buffer).to have_received(:get).with("https://api.bufferapp.com/1/updates/#{buffer_id}.json?access_token=#{Figaro.env.buffer_access_token}")
     expect(@message.buffer_update.status).to eq(:sent)
-    expect(@message.statistics.length).not_to eq(0)
-    expect(@message.statistics[0].source).to eq(:buffer)
-    expect(@message.statistics[0].data).not_to eq(0)
+    # When Buffer sends out a message on a social media platform, it stores an ID supplied by the social media platform
+    expect(@message.buffer_update.service_update_id).to eq('644520020861681664')
+    expect(@message.metrics.length).not_to eq(0)
+    expect(@message.metrics[0].source).to eq(:buffer)
+    expect(@message.metrics[0].data).not_to eq(0)
     # The call should have automatically saved both the message and the new Buffer update
     expect(@message.persisted?).to be_truthy
     expect(@message.buffer_update.persisted?).to be_truthy

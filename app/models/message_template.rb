@@ -5,6 +5,8 @@ class MessageTemplate < ActiveRecord::Base
   validates :platform, presence: true
   enumerize :platform, in: [:twitter, :facebook], predicates: true
 
+  has_many :messages
+
   STANDARD_VARIABLES = [/{\s*pi_first_name\s*}/i, /{\s*pi_last_name\s*}/i, /{\s*disease\s*}/i, /{\s*url\s*}/i]
     
   def content=(content)

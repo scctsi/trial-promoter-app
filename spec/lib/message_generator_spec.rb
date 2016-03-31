@@ -7,22 +7,22 @@ RSpec.describe MessageGenerator do
   
   describe "finding clinical trials that need to be promoted" do
     it "finds clinical trials that have never been promoted" do
-      unpromoted_clinical_trials = create_list(:clinical_trial, 3)
+      unpromoted_trials = create_list(:clinical_trial, 3)
       
-      clinical_trials_needing_promotion = @message_generator.get_trials_needing_promotion
+      trials_needing_promotion = @message_generator.get_trials_needing_promotion
       
-      expect(clinical_trials_needing_promotion.length).to eq(unpromoted_clinical_trials.length)
+      expect(trials_needing_promotion.length).to eq(unpromoted_trials.length)
     end
     
     it "only returns the trials that have never been promoted if there are some trials that have already been promoted" do
-      unpromoted_clinical_trials = create_list(:clinical_trial, 3)
+      unpromoted_trials = create_list(:clinical_trial, 3)
       create_list(:clinical_trial, 3, :last_promoted_at => DateTime.now)
       
-      clinical_trials_needing_promotion = @message_generator.get_trials_needing_promotion
+      trials_needing_promotion = @message_generator.get_trials_needing_promotion
 
-      expect(clinical_trials_needing_promotion.length).to eq(unpromoted_clinical_trials.length)
-      clinical_trials_needing_promotion.each do |clinical_trial|
-        expect(clinical_trial.last_promoted_at).to be_nil
+      expect(trials_needing_promotion.length).to eq(unpromoted_trials.length)
+      trials_needing_promotion.each do |trial|
+        expect(trial.last_promoted_at).to be_nil
       end
     end
     
@@ -34,10 +34,39 @@ RSpec.describe MessageGenerator do
         create(:clinical_trial, :last_promoted_at => DateTime.now + (2 - offset))
       end
 
-      clinical_trials_needing_promotion = @message_generator.get_trials_needing_promotion
+      trials_needing_promotion = @message_generator.get_trials_needing_promotion
       
-      ordered_clinical_trials = ClinicalTrial.all.to_a.sort { |a,b| a.last_promoted_at <=> b.last_promoted_at }
-      expect(clinical_trials_needing_promotion).to eq(ordered_clinical_trials)
+      ordered_trials = ClinicalTrial.all.to_a.sort { |a,b| a.last_promoted_at <=> b.last_promoted_at }
+      expect(trials_needing_promotion).to eq(ordered_trials)
+    end
+  end
+  
+  describe "creating a set of promotion messages" do
+    # TODO: This test relies on a lot of test doubles, look into cleaning this up.
+    before do
+      @trials_needing_promotion = build_list(:clinical_trial, 3)
+      @message_templates = build_list(:message_template, 5)
+      # Return the same set of message templates each time even when using sample, so that we can test message generation
+      allow(@message_templates).to receive(:sample).and_return(@message_templates[0], @message_templates[1], @message_templates[0])
+      @messages = build_list(:message, 5)
+      (0..4).each do |index|
+        allow(@message_templates[index]).to receive(:generate_message).and_return(@messages[index])
+      end
+    end
+    
+    it "creates one saved message for each trial needing promotion using a random message template for each trial" do
+      promotion_messages = @message_generator.create_promotion_messages(@trials_needing_promotion, @message_templates)
+      
+      expect(promotion_messages.length).to eq(@trials_needing_promotion.length)
+      expect(@message_templates[0]).to have_received(:generate_message).with(@trials_needing_promotion[0])
+      expect(@message_templates[1]).to have_received(:generate_message).with(@trials_needing_promotion[1])
+      expect(@message_templates[0]).to have_received(:generate_message).with(@trials_needing_promotion[2])
+      expect(promotion_messages[0]).to eq(@messages[0])
+      expect(promotion_messages[1]).to eq(@messages[1])
+      expect(promotion_messages[2]).to eq(@messages[0])
+      promotion_messages.each do |promotion_message|
+        expect(promotion_message.persisted?).to be_truthy
+      end
     end
   end
 end

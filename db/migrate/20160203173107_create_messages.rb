@@ -14,8 +14,6 @@ class CreateMessages < ActiveRecord::Migration
       # t.boolean  "image_required"
       # t.string   "image_url",           limit: 2000
       # t.string   "thumbnail_url",       limit: 2000
-      # t.text     "statistics"
-      # t.text     "service_statistics"
 
       t.timestamps null: false
     end

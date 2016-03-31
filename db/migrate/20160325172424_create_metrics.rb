@@ -1,6 +1,6 @@
-class CreateStatistics < ActiveRecord::Migration
+class CreateMetrics < ActiveRecord::Migration
   def change
-    create_table :statistics do |t|
+    create_table :metrics do |t|
       t.string :source
       t.text :data
       t.references :message

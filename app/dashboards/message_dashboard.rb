@@ -11,12 +11,8 @@ class MessageDashboard < Administrate::BaseDashboard
     id: Field::Number,
     clinical_trial_id: Field::Number,
     message_template_id: Field::Number,
-    content: Field::Text,
+    text: Field::Text,
     tracking_url: Field::String,
-    sent_to_buffer_at: Field::DateTime,
-    sent_from_buffer_at: Field::DateTime,
-    buffer_update_id: Field::String,
-    platform_update_id: Field::String,
     created_at: Field::DateTime,
     updated_at: Field::DateTime,
   }
@@ -30,7 +26,7 @@ class MessageDashboard < Administrate::BaseDashboard
     :id,
     :clinical_trial_id,
     :message_template_id,
-    :content,
+    :text,
   ]
 
   # SHOW_PAGE_ATTRIBUTES
@@ -39,12 +35,8 @@ class MessageDashboard < Administrate::BaseDashboard
     :id,
     :clinical_trial_id,
     :message_template_id,
-    :content,
+    :text,
     :tracking_url,
-    :sent_to_buffer_at,
-    :sent_from_buffer_at,
-    :buffer_update_id,
-    :platform_update_id,
     :created_at,
     :updated_at,
   ]
@@ -55,12 +47,8 @@ class MessageDashboard < Administrate::BaseDashboard
   FORM_ATTRIBUTES = [
     :clinical_trial_id,
     :message_template_id,
-    :content,
+    :text,
     :tracking_url,
-    :sent_to_buffer_at,
-    :sent_from_buffer_at,
-    :buffer_update_id,
-    :platform_update_id,
   ]
 
   # Overwrite this method to customize how messages are displayed

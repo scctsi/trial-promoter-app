@@ -4,6 +4,7 @@ RSpec.describe MessageTemplate do
   it { is_expected.to validate_presence_of :content }
   it { is_expected.to validate_presence_of :platform }
   it { should enumerize(:platform).in(:twitter, :facebook).with_predicates(true) }
+  it { is_expected.to have_many(:messages) }
 
   context 'containing variables' do
     it 'downcases the pi_first_name variable' do
@@ -85,7 +86,6 @@ RSpec.describe MessageTemplate do
     end
   end
 
-# it { is_expected.to have_many :messages }
 #   it 'saves the content as a string' do
 #     message_template = MessageTemplate.new(:initial_id => "1", :platform => "twitter", :message_type => "awareness", :content => 'Some content')
 

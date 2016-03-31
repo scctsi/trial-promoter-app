@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Statistic, type: :model do
+RSpec.describe Metric, type: :model do
   it { should validate_presence_of(:data) }
   it { should validate_presence_of(:source) }
   it { should enumerize(:source).in(:buffer, :twitter, :facebook).with_predicates(true) }
@@ -14,11 +14,11 @@ RSpec.describe Statistic, type: :model do
       "favorites": 1,
       "mentions": 1
     }
-    statistic = Statistic.new(source: :twitter, data: data)
+    metric = Metric.new(source: :twitter, data: data)
 
-    statistic.save
-    statistic.reload
+    metric.save
+    metric.reload
     
-    expect(statistic.data).to eq(data)
+    expect(metric.data).to eq(data)
   end
 end

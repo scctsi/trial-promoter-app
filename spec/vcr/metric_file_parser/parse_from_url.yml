@@ -1,0 +1,56 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://sc-ctsi.org/trial-promoter/tweet_activity_metrics.csv
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 31 Mar 2016 21:17:43 GMT
+      Server:
+      - Apache/2.2.3 (Red Hat)
+      Last-Modified:
+      - Thu, 31 Mar 2016 20:59:00 GMT
+      Etag:
+      - '"1101fd-60d-52f5e88140d00"'
+      Accept-Ranges:
+      - bytes
+      Content-Length:
+      - '1549'
+      Connection:
+      - close
+      Content-Type:
+      - text/plain; charset=UTF-8
+    body:
+      encoding: UTF-8
+      string: "Tweet id,Tweet permalink,Tweet text,time,impressions,engagements,engagement
+        rate,retweets,replies,favorites,user profile clicks,url clicks,hashtag clicks,detail
+        expands,permalink clicks,app opens,app installs,follows,email tweet,dial phone,media
+        views,media engagements,promoted impressions,promoted engagements,promoted
+        engagement rate,promoted retweets,promoted replies,promoted favorites,promoted
+        user profile clicks,promoted url clicks,promoted hashtag clicks,promoted detail
+        expands,promoted permalink clicks,promoted app opens,promoted app installs,promoted
+        follows,promoted email tweet,promoted dial phone,promoted media views,promoted
+        media engagements\r\n6.49293E+17,https://twitter.com/USCTrials/status/649293177409679360,Diagnosed
+        with #KidneyCancer? Leading researcher David Quinn @KeckMedUSC is looking
+        for #ClinicalTrial participants http://t.co/gispyAPj8L,2015-09-30 18:42 +0000,424,3,0.007075472,0,0,2,0,1,0,0,0,0,0,0,0,0,0,0,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-\r\n6.49065E+17,https://twitter.com/USCTrials/status/649064976133525504,This
+        clinical research study for #GynCSM is now accepting participants http://t.co/ea2ktYDEf9
+        http://t.co/RIuqAn51Jz,2015-09-30 03:35 +0000,411,8,0.01946472,0,0,1,1,4,0,2,0,0,0,0,0,0,0,0,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-\r\n6.48875E+17,https://twitter.com/USCTrials/status/648875195688714240,Looking
+        to test a medical device? Partner with #ClinicalTrial experts @KeckMedUSC
+        http://t.co/kV7gLV5WT4,2015-09-29 15:01 +0000,548,8,0.01459854,1,0,2,3,1,0,1,0,0,0,0,0,0,0,0,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-\r\n"
+    http_version: 
+  recorded_at: Thu, 31 Mar 2016 21:17:43 GMT
+recorded_with: VCR 3.0.1

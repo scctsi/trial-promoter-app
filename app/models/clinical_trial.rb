@@ -4,4 +4,6 @@ class ClinicalTrial < ActiveRecord::Base
   validates :pi_last_name, presence: true
   validates :url, presence: true
   validates :disease, presence: true
+  
+  has_many :messages
 end

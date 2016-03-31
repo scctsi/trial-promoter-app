@@ -9,20 +9,27 @@ class Message < ActiveRecord::Base
   belongs_to :clinical_trial
   belongs_to :message_template
   has_one :buffer_update
-  has_many :statistics do 
+  has_many :metrics do 
     def << (value)
-      source_statistics_exist = false
+      source_metrics_exists = false
 
-      proxy_association.owner.statistics.each do |statistic|
-        # There should always be only one set of statistics from a single source.
-        # Always overwrite any existing data when the data is for the same source .
-        if statistic.source == value.source
-          statistic.data = value.data
-          source_statistics_exist = true
+      proxy_association.owner.metrics.each do |metric|
+        # There should always be only one set of metrics from a single source.
+        # Always overwrite any existing data for the same source.
+        if metric.source == value.source
+          metric.data = value.data
+          source_metrics_exists = true
         end
       end
       
-      super value if !source_statistics_exist
+      super value if !source_metrics_exists
     end     
-  end  
+  end
+  
+  def self.find_by_service_update_id(service_update_id)
+    buffer_updates = BufferUpdate.where(service_update_id: service_update_id)
+    
+    return nil if buffer_updates.length == 0
+    buffer_updates.first.message
+  end
 end

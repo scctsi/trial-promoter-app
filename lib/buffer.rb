@@ -15,7 +15,8 @@ class Buffer
   def self.get_update(message)
     response = get("https://api.bufferapp.com/1/updates/#{message.buffer_update.buffer_id}.json?access_token=#{Figaro.env.buffer_access_token}")
     message.buffer_update.status = response.parsed_response["status"]
-    message.statistics << Statistic.new(source: :buffer, data: response.parsed_response["statistics"])
+    message.buffer_update.service_update_id = response.parsed_response["service_update_id"]
+    message.metrics << Metric.new(source: :buffer, data: response.parsed_response["statistics"])
     message.save
   end
   

@@ -10,6 +10,8 @@ module Admin
 
     def authenticate_admin
       # TODO Add authentication logic here.
+      # TODO: Unit test this next section
+      redirect_to('/setup')
     end
 
     # Override this value to specify the number of elements to display at a time

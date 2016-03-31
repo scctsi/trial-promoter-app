@@ -1,4 +1,4 @@
-class Statistic < ActiveRecord::Base
+class Metric < ActiveRecord::Base
   extend Enumerize
   
   serialize :data
