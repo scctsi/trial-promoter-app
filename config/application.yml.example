@@ -1,2 +1,1 @@
-buffer_access_token: "<Instructions for getting this token can be found in the README>"
-twitter_analytics_csv_file_location: "<Public URL where twitter analytics file can be accessed>"
+bitly_access_token: ""
