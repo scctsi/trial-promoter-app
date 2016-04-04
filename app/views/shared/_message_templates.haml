@@ -1,0 +1,42 @@
+%table.ui.celled.padded.table
+  %thead
+    %tr
+      %th
+        Database ID
+      %th
+        ID (Assigned by Katja)
+      %th
+        Type
+      %th
+        Content
+      %th
+        Length
+  %tbody
+    - message_templates.each do |message_template|
+      %tr
+        %td= message_template.id.to_s
+        %td= message_template.initial_id
+        %td= message_template.message_type
+        - if message_template.platform.start_with?('twitter') || message_template.platform.start_with?('facebook')
+          %td= message_template.content
+        - else
+          %td
+            %ul
+              %li= message_template.content[0]
+              %li http://clinicaltrials.keckmedicine.org/
+              %li= message_template.content[1]
+              %li= message_template.content[2]
+              - if message_template.platform.start_with?('youtube')
+                %li= message_template.content[3]
+        - if message_template.platform.start_with?('twitter') || message_template.platform.start_with?('facebook')
+          %td= message_template.content.length
+        - else
+          %td
+            %ul
+              %li= message_template.content[0].length
+              %li= "http://clinicaltrials.keckmedicine.org/".length
+              %li= message_template.content[1].length
+              %li= message_template.content[2].length
+              - if message_template.platform.start_with?('youtube')
+                %li= message_template.content[3].length
+

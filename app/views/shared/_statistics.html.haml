@@ -1,0 +1,76 @@
+- if message.message_template.platform.start_with?('twitter')
+  %table.ui.celled.table.compact
+    %thead
+      %tr
+        %th Data Source
+        %th Retweets
+        %th Favorites
+        %th Mentions/Replies
+        %th Clicks
+        %th Potential
+        %th Impressions
+        %th User Profile Clicks
+    %tbody
+      - if !message.statistics.blank?
+        %tr
+          %td
+            .ui.label Buffer
+          %td
+            = message.statistics['retweets']
+          %td
+            = message.statistics['favorites']
+          %td
+            = message.statistics['mentions']
+          %td
+            = message.statistics['clicks']
+          %td
+            = message.statistics['reach']
+          %td
+            N/A
+          %td
+            N/A
+      - if !message.service_statistics.blank?
+        %tr
+          %td
+            .ui.label Twitter
+          %td
+            = message.service_statistics['retweets']
+          %td
+            = message.service_statistics['favorites']
+          %td
+            = message.service_statistics['replies']
+          %td
+            = message.service_statistics['clicks']
+          %td
+            N/A
+          %td
+            = message.service_statistics['impressions']
+          %td
+            = message.service_statistics['user_profile_clicks']
+- elsif message.message_template.platform.start_with?('facebook')
+  - if !message.statistics.blank?
+    .ui.horizontal.segments
+      .ui.segment
+        .ui.mini.horizontal.statistic
+          .value
+            = message.statistics['comments']
+          .label
+            Comments
+      .ui.segment
+        .ui.mini.horizontal.statistic
+          .value
+            = message.statistics['likes']
+          .label
+            Likes
+      .ui.segment
+        .ui.mini.horizontal.statistic
+          .value
+            = message.statistics['clicks']
+          .label
+            Clicks
+      .ui.segment
+        .ui.mini.horizontal.statistic
+          .value
+            = message.statistics['shares']
+          .label
+            Shares

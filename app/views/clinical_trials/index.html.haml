@@ -1,0 +1,27 @@
+%h1.ui.block.header
+  Clinical Trials
+.ui.top.attached.tabular.menu
+  %a.active.item{ "data-tab" => 'all-trials' }
+    All Trials
+    %span.ui.black.label
+      #{ @all_trials.count.to_s }
+  %a.item{ "data-tab" => 'randomized-trials' }
+    Randomized Trials
+    %span.ui.green.label
+      #{ @selected_trials.count.to_s }
+  %a.item{ "data-tab" => 'control-group-trials' }
+    Control Group Trials
+    %span.ui.blue.label
+      #{ @control_trials.count.to_s }
+  %a.item{ "data-tab" => 'unused-trials' }
+    Unused Trials
+    %span.ui.grey.label
+      #{ @unused_trials.count.to_s }
+.ui.bottom.attached.active.tab.segment{ "data-tab" => 'all-trials'}
+  = render :partial => 'shared/clinical_trials', :locals => { :clinical_trials => @all_trials }
+.ui.bottom.attached.tab.segment{ "data-tab" => 'randomized-trials'}
+  = render :partial => 'shared/clinical_trials', :locals => { :clinical_trials => @selected_trials }
+.ui.bottom.attached.tab.segment{ "data-tab" => 'control-group-trials'}
+  = render :partial => 'shared/clinical_trials', :locals => { :clinical_trials => @control_trials }
+.ui.bottom.attached.tab.segment{ "data-tab" => 'unused-trials'}
+  = render :partial => 'shared/clinical_trials', :locals => { :clinical_trials => @unused_trials }

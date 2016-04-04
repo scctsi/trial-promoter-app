@@ -1,0 +1,29 @@
+%table.ui.celled.padded.table
+  %thead
+    %tr
+      %th
+        Database ID
+      %th
+        NCT ID
+      %th
+        PI Name
+      %th
+        Title
+      %th.single.line
+        View Trial
+      %th
+        Hashtags
+      %th
+        Disease
+  %tbody
+    - clinical_trials.each do |clinical_trial|
+      %tr
+        %td= clinical_trial.id.to_s
+        %td= clinical_trial.nct_id
+        %td= clinical_trial.pi_name
+        %td= clinical_trial.title
+        %td
+          %a{ :href => clinical_trial.url, :target => "_blank"}
+            View Trial
+        %td= clinical_trial.hashtags[0..2].join(", ")
+        %td= clinical_trial.disease

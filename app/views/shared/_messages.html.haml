@@ -1,0 +1,98 @@
+%table.ui.celled.padded.table
+  %thead
+    %tr
+      %th
+        Database ID
+      %th
+        Content
+      %th
+        Length
+      %th
+        Image
+      %th
+        Message Type
+      %th
+        Clinical Trial
+      %th
+        Publishing Date
+    - if ((platform.start_with?('twitter') and medium == 'organic') or (platform.start_with?('facebook')))
+      %tr
+        %th{ :colspan => '7' }
+          - if platform.start_with?('twitter')
+            %a.ui.twitter.button{:href => "/organic_messages/publish/?platform=#{platform}&medium=#{medium}" }
+              %i.twitter.icon
+              Publish #{medium.titlecase} #{platform.titlecase} Messages
+          - if platform.start_with?( 'facebook')
+            %a.ui.facebook.button{:href => "/organic_messages/publish/?platform=#{platform}&medium=#{medium}" }
+              %i.facebook.icon
+              Publish #{medium.titlecase} #{platform.titlecase} Messages
+  %tbody
+    - messages.each do |message|
+      - row_class = ""
+      - if (!@pending_twitter_organic_messages.nil? and @pending_twitter_organic_messages.include?(message)) || (!@pending_facebook_organic_messages.nil? and @pending_facebook_organic_messages.include?(message)) || (!@pending_twitter_uscprofiles_organic_messages.nil? and @pending_twitter_uscprofiles_organic_messages.include?(message)) || (!@pending_facebook_uscprofiles_organic_messages.nil? and @pending_facebook_uscprofiles_organic_messages.include?(message)) || (!@pending_facebook_paid_messages.nil? and @pending_facebook_paid_messages.include?(message)) || (!@pending_facebook_uscprofiles_paid_messages.nil? and @pending_facebook_uscprofiles_paid_messages.include?(message))
+        - row_class = 'active'
+      - if (!message.sent_to_buffer_at.blank?)
+        - row_class = 'warning'
+      - if (!message.sent_from_buffer_at.blank?)
+        - row_class = 'positive'
+      - if message.scheduled_at.in_time_zone("Pacific Time (US & Canada)").month == Time.now.in_time_zone("Pacific Time (US & Canada)").month and message.scheduled_at.in_time_zone("Pacific Time (US & Canada)").day == Time.now.in_time_zone("Pacific Time (US & Canada)").day + 1 and (message.message_template.platform.start_with?('youtube') or message.message_template.platform.start_with?('google'))
+        - row_class = 'requires_posting'
+      %tr{ :class => row_class }
+        %td= message.id.to_s
+        - if message.message_template.platform.start_with?('google') || message.message_template.platform.start_with?('youtube')
+          %td
+            %ul
+              %li= message.content[0]
+              %li= message.tracking_url
+              %li= message.content[2]
+              %li= message.content[3]
+              - if message.message_template.platform.start_with?('youtube')
+                %li= message.content[4]
+        - else
+          %td
+            #{message.content}
+            = render :partial => 'shared/statistics', :locals => { :message => message }
+        - if message.message_template.platform.start_with?('google') || message.message_template.platform.start_with?('youtube')
+          %td
+            %ul
+              %li= message.content[0].length
+              %li URL
+              %li= message.content[2].length
+              %li= message.content[3].length
+              - if message.message_template.platform.start_with?('youtube')
+                %li= message.content[4].length
+        - else
+          - if message.message_template.platform.start_with?('twitter') and message.image_required
+            %td= (message.content.length + 24).to_s
+          -else
+            %td= message.content.length
+        - if message.image_required and !message.message_template.platform.start_with?('youtube')
+          %td.dropbox{ :id => "message-#{message.id}" }
+            - if !message.thumbnail_url.blank?
+              %img{ :src => "#{message.thumbnail_url}" }
+            %a.choose-from-dropbox{:href => "#"}
+              Choose
+        - elsif !message.image_required and !message.message_template.platform.start_with?('youtube')
+          %td None
+        - elsif message.image_required and platform == 'youtube'
+          %td <b>Image</b>
+        - elsif !message.image_required and platform == 'youtube'
+          %td <b>Text/Infographic</b>
+        - elsif message.message_template.platform == 'youtube_uscprofiles'
+          %td <b>Image</b>
+        %td= message.message_template.message_type
+        %td
+          - if !(message.clinical_trial.blank?)
+            %a{ :href => message.clinical_trial.url, :target => "_blank"}
+              View Trial
+        %td
+          %ul{:style => 'margin-left: -40px; list-style-type: none;'}
+            - if !message.scheduled_at.nil?
+              %li
+                Scheduled: #{message.scheduled_at.strftime('%b %e')}
+            - if !message.sent_to_buffer_at.nil?
+              %li
+                To Buffer: #{message.sent_to_buffer_at.strftime('%b %e')}
+            - if !message.sent_from_buffer_at.nil?
+              %li
+                From Buffer: #{message.sent_from_buffer_at.strftime('%b %e')}

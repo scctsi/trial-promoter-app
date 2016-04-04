@@ -1,0 +1,42 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.bufferapp.com/1/profiles.json?access_token=********
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: Awesome
+    headers:
+      Content-Type:
+      - application/json;charset=UTF-8
+      Date:
+      - Wed, 15 Apr 2015 23:05:31 GMT
+      Server:
+      - Apache
+      Vary:
+      - Accept-Encoding,User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      Content-Length:
+      - '490'
+      Connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: '[{"_id":"53275ff6c441ced7264e4ca5","avatar":"http:\/\/pbs.twimg.com\/profile_images\/378800000821738555\/ed97f4efaa4895bc705e8fa9e7f7a78f_normal.png","avatar_https":"https:\/\/pbs.twimg.com\/profile_images\/378800000821738555\/ed97f4efaa4895bc705e8fa9e7f7a78f_normal.png","counts":{"daily_suggestions":25,"drafts":0,"pending":0,"sent":83},"cover_photo":"https:\/\/pbs.twimg.com\/profile_banners\/613850336\/1400101229","default":true,"disabled_features":[],"disconnected":false,"formatted_service":"Twitter","formatted_username":"@SoCalCTSI","has_used_suggestions":false,"id":"53275ff6c441ced7264e4ca5","schedules":[{"days":["mon","tue","wed","thu","fri"],"times":["07:35"]}],"service":"twitter","service_id":"613850336","service_type":"profile","service_username":"SoCalCTSI","shortener":{"domain":"buff.ly"},"statistics":{"followers":181},"timezone":"Chile\/EasterIsland","user_id":"53275ff5c441ced7264e4ca3","utm_tracking":"enabled","verb":"tweet"}]'
+    http_version: 
+  recorded_at: Wed, 15 Apr 2015 23:05:31 GMT
+recorded_with: VCR 2.9.3
