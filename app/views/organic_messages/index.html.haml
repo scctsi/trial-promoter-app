@@ -1,0 +1,43 @@
+%h1.ui.block.header
+  Organic Messages (DO NOT USE FOR ADS!)
+- if flash[:message]
+  .ui.positive.message
+    .close.icon
+    %p
+      = flash[:message]
+.ui.top.attached.tabular.menu
+  %a.active.item{ "data-tab" => 'twitter-organic-messages' }
+    %h3.ui.header
+      %i.blue.twitter.square.icon
+      .content
+        %span.ui.black.label
+          #{ @twitter_organic_messages.count.to_s }
+  %a.item{ "data-tab" => 'twitter-uscprofiles-organic-messages' }
+    %h3.ui.header
+      %i.blue.twitter.square.icon
+      .content
+        (P)
+        %span.ui.black.label
+          #{ @twitter_uscprofiles_organic_messages.count.to_s }
+  %a.item{ "data-tab" => 'facebook-organic-messages' }
+    %h3.ui.header
+      %i.blue.facebook.square.icon
+      .content
+        %span.ui.black.label
+          #{ @facebook_organic_messages.count.to_s }
+  %a.item{ "data-tab" => 'facebook-uscprofiles-organic-messages' }
+    %h3.ui.header
+      %i.blue.facebook.square.icon
+      .content
+        (P)
+        %span.ui.black.label
+          #{ @facebook_uscprofiles_organic_messages.count.to_s }
+.ui.bottom.attached.active.tab.segment{ "data-tab" => 'twitter-organic-messages'}
+  = render :partial => 'shared/messages', :locals => { :messages => @twitter_organic_messages, :platform => 'twitter', :medium => 'organic' }
+.ui.bottom.attached.tab.segment{ "data-tab" => 'twitter-uscprofiles-organic-messages'}
+  = render :partial => 'shared/messages', :locals => { :messages => @twitter_uscprofiles_organic_messages, :platform => 'twitter_uscprofiles', :medium => 'organic' }
+.ui.bottom.attached.tab.segment{ "data-tab" => 'facebook-organic-messages'}
+  = render :partial => 'shared/messages', :locals => { :messages => @facebook_organic_messages, :platform => 'facebook', :medium => 'organic' }
+.ui.bottom.attached.tab.segment{ "data-tab" => 'facebook-uscprofiles-organic-messages'}
+  = render :partial => 'shared/messages', :locals => { :messages => @facebook_uscprofiles_organic_messages, :platform => 'facebook_uscprofiles', :medium => 'organic' }
+

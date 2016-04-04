@@ -1,0 +1,251 @@
+- twitter_organic_dimension_metric = DimensionMetric.where("dimensions = ?", ['twitter', 'organic'].to_yaml)[0]
+- facebook_organic_dimension_metric = DimensionMetric.where("dimensions = ?", ['facebook', 'organic'].to_yaml)[0]
+- facebook_paid_dimension_metric = DimensionMetric.where("dimensions = ?", ['facebook', 'paid'].to_yaml)[0]
+- twitter_organic_twitter_analytics_dimension_metric = DimensionMetric.where("dimensions = ?", ['twitter', 'organic', 'twitter_analytics'].to_yaml)[0]
+
+- google_analytics_metrics = {}
+- google_analytics_metrics[['twitter', 'organic', 'google_analytics']] = DimensionMetric.where("dimensions = ?", ['twitter', 'organic', 'google_analytics'].to_yaml)[0]
+- google_analytics_metrics[['facebook', 'organic', 'google_analytics']] = DimensionMetric.where("dimensions = ?", ['facebook', 'organic', 'google_analytics'].to_yaml)[0]
+- google_analytics_metrics[['facebook', 'paid', 'google_analytics']] = DimensionMetric.where("dimensions = ?", ['facebook', 'paid', 'google_analytics'].to_yaml)[0]
+- google_analytics_metrics[['google', 'paid', 'google_analytics']] = DimensionMetric.where("dimensions = ?", ['google', 'paid', 'google_analytics'].to_yaml)[0]
+- google_analytics_metrics[['youtube_search_results', 'paid', 'google_analytics']] = DimensionMetric.where("dimensions = ?", ['youtube_search_results', 'paid', 'google_analytics'].to_yaml)[0]
+- google_analytics_metrics[['profiles', 'organic', 'google_analytics']] = DimensionMetric.where("dimensions = ?", ['profiles', 'organic', 'google_analytics'].to_yaml)[0]
+%h1.ui.block.header
+  Dashboard
+.ui.top.attached.tabular.menu
+  %a.active.item{ "data-tab" => 'engagement' }
+    %h3.ui.header
+      Engagement
+  %a.item{ "data-tab" => 'conversion' }
+    %h3.ui.header
+      Conversion
+.ui.bottom.attached.active.tab.segment{ "data-tab" => 'engagement'}
+  %table.ui.celled.padded.table
+    %thead
+      %tr
+        %th
+          Dimension
+        %th
+        %th
+        %th
+        %th
+        %th
+        %th
+        %th
+        %th
+    %tbody
+      %tr
+        %td
+          Twitter/Organic/Buffer Analytics
+        %td
+          .ui.mini.horizontal.statistic
+            .value
+              #{twitter_organic_dimension_metric.metrics['retweets']}
+            .label
+              Retweets
+        %td
+          .ui.mini.horizontal.statistic
+            .value
+              #{twitter_organic_dimension_metric.metrics['favorites']}
+            .label
+              Favorites
+        %td
+          .ui.mini.horizontal.statistic
+            .value
+              #{twitter_organic_dimension_metric.metrics['mentions']}
+            .label
+              Mentions
+        %td
+          .ui.mini.horizontal.statistic
+            .value
+              #{twitter_organic_dimension_metric.metrics['clicks']}
+            .label
+              Clicks
+        %td
+          .ui.mini.horizontal.statistic
+            .value
+              #{twitter_organic_dimension_metric.metrics['reach']}
+            .label
+              Reach
+        %td
+          .ui.mini.horizontal.statistic
+            .value
+              N/A
+            .label
+              Impressions
+        %td
+          .ui.mini.horizontal.statistic
+            .value
+              N/A
+            .label
+              User Profile Clicks
+      %tr
+        %td
+          Twitter/Organic/Twitter Analytics
+        %td
+          .ui.mini.horizontal.statistic
+            .value
+              #{twitter_organic_twitter_analytics_dimension_metric.metrics['retweets']}
+            .label
+              Retweets
+        %td
+          .ui.mini.horizontal.statistic
+            .value
+              #{twitter_organic_twitter_analytics_dimension_metric.metrics['favorites']}
+            .label
+              Favorites
+        %td
+          .ui.mini.horizontal.statistic
+            .value
+              #{twitter_organic_twitter_analytics_dimension_metric.metrics['replies']}
+            .label
+              Replies
+        %td
+          .ui.mini.horizontal.statistic
+            .value
+              #{twitter_organic_twitter_analytics_dimension_metric.metrics['clicks']}
+            .label
+              Clicks
+        %td
+          .ui.mini.horizontal.statistic
+            .value
+              N/A
+            .label
+              Reach
+        %td
+          .ui.mini.horizontal.statistic
+            .value
+              #{twitter_organic_twitter_analytics_dimension_metric.metrics['impressions']}
+            .label
+              Impressions
+        %td
+          .ui.mini.horizontal.statistic
+            .value
+              #{twitter_organic_twitter_analytics_dimension_metric.metrics['user_profile_clicks']}
+            .label
+              User Profile Clicks
+      %tr
+        %td
+          Facebook/Organic/Buffer Analytics
+        %td
+          .ui.mini.horizontal.statistic
+            .value
+              #{facebook_organic_dimension_metric.metrics['comments']}
+            .label
+              Comments
+        %td
+          .ui.mini.horizontal.statistic
+            .value
+              #{facebook_organic_dimension_metric.metrics['likes']}
+            .label
+              Likes
+        %td
+          .ui.mini.horizontal.statistic
+            .value
+              #{facebook_organic_dimension_metric.metrics['shares']}
+            .label
+              Shares
+        %td
+          .ui.mini.horizontal.statistic
+            .value
+              #{facebook_organic_dimension_metric.metrics['clicks']}
+            .label
+              Clicks
+        %td
+          .ui.mini.horizontal.statistic
+            .value
+              #{facebook_organic_dimension_metric.metrics['reach']}
+            .label
+              Reach
+        %td
+          .ui.mini.horizontal.statistic
+            .value
+              N/A
+            .label
+              Impressions
+        %td
+          .ui.mini.horizontal.statistic
+            .value
+              N/A
+            .label
+              User Profile Clicks
+      %tr
+        %td
+          Facebook/Paid/Buffer Analytics
+        %td
+          .ui.mini.horizontal.statistic
+            .value
+              #{facebook_paid_dimension_metric.metrics['comments']}
+            .label
+              Comments
+        %td
+          .ui.mini.horizontal.statistic
+            .value
+              #{facebook_paid_dimension_metric.metrics['likes']}
+            .label
+              Likes
+        %td
+          .ui.mini.horizontal.statistic
+            .value
+              #{facebook_paid_dimension_metric.metrics['shares']}
+            .label
+              Shares
+        %td
+          .ui.mini.horizontal.statistic
+            .value
+              #{facebook_paid_dimension_metric.metrics['clicks']}
+            .label
+              Clicks
+        %td
+          .ui.mini.horizontal.statistic
+            .value
+              #{facebook_paid_dimension_metric.metrics['reach']}
+            .label
+              Reach
+        %td
+          .ui.mini.horizontal.statistic
+            .value
+              N/A
+            .label
+              Impressions
+        %td
+          .ui.mini.horizontal.statistic
+            .value
+              N/A
+            .label
+              User Profile Clicks
+.ui.bottom.attached.tab.segment{ "data-tab" => 'conversion'}
+  %table.ui.celled.padded.table
+    %thead
+      %tr
+        %th
+          Dimension
+        %th
+          Referral traffic
+        %th
+          Percentage New Sessions
+        %th
+          New Users
+        %th
+          Bounce Rate
+        %th
+          Pages/Session
+        %th
+          Avg. Session Duration (seconds)
+        %th
+          Conversion Rate
+        %th
+          Use of contact form
+    %tbody
+      - google_analytics_metrics.each do |key, value|
+        - if value != nil
+          %tr
+            %td= key.join('/').to_s
+            %td= value.metrics['sessions'].to_s
+            %td= value.metrics['percentage_new_sessions'].to_f.round(2).to_s
+            %td= value.metrics['new_users'].to_s
+            %td= value.metrics['bounce_rate'].to_f.round(2).to_s
+            %td= value.metrics['pages_per_session'].to_f.round(2).to_s
+            %td= value.metrics['average_session_duration'].to_f.round(2).to_s
+            %td= value.metrics['conversion_rate'].to_f.round(2).to_s
+            %td= value.metrics['conversions'].to_s

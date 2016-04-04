@@ -1,0 +1,71 @@
+%h1.ui.block.header
+  Message Templates
+.ui.top.attached.tabular.menu
+  %a.active.item{ "data-tab" => 'twitter-message-templates' }
+    %h3.ui.header
+      %i.blue.twitter.square.icon
+      .content
+        %span.ui.black.label
+          #{ @twitter_message_templates.count.to_s }
+  %a.item{ "data-tab" => 'twitter-uscprofiles-message-templates' }
+    %h3.ui.header
+      %i.blue.twitter.square.icon
+      .content
+        (P)
+        %span.ui.black.label
+          #{ @twitter_uscprofiles_message_templates.count.to_s }
+  %a.item{ "data-tab" => 'facebook-message-templates' }
+    %h3.ui.header
+      %i.blue.facebook.square.icon
+      .content
+        %span.ui.black.label
+          #{ @facebook_message_templates.count.to_s }
+  %a.item{ "data-tab" => 'facebook-uscprofiles-message-templates' }
+    %h3.ui.header
+      %i.blue.facebook.square.icon
+      .content
+        (P)
+        %span.ui.black.label
+          #{ @facebook_uscprofiles_message_templates.count.to_s }
+  %a.item{ "data-tab" => 'google-message-templates' }
+    %h3.ui.header
+      %i.red.google.square.icon
+      .content
+        %span.ui.black.label
+          #{ @google_message_templates.count.to_s }
+  %a.item{ "data-tab" => 'google-uscprofiles-message-templates' }
+    %h3.ui.header
+      %i.red.google.square.icon
+      .content
+        (P)
+        %span.ui.black.label
+          #{ @google_uscprofiles_message_templates.count.to_s }
+  %a.item{ "data-tab" => 'youtube-search-results-message-templates' }
+    %h3.ui.header
+      %i.red.youtube.square.icon
+      .content
+        %span.ui.black.label
+          #{ @youtube_search_results_message_templates.count.to_s }
+  %a.item{ "data-tab" => 'youtube-uscprofiles-message-templates' }
+    %h3.ui.header
+      %i.red.youtube.square.icon
+      .content
+        (P)
+        %span.ui.black.label
+          #{ @youtube_uscprofiles_message_templates.count.to_s }
+.ui.bottom.attached.active.tab.segment{ "data-tab" => 'twitter-message-templates'}
+  = render :partial => 'shared/message_templates', :locals => { :message_templates => @twitter_message_templates }
+.ui.bottom.attached.tab.segment{ "data-tab" => 'twitter-uscprofiles-message-templates'}
+  = render :partial => 'shared/message_templates', :locals => { :message_templates => @twitter_uscprofiles_message_templates }
+.ui.bottom.attached.tab.segment{ "data-tab" => 'facebook-message-templates'}
+  = render :partial => 'shared/message_templates', :locals => { :message_templates => @facebook_message_templates }
+.ui.bottom.attached.tab.segment{ "data-tab" => 'facebook-uscprofiles-message-templates'}
+  = render :partial => 'shared/message_templates', :locals => { :message_templates => @facebook_uscprofiles_message_templates }
+.ui.bottom.attached.tab.segment{ "data-tab" => 'google-message-templates'}
+  = render :partial => 'shared/message_templates', :locals => { :message_templates => @google_message_templates }
+.ui.bottom.attached.tab.segment{ "data-tab" => 'google-uscprofiles-message-templates'}
+  = render :partial => 'shared/message_templates', :locals => { :message_templates => @google_uscprofiles_message_templates }
+.ui.bottom.attached.tab.segment{ "data-tab" => 'youtube-search-results-message-templates'}
+  = render :partial => 'shared/message_templates', :locals => { :message_templates => @youtube_search_results_message_templates }
+.ui.bottom.attached.tab.segment{ "data-tab" => 'youtube-uscprofiles-message-templates'}
+  = render :partial => 'shared/message_templates', :locals => { :message_templates => @youtube_uscprofiles_message_templates }

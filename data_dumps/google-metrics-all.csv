@@ -1,0 +1,27 @@
+Campaign,Source / Medium,Sessions,%New Sessions,New Users,Bounce Rate,Pages/Session,Avg. Session Duration,csdContactFormSubmit (Goal 1 Conversion Rate),csdContactFormSubmit (Goal 1 Completions),csdContactFormSubmit (Goal 1 Starts)
+(not set),(direct) / (none),451,81.59645232815964,368,54.1019955654102,2.860310421286031,117.84922394678492,1.1086474501108647,5,5
+(not set),bing / organic,5,80.0,4,40.0,5.2,104.4,0.0,0,0
+(not set),brucepark.io / referral,4,75.0,3,75.0,1.5,38.0,0.0,0,0
+(not set),facebook.com / referral,11,54.54545454545454,6,54.54545454545454,2.8181818181818183,133.1818181818182,0.0,0,0
+(not set),google / organic,144,76.38888888888889,110,54.166666666666664,3.3194444444444446,150.45833333333334,0.0,0,0
+(not set),google.ee / referral,1,100.0,1,100.0,1.0,0.0,0.0,0,0
+(not set),keck.usc.edu / referral,25,84.0,21,32.0,4.68,105.04,0.0,0,0
+(not set),l.facebook.com / referral,11,100.0,11,90.9090909090909,1.1818181818181819,1.2727272727272727,0.0,0,0
+(not set),m.facebook.com / referral,10,70.0,7,100.0,1.0,0.0,0.0,0,0
+(not set),oprs.usc.edu / referral,26,92.3076923076923,24,23.076923076923077,4.538461538461538,104.8076923076923,3.8461538461538463,1,1
+(not set),page.report / referral,4,0.0,0,25.0,2.75,86.75,0.0,0,0
+(not set),pharmaetrack.com / referral,1,100.0,1,100.0,1.0,0.0,0.0,0,0
+(not set),profiles.sc-ctsi.org / referral,57,54.385964912280706,31,68.42105263157895,1.5087719298245614,164.89473684210526,0.0,0,0
+(not set),research.usc.edu / referral,59,77.96610169491525,46,23.728813559322035,5.338983050847458,199.35593220338984,3.389830508474576,2,2
+(not set),sc-ctsi.org / referral,65,64.61538461538461,42,61.53846153846154,2.1384615384615384,48.50769230769231,0.0,0,0
+(not set),t.co / referral,6,100.0,6,100.0,1.0,0.0,0.0,0,0
+(not set),tp.sc-ctsi.org / referral,7,0.0,0,42.857142857142854,6.428571428571429,314.14285714285717,0.0,0,0
+(not set),universityofsoutherncalifornia.cmail19.com / referral,2,100.0,2,100.0,1.0,0.0,0.0,0,0
+(not set),yahoo / organic,4,75.0,3,50.0,1.75,17.5,0.0,0,0
+99c5bdc872-Trial_Promoter_email_9_9_2015,Trial Promoter Email - IRB-approved Project / email,2,0.0,0,50.0,2.0,8.0,0.0,0,0
+buffer,twitter.com / social,1,0.0,0,0.0,4.0,46.0,0.0,0,0
+trial-promoter,facebook / organic,3,100.0,3,100.0,1.0,0.0,0.0,0,0
+trial-promoter,facebook / paid,152,96.05263157894737,146,99.3421052631579,1.013157894736842,0.039473684210526314,0.0,0,0
+trial-promoter,google / paid,132,81.81818181818183,108,89.39393939393939,1.3257575757575757,45.11363636363637,0.0,0,0
+trial-promoter,twitter / organic,33,63.63636363636363,21,81.81818181818183,1.3333333333333333,55.57575757575758,3.0303030303030303,1,1
+trial-promoter,youtube_search_results / paid,8,50.0,4,87.5,1.125,103.25,0.0,0,0

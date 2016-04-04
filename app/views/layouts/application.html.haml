@@ -1,0 +1,37 @@
+!!!
+%html
+  %head
+    - if ENV['CAMPAIGN'] == 'trial-promoter-staging'
+      %title Trial Promoter: Staging
+    - elsif ENV['CAMPAIGN'].blank?
+      %title Trial Promoter: Development
+    - else
+      %title Trial Promoter: Production
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
+    = javascript_include_tag 'application', 'data-turbolinks-track' => true
+    = csrf_meta_tags
+    <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
+    <script src="semantic/dist/semantic.min.js"></script>
+    %script#dropboxjs{"data-app-key" => "6tf0hql0qu90x0e", :src => "https://www.dropbox.com/static/api/2/dropins.js", :type => "text/javascript"}
+  %body
+    .ui.inverted.menu.main
+      .header.item
+        - if ENV['CAMPAIGN'].blank?
+          Campaign: trial-promoter-development
+        - else
+          Campaign: #{ENV['CAMPAIGN']}
+      %a.item{ :href => clinical_trials_path }
+        Clinical Trials
+      %a.item{ :href => message_templates_path }
+        Message Templates
+      %a.item{ :href => organic_messages_path }
+        Organic Messages
+      %a.item{ :href => paid_messages_path }
+        Paid Messages
+      %a.item{ :href => dashboard_path }
+        Dashboard
+      %a.item{ :href => 'http://clinical-studies-news-tracker.herokuapp.com', :target => "_blank" }
+        News Tracker
+    = yield
+
+
