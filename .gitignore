@@ -40,6 +40,9 @@ bower.json
 # Ignore RubyMine
 /.idea
 
+# Ignore DS_Store
+.DS_Store
+
 # Ignore Spring
 /spring-*
 
