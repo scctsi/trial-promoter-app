@@ -43,6 +43,7 @@ gem 'grape-active_model_serializers'
 gem 'grape-swagger', github: 'LeFnord/grape-swagger', ref: 'f82887f'
 gem 'grape-swagger-rails'
 gem 'rails-settings-cached'
+gem 'haml'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

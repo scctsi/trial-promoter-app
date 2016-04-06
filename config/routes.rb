@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'metrics/index'
+
   # TODO: Unit test all routes
   namespace :admin do
     DashboardManifest::DASHBOARDS.each do |dashboard_resource|
@@ -16,12 +18,15 @@ Rails.application.routes.draw do
   # This means that it uses /api/clinical_trials rather than /api/v1/clinical_trials
   # So I am using part of a fix described here: http://stackoverflow.com/questions/9627546/api-versioning-for-rails-routes
   match "/api/*path", :to => redirect("/api/v1/%{path}"), via: [:get, :post]
+  
+  # Metrics dashboard
+  get 'metrics' => 'metrics#index'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  # root 'welcome#index'
+  root "admin/clinical_trials#index"
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

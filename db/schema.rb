@@ -68,8 +68,8 @@ ActiveRecord::Schema.define(version: 20160331220214) do
     t.text     "value"
     t.integer  "thing_id"
     t.string   "thing_type", limit: 30
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
   end
 
   add_index "settings", ["thing_type", "thing_id", "var"], name: "index_settings_on_thing_type_and_thing_id_and_var", unique: true, using: :btree
