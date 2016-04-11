@@ -3,13 +3,13 @@ require 'rails_helper'
 RSpec.describe MetricFileParser do
   before do
     @metric_file_parser = MetricFileParser.new
-    csv_file_content = <<-CSV
+    twitter_metrics_csv_file_content = <<-CSV
 "Tweet id","Tweet permalink","Tweet text","time","impressions","engagements","engagement rate","retweets","replies","favorites","user profile clicks","url clicks","hashtag clicks","detail expands","permalink clicks","app opens","app installs","follows","email tweet","dial phone","media views","media engagements","promoted impressions","promoted engagements","promoted engagement rate","promoted retweets","promoted replies","promoted favorites","promoted user profile clicks","promoted url clicks","promoted hashtag clicks","promoted detail expands","promoted permalink clicks","promoted app opens","promoted app installs","promoted follows","promoted email tweet","promoted dial phone","promoted media views","promoted media engagements"
 "649293177409679360","https://twitter.com/USCTrials/status/649293177409679360","Diagnosed with #KidneyCancer? Leading researcher David Quinn @KeckMedUSC is looking for #ClinicalTrial participants http://t.co/gispyAPj8L","2015-09-30 18:42 +0000","424.0","3.0","0.007075471698113208","1.0","2.0","3.0","4.0","5.0","6.0","7.0","8.0","0","0","0","0","0","0","0","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-"
 "649064976133525504","https://twitter.com/USCTrials/status/649064976133525504","This clinical research study for #GynCSM is now accepting participants http://t.co/ea2ktYDEf9 http://t.co/RIuqAn51Jz","2015-09-30 03:35 +0000","411.0","8.0","0.019464720194647202","0.0","0.0","1.0","1.0","4.0","0.0","2.0","0.0","0","0","0","0","0","0","0","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-"
     CSV
-    csv = CSV.new(csv_file_content)
-    @csv_content = csv.read
+    csv = CSV.new(twitter_metrics_csv_file_content)
+    @twitter_metrics_csv = csv.read
     @messages = build_list(:message, 5)
     @messages[0].buffer_update = BufferUpdate.new(:buffer_id => "buffer1", :status => :sent, :service_update_id => '649293177409679360')
     @messages[0].save
@@ -22,7 +22,7 @@ RSpec.describe MetricFileParser do
   end
 
   it "parses a line from a metrics file provided by twitter analytics into a metric" do
-    metric = @metric_file_parser.to_metric(@csv_content[1], :twitter)
+    metric = @metric_file_parser.to_metric(@twitter_metrics_csv[1], :twitter)
 
     expect(metric.source).to eq(:twitter)
     expect(metric.data[:impressions]).to eq("424.0")
@@ -39,7 +39,7 @@ RSpec.describe MetricFileParser do
   end
   
   it "parses a single line and adds the parsed metric to a specific message based on the service_update_id " do
-    @metric_file_parser.parse_line(@csv_content[1], :twitter)
+    @metric_file_parser.parse_line(@twitter_metrics_csv[1], :twitter)
     
     expect(@messages[0].metrics.length).to eq(1)
     expect(@messages[0].metrics[0].source).to eq(:twitter)
@@ -49,7 +49,7 @@ RSpec.describe MetricFileParser do
 
   it "parses all the lines from a CSV and adds all parsed metrics to specific messages based on the service_update_id " do
     allow(@metric_file_parser).to receive(:parse_line)
-    @metric_file_parser.parse(@csv_content, :twitter)
+    @metric_file_parser.parse(@twitter_metrics_csv, :twitter)
 
     expect(@metric_file_parser).to have_received(:parse_line).with(@csv_content[1], :twitter)
     expect(@metric_file_parser).to have_received(:parse_line).with(@csv_content[2], :twitter)
