@@ -12,9 +12,10 @@ class PeriodicWorker
       Buffer.get_update(message)
     end
     
-    # 2. Gather metrics from Twitter (currently the twitter metrics must be uploaded to a publically accessible URL)
+    # 2. Gather metrics from Twitter and Facebook (currently the twitter and facebook metrics must be uploaded to a publically accessible URL)
     metric_file_parser = MetricFileParser.new
     metric_file_parser.parse_from_url(Figaro.env.twitter_metrics_csv_file_url)
+    metric_file_parser.parse_from_url(Figaro.env.facebook_metrics_csv_file_url)
 
     # 3. Generate new messages for trials that need promotion
     message_generator = MessageGenerator.new
