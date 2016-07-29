@@ -1,0 +1,6 @@
+%header
+  %h1 
+    %i.fa.fa-line-chart 
+    SC CTSI progress report survey #{SurveyCycle::YEAR}
+  %h2 Help us ensure that SC CTSI services are available in the future
+  = link_to "Sign out", destroy_user_session_path, :method => :delete if user_signed_in?

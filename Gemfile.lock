@@ -54,6 +54,7 @@ GEM
     byebug (9.0.5)
     coderay (1.1.1)
     concurrent-ruby (1.0.2)
+    database_cleaner (1.5.3)
     debug_inspector (0.0.2)
     devise (4.2.0)
       bcrypt (~> 3.0)
@@ -248,6 +249,7 @@ PLATFORMS
 DEPENDENCIES
   annotate
   byebug
+  database_cleaner
   devise
   enumerize
   factory_girl_rails (~> 4.0)
