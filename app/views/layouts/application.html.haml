@@ -1,7 +1,7 @@
 !!!
 %html
   %head
-    %title SC CTSI Progress Report Survey #{SurveyCycle::YEAR}
+    %title Trial Promoter
     = stylesheet_link_tag     'application', media: 'all'
     = stylesheet_link_tag     'https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css'
     = stylesheet_link_tag     'https://fonts.googleapis.com/css?family=Open+Sans:300,400,700'
@@ -10,8 +10,12 @@
   %body{'data-environment' => Rails.env}
     .ui.container
       = render 'layouts/header'
-      %p.notice
-        = notice
-      %p.alert
-        = alert
-      = yield
+      .ui.grid
+        .fluid.four.wide.column
+          = render 'layouts/menu'
+        .twelve.wide.column
+          %p.notice
+            = notice
+          %p.alert
+            = alert
+          = yield

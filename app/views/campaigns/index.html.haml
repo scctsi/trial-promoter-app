@@ -1,0 +1,29 @@
+%h3.ui.header 
+  Before you begin using Trial Promoter
+.ui.large.list
+  .item
+    %i.send.outline.icon
+    .content
+      %a.header{:href => 'www.buffer.com', :target => '_blank'} Setup a Buffer account
+      .description Buffer is a web application that allows you to schedule, publish and analyze all your posts in one place.
+      .ui.attached.negative.message
+        .header
+          It looks like you have not yet set up Buffer.
+        %p
+          Please try again.
+%h3.ui.header
+  Quick start
+.ui.segment
+  .ui.two.column.middle.aligned.grid
+    .column
+      %a.ui.fluid.big.olive.labeled.icon.button{:href => ''}
+        %i.lab.icon
+        Start an experiment
+    .ui.vertical.divider
+      Or
+    .center.aligned.column
+      %a.ui.fluid.big.teal.labeled.icon.button{:href => new_campaign_path}
+        %i.calendar.outline.icon
+        Start a campaign
+%h3.ui.header
+  Ongoing campaigns

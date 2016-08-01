@@ -1,3 +1,10 @@
 Rails.application.routes.draw do
   root 'campaigns#index'
+  
+  resources :campaigns do
+    member do
+    end
+    collection do
+    end
+  end 
 end
