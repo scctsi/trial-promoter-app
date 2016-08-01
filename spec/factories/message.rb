@@ -2,7 +2,7 @@ FactoryGirl.define do
   factory :message do
     clinical_trial
     message_template
-    text 'Text'
+    content 'Content'
     status :new
   end
 end
