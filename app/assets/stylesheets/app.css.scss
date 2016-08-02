@@ -1,3 +1,7 @@
+body {
+  background: #eff3f8;
+}
+
 header {
   padding: 1.5rem 0rem;
   
@@ -13,4 +17,11 @@ header {
   background: #ffcc00;
   margin: 0;
   padding: 0;
+}
+
+// Semantic UI form styling
+form {
+  abbr {
+    display: none;
+  }
 }

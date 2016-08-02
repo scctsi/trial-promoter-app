@@ -25,5 +25,6 @@
       %a.ui.fluid.big.teal.labeled.icon.button{:href => new_campaign_path}
         %i.calendar.outline.icon
         Start a campaign
-%h3.ui.header
-  Ongoing campaigns
+- if @campaigns.count > 0
+  %h3.ui.header
+    Ongoing campaigns

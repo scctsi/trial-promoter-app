@@ -6,5 +6,12 @@ Rails.application.routes.draw do
     end
     collection do
     end
-  end 
+  end
+  
+  resources :settings do
+    member do
+    end
+    collection do
+    end
+  end
 end

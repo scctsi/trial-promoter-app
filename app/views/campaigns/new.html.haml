@@ -4,8 +4,10 @@
   %i.right.angle.icon.divider
   .active.section
     Create new campaign
-= simple_form_for @campaign do |f|
-  = f.input :name
-  = f.input :start_date
-  = f.input :end_date
-  = f.button :submit
+.ui.divider
+.ui.segment
+  = simple_form_for @campaign do |f|
+    = f.input :name
+    = f.input :start_date, as: :string
+    = f.input :end_date, as: :string
+    = f.button :submit
