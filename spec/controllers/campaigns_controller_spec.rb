@@ -47,9 +47,6 @@ RSpec.describe CampaignsController, type: :controller do
         post :create, campaign: attributes_for(:campaign)
         expect(response).to redirect_to root_url
       end
-      
-      # it "saves the new contact in the database"
-      # it "redirects to the home page"
     end
     
     context "with invalid attributes" do
