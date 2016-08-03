@@ -1,16 +1,16 @@
+%h2.header
+  Home
 %h3.ui.header 
   Before you begin using Trial Promoter
-.ui.large.list
-  .item
-    %i.send.outline.icon
-    .content
-      %a.header{:href => 'www.buffer.com', :target => '_blank'} Setup a Buffer account
-      .description Buffer is a web application that allows you to schedule, publish and analyze all your posts in one place.
-      .ui.attached.negative.message
-        .header
-          It looks like you have not yet set up Buffer.
-        %p
-          Please try again.
+- if Setting[:buffer_access_token].blank?
+  .ui.large.list
+    .item
+      .content
+        .ui.mini.attached.negative.message
+          .header
+            It looks like you have not yet entered your Buffer access token. 
+          %p
+            Please <a href='www.buffer.com' target='_blank'>setup a Buffer account</a>. Once you've done this, please enter your buffer access token in <a href="#{admin_settings_path}">settings</a>.
 %h3.ui.header
   Quick start wizards
 .ui.segment

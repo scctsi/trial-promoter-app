@@ -1,0 +1,14 @@
+%h2.header
+  Settings
+%table.ui.celled.striped.table
+  %thead
+    %tr
+      %th Setting
+      %th Value
+      %th
+  %tbody
+    - @settings.each_key do |key|
+      %tr
+        %td= key.humanize
+        %td= Setting[key]
+        %td= link_to 'Edit', edit_admin_setting_path(key)

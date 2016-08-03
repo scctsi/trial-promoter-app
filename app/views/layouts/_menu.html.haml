@@ -1,5 +1,5 @@
 .ui.fluid.vertical.labeled.icon.pointing.menu
-  %a.active.item
+  %a.item{:href => root_path}
     %i.home.icon
     Home
   %a.item
@@ -17,7 +17,7 @@
   %a.item
     %i.dashboard.icon
     Dashboard
-  %a.item
+  %a.item{ :href => admin_settings_path }
     %i.settings.icon
     Settings
     

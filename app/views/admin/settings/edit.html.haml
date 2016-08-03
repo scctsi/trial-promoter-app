@@ -1,0 +1,10 @@
+.ui.breadcrumb
+  %a{:href => admin_settings_path}
+    Settings 
+  %i.right.angle.icon.divider
+  .active.section
+    Edit #{@setting.var}
+.ui.divider
+= simple_form_for @setting, url: admin_setting_path(@setting.var), method: 'patch' do |f|
+  = f.input :value, as: :text
+  = f.button :submit

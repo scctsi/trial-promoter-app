@@ -1,7 +1,6 @@
 # config/app.yml for rails-settings-cached
 defaults: &defaults
-  foo: "Foo"
-  bar: 123
+  buffer_access_token: ""
 
 development:
   <<: *defaults
