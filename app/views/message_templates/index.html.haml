@@ -1,0 +1,20 @@
+%h2.header
+  Message templates
+%table.ui.celled.striped.table
+  %thead 
+    %tr
+      %th Content
+      %th Platform
+  %tbody
+    - @message_templates.each do |message_template|
+      %tr
+        %td= message_template.content
+        %td= message_template.platform.titleize
+  %tfoot.full-width
+    %tr
+      %th
+      %th{:colspan => "4"}
+        %a.ui.right.floated.small.primary.labeled.icon.button{:href => new_message_template_path}
+          %i.browser.icon
+          Add message template
+

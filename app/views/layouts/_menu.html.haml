@@ -1,14 +1,14 @@
 .ui.fluid.vertical.labeled.icon.pointing.menu
-  %a.item{:href => root_path}
+  %a.item{:href => root_path, :class => current_page?(root_path) ? "active" : ""}
     %i.home.icon
     Home
-  %a.item
+  %a.item{:href => campaigns_path, :class => current_page?(campaigns_path) ? "active" : ""}
     %i.calendar.outline.icon
     Campaigns
   %a.item
     %i.doctor.icon
     Clinical trials
-  %a.item
+  %a.item{:href => message_templates_path, :class => current_page?(message_templates_path) ? "active" : ""}
     %i.browser.icon
     Message templates
   %a.item
@@ -17,7 +17,7 @@
   %a.item
     %i.dashboard.icon
     Dashboard
-  %a.item{ :href => admin_settings_path }
+  %a.item{ :href => admin_settings_path, :class => current_page?(admin_settings_path) ? "active" : ""}
     %i.settings.icon
     Settings
     

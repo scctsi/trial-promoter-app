@@ -14,8 +14,14 @@
         .fluid.four.wide.column
           = render 'layouts/menu'
         .twelve.wide.column
-          %p.notice
-            = notice
+          - if notice
+            .ui.info.message
+              %p
+                = notice
+          - if alert
+            .ui.negative.message
+              %p
+                = alert
           %p.alert
             = alert
           = yield

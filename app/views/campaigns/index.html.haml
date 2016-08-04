@@ -3,16 +3,12 @@
 %h3.ui.header 
   Before you begin using Trial Promoter
 - if Setting[:buffer_access_token].blank?
-  .ui.large.list
-    .item
-      .content
-        .ui.mini.attached.negative.message
-          .header
-            It looks like you have not yet entered your Buffer access token. 
-          %p
-            Please <a href='www.buffer.com' target='_blank'>setup a Buffer account</a>. Once you've done this, please enter your buffer access token in <a href="#{admin_settings_path}">settings</a>.
-%h3.ui.header
-  Quick start wizards
+  .ui.negative.message
+    .header
+      It looks like you have not yet entered your Buffer access token. To fix this:
+    %ul.list
+      %li Setup a <a href='www.buffer.com' target='_blank'>Buffer</a> account. 
+      %li Enter your buffer access token in <a href="#{admin_settings_path}">settings</a>.
 .ui.segment
   .ui.two.column.middle.aligned.grid
     .column

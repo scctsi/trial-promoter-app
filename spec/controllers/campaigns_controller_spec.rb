@@ -27,7 +27,7 @@ RSpec.describe CampaignsController, type: :controller do
       get :new
     end
     
-    it 'assigns a new Campaign to @campaign' do
+    it 'assigns a new campaign to @campaign' do
       expect(assigns(:campaign)).to be_a_new(Campaign)
     end
 

@@ -9,6 +9,14 @@ Rails.application.routes.draw do
     end
   end
   
+  # Message templates
+  resources :message_templates do
+    member do
+    end
+    collection do
+    end
+  end
+  
   # App settings
   namespace :admin do
     resources :settings
