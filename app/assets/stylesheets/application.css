@@ -12,6 +12,7 @@
  *
  *= require semantic-ui
  *= require daterangepicker.min
+ *= require chosen.min
  *= require_tree .
  *= require_self
  */

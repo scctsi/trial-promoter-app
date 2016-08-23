@@ -5,3 +5,14 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
+require 'csv'
+
+if Hashtag.count == 0
+  CSV.foreach("#{Rails.root}/db/seed_files/healthcare-hashtags-diseases.csv") do |row|
+    begin
+      Hashtag.create!(phrase: row[0])
+    rescue ActiveRecord::RecordInvalid => e
+      throw e if e.message != 'Validation failed: Phrase has already been taken'
+    end
+  end
+end

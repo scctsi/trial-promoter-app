@@ -15,4 +15,5 @@
 //= require semantic-ui
 //= require moment.min
 //= require daterangepicker.min
+//= require chosen.jquery.min
 //= require_tree .

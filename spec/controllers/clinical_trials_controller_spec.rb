@@ -23,10 +23,16 @@ RSpec.describe ClinicalTrialsController, type: :controller do
   describe 'GET #new' do
     before do
       get :new
+      @hashtags = []
+      allow(Hashtag).to receive(:all).and_return(@hashtags)
     end
     
     it 'assigns a new clinical trial to @clinical_trial' do
       expect(assigns(:clinical_trial)).to be_a_new(ClinicalTrial)
+    end
+    
+    it 'assigns all hashtags to @hashtags' do
+      expect(assigns(:hashtags)).to eq(@hashtags)
     end
 
     it { should respond_with :ok }

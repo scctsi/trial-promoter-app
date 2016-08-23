@@ -22,6 +22,7 @@ group :development, :test do
   gem 'byebug'
   gem 'database_cleaner'
   gem 'rspec-rails', '~> 3.5'
+  gem 'spring-commands-rspec'
 end
 
 group :development do
