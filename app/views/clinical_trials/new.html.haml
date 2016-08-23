@@ -1,0 +1,18 @@
+.ui.breadcrumb
+  %a{:href => clinical_trials_path}
+    Clinical trials
+  %i.right.angle.icon.divider
+  .active.section
+    Create new clinical trial
+.ui.divider
+%h3.ui.top.attached.header
+  Create new clinical trial
+.ui.attached.segment
+  = simple_form_for @clinical_trial do |f|
+    = f.input :title
+    = f.input :url, label: 'URL'
+    = f.input :pi_first_name, label: 'PI first name'
+    = f.input :pi_last_name, label: 'PI last name'
+    = f.input :disease
+    = f.input :hashtags
+    = f.button :submit

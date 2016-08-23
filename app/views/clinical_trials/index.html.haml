@@ -1,0 +1,27 @@
+%h2.header
+  Clinical trials
+%table.ui.celled.striped.table
+  %thead 
+    %tr
+      %th Title
+      %th PI name
+      %th Disease
+      %th Hashtag
+  %tbody
+    - @clinical_trials.each do |clinical_trial|
+      %tr
+        %td
+          #{clinical_trial.title}
+          %a{:href => clinical_trial.url, :target => '_blank'}
+            %i.external.icon
+        %td #{clinical_trial.pi_first_name} #{clinical_trial.pi_last_name}
+        %td= clinical_trial.disease
+        %td= clinical_trial.hashtags
+  %tfoot.full-width
+    %tr
+      %th
+      %th{:colspan => "4"}
+        %a.ui.right.floated.small.primary.labeled.icon.button{:href => new_clinical_trial_path}
+          %i.doctor.icon
+          Add clinical trial
+

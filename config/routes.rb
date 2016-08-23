@@ -3,18 +3,14 @@ Rails.application.routes.draw do
   
   # Campaigns
   resources :campaigns do
-    member do
-    end
-    collection do
-    end
+  end
+  
+  # Clinical trials
+  resources :clinical_trials do
   end
   
   # Message templates
   resources :message_templates do
-    member do
-    end
-    collection do
-    end
   end
   
   # App settings
