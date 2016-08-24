@@ -13,8 +13,8 @@ RSpec.describe CampaignsController, type: :controller do
       expect(assigns(:campaigns)).to eq(campaigns)
     end
     
-    it { should respond_with :ok }
-    it { should render_template :index }
+    it { is_expected.to respond_with :ok }
+    it { is_expected.to render_template :index }
   end
   
   # describe "GET #show" do
@@ -31,8 +31,8 @@ RSpec.describe CampaignsController, type: :controller do
       expect(assigns(:campaign)).to be_a_new(Campaign)
     end
 
-    it { should respond_with :ok }
-    it { should render_template :new }
+    it { is_expected.to respond_with :ok }
+    it { is_expected.to render_template :new }
   end
   
   describe 'POST #create' do

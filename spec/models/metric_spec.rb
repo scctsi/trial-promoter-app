@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe Metric, type: :model do
-  it { should validate_presence_of :data }
-  it { should validate_presence_of :source }
-  it { should enumerize(:source).in(:buffer, :twitter, :facebook) }
-  it { should belong_to(:message) }
+  it { is_expected.to validate_presence_of :data }
+  it { is_expected.to validate_presence_of :source }
+  it { is_expected.to enumerize(:source).in(:buffer, :twitter, :facebook) }
+  it { is_expected.to belong_to(:message) }
   
   it 'stores data as a hash' do
     data = {

@@ -13,8 +13,8 @@ RSpec.describe ClinicalTrialsController, type: :controller do
       expect(assigns(:clinical_trials)).to eq(clinical_trials)
     end
     
-    it { should respond_with :ok }
-    it { should render_template :index }
+    it { is_expected.to respond_with :ok }
+    it { is_expected.to render_template :index }
   end
   
   # describe "GET #show" do
@@ -37,8 +37,8 @@ RSpec.describe ClinicalTrialsController, type: :controller do
       expect(assigns(:hashtags)).to eq(@hashtags)
     end
 
-    it { should respond_with :ok }
-    it { should render_template :new }
+    it { is_expected.to respond_with :ok }
+    it { is_expected.to render_template :new }
   end
   
   describe 'POST #create' do
@@ -62,7 +62,7 @@ RSpec.describe ClinicalTrialsController, type: :controller do
         }.to_not change(ClinicalTrial, :count)
       end
       
-      it "re-renders the new method" do
+      it "re-renders the new template" do
         post :create, clinical_trial: attributes_for(:invalid_clinical_trial)
         expect(response).to render_template :new
       end

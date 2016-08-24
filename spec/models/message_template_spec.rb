@@ -12,10 +12,10 @@
 require 'rails_helper'
 
 RSpec.describe MessageTemplate do
-  it { should validate_presence_of :content }
-  it { should validate_presence_of :platform }
-  it { should enumerize(:platform).in(:twitter, :facebook) }
-  it { should have_many :messages }
+  it { is_expected.to validate_presence_of :content }
+  it { is_expected.to validate_presence_of :platform }
+  it { is_expected.to enumerize(:platform).in(:twitter, :facebook) }
+  it { is_expected.to have_many :messages }
 
   describe 'standardizing variables' do
     it 'downcases the pi_first_name variable' do

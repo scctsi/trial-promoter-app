@@ -18,7 +18,8 @@ class ClinicalTrialsController < ApplicationController
     end
   end
 
-private 
+  private
+  
   def clinical_trial_params
     # TODO: Unit test this
     params[:clinical_trial].permit(:title, :pi_first_name, :pi_last_name, :url, :disease) 

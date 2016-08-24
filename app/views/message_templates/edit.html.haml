@@ -1,0 +1,22 @@
+.ui.breadcrumb
+  %a{:href => message_templates_path}
+    Message templates
+  %i.right.angle.icon.divider
+  .active.section
+    Create new message template
+.ui.divider
+%h3.ui.top.attached.header
+  Create new message template
+.ui.attached.segment
+  = simple_form_for @message_template do |f|
+    = f.input :content
+    .ui.message
+      .header
+        Variables
+      %ul.list
+        %li {pi_first_name}
+        %li {pi_last_name}
+        %li {disease}
+        %li {url}
+    = f.input :platform, :collection => [['Facebook', 'facebook'], ['Twitter', 'twitter']], :label_method => :first, :value_method => :last, :as => :select
+    = f.button :submit

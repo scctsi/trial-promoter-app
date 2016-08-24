@@ -12,7 +12,8 @@ class CampaignsController < ApplicationController
     redirect_to root_url
   end
 
-private 
+  private
+  
   def campaign_params
     # TODO: Unit test this
     params[:campaign].permit(:name, :start_date, :end_date) 
