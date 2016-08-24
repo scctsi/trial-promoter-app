@@ -73,7 +73,7 @@ RSpec.describe MessageTemplatesController, type: :controller do
     end
   end
   
-  describe 'PUT update' do
+  describe 'PATCH update' do
     before :each do
       @message_template = create(:message_template)
       patch :update, id: @message_template, message_template: attributes_for(:message_template, content: 'New content', platform: :facebook)
@@ -81,17 +81,17 @@ RSpec.describe MessageTemplatesController, type: :controller do
     
     context 'with valid attributes' do
       it 'locates the requested message template' do
-        assigns(:message_template).should eq(@message_template)
+        expect(assigns(:message_template)).to eq(@message_template)
       end
     
       it "changes the message template's attributes" do
         @message_template.reload
-        @message_template.content.should eq('New content')
-        @message_template.platform.should eq(:facebook)
+        expect(@message_template.content).to eq('New content')
+        expect(@message_template.platform).to eq(:facebook)
       end
     
       it 'redirects to the updated message template' do
-        response.should redirect_to @message_template
+        expect(response).to redirect_to @message_template
       end
     end
   end

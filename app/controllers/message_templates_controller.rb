@@ -24,6 +24,11 @@ class MessageTemplatesController < ApplicationController
   end
   
   def update
+    if @message_template.update(message_template_params)
+      redirect_to @message_template
+    else
+      render :edit
+    end
   end
 
   private
