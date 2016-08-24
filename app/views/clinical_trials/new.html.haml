@@ -14,5 +14,5 @@
     = f.input :pi_first_name, label: 'PI first name'
     = f.input :pi_last_name, label: 'PI last name'
     = f.input :disease
-    = f.input :hashtags. as: :select
+    = f.input :hashtags, collection: @hashtags.order(:phrase), :label_method => :phrase, :value_method => :phrase, input_html: { multiple: true }
     = f.button :submit

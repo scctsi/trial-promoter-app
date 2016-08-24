@@ -5,11 +5,17 @@ class ClinicalTrialsController < ApplicationController
   
   def new
     @clinical_trial = ClinicalTrial.new
+    @hashtags = Hashtag.all
   end
   
   def create
-    ClinicalTrial.create!(clinical_trial_params)
-    redirect_to clinical_trials_url
+    @clinical_trial = ClinicalTrial.new(clinical_trial_params)
+
+    if @clinical_trial.save
+      redirect_to clinical_trials_url
+    else
+      render :new
+    end
   end
 
 private 

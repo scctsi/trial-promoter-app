@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 RSpec.describe ClinicalTrialsController, type: :controller do
   describe 'GET #index' do
     let(:clinical_trials) { build_pair(:clinical_trial) }
@@ -53,9 +55,17 @@ RSpec.describe ClinicalTrialsController, type: :controller do
       end
     end
     
-    context "with invalid attributes" do
-      # it "does not save the new contact in the database"
-      # it "re-renders the :new template"
+    context 'with invalid attributes' do
+      it 'does not save the clinical trial to the database' do
+        expect {
+          post :create, clinical_trial: attributes_for(:invalid_clinical_trial)
+        }.to_not change(ClinicalTrial, :count)
+      end
+      
+      it "re-renders the new method" do
+        post :create, clinical_trial: attributes_for(:invalid_clinical_trial)
+        expect(response).to render_template :new
+      end
     end
   end
 end
