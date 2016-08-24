@@ -7,6 +7,7 @@
       %th PI name
       %th Disease
       %th Hashtag
+      %th
   %tbody
     - @clinical_trials.each do |clinical_trial|
       %tr
@@ -17,6 +18,9 @@
         %td #{clinical_trial.pi_first_name} #{clinical_trial.pi_last_name}
         %td= clinical_trial.disease
         %td= clinical_trial.hashtags
+        %td
+          %a{:href => edit_clinical_trial_path(clinical_trial)}
+            Edit
   %tfoot.full-width
     %tr
       %th

@@ -5,11 +5,15 @@
     %tr
       %th Content
       %th Platform
+      %th
   %tbody
     - @message_templates.each do |message_template|
       %tr
         %td= message_template.content
         %td= message_template.platform.titleize
+        %td
+          %a{:href => edit_message_template_path(message_template)}
+            Edit
   %tfoot.full-width
     %tr
       %th
