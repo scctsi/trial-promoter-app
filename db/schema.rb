@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160823211013) do
+ActiveRecord::Schema.define(version: 20160825190902) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,6 +32,14 @@ ActiveRecord::Schema.define(version: 20160823211013) do
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
   end
+
+  create_table "campaigns_clinical_trials", force: :cascade do |t|
+    t.integer "campaign_id"
+    t.integer "clinical_trial_id"
+  end
+
+  add_index "campaigns_clinical_trials", ["campaign_id"], name: "index_campaigns_clinical_trials_on_campaign_id", using: :btree
+  add_index "campaigns_clinical_trials", ["clinical_trial_id"], name: "index_campaigns_clinical_trials_on_clinical_trial_id", using: :btree
 
   create_table "clinical_trials", force: :cascade do |t|
     t.string   "title",            limit: 1000

@@ -24,3 +24,22 @@
 - if @campaigns.count > 0
   %h3.ui.header
     Ongoing campaigns
+  %table.ui.celled.striped.table
+    %thead 
+      %tr
+        %th Name
+        %th Start date
+        %th End date
+        %th Promoted trials
+    %tbody
+      - @campaigns.each do |campaign|
+        %tr
+          %td= campaign.name
+          %td
+            - if !campaign.start_date.nil?
+              = campaign.start_date.strftime('%B %d, %Y')
+          %td
+            - if !campaign.end_date.nil?
+              = campaign.end_date.strftime('%B %d, %Y')
+          %td
+            - campaign.clinical_trials
