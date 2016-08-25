@@ -77,7 +77,7 @@ RSpec.describe ClinicalTrialsController, type: :controller do
         }.to_not change(ClinicalTrial, :count)
       end
       
-      it "re-renders the new template" do
+      it 're-renders the new template' do
         post :create, clinical_trial: attributes_for(:invalid_clinical_trial)
         expect(response).to render_template :new
       end

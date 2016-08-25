@@ -1,0 +1,16 @@
+.ui.breadcrumb
+  %a{:href => root_path}
+    Home
+  %i.right.angle.icon.divider
+  .active.section
+    Create new campaign
+.ui.divider
+%h3.ui.top.attached.header
+  Create new campaign
+.ui.attached.segment
+  = simple_form_for @campaign do |f|
+    = f.input :name, label: 'Name your campaign', hint: 'Give your campaign a good name'
+    = f.input :start_date, as: :string
+    = f.input :end_date, as: :string
+    = f.association :clinical_trials
+    = f.button :submit

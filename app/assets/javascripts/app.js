@@ -3,7 +3,9 @@ $(document).ready(function() {
   function setUpDatePickers() {
     $("[id$='_date']").daterangepicker({
       singleDatePicker: true,
-      showDropdowns: true
+      showDropdowns: true,
+      format: 'MM-DD-YYYY',
+      startDate: '08-01-2016'
     }); 
   }
 

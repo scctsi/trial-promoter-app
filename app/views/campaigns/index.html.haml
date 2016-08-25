@@ -11,12 +11,10 @@
       %li Enter your buffer access token in <a href="#{admin_settings_path}">settings</a>.
 .ui.segment
   .ui.two.column.middle.aligned.grid
-    .column
+    .center.aligned.column
       %a.ui.fluid.big.olive.labeled.icon.button{:href => ''}
         %i.lab.icon
         Start an experiment
-    .ui.vertical.divider
-      Or
     .center.aligned.column
       %a.ui.fluid.big.teal.labeled.icon.button{:href => new_campaign_path}
         %i.calendar.outline.icon
@@ -31,6 +29,7 @@
         %th Start date
         %th End date
         %th Promoted trials
+        %th
     %tbody
       - @campaigns.each do |campaign|
         %tr
@@ -43,3 +42,6 @@
               = campaign.end_date.strftime('%B %d, %Y')
           %td
             - campaign.clinical_trials
+          %td
+            %a{:href => edit_campaign_path(campaign)}
+              Edit
