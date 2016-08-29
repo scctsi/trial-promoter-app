@@ -78,40 +78,4 @@ RSpec.describe MessageTemplate do
       expect(message_template.content).to eq('This is a message_template containing {disease}, {pi_first_name}, {pi_last_name} variables which are duplicated here: {disease}, {pi_first_name}, {pi_last_name}')
     end
   end
-  
-  context 'generating messages' do
-    it 'replaces the variables in the message template with the value of the attributes of the supplied clinical trial and shortens the url of the supplied clinical trial' do
-    #   clinical_trial = ClinicalTrial.new(pi_first_name: 'First', pi_last_name: 'Last', disease: 'Disease', url: 'http://www.url.com')
-    #   message_template = MessageTemplate.new(content: 'This is a message template containing {pi_first_name}, {pi_last_name}, { Disease}, {URL} variables')
-    #   shortened_url = ''
-    #   message = ''
-    #   VCR.use_cassette('message_template/generating_messages') do
-    #     shortened_url = UrlShortener.new.shorten(clinical_trial.url)
-    #   end
-      
-    #   VCR.use_cassette('message_template/generating_messages') do
-    #     message = message_template.generate_message(clinical_trial)
-    #   end
-
-    #   expect(message.text).to eq("This is a message template containing #{clinical_trial.pi_first_name}, #{clinical_trial.pi_last_name}, #{clinical_trial.disease}, #{shortened_url} variables")
-    end
-  end
-
-#   it 'saves the content as a string' do
-#     message_template = MessageTemplate.new(:initial_id => "1", :platform => "twitter", :message_type => "awareness", :content => 'Some content')
-
-#     message_template.save
-#     message_template.reload
-
-#     expect(message_template.content).to eq('Some content')
-#   end
-
-#   it 'saves the content as an array (used for Google, YouTube ads)' do
-#     message_template = MessageTemplate.new(:initial_id => "1", :platform => "twitter", :message_type => "awareness", :content => ['Headline', 'Description Line 1', 'Description Line 2'])
-
-#     message_template.save
-#     message_template.reload
-
-#     expect(message_template.content).to eq(['Headline', 'Description Line 1', 'Description Line 2'])
-#   end
 end

@@ -48,3 +48,6 @@ bower.json
 
 # Ignore application configuration
 /config/application.yml
+
+# Ignore secrets.yml in spec
+/spec/support/secrets.yml
