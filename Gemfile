@@ -8,6 +8,7 @@ gem 'enumerize'
 gem 'fit-commit'
 gem 'haml'
 gem 'haml-rails', '~> 0.9'
+gem 'httparty'
 gem 'jquery-rails'
 gem 'pg'
 gem 'rails', '4.2.6'
@@ -23,6 +24,8 @@ group :development, :test do
   gem 'database_cleaner'
   gem 'rspec-rails', '~> 3.5'
   gem 'spring-commands-rspec'
+  gem 'vcr'
+  gem 'webmock'
 end
 
 group :development do
