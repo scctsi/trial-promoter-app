@@ -5,4 +5,17 @@ class Promoter
 
     return clinical_trials
   end
+  
+  def pick_message_templates(count, platforms)
+    message_templates = []
+    
+    platforms.each do |platform|
+      all_message_templates_in_platform = MessageTemplate.where(platform: platform)
+      (1..count).each do 
+        message_templates << all_message_templates_in_platform.sample
+      end
+    end
+    
+    message_templates
+  end
 end

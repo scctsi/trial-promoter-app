@@ -5,3 +5,6 @@
 
 # Hashtags
 ?
+
+# Google ad guidelines (AdWords)
+* http://www.boostmedia.com/blog/ad-text-tips/adcenter-google-ad-text-guidelines-ad-text-limits-ad-text-lengths-editorial-guidelines/

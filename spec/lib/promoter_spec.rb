@@ -66,4 +66,48 @@ RSpec.describe Promoter do
       end
     end
   end
+
+  describe 'picking message templates to use in promotion' do
+    before do
+      @message_templates = create_list(:message_template, 5, platform: :twitter)
+      @message_templates << create_list(:message_template, 5, platform: :facebook)
+    end
+    
+    it 'gets one random message template for one platform' do
+      # TODO: How do we test that the templates are randomly selected?
+      message_templates_to_use = @promoter.pick_message_templates(1, [:facebook])
+      
+      expect(message_templates_to_use.count).to eq(1)
+      expect(message_templates_to_use[0].facebook?).to be true
+    end
+    
+    it 'gets multiple random message templates for one platform' do
+      # TODO: How do we test that the templates are randomly selected?
+      message_templates_to_use = @promoter.pick_message_templates(3, [:facebook])
+      
+      expect(message_templates_to_use.count).to eq(3)
+      message_templates_to_use.each do |message_template|
+        expect(message_template.facebook?).to be true
+      end
+    end
+    
+    it 'gets more random message templates than there are in the database (i.e. it reuses message templates if needed)' do
+      # TODO: How do we test that the templates are randomly selected?
+      message_templates_to_use = @promoter.pick_message_templates(10, [:facebook])
+
+      expect(message_templates_to_use.count).to eq(10)
+      message_templates_to_use.each do |message_template|
+        expect(message_template.facebook?).to be true
+      end
+    end
+    
+    it 'gets multiple random message templates for multiple platforms' do
+      message_templates_to_use = @promoter.pick_message_templates(10, [:twitter, :facebook])
+
+      expect(message_templates_to_use.count).to eq(20)
+      message_templates_to_use.each do |message_template|
+        expect(message_template.facebook? || message_template.twitter?).to be true
+      end
+    end
+  end
 end
