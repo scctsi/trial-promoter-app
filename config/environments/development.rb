@@ -38,4 +38,7 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+  
+  # Allow better_errors gem to show errors on cloud9.io
+  BetterErrors::Middleware.allow_ip! '128.125.108.0/24'
 end

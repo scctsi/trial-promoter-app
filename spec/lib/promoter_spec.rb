@@ -102,6 +102,7 @@ RSpec.describe Promoter do
     end
     
     it 'gets multiple random message templates for multiple platforms' do
+      # TODO: How do we test that the templates are randomly selected?
       message_templates_to_use = @promoter.pick_message_templates(10, [:twitter, :facebook])
 
       expect(message_templates_to_use.count).to eq(20)
