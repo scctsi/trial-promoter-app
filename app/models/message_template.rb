@@ -10,6 +10,8 @@
 #
 
 class MessageTemplate < ActiveRecord::Base
+  acts_as_ordered_taggable
+
   extend Enumerize
 
   validates :content, presence: true

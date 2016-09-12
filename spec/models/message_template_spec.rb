@@ -78,4 +78,27 @@ RSpec.describe MessageTemplate do
       expect(message_template.content).to eq('This is a message_template containing {disease}, {pi_first_name}, {pi_last_name} variables which are duplicated here: {disease}, {pi_first_name}, {pi_last_name}')
     end
   end
+  
+  it 'is taggable with a single tag' do
+    message_template = create(:message_template)
+    
+    message_template.tag_list.add('friendly')
+    message_template.save
+    message_template.reload
+    
+    expect(message_template.tags.count).to eq(1)
+    expect(message_template.tags[0].name).to eq('friendly')
+  end
+  
+  it 'is taggable with multiple tags (some of them multi-word tags)' do
+    message_template = create(:message_template)
+    
+    message_template.tag_list.add('friendly', 'with emoji')
+    message_template.save
+    message_template.reload
+    
+    expect(message_template.tags.count).to eq(2)
+    expect(message_template.tags[0].name).to eq('friendly')
+    expect(message_template.tags[1].name).to eq('with emoji')
+  end
 end
