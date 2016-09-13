@@ -53,7 +53,7 @@ RSpec.describe MessageTemplatesController, type: :controller do
         }.to change(MessageTemplate, :count).by(1)
       end
       
-      it 'redirects to the message templates index page' do
+      it 'redirects to the index page' do
         post :create, message_template: attributes_for(:message_template)
         expect(response).to redirect_to message_templates_url
       end
@@ -90,8 +90,8 @@ RSpec.describe MessageTemplatesController, type: :controller do
         expect(@message_template.platform).to eq(:facebook)
       end
     
-      it 'redirects to the updated message template' do
-        expect(response).to redirect_to @message_template
+      it 'redirects to the index page' do
+        expect(response).to redirect_to message_templates_url
       end
     end
   end

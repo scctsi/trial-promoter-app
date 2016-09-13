@@ -25,7 +25,7 @@ class MessageTemplatesController < ApplicationController
   
   def update
     if @message_template.update(message_template_params)
-      redirect_to @message_template
+      redirect_to message_templates_url
     else
       render :edit
     end
@@ -39,6 +39,6 @@ class MessageTemplatesController < ApplicationController
   
   def message_template_params
     # TODO: Unit test this
-    params[:message_template].permit(:content, :platform) 
+    params[:message_template].permit(:content, :platform, :tag_list)
   end
 end

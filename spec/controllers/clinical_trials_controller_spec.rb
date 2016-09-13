@@ -105,8 +105,8 @@ RSpec.describe ClinicalTrialsController, type: :controller do
         expect(@clinical_trial.hashtags).to eq('New hashtags')
       end
     
-      it 'redirects to the updated clinical trial' do
-        expect(response).to redirect_to @clinical_trial
+      it 'redirects to the index page' do
+        expect(response).to redirect_to clinical_trials_url
       end
     end
   end

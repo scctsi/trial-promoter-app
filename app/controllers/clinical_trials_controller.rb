@@ -25,7 +25,7 @@ class ClinicalTrialsController < ApplicationController
 
   def update
     if @clinical_trial.update(clinical_trial_params)
-      redirect_to @clinical_trial
+      redirect_to clinical_trials_url
     else
       render :edit
     end

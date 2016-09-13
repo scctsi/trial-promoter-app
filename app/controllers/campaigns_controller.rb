@@ -24,7 +24,7 @@ class CampaignsController < ApplicationController
 
   def update
     if @campaign.update(campaign_params)
-      redirect_to @campaign
+      redirect_to root_url
     else
       render :edit
     end

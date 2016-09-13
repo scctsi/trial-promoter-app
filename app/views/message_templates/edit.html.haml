@@ -19,4 +19,5 @@
         %li {disease}
         %li {url}
     = f.input :platform, :collection => [['Facebook', 'facebook'], ['Twitter', 'twitter']], :label_method => :first, :value_method => :last, :as => :select
+    = f.input :tag_list, input_html: { class: 'selectize' }
     = f.button :submit

@@ -20,9 +20,24 @@ $(document).ready(function() {
       search_contains: true
     });
   }
+
+  function setUpTagListInputs() {
+    $('.selectize').selectize({
+      plugins: ['restore_on_backspace', 'remove_button'],
+      delimiter: ',',
+      persist: false,
+      create: function(input) {
+        return {
+          value: input,
+          text: input
+        };
+      }
+    });
+  }
   
   // Initialize
   setUpDatePickers();
   setUpChosenDropdowns();
+  setUpTagListInputs();
 });
 

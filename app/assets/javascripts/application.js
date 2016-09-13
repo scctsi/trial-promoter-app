@@ -16,4 +16,5 @@
 //= require moment.min
 //= require daterangepicker.min
 //= require chosen.jquery.min
+//= require selectize.min
 //= require_tree .

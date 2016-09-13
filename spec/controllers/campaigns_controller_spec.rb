@@ -99,8 +99,8 @@ RSpec.describe CampaignsController, type: :controller do
         expect(@campaign.clinical_trials).to include(@clinical_trials[1])
       end
     
-      it 'redirects to the updated campaign' do
-        expect(response).to redirect_to @campaign
+      it 'redirects to the home page' do
+        expect(response).to redirect_to root_url
       end
     end
   end
