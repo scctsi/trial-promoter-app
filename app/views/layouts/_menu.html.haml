@@ -5,6 +5,9 @@
   %a.item{:href => campaigns_path, :class => current_page?(campaigns_path) ? "active" : ""}
     %i.calendar.outline.icon
     Campaigns
+  %a.item{:href => experiments_path, :class => current_page?(experiments_path) ? "active" : ""}
+    %i.lab.outline.icon
+    Experiments
   %a.item{:href => clinical_trials_path, :class => current_page?(clinical_trials_path) ? "active" : ""}
     %i.doctor.icon
     Clinical trials

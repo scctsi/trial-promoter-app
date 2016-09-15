@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160906222843) do
+ActiveRecord::Schema.define(version: 20160913220954) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -52,6 +52,23 @@ ActiveRecord::Schema.define(version: 20160906222843) do
     t.datetime "created_at",                    null: false
     t.datetime "updated_at",                    null: false
     t.text     "hashtags"
+  end
+
+  create_table "clinical_trials_experiments", force: :cascade do |t|
+    t.integer "experiment_id"
+    t.integer "clinical_trial_id"
+  end
+
+  add_index "clinical_trials_experiments", ["clinical_trial_id"], name: "index_clinical_trials_experiments_on_clinical_trial_id", using: :btree
+  add_index "clinical_trials_experiments", ["experiment_id"], name: "index_clinical_trials_experiments_on_experiment_id", using: :btree
+
+  create_table "experiments", force: :cascade do |t|
+    t.string   "name",                            limit: 1000
+    t.datetime "start_date"
+    t.datetime "end_date"
+    t.datetime "message_distribution_start_date"
+    t.datetime "created_at",                                   null: false
+    t.datetime "updated_at",                                   null: false
   end
 
   create_table "hashtags", force: :cascade do |t|

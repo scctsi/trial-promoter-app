@@ -5,6 +5,10 @@ Rails.application.routes.draw do
   resources :campaigns do
   end
   
+  # Experiments
+  resources :experiments do
+  end
+  
   # Clinical trials
   resources :clinical_trials do
   end
