@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160913220954) do
+ActiveRecord::Schema.define(version: 20161010170340) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -71,6 +71,14 @@ ActiveRecord::Schema.define(version: 20160913220954) do
     t.datetime "updated_at",                                   null: false
   end
 
+  create_table "experiments_websites", force: :cascade do |t|
+    t.integer "experiment_id"
+    t.integer "website_id"
+  end
+
+  add_index "experiments_websites", ["experiment_id"], name: "index_experiments_websites_on_experiment_id", using: :btree
+  add_index "experiments_websites", ["website_id"], name: "index_experiments_websites_on_website_id", using: :btree
+
   create_table "hashtags", force: :cascade do |t|
     t.string   "phrase"
     t.datetime "created_at", null: false
@@ -93,6 +101,7 @@ ActiveRecord::Schema.define(version: 20160913220954) do
     t.text     "buffer_profile_ids"
     t.datetime "created_at",                       null: false
     t.datetime "updated_at",                       null: false
+    t.integer  "website_id"
   end
 
   create_table "metrics", force: :cascade do |t|
@@ -140,5 +149,12 @@ ActiveRecord::Schema.define(version: 20160913220954) do
   end
 
   add_index "tags", ["name"], name: "index_tags_on_name", unique: true, using: :btree
+
+  create_table "websites", force: :cascade do |t|
+    t.string   "title",      limit: 1000
+    t.string   "url",        limit: 2000
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
 
 end
