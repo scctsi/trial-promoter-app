@@ -8,3 +8,41 @@
 %h2.ui.center.aligned.icon.header
   %i.circular.desktop.icon
   #{@experiment.name} workspace
+%h3
+  Message set generation parameter sets
+// %table.ui.celled.striped.table
+//   %thead 
+//     %tr
+//       %th Name
+//       %th Start date
+//       %th End date
+//       %th Message distribution start date
+//       %th Promoted trials
+//       %th
+//   %tbody
+//     - @experiments.each do |experiment|
+//       %tr
+//         %td= experiment.name
+//         %td
+//           - if !experiment.start_date.nil?
+//             = experiment.start_date.strftime('%B %d, %Y')
+//         %td
+//           - if !experiment.end_date.nil?
+//             = experiment.end_date.strftime('%B %d, %Y')
+//         %td
+//           - if !experiment.message_distribution_start_date.nil?
+//             = experiment.message_distribution_start_date.strftime('%B %d, %Y')
+//         %td
+//           - experiment.clinical_trials
+//         %td
+//           %a{:href => experiment_path(experiment)}
+//             Show
+//           %a{:href => edit_experiment_path(experiment)}
+//             Edit
+//   %tfoot.full-width
+//     %tr
+//       %th{:colspan => "6"}
+//         %a.ui.right.floated.small.primary.labeled.icon.button{:href => new_experiment_path}
+//           %i.lab.icon
+//           Add experiment
+

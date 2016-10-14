@@ -17,10 +17,24 @@ RSpec.describe ExperimentsController, type: :controller do
     it { is_expected.to render_template :index }
   end
   
-  # # describe "GET #show" do
-  # #   it "assigns the requested contact to @contact"
-  # #   it "renders the :show template"
-  # # end
+  describe "GET #show" do
+    before do
+      @experiment = create(:experiment)
+      get :show, id: @experiment
+    end
+    
+    it 'assigns the requested experiment to @experiment' do
+      expect(assigns(:experiment)).to eq(@experiment)
+    end
+    
+    it 'uses the workspace layout' do
+      expect(response).to render_template :workspace
+    end
+    
+    it 'renders the show template' do
+      expect(response).to render_template :show
+    end
+  end
   
   describe 'GET #new' do
     before do

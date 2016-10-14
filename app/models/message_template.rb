@@ -29,7 +29,7 @@ class MessageTemplate < ActiveRecord::Base
     # Does the content of the message template contain any of the standard variables?
     STANDARD_VARIABLES.each do |variable|
       matches = content.scan(variable)
-      
+           
       if matches.size > 0
         content.gsub!(matches[0], matches[0].downcase.gsub(/\s/, ''))
       end

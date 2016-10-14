@@ -1,0 +1,2 @@
+class MessageSetGenerator
+end

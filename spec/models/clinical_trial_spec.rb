@@ -9,6 +9,29 @@ describe ClinicalTrial do
 
   it { is_expected.to have_many(:messages) }
   it { is_expected.to have_and_belong_to_many(:campaigns) }
+  
+  it 'is taggable with a single tag' do
+    clinical_trial = create(:clinical_trial)
+    
+    clinical_trial.tag_list.add('experiment')
+    clinical_trial.save
+    clinical_trial.reload
+    
+    expect(clinical_trial.tags.count).to eq(1)
+    expect(clinical_trial.tags[0].name).to eq('experiment')
+  end
+  
+  it 'is taggable with multiple tags (some of them multi-word tags)' do
+    clinical_trial = create(:clinical_trial)
+    
+    clinical_trial.tag_list.add('experiment', 'rare disease')
+    clinical_trial.save
+    clinical_trial.reload
+
+    expect(clinical_trial.tags.count).to eq(2)
+    expect(clinical_trial.tags[0].name).to eq('experiment')
+    expect(clinical_trial.tags[1].name).to eq('rare disease')
+  end
 
 #   it 'stores an array of hashtags' do
 #     clinical_trial = ClinicalTrial.new(:title => 'Some title', :pi_name => 'John Doe', :url => "http://www.sc-ctsi.org", :nct_id => "NCT1234567", :initial_database_id => "1", :hashtags => ["#First", "#Second"])

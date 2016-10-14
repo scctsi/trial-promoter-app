@@ -1,47 +1,32 @@
 %h2.header
-  Home
-%h3.ui.header 
-  Before you begin using Trial Promoter
-- if Setting[:buffer_access_token].blank?
-  .ui.negative.message
-    .header
-      It looks like you have not yet entered your Buffer access token. To fix this:
-    %ul.list
-      %li Setup a <a href='www.buffer.com' target='_blank'>Buffer</a> account. 
-      %li Enter your buffer access token in <a href="#{admin_settings_path}">settings</a>.
-.ui.segment
-  .ui.two.column.middle.aligned.grid
-    .center.aligned.column
-      %a.ui.fluid.big.olive.labeled.icon.button{:href => ''}
-        %i.lab.icon
-        Start an experiment
-    .center.aligned.column
-      %a.ui.fluid.big.teal.labeled.icon.button{:href => new_campaign_path}
-        %i.calendar.outline.icon
-        Start a campaign
-- if @campaigns.count > 0
-  %h3.ui.header
-    Ongoing campaigns
-  %table.ui.celled.striped.table
-    %thead 
+  Campaigns
+%table.ui.celled.striped.table
+  %thead 
+    %tr
+      %th Name
+      %th Start date
+      %th End date
+      %th Promoted trials
+      %th
+  %tbody
+    - @campaigns.each do |campaign|
       %tr
-        %th Name
-        %th Start date
-        %th End date
-        %th Promoted trials
-        %th
-    %tbody
-      - @campaigns.each do |campaign|
-        %tr
-          %td= campaign.name
-          %td
-            - if !campaign.start_date.nil?
-              = campaign.start_date.strftime('%B %d, %Y')
-          %td
-            - if !campaign.end_date.nil?
-              = campaign.end_date.strftime('%B %d, %Y')
-          %td
-            - campaign.clinical_trials
-          %td
-            %a{:href => edit_campaign_path(campaign)}
-              Edit
+        %td= campaign.name
+        %td
+          - if !campaign.start_date.nil?
+            = campaign.start_date.strftime('%B %d, %Y')
+        %td
+          - if !campaign.end_date.nil?
+            = campaign.end_date.strftime('%B %d, %Y')
+        %td
+          - campaign.clinical_trials
+        %td
+          %a{:href => edit_campaign_path(campaign)}
+            Edit
+  %tfoot.full-width
+    %tr
+      %th{:colspan => "5"}
+        %a.ui.right.floated.small.primary.labeled.icon.button{:href => new_campaign_path}
+          %i.calendar.outline.icon
+          Add campaign
+

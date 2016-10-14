@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  root 'campaigns#index'
+  root 'home#index'
   
   # Campaigns
   resources :campaigns do
@@ -15,6 +15,10 @@ Rails.application.routes.draw do
   
   # Message templates
   resources :message_templates do
+  end
+
+  # Websites
+  resources :websites do
   end
   
   # App settings

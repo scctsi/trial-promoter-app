@@ -15,6 +15,8 @@
 #
 
 class ClinicalTrial < ActiveRecord::Base
+  acts_as_ordered_taggable
+
   validates :title, presence: true
   validates :pi_first_name, presence: true
   validates :pi_last_name, presence: true

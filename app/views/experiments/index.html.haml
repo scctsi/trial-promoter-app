@@ -25,13 +25,14 @@
         %td
           - experiment.clinical_trials
         %td
+          %a{:href => experiment_path(experiment)}
+            Show
           %a{:href => edit_experiment_path(experiment)}
             Edit
-%tfoot.full-width
-  %tr
-    %th
-    %th{:colspan => "5"}
-      %a.ui.right.floated.small.primary.labeled.icon.button{:href => new_experiment_path}
-        %i.lab.icon
-        Add experiment
+  %tfoot.full-width
+    %tr
+      %th{:colspan => "6"}
+        %a.ui.right.floated.small.primary.labeled.icon.button{:href => new_experiment_path}
+          %i.lab.icon
+          Add experiment
 

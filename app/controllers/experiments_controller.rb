@@ -1,6 +1,7 @@
 class ExperimentsController < ApplicationController
-  before_action :set_experiment, only: [:edit, :update]
-
+  before_action :set_experiment, only: [:show, :edit, :update]
+  layout "workspace", only: [:show]
+  
   def index
     @experiments = Experiment.all
   end
