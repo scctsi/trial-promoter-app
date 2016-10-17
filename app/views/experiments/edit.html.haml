@@ -2,11 +2,15 @@
   %a{:href => root_path}
     Home
   %i.right.angle.icon.divider
+  .section
+    %a{:href => experiments_path}
+      Experiments
+  %i.right.angle.icon.divider
   .active.section
-    Edit experiment
+    Edit experiment: #{@experiment.name}
 .ui.divider
 %h3.ui.top.attached.header
-  Edit experiment
+  Edit experiment: #{@experiment.name}
 .ui.attached.segment
   = simple_form_for @experiment do |f|
     = f.input :name, label: 'Name your experiment', hint: 'Give your experiment a good name'

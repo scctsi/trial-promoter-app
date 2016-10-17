@@ -2,11 +2,15 @@
   %a{:href => root_path}
     Home
   %i.right.angle.icon.divider
+  .section
+    %a{:href => campaigns_path}
+      Campaigns
+  %i.right.angle.icon.divider
   .active.section
-    Edit campaign
+    Edit campaign: #{@campaign.name}
 .ui.divider
 %h3.ui.top.attached.header
-  Edit campaign
+  Edit campaign: #{@campaign.name}
 .ui.attached.segment
   = simple_form_for @campaign do |f|
     = f.input :name, label: 'Name your campaign', hint: 'Give your campaign a good name'

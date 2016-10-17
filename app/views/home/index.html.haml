@@ -12,7 +12,7 @@
 .ui.segment
   .ui.two.column.middle.aligned.grid
     .center.aligned.column
-      %a.ui.fluid.big.olive.labeled.icon.button{:href => ''}
+      %a.ui.fluid.big.olive.labeled.icon.button{:href => new_experiment_path}
         %i.lab.icon
         Start an experiment
     .center.aligned.column
@@ -21,6 +21,7 @@
         Start a campaign
 - if @campaigns.count > 0
   %h3.ui.header
+    %i.calendar.outline.icon
     Ongoing campaigns
   %table.ui.celled.striped.table
     %thead 
@@ -43,10 +44,13 @@
           %td
             - campaign.clinical_trials
           %td
+            %a{:href => campaign_path(campaign)}
+              Show
             %a{:href => edit_campaign_path(campaign)}
               Edit
 - if @experiments.count > 0
   %h3.ui.header
+    %i.lab.icon
     Ongoing experiments
   %table.ui.celled.striped.table
     %thead 

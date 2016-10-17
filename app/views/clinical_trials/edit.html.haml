@@ -1,12 +1,16 @@
 .ui.breadcrumb
-  %a{:href => clinical_trials_path}
-    Clinical trials
+  %a{:href => root_path}
+    Home
+  %i.right.angle.icon.divider
+  .section
+    %a{:href => clinical_trials_path}
+      Clinical trials
   %i.right.angle.icon.divider
   .active.section
-    Edit clinical trial
+    Edit clinical trial: #{@clinical_trial.title}
 .ui.divider
 %h3.ui.top.attached.header
-  Edit clinical trial
+  Edit clinical trial: #{@clinical_trial.title}
 .ui.attached.segment
   = simple_form_for @clinical_trial do |f|
     = f.input :title

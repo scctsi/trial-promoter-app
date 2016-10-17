@@ -45,6 +45,12 @@ RSpec.describe ClinicalTrialsController, type: :controller do
     before do
       @clinical_trial = create(:clinical_trial)
       get :edit, id: @clinical_trial
+      @hashtags = []
+      allow(Hashtag).to receive(:all).and_return(@hashtags)
+    end
+
+    it 'assigns all hashtags to @hashtags' do
+      expect(assigns(:hashtags)).to eq(@hashtags)
     end
     
     it 'assigns the requested clinical trial to @clinical_trial' do

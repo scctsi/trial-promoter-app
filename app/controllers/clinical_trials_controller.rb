@@ -11,6 +11,7 @@ class ClinicalTrialsController < ApplicationController
   end
   
   def edit
+    @hashtags = Hashtag.all
   end
 
   def create
