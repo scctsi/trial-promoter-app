@@ -1,3 +1,23 @@
+# == Schema Information
+#
+# Table name: message_set_generation_parameter_sets
+#
+#  id                                    :integer          not null, primary key
+#  promoted_websites_tag                 :string
+#  promoted_clinical_trials_tag          :string
+#  promoted_properties_cycle_type        :string
+#  selected_message_templates_tag        :string
+#  selected_message_templates_cycle_type :string
+#  medium_cycle_type                     :string
+#  social_network_cycle_type             :string
+#  image_present_cycle_type              :string
+#  period_in_days                        :integer
+#  number_of_messages_per_social_network :integer
+#  experiment_id                         :integer
+#  created_at                            :datetime         not null
+#  updated_at                            :datetime         not null
+#
+
 require 'rails_helper'
 
 describe MessageSetGenerationParameterSet do

@@ -10,39 +10,27 @@
   #{@experiment.name} workspace
 %h3
   Message set generation parameter sets
-// %table.ui.celled.striped.table
-//   %thead 
-//     %tr
-//       %th Name
-//       %th Start date
-//       %th End date
-//       %th Message distribution start date
-//       %th Promoted trials
-//       %th
-//   %tbody
-//     - @experiments.each do |experiment|
-//       %tr
-//         %td= experiment.name
-//         %td
-//           - if !experiment.start_date.nil?
-//             = experiment.start_date.strftime('%B %d, %Y')
-//         %td
-//           - if !experiment.end_date.nil?
-//             = experiment.end_date.strftime('%B %d, %Y')
-//         %td
-//           - if !experiment.message_distribution_start_date.nil?
-//             = experiment.message_distribution_start_date.strftime('%B %d, %Y')
-//         %td
-//           - experiment.clinical_trials
-//         %td
-//           %a{:href => experiment_path(experiment)}
-//             Show
-//           %a{:href => edit_experiment_path(experiment)}
-//             Edit
-//   %tfoot.full-width
-//     %tr
-//       %th{:colspan => "6"}
-//         %a.ui.right.floated.small.primary.labeled.icon.button{:href => new_experiment_path}
-//           %i.lab.icon
-//           Add experiment
-
+%table.ui.celled.striped.table
+  %thead 
+    %tr
+      %th Promoted properties tag
+      %th Promoted properties cycle type
+      %th Selected message templates tag
+      %th Selected message templates cycle type
+      %th Social network cycle type
+      %th Medium cycle type
+      %th Image present cycle type
+      %th Period (in days)
+      %th Number of messages per social network
+  %tbody
+    %tr
+      %td
+        // %a{:href => edit_experiment_message_set_generation_parameter_set(@experiment.message_set_generation_parameter_set)}
+        //   Edit
+  - if @experiment.message_set_generation_parameter_set == nil
+    %tfoot.full-width
+      %tr
+        %th{:colspan => "9"}
+          %a.ui.right.floated.small.primary.labeled.icon.button{:href => new_experiment_message_set_generation_parameter_set_url(@experiment)}
+            %i.lab.icon
+            Add message set generation parameter set

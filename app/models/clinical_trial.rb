@@ -12,6 +12,7 @@
 #  last_promoted_at :datetime
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
+#  hashtags         :text
 #
 
 class ClinicalTrial < ActiveRecord::Base

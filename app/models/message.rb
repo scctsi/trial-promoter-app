@@ -11,6 +11,7 @@
 #  buffer_profile_ids  :text
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
+#  website_id          :integer
 #
 
 class Message < ActiveRecord::Base

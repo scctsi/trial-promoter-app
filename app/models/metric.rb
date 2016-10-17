@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: metrics
+#
+#  id         :integer          not null, primary key
+#  source     :string
+#  data       :text
+#  message_id :integer
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
 class Metric < ActiveRecord::Base
   extend Enumerize
   
