@@ -9,7 +9,7 @@
   %i.circular.desktop.icon
   #{@experiment.name} workspace
 %h3
-  Message set generation parameter sets
+  Message generation parameter sets
 %table.ui.celled.striped.table
   %thead 
     %tr
@@ -27,10 +27,10 @@
       %td
         // %a{:href => edit_experiment_message_set_generation_parameter_set(@experiment.message_set_generation_parameter_set)}
         //   Edit
-  - if @experiment.message_set_generation_parameter_set == nil
+  - if @experiment.message_generation_parameter_set == nil
     %tfoot.full-width
       %tr
         %th{:colspan => "9"}
-          %a.ui.right.floated.small.primary.labeled.icon.button{:href => new_experiment_message_set_generation_parameter_set_url(@experiment)}
+          %a.ui.right.floated.small.primary.labeled.icon.button{:href => new_experiment_message_generation_parameter_set_path(@experiment)}
             %i.lab.icon
-            Add message set generation parameter set
+            Add message generation parameter set

@@ -20,7 +20,7 @@
 
 require 'rails_helper'
 
-describe MessageSetGenerationParameterSet do
+describe MessageGenerationParameterSet do
   # TODO: Either promoted_websites_tag or promoted_clinical_trials_tag must not be blank
   it { is_expected.to enumerize(:promoted_properties_cycle_type).in(:all, :random).with_default(:all) }
   it { is_expected.to validate_presence_of :selected_message_templates_tag }
@@ -55,7 +55,7 @@ describe MessageSetGenerationParameterSet do
     end
     
     it 'correctly calculates for one property, one message template, 3 social networks, 2 mediums, with and without images for 10 days and 1 message per network' do
-      message_set_generation_parameter_set = MessageSetGenerationParameterSet.new(
+      message_generation_parameter_set = MessageGenerationParameterSet.new(
         promoted_websites_tag: 'experiment', 
         selected_message_templates_tag: 'experiment', 
         social_network_cycle_type: :all,
@@ -66,11 +66,11 @@ describe MessageSetGenerationParameterSet do
       )
       
       # Number of properties(1) * Number of message templates(1) * Number of social networks(3) * Number of mediums(2) * Image/No Image(2) * Period in days(10) * Number of messages per social network (1)
-      expect(message_set_generation_parameter_set.expected_message_set_count).to eq(1 * 1 * 3 * 2 * 2 * 10 * 1)
+      expect(message_generation_parameter_set.expected_message_set_count).to eq(1 * 1 * 3 * 2 * 2 * 10 * 1)
     end
 
     it 'correctly calculates for multiple properties, multiple templates, 3 social networks, 2 mediums, with and without images for 10 days and 1 message per network' do
-      message_set_generation_parameter_set = MessageSetGenerationParameterSet.new(
+      message_generation_parameter_set = MessageGenerationParameterSet.new(
         promoted_websites_tag: 'smoking',
         selected_message_templates_tag: 'experiment-2',
         social_network_cycle_type: :all,
@@ -81,11 +81,11 @@ describe MessageSetGenerationParameterSet do
       )
       
       # Number of properties(2) * Number of message templates(3) * Number of social networks(3) * Number of mediums(2) * Image/No Image(2) * Period in days(10) * Number of messages per social network (1)
-      expect(message_set_generation_parameter_set.expected_message_set_count).to eq(2 * 3 * 3 * 2 * 2 * 10 * 1)
+      expect(message_generation_parameter_set.expected_message_set_count).to eq(2 * 3 * 3 * 2 * 2 * 10 * 1)
     end
     
     it 'correctly calculates for multiple properties, multiple templates, 3 social networks, randomized mediums, randomly with and without images for 10 days and 2 message per network' do
-      message_set_generation_parameter_set = MessageSetGenerationParameterSet.new(
+      message_generation_parameter_set = MessageGenerationParameterSet.new(
         promoted_websites_tag: 'smoking',
         selected_message_templates_tag: 'experiment-2',
         social_network_cycle_type: :all,
@@ -96,7 +96,7 @@ describe MessageSetGenerationParameterSet do
       )
       
       # Number of properties(2) * Number of message templates(3) * Number of social networks(3) * Number of mediums(1 (random)) * Image/No Image(1 (random)) * Period in days(10) * Number of messages per social network (2)
-      expect(message_set_generation_parameter_set.expected_message_set_count).to eq(2 * 3 * 3 * 1 * 1 * 10 * 2)
+      expect(message_generation_parameter_set.expected_message_set_count).to eq(2 * 3 * 3 * 1 * 1 * 10 * 2)
     end
   end
 end

@@ -18,7 +18,7 @@
 #  updated_at                            :datetime         not null
 #
 
-class MessageSetGenerationParameterSet < ActiveRecord::Base
+class MessageGenerationParameterSet < ActiveRecord::Base
   extend Enumerize
 
   validates :selected_message_templates_tag, presence: true

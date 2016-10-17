@@ -7,8 +7,7 @@ Rails.application.routes.draw do
   
   # Experiments
   resources :experiments do
-    resources :message_set_generation_parameter_set do
-    end
+    resources :message_generation_parameter_sets
   end
   
   # Clinical trials
