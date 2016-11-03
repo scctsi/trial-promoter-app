@@ -47,7 +47,7 @@ RSpec.describe MessageTemplatesController, type: :controller do
   
   describe 'POST #create' do
     context 'with valid attributes' do
-      it 'creates a new message_template' do
+      it 'creates a new message template' do
         expect {
           post :create, message_template: attributes_for(:message_template)
         }.to change(MessageTemplate, :count).by(1)

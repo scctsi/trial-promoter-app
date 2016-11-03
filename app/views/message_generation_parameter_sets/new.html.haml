@@ -13,4 +13,16 @@
   Create new message generation parameter set
 .ui.attached.segment
   = simple_form_for @message_generation_parameter_set do |f|
-  = f.button :submit
+    = f.field :promoted_websites_tag
+    = f.button :submit
+//   #  promoted_websites_tag                 :string
+// #  promoted_clinical_trials_tag          :string
+// #  promoted_properties_cycle_type        :string
+// #  selected_message_templates_tag        :string
+// #  selected_message_templates_cycle_type :string
+// #  medium_cycle_type                     :string
+// #  social_network_cycle_type             :string
+// #  image_present_cycle_type              :string
+// #  period_in_days                        :integer
+// #  number_of_messages_per_social_network :integer
+
