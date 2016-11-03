@@ -24,6 +24,7 @@ class MessageGenerationParameterSet < ActiveRecord::Base
   validates :selected_message_templates_tag, presence: true
   validates :period_in_days, presence: true
   validates :number_of_messages_per_social_network, presence: true
+  validates :message_generating, presence: true
   
   enumerize :promoted_properties_cycle_type, in: [:all, :random], default: :all
   enumerize :selected_message_templates_cycle_type, in: [:all, :random], default: :all

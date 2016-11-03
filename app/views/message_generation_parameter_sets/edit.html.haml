@@ -1,0 +1,16 @@
+.ui.breadcrumb
+  %a{:href => root_path}
+    Home
+  %i.right.angle.icon.divider
+  .section
+    %a{:href => experiment_path(@message_generation_parameter_set.experiment)}
+      Experiment: #{@message_generation_parameter_set.experiment.name}
+  %i.right.angle.icon.divider
+  .active.section
+    Edit message generation parameter set for #{@message_generation_parameter_set.experiment.name} 
+.ui.divider
+%h3.ui.top.attached.header
+    Edit message generation parameter set for #{@message_generation_parameter_set.experiment.name}
+.ui.attached.segment
+  = simple_form_for @message_generation_parameter_set do |f|
+    = f.button :submit

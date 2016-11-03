@@ -32,6 +32,7 @@ describe MessageGenerationParameterSet do
   it { is_expected.to validate_presence_of :number_of_messages_per_social_network }
   # TODO: Test period_in_days is an integer >= 0
   # TODO: Test number_of_messages_per_social_network is an integer >= 0
+  it { is_expected.to validate_presence_of :message_generating }
   it { is_expected.to belong_to(:message_generating) }
   
   context 'calculating the number of messages that will be generated' do
