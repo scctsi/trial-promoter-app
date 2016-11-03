@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161017195617) do
+ActiveRecord::Schema.define(version: 20161103182450) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -96,10 +96,13 @@ ActiveRecord::Schema.define(version: 20161017195617) do
     t.string   "image_present_cycle_type"
     t.integer  "period_in_days"
     t.integer  "number_of_messages_per_social_network"
-    t.integer  "experiment_id"
     t.datetime "created_at",                            null: false
     t.datetime "updated_at",                            null: false
+    t.integer  "message_generating_id"
+    t.string   "message_generating_type"
   end
+
+  add_index "message_generation_parameter_sets", ["message_generating_type", "message_generating_id"], name: "index_on_message_generating_type_and_message_generating_id", using: :btree
 
   create_table "message_templates", force: :cascade do |t|
     t.text     "content"

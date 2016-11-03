@@ -31,7 +31,7 @@ class MessageGenerationParameterSet < ActiveRecord::Base
   enumerize :medium_cycle_type, in: [:all, :random, :subset], default: :all
   enumerize :image_present_cycle_type, in: [:all, :random, :subset], default: :all
 
-  belongs_to :experiment
+  belongs_to :message_generating, polymorphic: true
   
   def expected_message_set_count
     calculated_count = 1
