@@ -1,5 +1,5 @@
 class MessageGenerationParameterSetsController < ApplicationController
-  before_action :set_experiment, only: [:new, :edit, :create, :update]
+  before_action :set_experiment, only: [:new]
   before_action :set_message_generation_paramter_set, only: [:edit, :update]
   
   def new
@@ -21,7 +21,7 @@ class MessageGenerationParameterSetsController < ApplicationController
   
   def update
     if @message_generation_parameter_set.update_attributes(message_generation_parameter_set_params)
-      redirect_to experiment_url(@experiment)
+      redirect_to experiment_url(@message_generation_parameter_set.message_generating)
     else
       render :edit
     end

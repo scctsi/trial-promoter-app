@@ -55,15 +55,11 @@ RSpec.describe MessageGenerationParameterSetsController, type: :controller do
   
   describe 'GET #edit' do
     before do
-      @experiment = create(:experiment)
-      @message_generation_parameter_set = create(:message_generation_parameter_set, message_generating: @experiment)
-      get :edit, {experiment_id: @experiment, id: @message_generation_parameter_set}
+      experiment = create(:experiment)
+      @message_generation_parameter_set = create(:message_generation_parameter_set, message_generating: experiment)
+      get :edit, {id: @message_generation_parameter_set}
     end
     
-    it 'assigns the parent experiment to @experiment' do
-      expect(assigns(:experiment)).to eq(@experiment)
-    end
-
     it 'assigns the requested message generation parameter set to @message_generation_parameter_set' do
       expect(assigns(:message_generation_parameter_set)).to eq(@message_generation_parameter_set)
     end
@@ -75,9 +71,8 @@ RSpec.describe MessageGenerationParameterSetsController, type: :controller do
 
   describe 'PATCH update' do
     before do
-      @experiment = create(:experiment)
-      @message_generation_parameter_set = create(:message_generation_parameter_set, message_generating: @experiment)
-      patch :update, experiment_id: @experiment, id: @message_generation_parameter_set,
+      @message_generation_parameter_set = create(:message_generation_parameter_set, message_generating: experiment)
+      patch :update, id: @message_generation_parameter_set,
         message_generation_parameter_set: attributes_for(:message_generation_parameter_set, 
           promoted_websites_tag: 'new promoted websites tag',
           promoted_clinical_trials_tag: 'new promoted clinical trials tag',
@@ -92,31 +87,26 @@ RSpec.describe MessageGenerationParameterSetsController, type: :controller do
     end
     
     context 'with valid attributes' do
-      it 'assigns the requested experiment to @experiment' do
-        expect(assigns(:experiment)).to eq(@experiment)
-      end
-
       it 'assigns the requested message generation parameter set to @message_generation_parameter_set' do
         expect(assigns(:message_generation_parameter_set)).to eq(@message_generation_parameter_set)
       end
     
       it "changes the message generation parameter set's attributes" do
-        @experiment.message_generation_parameter_set
-        message_generation_parameter_set = @experiment.message_generation_parameter_set
-        expect(message_generation_parameter_set.promoted_websites_tag).to eq('new promoted websites tag')
-        expect(message_generation_parameter_set.promoted_clinical_trials_tag).to eq('new promoted clinical trials tag')
-        expect(message_generation_parameter_set.promoted_properties_cycle_type).to eq(:subset)
-        expect(message_generation_parameter_set.selected_message_templates_tag).to eq('new selected message templates tag')
-        expect(message_generation_parameter_set.promoted_websites_tag).to eq('new promoted websites tag')
-        expect(message_generation_parameter_set.medium_cycle_type).to eq(:subset)
-        expect(message_generation_parameter_set.social_network_cycle_type).to eq(:subset)
-        expect(message_generation_parameter_set.image_present_cycle_type).to eq(:subset)
-        expect(message_generation_parameter_set.period_in_days).to eq(1)
-        expect(message_generation_parameter_set.number_of_messages_per_social_network).to eq(2)
+        @message_generation_parameter_set.reload
+        expect(@message_generation_parameter_set.promoted_websites_tag).to eq('new promoted websites tag')
+        expect(@message_generation_parameter_set.promoted_clinical_trials_tag).to eq('new promoted clinical trials tag')
+        expect(@message_generation_parameter_set.promoted_properties_cycle_type).to eq(:subset)
+        expect(@message_generation_parameter_set.selected_message_templates_tag).to eq('new selected message templates tag')
+        expect(@message_generation_parameter_set.promoted_websites_tag).to eq('new promoted websites tag')
+        expect(@message_generation_parameter_set.medium_cycle_type).to eq(:subset)
+        expect(@message_generation_parameter_set.social_network_cycle_type).to eq(:subset)
+        expect(@message_generation_parameter_set.image_present_cycle_type).to eq(:subset)
+        expect(@message_generation_parameter_set.period_in_days).to eq(1)
+        expect(@message_generation_parameter_set.number_of_messages_per_social_network).to eq(2)
       end
     
       it 'redirects to the experiment page' do
-        expect(response).to redirect_to experiment_url(@experiment)
+        expect(response).to redirect_to experiment_url(@message_generation_parameter_set.experiment)
       end
     end
   end
