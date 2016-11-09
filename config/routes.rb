@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   end
   
   # Experiments
-  resources :experiments do
+  resources :experiments, shallow: true do
     resources :message_generation_parameter_sets
   end
   

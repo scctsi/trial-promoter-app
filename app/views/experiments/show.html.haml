@@ -9,7 +9,7 @@
   %i.circular.desktop.icon
   #{@experiment.name} workspace
 %h3
-  Message generation parameter sets
+  Message generation parameter set
 %table.ui.celled.striped.table
   %thead 
     %tr
@@ -22,15 +22,30 @@
       %th Image present cycle type
       %th Period (in days)
       %th Number of messages per social network
+      %th Number of generated messages
   %tbody
     %tr
-      %td
-        // %a{:href => edit_experiment_message_set_generation_parameter_set(@experiment.message_set_generation_parameter_set)}
-        //   Edit
+      %td= @experiment.message_generation_parameter_set.promoted_websites_tag
+      %td= @experiment.message_generation_parameter_set.promoted_properties_cycle_type
+      %td= @experiment.message_generation_parameter_set.selected_message_templates_tag
+      %td= @experiment.message_generation_parameter_set.selected_message_templates_cycle_type
+      %td= @experiment.message_generation_parameter_set.social_network_cycle_type
+      %td= @experiment.message_generation_parameter_set.medium_cycle_type
+      %td= @experiment.message_generation_parameter_set.image_present_cycle_type
+      %td= @experiment.message_generation_parameter_set.period_in_days
+      %td= @experiment.message_generation_parameter_set.number_of_messages_per_social_network
+      %td= @experiment.message_generation_parameter_set.expected_generated_message_count
   - if @experiment.message_generation_parameter_set == nil
     %tfoot.full-width
       %tr
-        %th{:colspan => "9"}
+        %th{:colspan => "10"}
           %a.ui.right.floated.small.primary.labeled.icon.button{:href => new_experiment_message_generation_parameter_set_path(@experiment)}
             %i.lab.icon
             Add message generation parameter set
+  - else
+    %tfoot.full-width
+      %tr
+        %th{:colspan => "10"}
+          %a.ui.right.floated.small.primary.labeled.icon.button{:href => edit_experiment_message_generation_parameter_set_path(@experiment, @experiment.message_generation_parameter_set)}
+            %i.lab.icon
+            Edit message generation parameter set

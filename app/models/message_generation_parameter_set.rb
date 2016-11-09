@@ -34,7 +34,7 @@ class MessageGenerationParameterSet < ActiveRecord::Base
 
   belongs_to :message_generating, polymorphic: true
   
-  def expected_message_set_count
+  def expected_generated_message_count
     calculated_count = 1
     
     promoted_website_set = Website.tagged_with(promoted_websites_tag)

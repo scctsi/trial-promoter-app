@@ -1,27 +1,39 @@
 class MessageGenerationParameterSetsController < ApplicationController
-  before_action :set_message_generation_parameter_set, only: [:edit]
-
+  before_action :set_experiment, only: [:new, :edit, :create, :update]
+  before_action :set_message_generation_paramter_set, only: [:edit, :update]
+  
   def new
-    @message_generation_parameter_set = MessageGenerationParameterSet.new
+    @experiment.build_message_generation_parameter_set
   end
 
   def edit
   end
 
   def create
-    experiment = Experiment.find(params[:experiment_id])
-    @message_generation_parameter_set = experiment.build_message_generation_parameter_set(message_generation_parameter_set_params)
+    @message_generation_parameter_set = @experiment.build_message_generation_parameter_set(message_generation_parameter_set_params)
 
     if @message_generation_parameter_set.save
-      redirect_to experiment_url(experiment)
+      redirect_to experiment_url(@experiment)
     else
       render :new
+    end
+  end
+  
+  def update
+    if @message_generation_parameter_set.update_attributes(message_generation_parameter_set_params)
+      redirect_to experiment_url(@experiment)
+    else
+      render :edit
     end
   end
 
   private
   
-  def set_message_generation_parameter_set
+  def set_experiment
+    @experiment = Experiment.find(params[:experiment_id])
+  end
+
+  def set_message_generation_paramter_set
     @message_generation_parameter_set = MessageGenerationParameterSet.find(params[:id])
   end
 
@@ -40,38 +52,3 @@ class MessageGenerationParameterSetsController < ApplicationController
                                                       :experiment_id)
   end
 end
-
-# class ExperimentsController < ApplicationController
-#   layout "workspace", only: [:show]
-  
-#   def index
-#     @experiments = Experiment.all
-#   end
-
-#   def new
-#     @experiment = Experiment.new
-#   end
-  
-#   def edit
-#   end
-
-#   def create
-#     @experiment = Experiment.new(experiment_params)
-
-#     if @experiment.save
-#       redirect_to experiments_url
-#     else
-#       render :new
-#     end
-#   end
-
-#   def update
-#     if @experiment.update(experiment_params)
-#       redirect_to experiments_url
-#     else
-#       render :edit
-#     end
-#   end
-  
-
-# end

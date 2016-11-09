@@ -67,7 +67,7 @@ describe MessageGenerationParameterSet do
       )
       
       # Number of properties(1) * Number of message templates(1) * Number of social networks(3) * Number of mediums(2) * Image/No Image(2) * Period in days(10) * Number of messages per social network (1)
-      expect(message_generation_parameter_set.expected_message_set_count).to eq(1 * 1 * 3 * 2 * 2 * 10 * 1)
+      expect(message_generation_parameter_set.expected_generated_message_count).to eq(1 * 1 * 3 * 2 * 2 * 10 * 1)
     end
 
     it 'correctly calculates for multiple properties, multiple templates, 3 social networks, 2 mediums, with and without images for 10 days and 1 message per network' do
@@ -82,7 +82,7 @@ describe MessageGenerationParameterSet do
       )
       
       # Number of properties(2) * Number of message templates(3) * Number of social networks(3) * Number of mediums(2) * Image/No Image(2) * Period in days(10) * Number of messages per social network (1)
-      expect(message_generation_parameter_set.expected_message_set_count).to eq(2 * 3 * 3 * 2 * 2 * 10 * 1)
+      expect(message_generation_parameter_set.expected_generated_message_count).to eq(2 * 3 * 3 * 2 * 2 * 10 * 1)
     end
     
     it 'correctly calculates for multiple properties, multiple templates, 3 social networks, randomized mediums, randomly with and without images for 10 days and 2 message per network' do
@@ -97,7 +97,7 @@ describe MessageGenerationParameterSet do
       )
       
       # Number of properties(2) * Number of message templates(3) * Number of social networks(3) * Number of mediums(1 (random)) * Image/No Image(1 (random)) * Period in days(10) * Number of messages per social network (2)
-      expect(message_generation_parameter_set.expected_message_set_count).to eq(2 * 3 * 3 * 1 * 1 * 10 * 2)
+      expect(message_generation_parameter_set.expected_generated_message_count).to eq(2 * 3 * 3 * 1 * 1 * 10 * 2)
     end
   end
 end
