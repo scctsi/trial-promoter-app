@@ -1,11 +1,15 @@
 class ExperimentsController < ApplicationController
-  before_action :set_experiment, only: [:show, :edit, :update]
+  before_action :set_experiment, only: [:show, :edit, :update, :parameterized_slug]
   layout "workspace", only: [:show]
   
   def index
     @experiments = Experiment.all
   end
 
+  def parameterized_slug
+    render json: { parameterized_slug: @experiment.to_param }
+  end
+  
   def new
     @experiment = Experiment.new
   end

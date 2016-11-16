@@ -17,7 +17,7 @@ RSpec.describe ExperimentsController, type: :controller do
     it { is_expected.to render_template :index }
   end
   
-  describe "GET #show" do
+  describe 'GET #show' do
     before do
       @experiment = create(:experiment)
       get :show, id: @experiment
@@ -36,6 +36,20 @@ RSpec.describe ExperimentsController, type: :controller do
     end
   end
   
+  describe 'GET #parameterized_slug' do
+    before do
+      @experiment = create(:experiment)
+      get :parameterized_slug, id: @experiment
+    end
+    
+    it 'returns the to_param value for the experiment in the JSON response' do
+      expected_json = { :parameterized_slug => @experiment.to_param }.to_json
+      
+      expect(response.header['Content-Type']).to match(/json/)
+      expect(response.body).to eq(expected_json)
+    end
+  end
+
   describe 'GET #new' do
     before do
       get :new

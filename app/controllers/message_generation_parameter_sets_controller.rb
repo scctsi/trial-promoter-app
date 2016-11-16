@@ -1,5 +1,5 @@
 class MessageGenerationParameterSetsController < ApplicationController
-  before_action :set_experiment, only: [:new]
+  before_action :set_experiment, only: [:new, :create]
   before_action :set_message_generation_paramter_set, only: [:edit, :update]
   
   def new

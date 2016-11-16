@@ -7,6 +7,10 @@ Rails.application.routes.draw do
   
   # Experiments
   resources :experiments, shallow: true do
+    member do
+      get 'parameterized_slug', to: 'experiments#parameterized_slug', constraints: lambda { |req| req.format == :json }
+    end
+
     resources :message_generation_parameter_sets
   end
   
