@@ -10,7 +10,6 @@ class Importer
         attributes[column_index_attribute_mapping[i]] = row[i]
       end
       
-      p attributes
       create(klass, attributes)
     end
   end
