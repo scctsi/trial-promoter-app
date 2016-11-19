@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   root 'home#index'
-  
+
   # Campaigns
   resources :campaigns do
   end
@@ -20,6 +20,9 @@ Rails.application.routes.draw do
   
   # Message templates
   resources :message_templates do
+    collection do
+      get :import
+    end
   end
 
   # Websites
@@ -30,4 +33,12 @@ Rails.application.routes.draw do
   namespace :admin do
     resources :settings
   end
+  
+  # Images
+  resources :images do
+    member do
+      post 'create', to: 'images#create', constraints: lambda { |req| req.format == :json }
+    end
+  end
+  
 end

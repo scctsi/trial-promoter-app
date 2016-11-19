@@ -1,4 +1,5 @@
 /*global $*/
+/*global filepicker*/
 $(document).ready(function() {
   function setUpDatePickers() {
     $("[id$='_date']").daterangepicker({
@@ -38,9 +39,29 @@ $(document).ready(function() {
     });
   }
   
+  function setUpFilepicker() {
+    filepicker.setKey("AU0m7oO6OSQW5bqqVk0HTz");
+  }
+  
+  function setUpMessageTemplateImporting() {
+    $('#csv-file-upload-button').click(function() {
+      filepicker.pick({
+          mimetype: '*/*',
+          container: 'modal',
+          services: ['COMPUTER', 'GOOGLE_DRIVE', 'DROPBOX']
+        },
+        function(Blob){
+        }
+      );      
+    });
+  }
+
   // Initialize
   setUpDatePickers();
   setUpChosenDropdowns();
   setUpTagListInputs();
+  setUpFilepicker();
+  setUpMessageTemplateImporting();
+  $('.menu .item').tab();
 });
 

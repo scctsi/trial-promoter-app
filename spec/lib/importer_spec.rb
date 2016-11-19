@@ -5,11 +5,14 @@ RSpec.describe Importer do
     @importer = Importer.new
   end
   
+  it 'has a predefined column index attribute mapping for message templates' do
+    expect(Importer::COLUMN_INDEX_ATTRIBUTE_MAPPINGS[MessageTemplate]).to eq({0 => 'content', 1 => 'platform', 2 => 'tag_list'})
+  end
+  
   it 'successfully imports message templates' do
     parsed_csv_content = [["content", "platform", "tags"], ["This is a message template.", "twitter", "theme-1, stem-1"]]
-    column_index_attribute_mapping = {0 => 'content', 1 => 'platform', 2 => 'tag_list'}
 
-    @importer.import(MessageTemplate, parsed_csv_content, column_index_attribute_mapping)
+    @importer.import(MessageTemplate, parsed_csv_content)
     
     expect(MessageTemplate.count).to eq(1)
     message_template = MessageTemplate.first
