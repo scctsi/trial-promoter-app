@@ -23,34 +23,45 @@
 .ui.bottom.attached.tab.segment.active{ 'data-tab': 'message-generation' }
   %h3
     Message generation parameter set
-  %table.ui.celled.striped.table
-    %thead 
+  %table.ui.definition.table
+    %thead
       %tr
-        %th Promoted properties tag
-        %th Promoted properties cycle type
-        %th Selected message templates tag
-        %th Selected message templates cycle type
-        %th Social network cycle type
-        %th Medium cycle type
-        %th Image present cycle type
-        %th Period (in days)
-        %th Number of messages per social network
-        %th Number of generated messages
+        %th
+        %th Value
     %tbody
       %tr
+        %td Promoted websites tag
         %td= @experiment.message_generation_parameter_set.promoted_websites_tag
+      %tr
+        %td Promoted properties cycle type
         %td= @experiment.message_generation_parameter_set.promoted_properties_cycle_type
+      %tr
+        %td Selected message templates tag
         %td= @experiment.message_generation_parameter_set.selected_message_templates_tag
+      %tr
+        %td Selected message templates cycle type
         %td= @experiment.message_generation_parameter_set.selected_message_templates_cycle_type
+      %tr
+        %td Social network cycle type
         %td= @experiment.message_generation_parameter_set.social_network_cycle_type
+      %tr
+        %td Medium cycle type
         %td= @experiment.message_generation_parameter_set.medium_cycle_type
+      %tr
+        %td Image present cycle type
         %td= @experiment.message_generation_parameter_set.image_present_cycle_type
+      %tr
+        %td Period (in days)
         %td= @experiment.message_generation_parameter_set.period_in_days
+      %tr
+        %td Number of messages per social network
         %td= @experiment.message_generation_parameter_set.number_of_messages_per_social_network
+      %tr
+        %td Number of generated messages
         %td= @experiment.message_generation_parameter_set.expected_generated_message_count
     %tfoot.full-width
       %tr
-        %th{:colspan => "10"}
+        %th{:colspan => "2"}
           - if @experiment.message_generation_parameter_set == nil
             %a.ui.right.floated.small.primary.labeled.icon.button{:href => new_experiment_message_generation_parameter_set_path(@experiment)}
               %i.lab.icon
@@ -69,17 +80,35 @@
         %th Platform
         %th Tags
     %tbody
+      - @message_templates.each do |message_template|
+        %tr
+          %td= message_template.content
+          %td= message_template.platform
+          %td= message_template.tag_list
+    %tfoot.full-width
       %tr
-        %td
+        %th{:colspan => "3"}
+          %a#csv-file-upload-button.ui.right.floated.small.primary.labeled.icon.button
+            %i.upload.icon
+            Import message templates
+.ui.bottom.attached.tab.segment{ 'data-tab': 'images' }
+  %h3
+    Images
+  %table.ui.celled.striped.table
+    %thead 
+      %tr
+        %th Image
+        %th Tags
+    %tbody
+      %tr
         %td
         %td
     %tfoot.full-width
       %tr
-        %th{:colspan => "3"}
-          %input#csv-file-upload-button{"data-fp-apikey" => "AU0m7oO6OSQW5bqqVk0HTz", "data-fp-container" => "modal", "data-fp-services" => "COMPUTER,DROPBOX,GOOGLE_DRIVE", :type => "filepicker-dragdrop"}/
-.ui.bottom.attached.tab.segment{ 'data-tab': 'images' }
-  %h3
-    Images
+        %th{:colspan => "2"}
+          %a#image-files-upload-button.ui.right.floated.small.primary.labeled.icon.button
+            %i.upload.icon
+            Import images
 .ui.bottom.attached.tab.segment{ 'data-tab': 'messages' }
   %h3
     Messages

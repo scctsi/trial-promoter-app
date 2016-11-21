@@ -19,12 +19,18 @@ RSpec.describe ExperimentsController, type: :controller do
   
   describe 'GET #show' do
     before do
+      @message_templates = []
+      allow(MessageTemplate).to receive(:all).and_return(@message_templates)
       @experiment = create(:experiment)
       get :show, id: @experiment
     end
     
     it 'assigns the requested experiment to @experiment' do
       expect(assigns(:experiment)).to eq(@experiment)
+    end
+    
+    it 'assigns all message templates to @message_templates' do
+      expect(assigns(:message_templates)).to eq(@message_templates)
     end
     
     it 'uses the workspace layout' do

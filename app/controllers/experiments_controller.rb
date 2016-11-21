@@ -10,13 +10,14 @@ class ExperimentsController < ApplicationController
     render json: { parameterized_slug: @experiment.to_param }
   end
   
+  def show
+    @message_templates = MessageTemplate.all
+  end
+  
   def new
     @experiment = Experiment.new
   end
   
-  def edit
-  end
-
   def create
     @experiment = Experiment.new(experiment_params)
 
@@ -25,6 +26,9 @@ class ExperimentsController < ApplicationController
     else
       render :new
     end
+  end
+
+  def edit
   end
 
   def update

@@ -43,7 +43,7 @@ $(document).ready(function() {
     filepicker.setKey("AU0m7oO6OSQW5bqqVk0HTz");
   }
   
-  function setUpMessageTemplateImporting() {
+  function setUpMessageTemplateImports() {
     $('#csv-file-upload-button').click(function() {
       filepicker.pick({
           mimetype: '*/*',
@@ -51,6 +51,29 @@ $(document).ready(function() {
           services: ['COMPUTER', 'GOOGLE_DRIVE', 'DROPBOX']
         },
         function(Blob){
+          $.ajax({
+            url : '/message_templates/import',
+            type: 'GET',
+            data: {url: Blob.url},
+            dataType: 'json',
+            async: false,
+            success: function(retdata) {
+            }
+          });
+        }
+      );      
+    });
+  }
+
+  function setUpImageImports() {
+    $('#image-files-upload-button').click(function() {
+      filepicker.pick({
+          mimetype: '*/*',
+          container: 'modal',
+          services: ['COMPUTER', 'GOOGLE_DRIVE', 'DROPBOX']
+        },
+        function(Blob){
+          console.log(Blob.url);
         }
       );      
     });
@@ -61,7 +84,8 @@ $(document).ready(function() {
   setUpChosenDropdowns();
   setUpTagListInputs();
   setUpFilepicker();
-  setUpMessageTemplateImporting();
+  setUpMessageTemplateImports();
+  setUpImageImports();
   $('.menu .item').tab();
 });
 
