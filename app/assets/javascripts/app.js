@@ -45,6 +45,8 @@ $(document).ready(function() {
   
   function setUpMessageTemplateImports() {
     $('#csv-file-upload-button').click(function() {
+      var experimentId = $(this).data('experiment-id');
+      
       filepicker.pick({
           mimetype: '*/*',
           container: 'modal',
@@ -54,7 +56,7 @@ $(document).ready(function() {
           $.ajax({
             url : '/message_templates/import',
             type: 'GET',
-            data: {url: Blob.url},
+            data: {url: Blob.url, experiment_id: experimentId.toString()},
             dataType: 'json',
             async: false,
             success: function(retdata) {
@@ -67,15 +69,30 @@ $(document).ready(function() {
 
   function setUpImageImports() {
     $('#image-files-upload-button').click(function() {
-      filepicker.pick({
-          mimetype: '*/*',
+      var experimentId = $(this).data('experiment-id');
+
+      filepicker.pickMultiple({
+          mimetype: 'image/*',
           container: 'modal',
           services: ['COMPUTER', 'GOOGLE_DRIVE', 'DROPBOX']
         },
-        function(Blob){
-          console.log(Blob.url);
+        function(Blobs) {
+          var imageUrls = [];
+          
+          for (var i = 0; i < Blobs.length; i++) {
+            imageUrls.push(Blobs[i].url);
+            $.ajax({
+              url : '/images/import',
+              type: 'POST',
+              data: {image_urls: imageUrls, experiment_id: experimentId.toString()},
+              dataType: 'json',
+              async: false,
+              success: function(retdata) {
+              }
+            });
+          }
         }
-      );      
+      );
     });
   }
 

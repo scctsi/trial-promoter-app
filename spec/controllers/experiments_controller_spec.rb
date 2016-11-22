@@ -20,7 +20,9 @@ RSpec.describe ExperimentsController, type: :controller do
   describe 'GET #show' do
     before do
       @message_templates = []
-      allow(MessageTemplate).to receive(:all).and_return(@message_templates)
+      allow(MessageTemplate).to receive(:tagged_with).and_return(@message_templates)
+      @images = []
+      allow(Image).to receive(:tagged_with).and_return(@images)
       @experiment = create(:experiment)
       get :show, id: @experiment
     end
@@ -29,8 +31,14 @@ RSpec.describe ExperimentsController, type: :controller do
       expect(assigns(:experiment)).to eq(@experiment)
     end
     
-    it 'assigns all message templates to @message_templates' do
+    it 'assigns all message templates tagged with the experiments parameterized slug to @message_templates' do
+      expect(MessageTemplate).to have_received(:tagged_with).with("#{@experiment.to_param}")
       expect(assigns(:message_templates)).to eq(@message_templates)
+    end
+
+    it 'assigns all images tagged with the experiments parameterized slug to @images' do
+      expect(Image).to have_received(:tagged_with).with("#{@experiment.to_param}")
+      expect(assigns(:images)).to eq(@images)
     end
     
     it 'uses the workspace layout' do

@@ -18,4 +18,24 @@ RSpec.describe ImagesController, type: :controller do
       end
     end
   end
+  
+  describe 'POST #import' do
+    it 'imports multiple images accessible at multiple URLs' do
+      experiment = create(:experiment)
+      importer = Importer.new
+      allow(Importer).to receive(:new).and_return(importer)
+      allow(importer).to receive(:import).and_call_original
+      image_urls = ['http://www.images.com/image1.png', 'http://www.images.com/image2.png']
+      expected_json = { success: true, imported_count: image_urls.length}.to_json
+
+      VCR.use_cassette 'images/import' do
+        post :import, image_urls: image_urls, experiment_id: experiment.id
+      end
+
+      expect(Image.count).to eq(image_urls.length)
+      expect(importer).to have_received(:import).with(Image, image_urls, experiment.to_param)
+      expect(response.header['Content-Type']).to match(/json/)
+      expect(response.body).to eq(expected_json)
+    end
+  end
 end

@@ -32,13 +32,15 @@ class MessageTemplatesController < ApplicationController
   end
   
   def import
+    experiment = Experiment.find(params[:experiment_id])
+
     # Read CSV file from a URL
     csv_file_reader = CsvFileReader.new
     parsed_csv_content = csv_file_reader.read(params[:url])
     
     # Import message templates
     importer = Importer.new
-    importer.import(MessageTemplate, parsed_csv_content)
+    importer.import(MessageTemplate, parsed_csv_content, experiment.to_param)
 
     render json: { success: true, imported_count: parsed_csv_content.length - 1 }
   end

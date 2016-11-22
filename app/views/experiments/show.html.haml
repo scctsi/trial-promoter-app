@@ -7,7 +7,6 @@
     #{@experiment.name} workspace
 .ui.divider
 %h2.ui.center.aligned.icon.header
-  %i.circular.desktop.icon
   #{@experiment.name} workspace
 .ui.top.attached.tabular.menu
   %a{ class: 'item active', 'data-tab': 'message-generation' }
@@ -88,7 +87,7 @@
     %tfoot.full-width
       %tr
         %th{:colspan => "3"}
-          %a#csv-file-upload-button.ui.right.floated.small.primary.labeled.icon.button
+          %a#csv-file-upload-button.ui.right.floated.small.primary.labeled.icon.button{'data-experiment-id': @experiment.id}
             %i.upload.icon
             Import message templates
 .ui.bottom.attached.tab.segment{ 'data-tab': 'images' }
@@ -100,13 +99,18 @@
         %th Image
         %th Tags
     %tbody
+      - @images.each do |image|
+        %tr
+          %td
+            %img{ :src => "#{image.url}", :width => 150, :height => 150 }
+          %td= image.tag_list
       %tr
         %td
         %td
     %tfoot.full-width
       %tr
         %th{:colspan => "2"}
-          %a#image-files-upload-button.ui.right.floated.small.primary.labeled.icon.button
+          %a#image-files-upload-button.ui.right.floated.small.primary.labeled.icon.button{'data-experiment-id': @experiment.id}
             %i.upload.icon
             Import images
 .ui.bottom.attached.tab.segment{ 'data-tab': 'messages' }

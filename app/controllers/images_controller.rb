@@ -5,6 +5,16 @@ class ImagesController < ApplicationController
     render json: { success: true, id: image.id }
   end
   
+  def import
+    experiment = Experiment.find(params[:experiment_id])
+
+    # Import images
+    importer = Importer.new
+    importer.import(Image, params[:image_urls], experiment.to_param)
+
+    render json: { success: true, imported_count: params[:image_urls].length }
+  end
+  
   private
   
   def image_params

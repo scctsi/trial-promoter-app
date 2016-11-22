@@ -39,6 +39,9 @@ Rails.application.routes.draw do
     member do
       post 'create', to: 'images#create', constraints: lambda { |req| req.format == :json }
     end
+    collection do
+      post :import
+    end
   end
   
 end
