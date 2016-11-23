@@ -64,6 +64,12 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+
+  # A set of tests depend on the Buffer access token.
+  # Since we don't want to commit the Buffer access token to the GitHub repository, we never run these tests on Codeship.
+  if ENV['CODESHIP_BUILD']
+    config.filter_run_excluding :development_only_tests => true
+  end
   
   # Additional factory_girl configuration
   config.include FactoryGirl::Syntax::Methods
