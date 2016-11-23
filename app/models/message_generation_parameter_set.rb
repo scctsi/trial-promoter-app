@@ -37,13 +37,13 @@ class MessageGenerationParameterSet < ActiveRecord::Base
   def expected_generated_message_count
     calculated_count = 1
     
-    promoted_website_set = Website.tagged_with(promoted_websites_tag)
-    selected_message_template_set = MessageTemplate.tagged_with(selected_message_templates_tag)
+    promoted_websites = Website.tagged_with(promoted_websites_tag)
+    selected_message_templates = MessageTemplate.tagged_with(selected_message_templates_tag)
     
     # Number of promoted properties (websites + clinical trials)
-    calculated_count *= promoted_website_set.count
+    calculated_count *= promoted_websites.count
     # Number of message templates
-    calculated_count *= selected_message_template_set.count
+    calculated_count *= selected_message_templates.count
     #  Number of social networks
     calculated_count *= SocialNetworks::SUPPORTED_NETWORKS.count if social_network_cycle_type == :all
     # Number of mediums

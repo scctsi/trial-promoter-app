@@ -25,6 +25,13 @@ Rails.application.routes.draw do
     end
   end
 
+  # Messages
+  resources :messages do
+    collection do
+      get :generate
+    end
+  end
+
   # Websites
   resources :websites do
   end

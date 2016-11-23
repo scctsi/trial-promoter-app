@@ -13,6 +13,7 @@ class ExperimentsController < ApplicationController
   def show
     @message_templates = MessageTemplate.tagged_with(@experiment.to_param)
     @images = Image.tagged_with(@experiment.to_param)
+    @messages = Message.all
   end
   
   def new

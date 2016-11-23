@@ -24,6 +24,8 @@ RSpec.describe ExperimentsController, type: :controller do
       @images = []
       allow(Image).to receive(:tagged_with).and_return(@images)
       @experiment = create(:experiment)
+      @messages = []
+      allow(Message).to receive(:all).and_return(@messages)
       get :show, id: @experiment
     end
     
@@ -39,6 +41,11 @@ RSpec.describe ExperimentsController, type: :controller do
     it 'assigns all images tagged with the experiments parameterized slug to @images' do
       expect(Image).to have_received(:tagged_with).with("#{@experiment.to_param}")
       expect(assigns(:images)).to eq(@images)
+    end
+
+    it 'assigns all messages to @messages' do
+      expect(Message).to have_received(:all)
+      expect(assigns(:messages)).to eq(@messages)
     end
     
     it 'uses the workspace layout' do

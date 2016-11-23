@@ -116,6 +116,32 @@
 .ui.bottom.attached.tab.segment{ 'data-tab': 'messages' }
   %h3
     Messages
+  .ui.negative.message
+    .header
+      Regarding message generation
+    %ul.list
+      %li All messages for a experiment are deleted each time messages are generated.
+      %li A day before the experiment is scheduled to start message distribution, message generation will be locked.
+  %table.ui.celled.striped.table
+    %thead 
+      %tr
+        %th Content
+        %th Platform
+        %th
+    %tbody
+      - @messages.each do |message|
+        %tr
+          %td= message.content
+          %td= message.message_template.platform.titleize
+          %td
+            %a{:href => edit_message_path(message)}
+              Edit
+    %tfoot.full-width
+      %tr
+        %th{:colspan => "3"}
+          %a.ui.right.floated.small.primary.labeled.icon.button{:href => generate_messages_path}
+            %i.send.icon
+            Generate messages
 .ui.bottom.attached.tab.segment{ 'data-tab': 'dashboard' }
   %h3
     Dashboard
