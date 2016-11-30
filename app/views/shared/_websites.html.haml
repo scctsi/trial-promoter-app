@@ -1,12 +1,12 @@
 %table.ui.celled.striped.table
   %thead 
     %tr
-      %th Title
+      %th Name
       %th URL
       %th Tags
   %tbody
     - websites.each do |website|
       %tr
-        %td= website.title
+        %td= website.name
         %td= website.url
         %td= website.tag_list

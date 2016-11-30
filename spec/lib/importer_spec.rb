@@ -38,7 +38,7 @@ RSpec.describe Importer do
     
     expect(Website.count).to eq(1)
     website = Website.first
-    expect(website.title).to eq(parsed_csv_content[1][0])
+    expect(website.name).to eq(parsed_csv_content[1][0])
     expect(website.url).to eq(parsed_csv_content[1][1])
     parsed_tag_list = parsed_csv_content[1][2].split(",").map { |tag| tag.strip }
     expect(website.tag_list).to eq(parsed_tag_list.concat(['extra-tag']))
