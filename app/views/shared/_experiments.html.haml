@@ -1,0 +1,28 @@
+%table.ui.celled.striped.table
+  %thead 
+    %tr
+      %th Name
+      %th Start
+      %th End
+      %th Message distribution start
+      %th Access
+  %tbody
+    - experiments.each do |experiment|
+      %tr
+        %td= experiment.name
+        %td
+          - if !experiment.start_date.nil?
+            = experiment.start_date.strftime('%B %d, %Y')
+        %td
+          - if !experiment.end_date.nil?
+            = experiment.end_date.strftime('%B %d, %Y')
+        %td
+          - if !experiment.message_distribution_start_date.nil?
+            = experiment.message_distribution_start_date.strftime('%B %d, %Y')
+        %td
+          .ui.buttons
+            %a.ui.button{ href: experiment_path(experiment) }
+              Workspace
+            .or
+            %a.ui.button{ href: experiment_path(experiment) }
+              Dashboard

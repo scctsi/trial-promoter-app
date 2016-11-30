@@ -6,142 +6,123 @@
   .active.section
     #{@experiment.name} workspace
 .ui.divider
-%h2.ui.center.aligned.icon.header
+%h2.ui.center.aligned.header
   #{@experiment.name} workspace
+%a.ui.labeled.icon.button
+  %i.pencil.icon
+  Edit experiment
 .ui.top.attached.tabular.menu
   %a{ class: 'item active', 'data-tab': 'message-generation' }
     Message generation
   %a{ class: 'item', 'data-tab': 'message-templates' }
-    Templates
+    Message templates
   %a{ class: 'item', 'data-tab': 'images' }
     Images
-  %a{ class: 'item', 'data-tab': 'messages' }
-    Messages
+  %a{ class: 'item', 'data-tab': 'generated-messages' }
+    Generated messages
   %a{ class: 'item', 'data-tab': 'dashboard' }
     Dashboard
 .ui.bottom.attached.tab.segment.active{ 'data-tab': 'message-generation' }
-  %h3
-    Message generation parameter set
-  %table.ui.definition.table
-    %thead
-      %tr
-        %th
-        %th Value
-    %tbody
-      %tr
-        %td Promoted websites tag
-        %td= @experiment.message_generation_parameter_set.promoted_websites_tag
-      %tr
-        %td Promoted properties cycle type
-        %td= @experiment.message_generation_parameter_set.promoted_properties_cycle_type
-      %tr
-        %td Selected message templates tag
-        %td= @experiment.message_generation_parameter_set.selected_message_templates_tag
-      %tr
-        %td Selected message templates cycle type
-        %td= @experiment.message_generation_parameter_set.selected_message_templates_cycle_type
-      %tr
-        %td Social network cycle type
-        %td= @experiment.message_generation_parameter_set.social_network_cycle_type
-      %tr
-        %td Medium cycle type
-        %td= @experiment.message_generation_parameter_set.medium_cycle_type
-      %tr
-        %td Image present cycle type
-        %td= @experiment.message_generation_parameter_set.image_present_cycle_type
-      %tr
-        %td Period (in days)
-        %td= @experiment.message_generation_parameter_set.period_in_days
-      %tr
-        %td Number of messages per social network
-        %td= @experiment.message_generation_parameter_set.number_of_messages_per_social_network
-      %tr
-        %td Number of generated messages
-        %td= @experiment.message_generation_parameter_set.expected_generated_message_count
-    %tfoot.full-width
-      %tr
-        %th{:colspan => "2"}
-          - if @experiment.message_generation_parameter_set == nil
-            %a.ui.right.floated.small.primary.labeled.icon.button{:href => new_experiment_message_generation_parameter_set_path(@experiment)}
-              %i.lab.icon
-              Add message generation parameter set
-          - else
-            %a.ui.right.floated.small.primary.labeled.icon.button{:href => edit_message_generation_parameter_set_path(@experiment.message_generation_parameter_set)}
-              %i.lab.icon
-              Edit message generation parameter set
+  - if @experiment.message_generation_parameter_set.nil?
+    %a.ui.primary.labeled.icon.button{ :href => new_experiment_message_generation_parameter_set_path(@experiment) }
+      %i.industry.icon
+      Describe message generation
+  - else
+    %a.ui.primary.labeled.icon.button{ :href => edit_message_generation_parameter_set_path(@experiment.message_generation_parameter_set) }
+      %i.industry.icon
+      Describe message generation
+  - if @experiment.message_generation_parameter_set.nil?
+    .ui.message
+      .header 
+        Describe how you'd like the messages to be generated.
+      %p Before Trial Promoter can generate messages for this experiment, you will need to answer a few simple questions. Please click on "Describe message generation" to get started.
+  - else
+    = render partial: 'shared/message_generation_parameter_set', locals: { message_generation_parameter_set: @experiment.message_generation_parameter_set }
 .ui.bottom.attached.tab.segment{ 'data-tab': 'message-templates' }
-  %h3
-    Message templates
-  %table.ui.celled.striped.table
-    %thead 
-      %tr
-        %th Content
-        %th Platform
-        %th Tags
-    %tbody
-      - @message_templates.each do |message_template|
-        %tr
-          %td= message_template.content
-          %td= message_template.platform
-          %td= message_template.tag_list
-    %tfoot.full-width
-      %tr
-        %th{:colspan => "3"}
-          %a#csv-file-upload-button.ui.right.floated.small.primary.labeled.icon.button{'data-experiment-id': @experiment.id}
-            %i.upload.icon
-            Import message templates
+  %a#csv-file-upload-button.ui.primary.labeled.icon.button{'data-experiment-id': @experiment.id}
+    %i.upload.icon
+    Import message templates
+  - if @message_templates.count == 0
+    .ui.message
+      .header
+        Import message templates.
+      %p Trial Promoter uses message templates in order to generate the messages for this experiment. Please upload a CSV file with the columns listed below:
+      %ul
+        %li Content
+        %li Platform (Twitter, Facebook or Instagram)
+        %li Tags
+        %li Hashtags
+  - else
+    = render partial: 'shared/message_templates', locals: { message_templates: @message_templates }
 .ui.bottom.attached.tab.segment{ 'data-tab': 'images' }
-  %h3
-    Images
-  %table.ui.celled.striped.table
-    %thead 
-      %tr
-        %th Image
-        %th Tags
-    %tbody
-      - @images.each do |image|
-        %tr
-          %td
-            %img{ :src => "#{image.url}", :width => 150, :height => 150 }
-          %td= image.tag_list
-      %tr
-        %td
-        %td
-    %tfoot.full-width
-      %tr
-        %th{:colspan => "2"}
-          %a#image-files-upload-button.ui.right.floated.small.primary.labeled.icon.button{'data-experiment-id': @experiment.id}
-            %i.upload.icon
-            Import images
-.ui.bottom.attached.tab.segment{ 'data-tab': 'messages' }
-  %h3
-    Messages
-  .ui.negative.message
-    .header
-      Regarding message generation
-    %ul.list
-      %li All messages for a experiment are deleted each time messages are generated.
-      %li A day before the experiment is scheduled to start message distribution, message generation will be locked.
-  %table.ui.celled.striped.table
-    %thead 
-      %tr
-        %th Content
-        %th Platform
-        %th
-    %tbody
-      - @messages.each do |message|
-        %tr
-          %td= message.content
-          %td= message.message_template.platform.titleize
-          %td
-            %a{:href => edit_message_path(message)}
-              Edit
-    %tfoot.full-width
-      %tr
-        %th{:colspan => "3"}
-          %a.ui.right.floated.small.primary.labeled.icon.button{:href => generate_messages_path}
-            %i.send.icon
-            Generate messages
+  %a#image-files-upload-button.ui.primary.labeled.icon.button{'data-experiment-id': @experiment.id}
+    %i.upload.icon
+    Import images
+  - if @images.count == 0
+    .ui.message
+      .header
+        Import images.
+      %p Trial Promoter can add an image to any message that it generated. Please click on "Import images" to import images into Trial Promoter.
+  - else
+    = render partial: 'shared/images', locals: { images: @images }
+.ui.bottom.attached.tab.segment{ 'data-tab': 'generated-messages' }
+  %a.ui.primary.labeled.icon.button{:href => generate_messages_path}
+    %i.send.icon
+    Generate messages
+  - if @messages.count == 0
+    .ui.message
+      .header
+        Generate messages when you are ready.
+      %p When you have set up the message generation parameters and imported all your message templates and images, you are ready to generate the messages for this experiment. Please click on "Generate images" to generate all the messages for this experiment.
+  - else
+    .ui.negative.message
+      .header
+        Regarding message generation
+      %ul.list
+        %li All messages for a experiment are deleted each time messages are generated.
+        %li A day before the experiment is scheduled to start message distribution, message generation will be locked.
+    = render partial: 'shared/messages', locals: { messages: @messages }
 .ui.bottom.attached.tab.segment{ 'data-tab': 'dashboard' }
-  %h3
-    Dashboard
+  .ui.three.column.grid
+    .column
+      .ui.fluid.card
+        .content
+          .header Engagements: 50  
+          .meta 2 days ago
+          .description
+            %p
+              This is one of the messages sent via Twitter.
+        .extra.content
+          .ui.three.column.grid
+            .column
+              .mini.statistic
+                .value 
+                  25
+                .label
+                  retweets
+            .column
+              .mini.statistic
+                .value 
+                  15
+                .label
+                  mentions
+            .column
+              .mini.statistic
+                .value 
+                  10
+                .label
+                  likes
+    .column
+      .ui.fluid.card
+        .content
+          .header Here is an example of a much longer message sent via Facebook. This message is longer than 140 characters and is an example of what happens where a really long message is present.
+          .meta 2 days ago
+          .description
+            %p Engagements: 50
+        .extra.content
+          %i.check.icon
+          25 retweets
+          %i.check.icon
+          15 mentions
+          %i.check.icon
+          10 likes

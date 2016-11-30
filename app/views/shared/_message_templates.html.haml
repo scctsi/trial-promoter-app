@@ -1,0 +1,14 @@
+%table.ui.celled.striped.table
+  %thead 
+    %tr
+      %th Content
+      %th Platform
+      %th Tags
+      %th Hashtags
+  %tbody
+    - message_templates.each do |message_template|
+      %tr
+        %td= message_template.content
+        %td= message_template.platform
+        %td= message_template.tag_list
+        %td= message_template.hashtags

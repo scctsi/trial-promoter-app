@@ -1,0 +1,11 @@
+%table.ui.celled.striped.table
+  %thead 
+    %tr
+      %th Image
+      %th Tags
+  %tbody
+    - images.each do |image|
+      %tr
+        %td
+          %img{ :src => "#{image.url}", :width => 150, :height => 150 }
+        %td= image.tag_list

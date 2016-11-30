@@ -101,4 +101,42 @@ RSpec.describe MessageTemplate do
     expect(message_template.tags[0].name).to eq('friendly')
     expect(message_template.tags[1].name).to eq('with emoji')
   end
+  
+  describe 'storing hashtags' do
+    before do
+      @message_template = create(:message_template)
+    end
+    
+    it 'stores an array of hashtags' do
+      @message_template.hashtags = ["#bcsm", "#cancer"]
+      @message_template.save
+      @message_template.reload
+  
+      expect(@message_template.hashtags).to eq(["#bcsm", "#cancer"])
+    end
+
+    it 'stores comma separated strings as an array of hashtags' do
+      @message_template.hashtags = "#bcsm, #cancer"
+      @message_template.save
+      @message_template.reload
+  
+      expect(@message_template.hashtags).to eq(["#bcsm", "#cancer"])
+    end
+
+    it 'adds a leading hash (#) to any string in an array of hashtags that is missing one' do
+      @message_template.hashtags = ["#bcsm", "cancer"]
+      @message_template.save
+      @message_template.reload
+  
+      expect(@message_template.hashtags).to eq(["#bcsm", "#cancer"])
+    end
+
+    it 'adds a leading hash (#) to any string in comma separayed strings that is missing one' do
+      @message_template.hashtags = "#bcsm, cancer"
+      @message_template.save
+      @message_template.reload
+  
+      expect(@message_template.hashtags).to eq(["#bcsm", "#cancer"])
+    end
+  end
 end

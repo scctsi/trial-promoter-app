@@ -3,26 +3,11 @@
     %i.home.icon
     Home
   %a.item{:href => campaigns_path, :class => current_page?(campaigns_path) ? "active" : ""}
-    %i.calendar.outline.icon
+    %i.announcement.outline.icon
     Campaigns
   %a.item{:href => experiments_path, :class => current_page?(experiments_path) ? "active" : ""}
-    %i.lab.outline.icon
+    %i.line.chart.outline.icon
     Experiments
-  %a.item{:href => clinical_trials_path, :class => current_page?(clinical_trials_path) ? "active" : ""}
-    %i.doctor.icon
-    Clinical trials
-  %a.item{:href => websites_path, :class => current_page?(websites_path) ? "active" : ""}
-    %i.sitemap.icon
-    Websites
-  %a.item{:href => message_templates_path, :class => current_page?(message_templates_path) ? "active" : ""}
-    %i.browser.icon
-    Message templates
-  %a.item
-    %i.send.outline.icon
-    Messages
-  %a.item
-    %i.dashboard.icon
-    Dashboard
   %a.item{ :href => admin_settings_path, :class => current_page?(admin_settings_path) ? "active" : ""}
     %i.settings.icon
     Settings

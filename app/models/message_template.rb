@@ -18,24 +18,48 @@ class MessageTemplate < ActiveRecord::Base
   validates :platform, presence: true
   enumerize :platform, in: [:twitter, :facebook], predicates: true
 
+  serialize :hashtags
+  
   has_many :messages
 
   STANDARD_VARIABLES = [/{\s*pi_first_name\s*}/i, /{\s*pi_last_name\s*}/i, /{\s*disease\s*}/i, /{\s*title\s*}/i, /{\s*url\s*}/i]
     
   def content=(content)
+    cleaned_content = content
+    
     # When the content is set, make sure that all variables are downcased and stripped of unnecessary whitespace between the {} brackets
-    return if content.blank?
+    return if cleaned_content.blank?
 
     # Does the content of the message template contain any of the standard variables?
     STANDARD_VARIABLES.each do |variable|
-      matches = content.scan(variable)
+      matches = cleaned_content.scan(variable)
            
       if matches.size > 0
-        content.gsub!(matches[0], matches[0].downcase.gsub(/\s/, ''))
+        cleaned_content.gsub!(matches[0], matches[0].downcase.gsub(/\s/, ''))
       end
     end
 
-    write_attribute(:content, content)
+    write_attribute(:content, cleaned_content)
+  end
+  
+  def hashtags=(hashtags)
+    cleaned_hashtags = hashtags
+    
+    # Convert comma separated string to an array of strings
+    if cleaned_hashtags.is_a? String
+      cleaned_hashtags = cleaned_hashtags.split(",").map{ |hashtag| hashtag.strip }
+    end
+    
+    # Add a leading hash (#) if needed to each hashtag
+    cleaned_hashtags = cleaned_hashtags.map do |hashtag|
+      if hashtag.starts_with?('#')
+        hashtag
+      else
+        hashtag = '#' + hashtag
+      end
+    end
+    
+    write_attribute(:hashtags, cleaned_hashtags)
   end
   
   def generate_message(clinical_trial)
