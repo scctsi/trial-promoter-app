@@ -18,6 +18,8 @@
     Message templates
   %a{ class: 'item', 'data-tab': 'images' }
     Images
+  %a{ class: 'item', 'data-tab': 'websites' }
+    Websites
   %a{ class: 'item', 'data-tab': 'generated-messages' }
     Generated messages
   %a{ class: 'item', 'data-tab': 'dashboard' }
@@ -39,7 +41,7 @@
   - else
     = render partial: 'shared/message_generation_parameter_set', locals: { message_generation_parameter_set: @experiment.message_generation_parameter_set }
 .ui.bottom.attached.tab.segment{ 'data-tab': 'message-templates' }
-  %a#csv-file-upload-button.ui.primary.labeled.icon.button{'data-experiment-id': @experiment.id}
+  %a#message-templates-file-upload-button.ui.primary.labeled.icon.button{'data-experiment-id': @experiment.id}
     %i.upload.icon
     Import message templates
   - if @message_templates.count == 0
@@ -55,7 +57,7 @@
   - else
     = render partial: 'shared/message_templates', locals: { message_templates: @message_templates }
 .ui.bottom.attached.tab.segment{ 'data-tab': 'images' }
-  %a#image-files-upload-button.ui.primary.labeled.icon.button{'data-experiment-id': @experiment.id}
+  %a#images-upload-button.ui.primary.labeled.icon.button{'data-experiment-id': @experiment.id}
     %i.upload.icon
     Import images
   - if @images.count == 0
@@ -65,6 +67,21 @@
       %p Trial Promoter can add an image to any message that it generated. Please click on "Import images" to import images into Trial Promoter.
   - else
     = render partial: 'shared/images', locals: { images: @images }
+.ui.bottom.attached.tab.segment{ 'data-tab': 'websites' }
+  %a#websites-file-upload-button.ui.primary.labeled.icon.button{'data-experiment-id': @experiment.id}
+    %i.send.icon
+    Import websites
+  - if @websites.count == 0
+    .ui.message
+      .header
+        Import websites
+      %p Trial Promoter promotes websites (or particular pages on a website). If you would like only certain websites to be promoted by certain message templates, you can use tags to match up message templates to websites. Message templates will only promote websites where the tags of the websites is a subset of the tags of the message template. Please upload a CSV file with the columns listed below:
+      %ul
+        %li Title (optional, values can be left blank)
+        %li URL
+        %li Tags
+  - else
+    = render partial: 'shared/websites', locals: { websites: @websites }
 .ui.bottom.attached.tab.segment{ 'data-tab': 'generated-messages' }
   %a.ui.primary.labeled.icon.button{:href => generate_messages_path}
     %i.send.icon

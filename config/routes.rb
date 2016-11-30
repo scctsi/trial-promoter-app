@@ -34,6 +34,9 @@ Rails.application.routes.draw do
 
   # Websites
   resources :websites do
+    collection do
+      get :import
+    end
   end
   
   # App settings

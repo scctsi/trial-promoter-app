@@ -23,6 +23,8 @@ RSpec.describe ExperimentsController, type: :controller do
       allow(MessageTemplate).to receive(:tagged_with).and_return(@message_templates)
       @images = []
       allow(Image).to receive(:tagged_with).and_return(@images)
+      @websites = []
+      allow(Website).to receive(:tagged_with).and_return(@websites)
       @experiment = create(:experiment)
       @messages = []
       allow(Message).to receive(:all).and_return(@messages)
@@ -43,11 +45,16 @@ RSpec.describe ExperimentsController, type: :controller do
       expect(assigns(:images)).to eq(@images)
     end
 
+    it 'assigns all websites tagged with the experiments parameterized slug to @websites' do
+      expect(Website).to have_received(:tagged_with).with("#{@experiment.to_param}")
+      expect(assigns(:websites)).to eq(@websites)
+    end
+
     it 'assigns all messages to @messages' do
       expect(Message).to have_received(:all)
       expect(assigns(:messages)).to eq(@messages)
     end
-    
+
     it 'uses the workspace layout' do
       expect(response).to render_template :workspace
     end

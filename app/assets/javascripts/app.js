@@ -44,7 +44,7 @@ $(document).ready(function() {
   }
   
   function setUpMessageTemplateImports() {
-    $('#csv-file-upload-button').click(function() {
+    $('#message-templates-file-upload-button').click(function() {
       var experimentId = $(this).data('experiment-id');
       
       filepicker.pick({
@@ -67,8 +67,32 @@ $(document).ready(function() {
     });
   }
 
+  function setUpWebsiteImports() {
+    $('#websites-file-upload-button').click(function() {
+      var experimentId = $(this).data('experiment-id');
+      
+      filepicker.pick({
+          mimetype: '*/*',
+          container: 'modal',
+          services: ['COMPUTER', 'GOOGLE_DRIVE', 'DROPBOX']
+        },
+        function(Blob){
+          $.ajax({
+            url : '/websites/import',
+            type: 'GET',
+            data: {url: Blob.url, experiment_id: experimentId.toString()},
+            dataType: 'json',
+            async: false,
+            success: function(retdata) {
+            }
+          });
+        }
+      );      
+    });
+  }
+
   function setUpImageImports() {
-    $('#image-files-upload-button').click(function() {
+    $('#images-upload-button').click(function() {
       var experimentId = $(this).data('experiment-id');
 
       filepicker.pickMultiple({
@@ -102,6 +126,7 @@ $(document).ready(function() {
   setUpTagListInputs();
   setUpFilepicker();
   setUpMessageTemplateImports();
+  setUpWebsiteImports();
   setUpImageImports();
   $('.menu .item').tab();
 });
