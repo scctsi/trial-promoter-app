@@ -14,7 +14,7 @@ RSpec.describe Importer do
   end
 
   it 'has a predefined column index attribute mapping for websites' do
-    expect(Importer::COLUMN_INDEX_ATTRIBUTE_MAPPINGS[Website]).to eq({ 0 => 'title', 1 => 'url', 2 => 'tag_list' })
+    expect(Importer::COLUMN_INDEX_ATTRIBUTE_MAPPINGS[Website]).to eq({ 0 => 'name', 1 => 'url', 2 => 'tag_list' })
   end
 
   it 'successfully imports message templates' do
@@ -32,7 +32,7 @@ RSpec.describe Importer do
   end
 
   it 'successfully imports websites' do
-    parsed_csv_content = [["title", "url", "tag"], ["Smoking cessation website", "http://www.url.com", "theme-1, stem-1"]]
+    parsed_csv_content = [["name", "url", "tag"], ["Smoking cessation website", "http://www.url.com", "theme-1, stem-1"]]
 
     @importer.import(Website, parsed_csv_content, 'extra-tag')
     

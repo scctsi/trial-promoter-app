@@ -1,7 +1,7 @@
 class Importer
   COLUMN_INDEX_ATTRIBUTE_MAPPINGS = { MessageTemplate => { 0 => 'content', 1 => 'platform', 2 => 'tag_list', 3 => 'hashtags' },
                                       Image => { 0 => 'url', 1 => 'original_filename', 2 => 'tag_list' },
-                                      Website => { 0 => 'title', 1 => 'url', 2 => 'tag_list' }
+                                      Website => { 0 => 'name', 1 => 'url', 2 => 'tag_list' }
                                     }
   
   def import(klass, parsed_csv_content, additional_tag = '')

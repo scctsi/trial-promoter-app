@@ -15,11 +15,11 @@ RSpec.describe MessageGenerator do
   end
   
   it 'replaces the variables in the message template with the value of the attributes of the supplied website' do
-    website = Website.new(title: 'Title', url: 'http://www.url.com')
-    message_template = MessageTemplate.new(content: 'This is a message template containing {title} and {url} variables')
+    website = Website.new(name: 'Name', url: 'http://www.url.com')
+    message_template = MessageTemplate.new(content: 'This is a message template containing {name} and {url} variables')
 
     message = @message_generator.generate(message_template, website)
 
-    expect(message.content).to eq("This is a message template containing #{website.title} and #{website.url} variables")
+    expect(message.content).to eq("This is a message template containing #{website.name} and #{website.url} variables")
   end
 end

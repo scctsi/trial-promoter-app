@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161129203436) do
+ActiveRecord::Schema.define(version: 20161130233540) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -178,7 +178,7 @@ ActiveRecord::Schema.define(version: 20161129203436) do
   add_index "tags", ["name"], name: "index_tags_on_name", unique: true, using: :btree
 
   create_table "websites", force: :cascade do |t|
-    t.string   "title",      limit: 1000
+    t.string   "name",       limit: 1000
     t.string   "url",        limit: 2000
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false

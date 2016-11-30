@@ -81,7 +81,7 @@ RSpec.describe WebsitesController, type: :controller do
   describe 'PATCH update' do
     before :each do
       @website = create(:website)
-      patch :update, id: @website, website: attributes_for(:website, title: 'New title', url: 'New URL')
+      patch :update, id: @website, website: attributes_for(:website, name: 'New name', url: 'New URL')
     end
     
     context 'with valid attributes' do
@@ -91,7 +91,7 @@ RSpec.describe WebsitesController, type: :controller do
     
       it "changes the website's attributes" do
         @website.reload
-        expect(@website.title).to eq('New title')
+        expect(@website.name).to eq('New name')
         expect(@website.url).to eq('New URL')
       end
     

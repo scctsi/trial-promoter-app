@@ -1,24 +1,6 @@
 %h2.header
   Websites
-%table.ui.celled.striped.table
-  %thead 
-    %tr
-      %th Title
-      %th
-  %tbody
-    - @websites.each do |website|
-      %tr
-        %td
-          #{website.title}
-          %a{:href => website.url, :target => '_blank'}
-            %i.external.icon
-        %td
-          %a{:href => edit_website_path(website)}
-            Edit
-  %tfoot.full-width
-    %tr
-      %th{:colspan => "2"}
-        %a.ui.right.floated.small.primary.labeled.icon.button{:href => new_website_path}
-          %i.sitemap.icon
-          Add website
-
+%a.ui.right.floated.small.primary.labeled.icon.button{:href => new_website_path}
+  %i.sitemap.icon
+  Add website
+= render partial: 'shared/websites', locals: { websites: @websites }

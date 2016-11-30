@@ -52,7 +52,7 @@ class WebsitesController < ApplicationController
   
   def website_params
     # TODO: Unit test this
-    params[:website].permit(:title, :url)
+    params[:website].permit(:name, :url)
   end
 end
 
