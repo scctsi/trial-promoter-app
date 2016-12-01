@@ -16,6 +16,7 @@
 
 class Message < ActiveRecord::Base
   extend Enumerize
+  acts_as_ordered_taggable_on :experiments
   
   validates :content, presence: true
   enumerize :status, in: [:new, :sent_to_buffer], default: :new, predicates: true

@@ -82,7 +82,8 @@ RSpec.describe CampaignsController, type: :controller do
     before :each do
       @campaign = create(:campaign)
       @clinical_trials = create_pair(:clinical_trial)
-      patch :update, id: @campaign, campaign: attributes_for(:campaign, name: 'New name', start_date: Time.local(2000, 1, 1, 9, 0, 0), end_date: Time.local(2000, 2, 1, 9, 0, 0), clinical_trial_ids: [@clinical_trials[0].id, @clinical_trials[1].id])
+      patch :update, id: @campaign, campaign: attributes_for(:campaign, name: 'New name', start_date: Time.local(2000, 1, 1, 9, 0, 0), end_date: Time.local(2000, 2, 1, 9, 0, 0))
+      # patch :update, id: @campaign, campaign: attributes_for(:campaign, name: 'New name', start_date: Time.local(2000, 1, 1, 9, 0, 0), end_date: Time.local(2000, 2, 1, 9, 0, 0), clinical_trial_ids: [@clinical_trials[0].id, @clinical_trials[1].id])
     end
     
     context 'with valid attributes' do
@@ -95,8 +96,6 @@ RSpec.describe CampaignsController, type: :controller do
         expect(@campaign.name).to eq('New name')
         expect(@campaign.start_date).to eq(Time.local(2000, 1, 1, 9, 0, 0))
         expect(@campaign.end_date).to eq(Time.local(2000, 2, 1, 9, 0, 0))
-        expect(@campaign.clinical_trials).to include(@clinical_trials[0])
-        expect(@campaign.clinical_trials).to include(@clinical_trials[1])
       end
     
       it 'redirects to the home page' do

@@ -15,7 +15,6 @@ describe Website do
   it { is_expected.to validate_presence_of :url }
 
   it { is_expected.to have_many(:messages) }
-  it { is_expected.to have_and_belong_to_many(:experiments) }
 
   it 'is taggable with a single tag' do
     website = create(:website)
@@ -38,5 +37,28 @@ describe Website do
     expect(website.tags.count).to eq(2)
     expect(website.tags[0].name).to eq('experiment')
     expect(website.tags[1].name).to eq('text heavy')
+  end
+  
+  it 'is taggable on experiments with a single tag' do
+    website = create(:website)
+    
+    website.experiment_list.add('tcors')
+    website.save
+    website.reload
+    
+    expect(website.experiments.count).to eq(1)
+    expect(website.experiments[0].name).to eq('tcors')
+  end
+  
+  it 'is taggable on experiments with multiple tags (some of them multi-word tags)' do
+    website = create(:website)
+    
+    website.experiment_list.add('tcors', 'tcors 2')
+    website.save
+    website.reload
+    
+    expect(website.experiments.count).to eq(2)
+    expect(website.experiments[0].name).to eq('tcors')
+    expect(website.experiments[1].name).to eq('tcors 2')
   end
 end

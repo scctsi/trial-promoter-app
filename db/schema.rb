@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161201193505) do
+ActiveRecord::Schema.define(version: 20161201195252) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,14 +33,6 @@ ActiveRecord::Schema.define(version: 20161201193505) do
     t.datetime "updated_at",              null: false
   end
 
-  create_table "campaigns_clinical_trials", force: :cascade do |t|
-    t.integer "campaign_id"
-    t.integer "clinical_trial_id"
-  end
-
-  add_index "campaigns_clinical_trials", ["campaign_id"], name: "index_campaigns_clinical_trials_on_campaign_id", using: :btree
-  add_index "campaigns_clinical_trials", ["clinical_trial_id"], name: "index_campaigns_clinical_trials_on_clinical_trial_id", using: :btree
-
   create_table "clinical_trials", force: :cascade do |t|
     t.string   "title",            limit: 1000
     t.string   "pi_first_name"
@@ -54,14 +46,6 @@ ActiveRecord::Schema.define(version: 20161201193505) do
     t.text     "hashtags"
   end
 
-  create_table "clinical_trials_experiments", force: :cascade do |t|
-    t.integer "experiment_id"
-    t.integer "clinical_trial_id"
-  end
-
-  add_index "clinical_trials_experiments", ["clinical_trial_id"], name: "index_clinical_trials_experiments_on_clinical_trial_id", using: :btree
-  add_index "clinical_trials_experiments", ["experiment_id"], name: "index_clinical_trials_experiments_on_experiment_id", using: :btree
-
   create_table "experiments", force: :cascade do |t|
     t.string   "name",                            limit: 1000
     t.datetime "start_date"
@@ -70,14 +54,6 @@ ActiveRecord::Schema.define(version: 20161201193505) do
     t.datetime "created_at",                                   null: false
     t.datetime "updated_at",                                   null: false
   end
-
-  create_table "experiments_websites", force: :cascade do |t|
-    t.integer "experiment_id"
-    t.integer "website_id"
-  end
-
-  add_index "experiments_websites", ["experiment_id"], name: "index_experiments_websites_on_experiment_id", using: :btree
-  add_index "experiments_websites", ["website_id"], name: "index_experiments_websites_on_website_id", using: :btree
 
   create_table "hashtags", force: :cascade do |t|
     t.string   "phrase"

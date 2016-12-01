@@ -102,6 +102,29 @@ RSpec.describe MessageTemplate do
     expect(message_template.tags[1].name).to eq('with emoji')
   end
   
+  it 'is taggable on experiments with a single tag' do
+    message_template = create(:message_template)
+    
+    message_template.experiment_list.add('tcors')
+    message_template.save
+    message_template.reload
+    
+    expect(message_template.experiments.count).to eq(1)
+    expect(message_template.experiments[0].name).to eq('tcors')
+  end
+  
+  it 'is taggable on experiments with multiple tags (some of them multi-word tags)' do
+    message_template = create(:message_template)
+    
+    message_template.experiment_list.add('tcors', 'tcors 2')
+    message_template.save
+    message_template.reload
+    
+    expect(message_template.experiments.count).to eq(2)
+    expect(message_template.experiments[0].name).to eq('tcors')
+    expect(message_template.experiments[1].name).to eq('tcors 2')
+  end
+
   describe 'storing hashtags' do
     before do
       @message_template = create(:message_template)

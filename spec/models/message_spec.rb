@@ -27,7 +27,7 @@ describe Message do
   it { is_expected.to belong_to(:message_generating) }
 
   it 'stores an array of Buffer profiles ids' do
-    message = Message.new(content: 'Some content')
+    message = build(:message)
     message.buffer_profile_ids = ["1234abcd", "1234efgh", "1234ijkl"]
     
     message.save

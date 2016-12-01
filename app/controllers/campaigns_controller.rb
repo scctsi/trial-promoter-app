@@ -38,6 +38,7 @@ class CampaignsController < ApplicationController
 
   def campaign_params
     # TODO: Unit test this
-    params[:campaign].permit(:name, :start_date, :end_date, {:clinical_trial_ids => []})
+    params[:campaign].permit(:name, :start_date, :end_date)
+    # params[:campaign].permit(:name, :start_date, :end_date, {:clinical_trial_ids => []})
   end
 end

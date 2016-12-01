@@ -50,6 +50,7 @@ class ExperimentsController < ApplicationController
 
   def experiment_params
     # TODO: Unit test this
-    params[:experiment].permit(:name, :start_date, :end_date, :message_distribution_start_date, {:clinical_trial_ids => []}, message_generation_parameter_set_attributes: [:id, :promoted_websites_tag, :promoted_clinical_trials_tag, :promoted_properties_cycle_type, :selected_message_templates_tag, :selected_message_templates_cycle_type, :medium_cycle_type, :social_network_cycle_type, :image_present_cycle_type, :period_in_days, :number_of_messages_per_social_network])
+    params[:experiment].permit(:name, :start_date, :end_date, :message_distribution_start_date, message_generation_parameter_set_attributes: [:id, :promoted_websites_tag, :promoted_clinical_trials_tag, :promoted_properties_cycle_type, :selected_message_templates_tag, :selected_message_templates_cycle_type, :medium_cycle_type, :social_network_cycle_type, :image_present_cycle_type, :period_in_days, :number_of_messages_per_social_network])
+    # params[:experiment].permit(:name, :start_date, :end_date, :message_distribution_start_date, {:clinical_trial_ids => []}, message_generation_parameter_set_attributes: [:id, :promoted_websites_tag, :promoted_clinical_trials_tag, :promoted_properties_cycle_type, :selected_message_templates_tag, :selected_message_templates_cycle_type, :medium_cycle_type, :social_network_cycle_type, :image_present_cycle_type, :period_in_days, :number_of_messages_per_social_network])
   end
 end

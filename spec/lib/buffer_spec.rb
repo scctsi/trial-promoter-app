@@ -7,10 +7,10 @@ RSpec.describe Buffer do
     allow(Setting).to receive(:[]).with(:buffer_access_token).and_return(secrets['buffer_access_token'])
     allow(Buffer).to receive(:post).and_call_original
     allow(Buffer).to receive(:get).and_call_original
-    @message = Message.new(:buffer_profile_ids => ['53275ff6c441ced7264e4ca5'], :content => 'Some content')
+    @message = build(:message, :buffer_profile_ids => ['53275ff6c441ced7264e4ca5'], :content => 'Some content')
   end
   
-  describe "development only tests", :development_only_tests => true do
+  describe "(development only tests)", :development_only_tests => true do
     it "returns the body of the POST request for creating a Buffer update via the Buffer API" do
       post_request_body = Buffer.post_request_body_for_create(@message)
       

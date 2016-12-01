@@ -138,7 +138,7 @@ RSpec.describe ExperimentsController, type: :controller do
     before :each do
       @experiment = create(:experiment)
       @clinical_trials = create_pair(:clinical_trial)
-      patch :update, id: @experiment, experiment: attributes_for(:experiment, name: 'New name', start_date: Time.local(2000, 1, 1, 9, 0, 0), end_date: Time.local(2000, 2, 1, 9, 0, 0), message_distribution_start_date: Time.local(2000, 3, 1, 9, 0, 0), clinical_trial_ids: [@clinical_trials[0].id, @clinical_trials[1].id])
+      patch :update, id: @experiment, experiment: attributes_for(:experiment, name: 'New name', start_date: Time.local(2000, 1, 1, 9, 0, 0), end_date: Time.local(2000, 2, 1, 9, 0, 0), message_distribution_start_date: Time.local(2000, 3, 1, 9, 0, 0))
     end
     
     context 'with valid attributes' do
@@ -152,8 +152,6 @@ RSpec.describe ExperimentsController, type: :controller do
         expect(@experiment.start_date).to eq(Time.local(2000, 1, 1, 9, 0, 0))
         expect(@experiment.end_date).to eq(Time.local(2000, 2, 1, 9, 0, 0))
         expect(@experiment.message_distribution_start_date).to eq(Time.local(2000, 3, 1, 9, 0, 0))
-        expect(@experiment.clinical_trials).to include(@clinical_trials[0])
-        expect(@experiment.clinical_trials).to include(@clinical_trials[1])
       end
     
       it 'redirects to the index page' do
