@@ -19,13 +19,13 @@ RSpec.describe ExperimentsController, type: :controller do
   
   describe 'GET #show' do
     before do
-      @message_templates = []
-      allow(MessageTemplate).to receive(:tagged_with).and_return(@message_templates)
-      @images = []
-      allow(Image).to receive(:tagged_with).and_return(@images)
-      @websites = []
-      allow(Website).to receive(:tagged_with).and_return(@websites)
       @experiment = create(:experiment)
+      @message_templates = []
+      allow(MessageTemplate).to receive(:tagged_with).with(@experiment.to_param, :on => :experiments).and_return(@message_templates)
+      @images = []
+      allow(Image).to receive(:tagged_with).with(@experiment.to_param, :on => :experiments).and_return(@images)
+      @websites = []
+      allow(Website).to receive(:tagged_with).with(@experiment.to_param, :on => :experiments).and_return(@websites)
       @messages = []
       allow(Message).to receive(:all).and_return(@messages)
       get :show, id: @experiment
@@ -35,18 +35,18 @@ RSpec.describe ExperimentsController, type: :controller do
       expect(assigns(:experiment)).to eq(@experiment)
     end
     
-    it 'assigns all message templates tagged with the experiments parameterized slug to @message_templates' do
-      expect(MessageTemplate).to have_received(:tagged_with).with("#{@experiment.to_param}")
+    it 'assigns all message templates tagged with the experiments parameterized slug (on the experiments context) to @message_templates' do
+      expect(MessageTemplate).to have_received(:tagged_with).with("#{@experiment.to_param}", on: :experiments)
       expect(assigns(:message_templates)).to eq(@message_templates)
     end
 
-    it 'assigns all images tagged with the experiments parameterized slug to @images' do
-      expect(Image).to have_received(:tagged_with).with("#{@experiment.to_param}")
+    it 'assigns all images tagged with the experiments parameterized slug (on the experiments context) to @images' do
+      expect(Image).to have_received(:tagged_with).with("#{@experiment.to_param}", on: :experiments)
       expect(assigns(:images)).to eq(@images)
     end
 
-    it 'assigns all websites tagged with the experiments parameterized slug to @websites' do
-      expect(Website).to have_received(:tagged_with).with("#{@experiment.to_param}")
+    it 'assigns all websites tagged with the experiments parameterized slug (on the experiments context) to @websites' do
+      expect(Website).to have_received(:tagged_with).with("#{@experiment.to_param}", on: :experiments)
       expect(assigns(:websites)).to eq(@websites)
     end
 
