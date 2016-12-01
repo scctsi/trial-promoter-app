@@ -22,6 +22,8 @@ class Message < ActiveRecord::Base
   
   serialize :buffer_profile_ids
   
+  validates :message_generating, presence: true
+  belongs_to :message_generating, polymorphic: true
   belongs_to :clinical_trial
   belongs_to :message_template
   has_one :buffer_update

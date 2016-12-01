@@ -19,7 +19,8 @@ RSpec.describe Experiment, type: :model do
   it { is_expected.to have_one(:message_generation_parameter_set) }
   it { is_expected.to have_and_belong_to_many(:clinical_trials) }
   it { is_expected.to accept_nested_attributes_for(:message_generation_parameter_set) }
-  
+  it { is_expected.to have_many(:messages) }
+
   it 'parameterizes id and name together' do
     experiment = create(:experiment, name: 'TCORS 2')
     

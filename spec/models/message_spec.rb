@@ -23,6 +23,8 @@ describe Message do
   it { is_expected.to enumerize(:status).in(:new, :sent_to_buffer).with_default(:new).with_predicates(true) }
   it { is_expected.to have_one :buffer_update }
   it { is_expected.to have_many :metrics }
+  it { is_expected.to validate_presence_of :message_generating }
+  it { is_expected.to belong_to(:message_generating) }
 
   it 'stores an array of Buffer profiles ids' do
     message = Message.new(content: 'Some content')

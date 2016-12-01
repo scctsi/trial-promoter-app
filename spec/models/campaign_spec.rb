@@ -17,7 +17,8 @@ RSpec.describe Campaign, type: :model do
   
   it { is_expected.to have_one(:message_generation_parameter_set) }
   it { is_expected.to have_and_belong_to_many(:clinical_trials) }
-  
+  it { is_expected.to have_many(:messages) }
+
   describe 'current scope' do
     before do
       @campaigns = create_list(:campaign, 5, start_date: nil, end_date: nil)

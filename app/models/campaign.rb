@@ -17,4 +17,5 @@ class Campaign < ActiveRecord::Base
   
   has_one :message_generation_parameter_set, as: :message_generating
   has_and_belongs_to_many :clinical_trials
+  has_many :messages, as: :message_generating
 end
