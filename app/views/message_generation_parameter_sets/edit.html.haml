@@ -13,13 +13,4 @@
   Edit message generation parameter set for #{@message_generation_parameter_set.message_generating.name}
 .ui.attached.segment
   = simple_form_for @message_generation_parameter_set do |f|
-    = f.input :promoted_websites_tag
-    = f.input :promoted_properties_cycle_type
-    = f.input :selected_message_templates_tag
-    = f.input :selected_message_templates_cycle_type
-    = f.input :medium_cycle_type
-    = f.input :social_network_cycle_type
-    = f.input :image_present_cycle_type
-    = f.input :period_in_days
-    = f.input :number_of_messages_per_social_network
-    = f.button :submit
+    = render partial: 'shared/forms/message_generation_parameter_set', locals: { form: f }

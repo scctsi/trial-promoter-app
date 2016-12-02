@@ -13,15 +13,5 @@
   Create new message generation parameter set
 .ui.attached.segment
   = simple_form_for @experiment do |e|
-    = e.simple_fields_for :message_generation_parameter_set do |m|
-      = m.input :promoted_websites_tag
-      = m.input :promoted_properties_cycle_type
-      = m.input :selected_message_templates_tag
-      = m.input :selected_message_templates_cycle_type
-      = m.input :medium_cycle_type
-      = m.input :social_network_cycle_type
-      = m.input :image_present_cycle_type
-      = m.input :period_in_days
-      = m.input :number_of_messages_per_social_network
-      = m.button :submit
-
+    = e.simple_fields_for :message_generation_parameter_set do |f|
+      = render partial: 'shared/forms/message_generation_parameter_set', locals: { form: f }

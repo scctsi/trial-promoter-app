@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: message_set_generation_parameter_sets
+# Table name: message_generation_parameter_sets
 #
 #  id                                    :integer          not null, primary key
 #  promoted_websites_tag                 :string
@@ -20,17 +20,17 @@
 
 class MessageGenerationParameterSet < ActiveRecord::Base
   extend Enumerize
+  serialize :social_network_choices
+  serialize :medium_choices
+  serialize :image_choices
 
-  validates :selected_message_templates_tag, presence: true
   validates :period_in_days, presence: true
   validates :number_of_messages_per_social_network, presence: true
   validates :message_generating, presence: true
   
-  enumerize :promoted_properties_cycle_type, in: [:all, :random], default: :all
-  enumerize :selected_message_templates_cycle_type, in: [:all, :random], default: :all
-  enumerize :social_network_cycle_type, in: [:all, :subset], default: :all
-  enumerize :medium_cycle_type, in: [:all, :random, :subset], default: :all
-  enumerize :image_present_cycle_type, in: [:all, :random, :subset], default: :all
+  enumerize :social_network_cycle_type, in: [:equal, :random], default: :equal
+  enumerize :medium_cycle_type, in: [:equal, :random], default: :equal
+  enumerize :image_present_cycle_type, in: [:equal, :random], default: :equal
 
   belongs_to :message_generating, polymorphic: true
   

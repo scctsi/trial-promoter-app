@@ -8,7 +8,7 @@
 .ui.divider
 %h2.ui.center.aligned.header
   #{@experiment.name} workspace
-%a.ui.labeled.icon.button
+%a.ui.labeled.icon.button{ href: edit_experiment_path(@experiment) }
   %i.pencil.icon
   Edit experiment
 .ui.top.attached.tabular.menu
@@ -69,7 +69,7 @@
     = render partial: 'shared/images', locals: { images: @images }
 .ui.bottom.attached.tab.segment{ 'data-tab': 'websites' }
   %a#websites-file-upload-button.ui.primary.labeled.icon.button{'data-experiment-id': @experiment.id}
-    %i.send.icon
+    %i.upload.icon
     Import websites
   - if @websites.count == 0
     .ui.message
