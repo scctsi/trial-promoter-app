@@ -74,14 +74,9 @@ RSpec.describe MessageGenerationParameterSetsController, type: :controller do
       @message_generation_parameter_set = create(:message_generation_parameter_set)
       patch :update, id: @message_generation_parameter_set,
         message_generation_parameter_set: attributes_for(:message_generation_parameter_set, 
-          promoted_websites_tag: 'new promoted websites tag',
-          promoted_clinical_trials_tag: 'new promoted clinical trials tag',
-          promoted_properties_cycle_type: :subset,
-          selected_message_templates_tag: 'new selected message templates tag',
-          selected_message_templates_cycle_type: :subset,
-          medium_cycle_type: :subset,
-          social_network_cycle_type: :subset,
-          image_present_cycle_type: :subset,
+          medium_cycle_type: :random,
+          social_network_cycle_type: :random,
+          image_present_cycle_type: :random,
           period_in_days: 1,
           number_of_messages_per_social_network: 2)
     end
@@ -94,14 +89,9 @@ RSpec.describe MessageGenerationParameterSetsController, type: :controller do
       it "changes the message generation parameter set's attributes" do
         skip 'Test does not pass; come back to this later'
         @message_generation_parameter_set.reload
-        expect(@message_generation_parameter_set.promoted_websites_tag).to eq('new promoted websites tag')
-        expect(@message_generation_parameter_set.promoted_clinical_trials_tag).to eq('new promoted clinical trials tag')
-        expect(@message_generation_parameter_set.promoted_properties_cycle_type).to eq(:subset)
-        expect(@message_generation_parameter_set.selected_message_templates_tag).to eq('new selected message templates tag')
-        expect(@message_generation_parameter_set.promoted_websites_tag).to eq('new promoted websites tag')
-        expect(@message_generation_parameter_set.medium_cycle_type).to eq(:subset)
-        expect(@message_generation_parameter_set.social_network_cycle_type).to eq(:subset)
-        expect(@message_generation_parameter_set.image_present_cycle_type).to eq(:subset)
+        expect(@message_generation_parameter_set.medium_cycle_type).to eq(:random)
+        expect(@message_generation_parameter_set.social_network_cycle_type).to eq(:random)
+        expect(@message_generation_parameter_set.image_present_cycle_type).to eq(:random)
         expect(@message_generation_parameter_set.period_in_days).to eq(1)
         expect(@message_generation_parameter_set.number_of_messages_per_social_network).to eq(2)
       end
