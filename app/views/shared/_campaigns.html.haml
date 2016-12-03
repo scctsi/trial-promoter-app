@@ -1,0 +1,22 @@
+%table.ui.celled.striped.table
+  %thead 
+    %tr
+      %th Name
+      %th Start date
+      %th End date
+      %th Access
+  %tbody
+    - @campaigns.each do |campaign|
+      %tr
+        %td= campaign.name
+        %td
+          - if !campaign.start_date.nil?
+            = campaign.start_date.strftime('%B %d, %Y')
+        %td
+          - if !campaign.end_date.nil?
+            = campaign.end_date.strftime('%B %d, %Y')
+        %td
+          %a{:href => campaign_path(campaign)}
+            Show
+          %a{:href => edit_campaign_path(campaign)}
+            Edit

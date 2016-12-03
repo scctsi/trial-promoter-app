@@ -33,31 +33,7 @@
   %h3.ui.header
     %i.announcement.outline.icon
     Ongoing campaigns
-  %table.ui.celled.striped.table
-    %thead 
-      %tr
-        %th Name
-        %th Start date
-        %th End date
-        %th Promoted trials
-        %th Access
-    %tbody
-      - @campaigns.each do |campaign|
-        %tr
-          %td= campaign.name
-          %td
-            - if !campaign.start_date.nil?
-              = campaign.start_date.strftime('%B %d, %Y')
-          %td
-            - if !campaign.end_date.nil?
-              = campaign.end_date.strftime('%B %d, %Y')
-          %td
-            - campaign.clinical_trials
-          %td
-            %a{:href => campaign_path(campaign)}
-              Show
-            %a{:href => edit_campaign_path(campaign)}
-              Edit
+  = render partial: 'shared/campaigns', locals: {campaigns: @campaigns}
 - if @experiments.count > 0
   %h3.ui.header
     %i.line.chart.icon

@@ -1,33 +1,8 @@
 %h2.header
   %i.announcement.icon
   Campaigns
-%table.ui.celled.striped.table
-  %thead 
-    %tr
-      %th Name
-      %th Start date
-      %th End date
-      %th Promoted trials
-      %th
-  %tbody
-    - @campaigns.each do |campaign|
-      %tr
-        %td= campaign.name
-        %td
-          - if !campaign.start_date.nil?
-            = campaign.start_date.strftime('%B %d, %Y')
-        %td
-          - if !campaign.end_date.nil?
-            = campaign.end_date.strftime('%B %d, %Y')
-        %td
-          - campaign.clinical_trials
-        %td
-          %a{:href => edit_campaign_path(campaign)}
-            Edit
-  %tfoot.full-width
-    %tr
-      %th{:colspan => "5"}
-        %a.ui.right.floated.small.primary.labeled.icon.button{:href => new_campaign_path}
-          %i.announcement.outline.icon
-          Add campaign
+%a.ui.primary.labeled.icon.button{:href => new_campaign_path}
+  %i.announcement.outline.icon
+  Add campaign
+= render partial: 'shared/campaigns', locals: {campaigns: @campaigns}
 

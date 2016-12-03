@@ -73,12 +73,15 @@ RSpec.describe MessageGenerationParameterSetsController, type: :controller do
     before do
       @message_generation_parameter_set = create(:message_generation_parameter_set)
       patch :update, id: @message_generation_parameter_set,
-        message_generation_parameter_set: attributes_for(:message_generation_parameter_set, 
+        message_generation_parameter_set: attributes_for(:message_generation_parameter_set,
           medium_cycle_type: :random,
           social_network_cycle_type: :random,
           image_present_cycle_type: :random,
           period_in_days: 1,
-          number_of_messages_per_social_network: 2)
+          number_of_messages_per_social_network: 2,
+          social_network_choices: ['twitter', 'instagram'],
+          medium_choices: ['ad'],
+          image_choices: ['with'])
     end
     
     context 'with valid attributes' do
@@ -87,8 +90,10 @@ RSpec.describe MessageGenerationParameterSetsController, type: :controller do
       end
     
       it "changes the message generation parameter set's attributes" do
-        skip 'Test does not pass; come back to this later'
         @message_generation_parameter_set.reload
+        expect(@message_generation_parameter_set.social_network_choices).to eq(['twitter', 'instagram'])
+        expect(@message_generation_parameter_set.medium_choices).to eq(['ad'])
+        expect(@message_generation_parameter_set.image_choices).to eq(['with'])
         expect(@message_generation_parameter_set.medium_cycle_type).to eq(:random)
         expect(@message_generation_parameter_set.social_network_cycle_type).to eq(:random)
         expect(@message_generation_parameter_set.image_present_cycle_type).to eq(:random)
@@ -97,7 +102,6 @@ RSpec.describe MessageGenerationParameterSetsController, type: :controller do
       end
     
       it 'redirects to the experiment page' do
-        skip 'Test does not pass; come back to this later'
         expect(response).to redirect_to experiment_url(@message_generation_parameter_set.message_generating)
       end
     end
