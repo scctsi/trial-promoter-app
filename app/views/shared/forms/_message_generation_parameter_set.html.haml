@@ -2,7 +2,7 @@
   %tbody
     %tr
       %td.collapsing Social media types
-      %td= form.input :social_network_choices, as: :check_boxes, wrapper_class: 'inline fields', item_wrapper_class: 'field', class: 'checkbox', collection: { 'Facebook' => 'facebook', 'Instagram' => 'instagram', 'Twitter' => 'twitter' }, label: false
+      %td= form.input :social_network_choices, as: :check_boxes, wrapper_class: 'inline fields', item_wrapper_class: 'ui field checkbox', collection: { 'Facebook' => 'facebook', 'Instagram' => 'instagram', 'Twitter' => 'twitter' }, label: false
     %tr
       %td.collapsing Social media distribution
       %td=form.input :social_network_cycle_type, as: :radio_buttons, wrapper_class: 'inline fields', item_wrapper_class: 'ui field radio checkbox', label: false
