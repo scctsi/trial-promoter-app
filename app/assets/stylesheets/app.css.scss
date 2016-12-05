@@ -20,8 +20,19 @@ header {
 }
 
 // Semantic UI form styling
+// Hide * displayed before required fields
 form {
   abbr {
     display: none;
   }
+}
+
+// Unbold choices for inline checkboxes and radiobuttons
+.ui.form .inline.fields .field > label {
+  font-weight: normal;
+}
+
+// Bold labels for message generation parameter set
+table.message-generation-paramter-set td.collapsing {
+  font-weight: bold;
 }

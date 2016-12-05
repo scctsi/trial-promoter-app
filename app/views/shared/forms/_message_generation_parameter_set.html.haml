@@ -1,9 +1,23 @@
-=form.input :social_network_choices, as: :check_boxes, :item_wrapper_class => 'ui checkbox', collection: { 'Facebook' => 'facebook', 'Instagram' => 'instagram', 'Twitter' => 'twitter' }, label: 'Socia media types'
-=form.input :social_network_cycle_type, as: :radio_buttons, :class => 'field', :item_wrapper_class => 'ui radio checkbox', :label => 'Social media type distribution'
-=form.input :medium_choices, as: :check_boxes, :item_wrapper_class => 'ui checkbox', collection: { 'Ad' => 'ad', 'Organic/Unpaid' => 'organic' }, label: 'Medium types'
-=form.input :medium_cycle_type, as: :radio_buttons, :class => 'field', :item_wrapper_class => 'ui radio checkbox', :label => 'Paid/unpaid (organic) message distribution'
-=form.input :image_choices, as: :check_boxes, :item_wrapper_class => 'ui checkbox', collection: { 'With' => 'with', 'Without' => 'without' }, label: 'Image types'
-=form.input :image_present_cycle_type, as: :radio_buttons, :class => 'field', :item_wrapper_class => 'ui radio checkbox', :label => 'Image/no image distribution'
+%table.ui.very.basic.collapsed.table.message-generation-paramter-set
+  %tbody
+    %tr
+      %td.collapsing Social media types
+      %td= form.input :social_network_choices, as: :check_boxes, wrapper_class: 'inline fields', item_wrapper_class: 'field', class: 'checkbox', collection: { 'Facebook' => 'facebook', 'Instagram' => 'instagram', 'Twitter' => 'twitter' }, label: false
+    %tr
+      %td.collapsing Social media distribution
+      %td=form.input :social_network_cycle_type, as: :radio_buttons, wrapper_class: 'inline fields', item_wrapper_class: 'ui field radio checkbox', label: false
+    %tr
+      %td.collapsing Medium types
+      %td=form.input :medium_choices, as: :check_boxes, wrapper_class: 'inline fields', item_wrapper_class: 'ui field checkbox', collection: { 'Ad' => 'ad', 'Organic/Unpaid' => 'organic' }, label: false
+    %tr
+      %td.collapsing Medium distribution
+      %td=form.input :medium_cycle_type, as: :radio_buttons, wrapper_class: 'inline fields', item_wrapper_class: 'ui field radio checkbox', label: false
+    %tr
+      %td.collapsing Image types
+      %td=form.input :image_choices, as: :check_boxes, wrapper_class: 'inline fields', item_wrapper_class: 'ui field checkbox', collection: { 'With' => 'with', 'Without' => 'without' }, label: false
+    %tr
+      %td.collapsing Image distribution
+      %td=form.input :image_present_cycle_type, as: :radio_buttons, wrapper_class: 'inline fields', item_wrapper_class: 'ui field radio checkbox', label: false
 =form.input :period_in_days
 =form.input :number_of_messages_per_social_network
 =form.button :submit
