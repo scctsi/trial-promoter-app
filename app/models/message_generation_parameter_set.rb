@@ -28,9 +28,9 @@ class MessageGenerationParameterSet < ActiveRecord::Base
   validates :number_of_messages_per_social_network, presence: true
   validates :message_generating, presence: true
   
-  enumerize :social_network_cycle_type, in: [:equal, :random], default: :equal
-  enumerize :medium_cycle_type, in: [:equal, :random], default: :equal
-  enumerize :image_present_cycle_type, in: [:equal, :random], default: :equal
+  enumerize :social_network_distribution, in: [:equal, :random], default: :equal
+  enumerize :medium_distribution, in: [:equal, :random], default: :equal
+  enumerize :image_present_distribution, in: [:equal, :random], default: :equal
 
   belongs_to :message_generating, polymorphic: true
   
@@ -45,13 +45,13 @@ class MessageGenerationParameterSet < ActiveRecord::Base
     # Number of message templates
     calculated_count *= selected_message_templates.count
     #  Number of social networks
-    calculated_count *= SocialNetworks::SUPPORTED_NETWORKS.count if social_network_cycle_type == :all
+    calculated_count *= SocialNetworks::SUPPORTED_NETWORKS.count if social_network_distribution == :all
     # Number of mediums
-    calculated_count *= 2 if medium_cycle_type == :all
-    calculated_count *= 1 if medium_cycle_type == :random
+    calculated_count *= 2 if medium_distribution == :all
+    calculated_count *= 1 if medium_distribution == :random
     # Image/No Image
-    calculated_count *= 2 if image_present_cycle_type == :all
-    calculated_count *= 1 if image_present_cycle_type == :random
+    calculated_count *= 2 if image_present_distribution == :all
+    calculated_count *= 1 if image_present_distribution == :random
     # Period in days
     calculated_count *= period_in_days
     # Number of messages per social network

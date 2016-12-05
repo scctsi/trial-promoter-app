@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161202003840) do
+ActiveRecord::Schema.define(version: 20161205214834) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -69,9 +69,9 @@ ActiveRecord::Schema.define(version: 20161202003840) do
   end
 
   create_table "message_generation_parameter_sets", force: :cascade do |t|
-    t.string   "medium_cycle_type"
-    t.string   "social_network_cycle_type"
-    t.string   "image_present_cycle_type"
+    t.string   "medium_distribution"
+    t.string   "social_network_distribution"
+    t.string   "image_present_distribution"
     t.integer  "period_in_days"
     t.integer  "number_of_messages_per_social_network"
     t.datetime "created_at",                            null: false

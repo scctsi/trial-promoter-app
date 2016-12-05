@@ -39,9 +39,9 @@ class MessageGenerationParameterSetsController < ApplicationController
 
   def message_generation_parameter_set_params
     # TODO: Unit test this
-    params[:message_generation_parameter_set].permit( :medium_cycle_type,
-                                                      :social_network_cycle_type,
-                                                      :image_present_cycle_type,
+    params[:message_generation_parameter_set].permit( :social_network_distribution,
+                                                      :medium_distribution,
+                                                      :image_present_distribution,
                                                       :period_in_days,
                                                       :number_of_messages_per_social_network,
                                                       :experiment_id,

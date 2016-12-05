@@ -74,9 +74,9 @@ RSpec.describe MessageGenerationParameterSetsController, type: :controller do
       @message_generation_parameter_set = create(:message_generation_parameter_set)
       patch :update, id: @message_generation_parameter_set,
         message_generation_parameter_set: attributes_for(:message_generation_parameter_set,
-          medium_cycle_type: :random,
-          social_network_cycle_type: :random,
-          image_present_cycle_type: :random,
+          social_network_distribution: :random,
+          medium_distribution: :random,
+          image_present_distribution: :random,
           period_in_days: 1,
           number_of_messages_per_social_network: 2,
           social_network_choices: ['twitter', 'instagram'],
@@ -94,9 +94,9 @@ RSpec.describe MessageGenerationParameterSetsController, type: :controller do
         expect(@message_generation_parameter_set.social_network_choices).to eq(['twitter', 'instagram'])
         expect(@message_generation_parameter_set.medium_choices).to eq(['ad'])
         expect(@message_generation_parameter_set.image_choices).to eq(['with'])
-        expect(@message_generation_parameter_set.medium_cycle_type).to eq(:random)
-        expect(@message_generation_parameter_set.social_network_cycle_type).to eq(:random)
-        expect(@message_generation_parameter_set.image_present_cycle_type).to eq(:random)
+        expect(@message_generation_parameter_set.social_network_distribution).to eq(:random)
+        expect(@message_generation_parameter_set.medium_distribution).to eq(:random)
+        expect(@message_generation_parameter_set.image_present_distribution).to eq(:random)
         expect(@message_generation_parameter_set.period_in_days).to eq(1)
         expect(@message_generation_parameter_set.number_of_messages_per_social_network).to eq(2)
       end
