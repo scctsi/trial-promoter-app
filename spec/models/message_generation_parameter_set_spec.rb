@@ -3,19 +3,18 @@
 # Table name: message_generation_parameter_sets
 #
 #  id                                    :integer          not null, primary key
-#  promoted_websites_tag                 :string
-#  promoted_clinical_trials_tag          :string
-#  promoted_properties_cycle_type        :string
-#  selected_message_templates_tag        :string
-#  selected_message_templates_cycle_type :string
-#  medium_cycle_type                     :string
-#  social_network_cycle_type             :string
-#  image_present_cycle_type              :string
+#  medium_distribution                   :string
+#  social_network_distribution           :string
+#  image_present_distribution            :string
 #  period_in_days                        :integer
 #  number_of_messages_per_social_network :integer
-#  experiment_id                         :integer
 #  created_at                            :datetime         not null
 #  updated_at                            :datetime         not null
+#  message_generating_id                 :integer
+#  message_generating_type               :string
+#  social_network_choices                :text
+#  medium_choices                        :text
+#  image_choices                         :text
 #
 
 require 'rails_helper'
@@ -53,77 +52,51 @@ describe MessageGenerationParameterSet do
 
   it 'stores an array of image choices' do
     message_generation_parameter_set = build(:message_generation_parameter_set)
-    message_generation_parameter_set.image_choices = ['with', 'without']
+    message_generation_parameter_set.image_present_choices = ['with', 'without']
     
     message_generation_parameter_set.save
     message_generation_parameter_set.reload
     
-    expect(message_generation_parameter_set.image_choices).to eq(['with', 'without'])
+    expect(message_generation_parameter_set.image_present_choices).to eq(['with', 'without'])
   end
 
-  context 'calculating the number of messages that will be generated' do
-    # before do
-    #   @websites = create_list(:website, 5)
-    #   @websites[0].tag_list.add('experiment')
-    #   @websites[0].save
-    #   @websites[1].tag_list.add('smoking')
-    #   @websites[1].save
-    #   @websites[2].tag_list.add('smoking')
-    #   @websites[2].save
-    #   @websites[3].tag_list.add('smoking')
-    #   @websites[3].save
-    #   @message_templates = create_list(:message_template, 5)
-    #   @message_templates[0].tag_list.add('experiment')
-    #   @message_templates[0].save
-    #   @message_templates[1].tag_list.add('experiment-2')
-    #   @message_templates[1].save
-    #   @message_templates[2].tag_list.add('experiment-2')
-    #   @message_templates[2].save
-    # end
+  describe 'calculating the number of generated messages' do
+    before do
+      experiment = create(:experiment)
+      @websites = create(:website, experiment_list: experiment.to_param)
+      @message_templates = create_list(:message_template, 5, experiment_list: experiment.to_param)
+    end
     
-    # it 'correctly calculates for one property, one message template, 3 social networks, 2 mediums, with and without images for 10 days and 1 message per network' do
-    #   message_generation_parameter_set = MessageGenerationParameterSet.new(
-    #     promoted_websites_tag: 'experiment', 
-    #     selected_message_templates_tag: 'experiment', 
-    #     social_network_cycle_type: :all,
-    #     medium_cycle_type: :all,
-    #     image_present_cycle_type: :all,
-    #     period_in_days: 10,
-    #     number_of_messages_per_social_network: 1
-    #   )
+    it 'is correct when the parameters include one website, five message templates, 1 social network (equal distribution), 1 medium (equal distribution), with images (equal distribution), for 10 days and 3 messages per network per day' do
+      message_generation_parameter_set = MessageGenerationParameterSet.new(
+        social_network_choices: ['facebook'],
+        social_network_distribution: :equal,
+        medium_choices: ['ad'],
+        medium_distribution: :equal,
+        image_present_choices: ['with'],
+        image_present_distribution: :equal,
+        period_in_days: 10,
+        number_of_messages_per_social_network: 3
+      )
       
-    #   # Number of properties(1) * Number of message templates(1) * Number of social networks(3) * Number of mediums(2) * Image/No Image(2) * Period in days(10) * Number of messages per social network (1)
-    #   expect(message_generation_parameter_set.expected_generated_message_count).to eq(1 * 1 * 3 * 2 * 2 * 10 * 1)
-    # end
+      # Number of social networks (1) * Number of mediums (1) * Number of image present choices (1) * Period in days(10) * Number of messages per social network (3)
+      expect(message_generation_parameter_set.expected_generated_message_count).to eq(1 * 1 * 1 * 10 * 3)
+    end
 
-    # it 'correctly calculates for multiple properties, multiple templates, 3 social networks, 2 mediums, with and without images for 10 days and 1 message per network' do
-    #   message_generation_parameter_set = MessageGenerationParameterSet.new(
-    #     promoted_websites_tag: 'smoking',
-    #     selected_message_templates_tag: 'experiment-2',
-    #     social_network_cycle_type: :all,
-    #     medium_cycle_type: :all,
-    #     image_present_cycle_type: :all,
-    #     period_in_days: 10,
-    #     number_of_messages_per_social_network: 1
-    #   )
+    it 'is correct when the parameters include one website, five message templates, 3 social networks (equal distribution), 2 mediums (equal distribution), with and without images (equal distribution), for 10 days and 3 messages per network per day' do
+      message_generation_parameter_set = MessageGenerationParameterSet.new(
+        social_network_choices: ['facebook', 'twitter', 'instagram'],
+        social_network_distribution: :equal,
+        medium_choices: ['ad', 'organic'],
+        medium_distribution: :equal,
+        image_present_choices: ['with', 'without'],
+        image_present_distribution: :equal,
+        period_in_days: 10,
+        number_of_messages_per_social_network: 3
+      )
       
-    #   # Number of properties(2) * Number of message templates(3) * Number of social networks(3) * Number of mediums(2) * Image/No Image(2) * Period in days(10) * Number of messages per social network (1)
-    #   expect(message_generation_parameter_set.expected_generated_message_count).to eq(2 * 3 * 3 * 2 * 2 * 10 * 1)
-    # end
-    
-    # it 'correctly calculates for multiple properties, multiple templates, 3 social networks, randomized mediums, randomly with and without images for 10 days and 2 message per network' do
-    #   message_generation_parameter_set = MessageGenerationParameterSet.new(
-    #     promoted_websites_tag: 'smoking',
-    #     selected_message_templates_tag: 'experiment-2',
-    #     social_network_cycle_type: :all,
-    #     medium_cycle_type: :random,
-    #     image_present_cycle_type: :random,
-    #     period_in_days: 10,
-    #     number_of_messages_per_social_network: 2
-    #   )
-      
-    #   # Number of properties(2) * Number of message templates(3) * Number of social networks(3) * Number of mediums(1 (random)) * Image/No Image(1 (random)) * Period in days(10) * Number of messages per social network (2)
-    #   expect(message_generation_parameter_set.expected_generated_message_count).to eq(2 * 3 * 3 * 1 * 1 * 10 * 2)
-    # end
+      # Number of social networks (1) * Number of mediums (1) * Number of image present choices (1) * Period in days(10) * Number of messages per social network (3)
+      expect(message_generation_parameter_set.expected_generated_message_count).to eq(3 * 2 * 2 * 10 * 3)
+    end
   end
 end

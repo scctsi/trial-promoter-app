@@ -47,6 +47,6 @@ class MessageGenerationParameterSetsController < ApplicationController
                                                       :experiment_id,
                                                       social_network_choices: [],
                                                       medium_choices: [],
-                                                      image_choices: [])
+                                                      image_present_choices: [])
   end
 end

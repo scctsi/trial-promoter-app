@@ -14,7 +14,7 @@
       %td=form.input :medium_distribution, as: :radio_buttons, wrapper_class: 'inline fields', item_wrapper_class: 'ui field radio checkbox', label: false
     %tr
       %td.collapsing Images
-      %td=form.input :image_choices, as: :check_boxes, wrapper_class: 'inline fields', item_wrapper_class: 'ui field checkbox', collection: { 'With' => 'with', 'Without' => 'without' }, label: false
+      %td=form.input :image_present_choices, as: :check_boxes, wrapper_class: 'inline fields', item_wrapper_class: 'ui field checkbox', collection: { 'With' => 'with', 'Without' => 'without' }, label: false
     %tr
       %td.collapsing Image distribution
       %td=form.input :image_present_distribution, as: :radio_buttons, wrapper_class: 'inline fields', item_wrapper_class: 'ui field radio checkbox', label: false

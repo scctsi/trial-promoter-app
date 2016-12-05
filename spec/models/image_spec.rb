@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: images
+#
+#  id                :integer          not null, primary key
+#  url               :string(2000)
+#  original_filename :string
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#
+
 require 'rails_helper'
 
 RSpec.describe Image do

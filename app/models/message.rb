@@ -2,16 +2,18 @@
 #
 # Table name: messages
 #
-#  id                  :integer          not null, primary key
-#  clinical_trial_id   :integer
-#  message_template_id :integer
-#  content             :text
-#  tracking_url        :string(2000)
-#  status              :string
-#  buffer_profile_ids  :text
-#  created_at          :datetime         not null
-#  updated_at          :datetime         not null
-#  website_id          :integer
+#  id                      :integer          not null, primary key
+#  clinical_trial_id       :integer
+#  message_template_id     :integer
+#  content                 :text
+#  tracking_url            :string(2000)
+#  status                  :string
+#  buffer_profile_ids      :text
+#  created_at              :datetime         not null
+#  updated_at              :datetime         not null
+#  website_id              :integer
+#  message_generating_id   :integer
+#  message_generating_type :string
 #
 
 class Message < ActiveRecord::Base

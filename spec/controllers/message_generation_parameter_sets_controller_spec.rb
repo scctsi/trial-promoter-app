@@ -81,7 +81,7 @@ RSpec.describe MessageGenerationParameterSetsController, type: :controller do
           number_of_messages_per_social_network: 2,
           social_network_choices: ['twitter', 'instagram'],
           medium_choices: ['ad'],
-          image_choices: ['with'])
+          image_present_choices: ['with'])
     end
     
     context 'with valid attributes' do
@@ -93,7 +93,7 @@ RSpec.describe MessageGenerationParameterSetsController, type: :controller do
         @message_generation_parameter_set.reload
         expect(@message_generation_parameter_set.social_network_choices).to eq(['twitter', 'instagram'])
         expect(@message_generation_parameter_set.medium_choices).to eq(['ad'])
-        expect(@message_generation_parameter_set.image_choices).to eq(['with'])
+        expect(@message_generation_parameter_set.image_present_choices).to eq(['with'])
         expect(@message_generation_parameter_set.social_network_distribution).to eq(:random)
         expect(@message_generation_parameter_set.medium_distribution).to eq(:random)
         expect(@message_generation_parameter_set.image_present_distribution).to eq(:random)

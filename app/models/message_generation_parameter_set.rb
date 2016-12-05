@@ -3,26 +3,25 @@
 # Table name: message_generation_parameter_sets
 #
 #  id                                    :integer          not null, primary key
-#  promoted_websites_tag                 :string
-#  promoted_clinical_trials_tag          :string
-#  promoted_properties_cycle_type        :string
-#  selected_message_templates_tag        :string
-#  selected_message_templates_cycle_type :string
-#  medium_cycle_type                     :string
-#  social_network_cycle_type             :string
-#  image_present_cycle_type              :string
+#  medium_distribution                   :string
+#  social_network_distribution           :string
+#  image_present_distribution            :string
 #  period_in_days                        :integer
 #  number_of_messages_per_social_network :integer
-#  experiment_id                         :integer
 #  created_at                            :datetime         not null
 #  updated_at                            :datetime         not null
+#  message_generating_id                 :integer
+#  message_generating_type               :string
+#  social_network_choices                :text
+#  medium_choices                        :text
+#  image_choices                         :text
 #
 
 class MessageGenerationParameterSet < ActiveRecord::Base
   extend Enumerize
   serialize :social_network_choices
   serialize :medium_choices
-  serialize :image_choices
+  serialize :image_present_choices
 
   validates :period_in_days, presence: true
   validates :number_of_messages_per_social_network, presence: true
@@ -37,21 +36,12 @@ class MessageGenerationParameterSet < ActiveRecord::Base
   def expected_generated_message_count
     calculated_count = 1
     
-    promoted_websites = Website.tagged_with(promoted_websites_tag)
-    selected_message_templates = MessageTemplate.tagged_with(selected_message_templates_tag)
-    
-    # Number of promoted properties (websites + clinical trials)
-    calculated_count *= promoted_websites.count
-    # Number of message templates
-    calculated_count *= selected_message_templates.count
     #  Number of social networks
-    calculated_count *= SocialNetworks::SUPPORTED_NETWORKS.count if social_network_distribution == :all
+    calculated_count *= social_network_choices.select { |network| !network.blank? }.count
     # Number of mediums
-    calculated_count *= 2 if medium_distribution == :all
-    calculated_count *= 1 if medium_distribution == :random
-    # Image/No Image
-    calculated_count *= 2 if image_present_distribution == :all
-    calculated_count *= 1 if image_present_distribution == :random
+    calculated_count *= medium_choices.select { |medium| !medium.blank? }.count
+    # With/without images
+    calculated_count *= image_present_choices.select { |image_present| !image_present.blank? }.count
     # Period in days
     calculated_count *= period_in_days
     # Number of messages per social network
