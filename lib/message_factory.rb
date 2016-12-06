@@ -1,8 +1,6 @@
 class MessageFactory
   def create(experiment, message_generation_parameter_set)
-    # message_generator = MessageGenerator.new
-    # promoted_websites = Website.tagged_with(message_generation_parameter_set.promoted_websites_tag)
-    # selected_message_templates = MessageTemplate.tagged_with(message_generation_parameter_set.selected_message_templates_tag)
+    message_constructor = MessageConstructor.new
 
     # promoted_websites.each do |website|
     #   SocialNetworks::SUPPORTED_NETWORKS.each do |social_network|
