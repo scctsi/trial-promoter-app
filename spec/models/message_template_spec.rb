@@ -126,6 +126,20 @@ RSpec.describe MessageTemplate do
     expect(message_template.experiments[1].name).to eq('tcors 2')
   end
 
+  it 'has a scope for finding message templates that belong to an experiment' do
+    experiments = create_list(:experiment, 3)
+    message_templates = create_list(:message_template, 3)
+    message_templates.each.with_index do |message_template, index| 
+      message_template.experiment_list = experiments[index].to_param
+      message_template.save
+    end
+
+    message_templates_for_first_experiment = MessageTemplate.belonging_to(experiments[0])
+    
+    expect(message_templates_for_first_experiment.count).to eq(1)
+    expect(message_templates_for_first_experiment[0].experiment_list).to eq([experiments[0].to_param])
+  end
+
   describe 'storing hashtags' do
     before do
       @message_template = create(:message_template)

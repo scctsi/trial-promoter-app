@@ -15,4 +15,6 @@ class Image < ActiveRecord::Base
   
   validates :url, presence: true
   validates :original_filename, presence: true
+  
+  scope :belonging_to, ->(experiment) { tagged_with(experiment.to_param, on: :experiments) }
 end

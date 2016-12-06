@@ -61,4 +61,18 @@ describe Website do
     expect(website.experiments[0].name).to eq('tcors')
     expect(website.experiments[1].name).to eq('tcors 2')
   end
+  
+  it 'has a scope for finding websites that belong to an experiment' do
+    experiments = create_list(:experiment, 3)
+    websites = create_list(:website, 3)
+    websites.each.with_index do |website, index| 
+      website.experiment_list = experiments[index].to_param
+      website.save
+    end
+
+    websites_for_first_experiment = Website.belonging_to(experiments[0])
+    
+    expect(websites_for_first_experiment.count).to eq(1)
+    expect(websites_for_first_experiment[0].experiment_list).to eq([experiments[0].to_param])
+  end
 end

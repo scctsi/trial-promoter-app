@@ -60,5 +60,18 @@ RSpec.describe Image do
     expect(image.experiments[0].name).to eq('tcors')
     expect(image.experiments[1].name).to eq('tcors 2')
   end
+  
+  it 'has a scope for finding images that belong to an experiment' do
+    experiments = create_list(:experiment, 3)
+    images = create_list(:image, 3)
+    images.each.with_index do |image, index| 
+      image.experiment_list = experiments[index].to_param
+      image.save
+    end
 
+    images_for_first_experiment = Image.belonging_to(experiments[0])
+    
+    expect(images_for_first_experiment.count).to eq(1)
+    expect(images_for_first_experiment[0].experiment_list).to eq([experiments[0].to_param])
+  end
 end

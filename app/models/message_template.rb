@@ -24,6 +24,8 @@ class MessageTemplate < ActiveRecord::Base
   
   has_many :messages
 
+  scope :belonging_to, ->(experiment) { tagged_with(experiment.to_param, on: :experiments) }
+
   STANDARD_VARIABLES = [/{\s*pi_first_name\s*}/i, /{\s*pi_last_name\s*}/i, /{\s*disease\s*}/i, /{\s*title\s*}/i, /{\s*name\s*}/i, /{\s*url\s*}/i]
     
   def content=(content)
