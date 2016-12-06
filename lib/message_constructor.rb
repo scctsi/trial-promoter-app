@@ -1,5 +1,5 @@
-class MessageGenerator
-  def generate(message_template, clinical_trial)
+class MessageConstructor
+  def construct(message_template, clinical_trial)
     message = Message.new(content: message_template.content)
     
     MessageTemplate::STANDARD_VARIABLES.each do |variable|
