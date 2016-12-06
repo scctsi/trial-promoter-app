@@ -11,9 +11,9 @@ class ExperimentsController < ApplicationController
   end
   
   def show
-    @message_templates = MessageTemplate.tagged_with(@experiment.to_param, on: :experiments)
-    @images = Image.tagged_with(@experiment.to_param, on: :experiments)
-    @websites = Website.tagged_with(@experiment.to_param, on: :experiments)
+    @message_templates = MessageTemplate.belonging_to(@experiment)
+    @images = Image.belonging_to(@experiment)
+    @websites = Website.belonging_to(@experiment)
     @messages = Message.all
   end
   

@@ -22,6 +22,8 @@ RSpec.describe MessageFactory do
 
     @message_factory.create(@experiment, message_generation_parameter_set) 
     
-    expect(Message.count).to eq(message_generation_parameter_set.expected_generated_message_count)
+    messages = Message.all
+    expect(messages.count).to eq(message_generation_parameter_set.expected_generated_message_count)
+    expect(messages.reject { |message| message.message_template.platform == :facebook }).count.to eq(0)
   end
 end
