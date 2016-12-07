@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161206205433) do
+ActiveRecord::Schema.define(version: 20161207001940) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -106,6 +106,9 @@ ActiveRecord::Schema.define(version: 20161206205433) do
     t.string   "message_generating_type"
     t.integer  "promotable_id"
     t.string   "promotable_type"
+    t.string   "medium"
+    t.string   "image_present"
+    t.integer  "image_id"
   end
 
   add_index "messages", ["message_generating_type", "message_generating_id"], name: "index_on_message_generating_for_messages", using: :btree

@@ -17,6 +17,9 @@ RSpec.describe MessageConstructor do
     expect(message.message_template).to eq(message_template)
     expect(message.promotable).to eq(clinical_trial)
     expect(message.message_generating).to eq(@experiment)
+    expect(message.organic?).to be true
+    expect(message.image_present).to eq(:without)
+    expect(message.image).to be_nil
   end
   
   it 'replaces the variables in the message template with the value of the attributes of the supplied website' do
@@ -30,5 +33,30 @@ RSpec.describe MessageConstructor do
     expect(message.message_template).to eq(message_template)
     expect(message.promotable).to eq(website)
     expect(message.message_generating).to eq(@experiment)
+    expect(message.organic?).to be true
+    expect(message.image_present).to eq(:without)
+    expect(message.image).to be_nil
   end
+  
+  it 'constructs a message with a medium' do
+    website = Website.new(name: 'Name', url: 'http://www.url.com')
+    message_template = MessageTemplate.new(content: 'This is a message template containing {name} and {url} variables')
+
+    message = @message_constructor.construct(@experiment, message_template, website, :ad)
+
+    expect(message.ad?).to be true
+  end
+  
+  it 'constructs a message with a medium and an image' do
+    image = create(:image)
+    website = Website.new(name: 'Name', url: 'http://www.url.com')
+    message_template = MessageTemplate.new(content: 'This is a message template containing {name} and {url} variables')
+
+    message = @message_constructor.construct(@experiment, message_template, website, :ad, image)
+
+    expect(message.ad?).to be true
+    expect(message.image_present).to eq(:with)
+    expect(message.image).to eq(image)
+  end
+
 end

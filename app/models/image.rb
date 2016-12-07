@@ -17,4 +17,6 @@ class Image < ActiveRecord::Base
   validates :original_filename, presence: true
   
   scope :belonging_to, ->(experiment) { tagged_with(experiment.to_param, on: :experiments) }
+  
+  has_many :messages
 end

@@ -51,7 +51,6 @@ RSpec.describe MessageFactory do
     # TODO: This test should be fixed to work with any number of social networks
     expect(messages_grouped_by_social_network[keys[0]].length == messages_grouped_by_social_network[keys[1]].length)
     expect(messages_grouped_by_social_network[keys[1]].length == messages_grouped_by_social_network[keys[2]].length)
-    p messages_grouped_by_social_network[keys[1]][0]
     # Are the messages equally distributed across mediums?
     # messages_grouped_by_medium = messages.group_by { |message| message.message_template.medium }
     # keys = messages_grouped_by_social_network.keys

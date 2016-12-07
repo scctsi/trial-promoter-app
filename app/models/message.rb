@@ -22,13 +22,16 @@ class Message < ActiveRecord::Base
   
   validates :content, presence: true
   enumerize :status, in: [:new, :sent_to_buffer], default: :new, predicates: true
-  
+  enumerize :medium, in: [:ad, :organic], default: :organic, predicates: true
+  enumerize :image_present, in: [:with, :without], default: :without
+
   serialize :buffer_profile_ids
   
   validates :message_generating, presence: true
   belongs_to :message_generating, polymorphic: true
   belongs_to :promotable, polymorphic: true
   belongs_to :message_template
+  belongs_to :image
   has_one :buffer_update
   has_many :metrics do 
     def << (value)
