@@ -27,7 +27,7 @@ class Message < ActiveRecord::Base
   
   validates :message_generating, presence: true
   belongs_to :message_generating, polymorphic: true
-  belongs_to :clinical_trial
+  belongs_to :promotable, polymorphic: true
   belongs_to :message_template
   has_one :buffer_update
   has_many :metrics do 

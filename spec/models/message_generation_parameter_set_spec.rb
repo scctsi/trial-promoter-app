@@ -63,8 +63,10 @@ describe MessageGenerationParameterSet do
   describe 'number of generated messages' do
     before do
       experiment = create(:experiment)
-      @websites = create(:website, experiment_list: experiment.to_param)
-      @message_templates = create_list(:message_template, 5, experiment_list: experiment.to_param)
+      create(:website, experiment_list: experiment.to_param)
+      SocialNetworks::SUPPORTED_NETWORKS.each do |social_network|
+        create_list(:message_template, 5, platform: social_network, experiment_list: experiment.to_param)
+      end
     end
     
     it 'is calculated correctly when the parameters include one website, five message templates, 1 social network (equal distribution), 1 medium (equal distribution), with images (equal distribution), for 10 days and 3 messages per network per day' do

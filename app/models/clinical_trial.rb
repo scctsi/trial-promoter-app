@@ -24,6 +24,5 @@ class ClinicalTrial < ActiveRecord::Base
   validates :url, presence: true
   validates :disease, presence: true
   
-  has_many :messages
-  has_and_belongs_to_many :campaigns
+  has_many :messages, as: :promotable
 end

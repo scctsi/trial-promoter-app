@@ -18,7 +18,7 @@ class MessageTemplate < ActiveRecord::Base
 
   validates :content, presence: true
   validates :platform, presence: true
-  enumerize :platform, in: [:twitter, :facebook], predicates: true
+  enumerize :platform, in: [:twitter, :facebook, :instagram], predicates: true
 
   serialize :hashtags
   

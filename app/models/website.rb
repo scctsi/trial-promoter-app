@@ -15,7 +15,7 @@ class Website < ActiveRecord::Base
 
   validates :url, presence: true
 
-  has_many :messages
+  has_many :messages, as: :promotable
   
   scope :belonging_to, ->(experiment) { tagged_with(experiment.to_param, on: :experiments) }
 end

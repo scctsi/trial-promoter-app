@@ -15,7 +15,7 @@ require 'rails_helper'
 RSpec.describe MessageTemplate do
   it { is_expected.to validate_presence_of :content }
   it { is_expected.to validate_presence_of :platform }
-  it { is_expected.to enumerize(:platform).in(:twitter, :facebook) }
+  it { is_expected.to enumerize(:platform).in(:twitter, :facebook, :instagram) }
   it { is_expected.to have_many :messages }
 
   describe 'standardizing variables' do

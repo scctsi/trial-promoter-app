@@ -17,8 +17,6 @@ class Experiment < ActiveRecord::Base
   has_one :message_generation_parameter_set, as: :message_generating
   has_many :messages, as: :message_generating
 
-  has_and_belongs_to_many :clinical_trials
-  
   accepts_nested_attributes_for :message_generation_parameter_set
   
   def to_param

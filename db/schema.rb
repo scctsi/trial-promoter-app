@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161205234338) do
+ActiveRecord::Schema.define(version: 20161206205433) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -94,7 +94,6 @@ ActiveRecord::Schema.define(version: 20161205234338) do
   end
 
   create_table "messages", force: :cascade do |t|
-    t.integer  "clinical_trial_id"
     t.integer  "message_template_id"
     t.text     "content"
     t.string   "tracking_url",            limit: 2000
@@ -105,9 +104,12 @@ ActiveRecord::Schema.define(version: 20161205234338) do
     t.integer  "website_id"
     t.integer  "message_generating_id"
     t.string   "message_generating_type"
+    t.integer  "promotable_id"
+    t.string   "promotable_type"
   end
 
   add_index "messages", ["message_generating_type", "message_generating_id"], name: "index_on_message_generating_for_messages", using: :btree
+  add_index "messages", ["promotable_type", "promotable_id"], name: "index_on_promotable_for_messages", using: :btree
 
   create_table "metrics", force: :cascade do |t|
     t.string   "source"
