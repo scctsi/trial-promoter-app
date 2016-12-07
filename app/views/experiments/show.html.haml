@@ -100,11 +100,53 @@
         %li A day before the experiment is scheduled to start message distribution, message generation will be locked.
     = render partial: 'shared/messages', locals: { messages: @messages }
 .ui.bottom.attached.tab.segment{ 'data-tab': 'dashboard' }
+  .ui.segment
+    .ui.form
+      .inline.fields
+        %label Social media types:
+        .field
+          .ui.checkbox
+            %input.hidden{:name => "fruit", :tabindex => "0", :type => "checkbox", checked: "checked"}/
+            %label Facebook
+        .field
+          .ui.checkbox
+            %input.hidden{:name => "fruit", :tabindex => "0", :type => "checkbox"}/
+            %label Instagram
+        .field
+          .ui.checkbox
+            %input.hidden{:name => "fruit", :tabindex => "0", :type => "checkbox", checked: "checked"}/
+            %label Twitter
+      .inline.fields
+        %label Paid/unpaid (organic):
+        .field
+          .ui.checkbox
+            %input.hidden{:name => "fruit", :tabindex => "0", :type => "checkbox", checked: "checked"}/
+            %label Paid
+        .field
+          .ui.checkbox
+            %input.hidden{:name => "fruit", :tabindex => "0", :type => "checkbox"}/
+            %label Unpaid (organic)
+      .inline.fields
+        %label Images: 
+        .field
+          .ui.checkbox
+            %input.hidden{:name => "fruit", :tabindex => "0", :type => "checkbox", checked: "checked"}/
+            %label With
+        .field
+          .ui.checkbox
+            %input.hidden{:name => "fruit", :tabindex => "0", :type => "checkbox"}/
+            %label Without
+      .inline.field
+        %label 
+          Number of top messages to show:
+        %input{:type => "text", :placeholder => "5"}
   .ui.three.column.grid
     .column
       .ui.fluid.card
         .content
-          .header Engagements: 50  
+          .header 
+            %i.twitter.icon
+            Engagements: 50  
           .meta 2 days ago
           .description
             %p
@@ -132,14 +174,16 @@
     .column
       .ui.fluid.card
         .content
-          .header Here is an example of a much longer message sent via Facebook. This message is longer than 140 characters and is an example of what happens where a really long message is present.
+          .header 
+            %i.facebook.f.icon
+            Here is an example of a much longer message sent via Facebook. This message is longer than 140 characters and is an example of what happens where a really long message is present.
           .meta 2 days ago
           .description
             %p Engagements: 50
         .extra.content
-          %i.check.icon
-          25 retweets
-          %i.check.icon
-          15 mentions
-          %i.check.icon
+          %i.refresh.icon
+          25 shares
+          %i.comment.outline.icon
+          15 comments
+          %i.thumbs.outline.up.icon
           10 likes

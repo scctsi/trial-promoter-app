@@ -3,12 +3,16 @@
     %tr
       %th Content
       %th Platform
+      %th Medium
+      %th Image
       %th
   %tbody
     - messages.each do |message|
       %tr
         %td= message.content
         %td= message.message_template.platform.titleize
+        %td= message.medium
+        %td= message.image_present
         %td
           %a{:href => edit_message_path(message)}
             Edit
