@@ -9,8 +9,8 @@ class ImagesController < ApplicationController
     experiment = Experiment.find(params[:experiment_id])
 
     # Import images
-    importer = Importer.new
-    importer.import(Image, params[:image_urls], experiment.to_param)
+    image_importer = ImageImporter.new
+    image_importer.import(params[:image_urls], experiment.to_param)
 
     render json: { success: true, imported_count: params[:image_urls].length }
   end

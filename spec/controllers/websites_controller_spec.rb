@@ -100,25 +100,4 @@ RSpec.describe WebsitesController, type: :controller do
       end
     end
   end
-  
-  describe 'GET #import' do
-    it 'imports websites from a CSV file accessible at a URL' do
-      experiment = create(:experiment)
-      importer = Importer.new
-      allow(Importer).to receive(:new).and_return(importer)
-      allow(importer).to receive(:import).and_call_original
-      csv_url = 'http://sc-ctsi.org/trial-promoter/websites.csv'
-      expected_json = { success: true, imported_count: 3}.to_json
-
-      VCR.use_cassette 'websites/import' do
-        get :import, url: csv_url, experiment_id: experiment.id
-      end
-
-      expect(Website.count).to eq(3)
-      expect(importer).to have_received(:import).with(Website, instance_of(Array), experiment.to_param)
-      expect(response.header['Content-Type']).to match(/json/)
-      expect(response.body).to eq(expected_json)
-    end
-  end
-
 end

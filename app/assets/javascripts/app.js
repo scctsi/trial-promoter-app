@@ -67,30 +67,6 @@ $(document).ready(function() {
     });
   }
 
-  function setUpWebsiteImports() {
-    $('#websites-file-upload-button').click(function() {
-      var experimentId = $(this).data('experiment-id');
-      
-      filepicker.pick({
-          mimetype: '*/*',
-          container: 'modal',
-          services: ['COMPUTER', 'GOOGLE_DRIVE', 'DROPBOX']
-        },
-        function(Blob){
-          $.ajax({
-            url : '/websites/import',
-            type: 'GET',
-            data: {url: Blob.url, experiment_id: experimentId.toString()},
-            dataType: 'json',
-            async: false,
-            success: function(retdata) {
-            }
-          });
-        }
-      );      
-    });
-  }
-
   function setUpImageImports() {
     $('#images-upload-button').click(function() {
       var experimentId = $(this).data('experiment-id');
@@ -126,7 +102,6 @@ $(document).ready(function() {
   setUpTagListInputs();
   setUpFilepicker();
   setUpMessageTemplateImports();
-  setUpWebsiteImports();
   setUpImageImports();
   $('.menu .item').tab();
 });

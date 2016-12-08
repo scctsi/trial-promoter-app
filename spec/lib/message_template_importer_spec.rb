@@ -9,7 +9,7 @@ RSpec.describe MessageTemplateImporter do
     expect(MessageTemplateImporter::COLUMN_INDEX_ATTRIBUTE_MAPPING).to eq({ 0 => 'content', 1 => 'platform', 2 => 'hashtags', 3 => 'tag_list' })
   end
 
-  it 'successfully imports message templates' do
+  it 'successfully imports message templates and also creates the associated websites' do
     parsed_csv_content = [['content', 'platform', 'hashtags', 'tags', 'website_url', 'website_name'], ['This is a message template.', 'twitter', '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation']]
     experiment_tag = '1-tcors'
     
