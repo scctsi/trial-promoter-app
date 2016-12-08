@@ -52,12 +52,12 @@ RSpec.describe MessageFactory do
     expect(messages_grouped_by_social_network[keys[0]].length == messages_grouped_by_social_network[keys[1]].length)
     expect(messages_grouped_by_social_network[keys[1]].length == messages_grouped_by_social_network[keys[2]].length)
     # Are the messages equally distributed across mediums?
-    # messages_grouped_by_medium = messages.group_by { |message| message.message_template.medium }
-    # keys = messages_grouped_by_social_network.keys
-    # expect(messages_grouped_by_social_network[keys[0]].length == messages_grouped_by_social_network[keys[1]].length)
-    # expect(messages_grouped_by_social_network[keys[1]].length == messages_grouped_by_social_network[keys[2]].length)
-
-
-    # expect((messages.select { |message| message.message_template.platform != :facebook }).count).to eq(0)
+    messages_grouped_by_medium = messages.group_by { |message| message.medium }
+    keys = messages_grouped_by_medium.keys
+    expect(messages_grouped_by_medium[keys[0]].length == messages_grouped_by_medium[keys[1]].length)
+    # Are the messages equally distributed across image present choices?
+    messages_grouped_by_image_present = messages.group_by { |message| message.image_present }
+    keys = messages_grouped_by_image_present.keys
+    expect(messages_grouped_by_image_present[keys[0]].length == messages_grouped_by_image_present[keys[1]].length)
   end
 end

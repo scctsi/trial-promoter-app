@@ -10,7 +10,9 @@ class MessageFactory
         message_generation_parameter_set.image_present_choices.each do |image_present_choice| 
           (0...message_generation_parameter_set.period_in_days).each do |day|
             message_generation_parameter_set.number_of_messages_per_social_network.times do |index|
-              message = message_constructor.construct(message_generating_instance, message_templates_for_social_network.sample, websites.sample)
+              image = nil
+              image = FactoryGirl.create(:image) if image_present_choice == 'with'
+              message = message_constructor.construct(message_generating_instance, message_templates_for_social_network.sample, websites.sample, medium, image)
               message.save
             end
           end

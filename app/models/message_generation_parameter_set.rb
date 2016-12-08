@@ -14,7 +14,7 @@
 #  message_generating_type               :string
 #  social_network_choices                :text
 #  medium_choices                        :text
-#  image_choices                         :text
+#  image_present_choices                 :text
 #
 
 class MessageGenerationParameterSet < ActiveRecord::Base
