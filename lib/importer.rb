@@ -1,28 +1,14 @@
 class Importer
-  COLUMN_INDEX_ATTRIBUTE_MAPPINGS = { MessageTemplate => { 0 => 'content', 1 => 'platform', 2 => 'tag_list', 3 => 'hashtags' },
-                                      Image => { 0 => 'url', 1 => 'original_filename', 2 => 'tag_list' },
-                                      Website => { 0 => 'name', 1 => 'url', 2 => 'tag_list' }
-                                    }
-  
-  def import(klass, parsed_csv_content, experiment_tag = '')
-    # Image imports are a special case. What is passed into parsed_csv_content is an array of uploaded image URLs.
-    # The next block of code basically fixes parsed_csv_content so that the code remains the same for uploading images.
-    # To do this, we need to convert ['url1', 'url2'] to [nil, ['url1', 'N/A'], ['url2', 'N/A']]
-    if klass == Image
-      parsed_csv_content = parsed_csv_content.dup
-      parsed_csv_content.unshift(nil)
-      parsed_csv_content = parsed_csv_content.map { |url| [url, 'N/A'] }
-    end
-    
+  # TODO: This class is only unit tested via its subclasses.
+  def import(klass, parsed_csv_content, column_index_attribute_mapping, experiment_tag = '')
     # Remove the heading row for the parsed_csv_content
     parsed_csv_content = parsed_csv_content.drop(1)
 
     parsed_csv_content.each do |row|
-      column_index_attribute_mapping = COLUMN_INDEX_ATTRIBUTE_MAPPINGS[klass]
       attributes = {}
       
       row.each.with_index do |value, i|
-        attributes[column_index_attribute_mapping[i]] = row[i]
+        attributes[column_index_attribute_mapping[i]] = row[i] if column_index_attribute_mapping.has_key?(i)
 
         # Experiments and campaigns can generate messages. These are message generating classes.
         # We usually import message templates, images etc. for use by a specific message generating instance.
