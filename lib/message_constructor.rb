@@ -1,5 +1,5 @@
 class MessageConstructor
-  def construct(message_generating_instance, message_template, promotable_instance, medium=:organic, image=nil)
+  def construct(message_generating_instance, message_template, promotable_instance, medium=:organic)
     # A message_generating_instance is either an Experiment or Campaign, the two models that can generate messages.
     # A promotable_instance is either a ClinicalTrial or a Website, the two models that can be promoted by a message.
     message = Message.new(content: message_template.content)
@@ -20,11 +20,6 @@ class MessageConstructor
     message.message_generating = message_generating_instance
     message.message_template = message_template
     message.medium = medium
-    message.image_present = :without
-    if !image.nil?
-      message.image_present = :with
-      message.image = image
-    end
     message
   end
 end

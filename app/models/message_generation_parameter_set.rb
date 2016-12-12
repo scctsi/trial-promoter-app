@@ -40,8 +40,7 @@ class MessageGenerationParameterSet < ActiveRecord::Base
     calculated_count *= social_network_choices.select { |network| !network.blank? }.count
     # Number of mediums
     calculated_count *= medium_choices.select { |medium| !medium.blank? }.count
-    # With/without images
-    calculated_count *= image_present_choices.select { |image_present| !image_present.blank? }.count
+    # NOTE: Images are distributed equally among the messages that are generated. Unlike social networks and mediums, new messages are not generated to get an equal or random distribution of messages containing images.
     # Period in days
     calculated_count *= period_in_days
     # Number of messages per social network

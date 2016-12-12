@@ -31,19 +31,18 @@ RSpec.describe MessageFactory do
 
   it 'creates a set of messages for one website, five message templates, 3 social networks (equal distribution), 2 mediums (equal distribution), with and without images (equal distribution), for 10 days and 3 messages per network per day' do
     message_generation_parameter_set = MessageGenerationParameterSet.new(
-      social_network_choices: ['facebook', 'twitter', 'instagram'],
+      social_network_choices: [:facebook, :twitter, :instagram],
       social_network_distribution: :equal,
-      medium_choices: ['ad', 'organic'],
+      medium_choices: [:ad, :organic],
       medium_distribution: :equal,
-      image_present_choices: ['with', 'without'],
+      image_present_choices: [:with, :without],
       image_present_distribution: :equal,
       period_in_days: 10,
       number_of_messages_per_social_network: 3
     )
 
-    @message_factory.create(@experiment, message_generation_parameter_set) 
+    messages = @message_factory.create(@experiment, message_generation_parameter_set) 
 
-    messages = Message.all
     expect(messages.count).to eq(message_generation_parameter_set.expected_generated_message_count)
     # Are the messages equally distributed across social networks?
     messages_grouped_by_social_network = messages.group_by { |message| message.message_template.platform }
