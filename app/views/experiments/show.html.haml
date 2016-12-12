@@ -12,7 +12,7 @@
   %i.pencil.icon
   Edit experiment
 .ui.top.attached.tabular.menu
-  %a{ class: 'item active', 'data-tab': 'message-generation' }
+  %a{ class: 'item active', 'data-tab': 'setup' }
     Message generation
   %a{ class: 'item', 'data-tab': 'message-templates' }
     Message templates
@@ -22,7 +22,7 @@
     Generated messages
   %a{ class: 'item', 'data-tab': 'dashboard' }
     Dashboard
-.ui.bottom.attached.tab.segment.active{ 'data-tab': 'message-generation' }
+.ui.bottom.attached.tab.segment.active{ 'data-tab': 'setup' }
   - if @experiment.message_generation_parameter_set.nil?
     %a.ui.primary.labeled.icon.button{ :href => new_experiment_message_generation_parameter_set_path(@experiment) }
       %i.industry.icon
