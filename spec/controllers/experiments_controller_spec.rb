@@ -126,10 +126,10 @@ RSpec.describe ExperimentsController, type: :controller do
         }.to change(MessageGenerationParameterSet, :count).by(1)
         expect(MessageGenerationParameterSet.first.message_generating).not_to be_nil
       end
-      
-      it 'redirects to the index page' do
-        post :create, experiment: attributes_for(:experiment)
-        expect(response).to redirect_to experiments_url
+
+      it 'redirects to the experiment workspace' do
+        post :create, experiment: attributes_for(:experiment, message_generation_parameter_set_attributes: attributes_for(:message_generation_parameter_set))
+        expect(response).to redirect_to experiment_url(Experiment.first)
       end
     end
 
@@ -146,48 +146,13 @@ RSpec.describe ExperimentsController, type: :controller do
       end
     end
   end
-  
-  
-  #   describe 'POST #create' do
-  #   before do
-  #     @experiment = create(:experiment)
-  #   end
-
-  #   context 'with valid attributes' do
-  #     it 'creates a new message generation parameter set' do
-  #       expect {
-  #         post :create, message_generation_parameter_set: attributes_for(:message_generation_parameter_set), experiment_id: @experiment.id
-  #       }.to change(MessageGenerationParameterSet, :count).by(1)
-  #       message_generation_parameter_set = MessageGenerationParameterSet.last
-  #       expect(message_generation_parameter_set.message_generating).to eq(@experiment)
-  #     end
-      
-  #     it 'redirects to the experiment workspace' do
-  #       post :create, message_generation_parameter_set: attributes_for(:message_generation_parameter_set), experiment_id: @experiment.id
-  #       expect(response).to redirect_to experiment_url(@experiment)
-  #     end
-  #   end
-
-  #   context 'with invalid attributes' do
-  #     it 'does not save the message generation parameter set to the database' do
-  #       expect {
-  #         post :create, message_generation_parameter_set: attributes_for(:invalid_message_generation_parameter_set), experiment_id: @experiment.id
-  #       }.to_not change(MessageGenerationParameterSet, :count)
-  #     end
-      
-  #     it "re-renders the new template" do
-  #         post :create, message_generation_parameter_set: attributes_for(:invalid_message_generation_parameter_set), experiment_id: @experiment.id
-  #       expect(response).to render_template :new
-  #     end
-  #   end
-  # end
-
 
   describe 'PATCH update' do
     before :each do
       @experiment = create(:experiment)
-      @clinical_trials = create_pair(:clinical_trial)
-      patch :update, id: @experiment, experiment: attributes_for(:experiment, name: 'New name', start_date: Time.local(2000, 1, 1, 9, 0, 0), end_date: Time.local(2000, 2, 1, 9, 0, 0), message_distribution_start_date: Time.local(2000, 3, 1, 9, 0, 0))
+      @experiment.message_generation_parameter_set = create(:message_generation_parameter_set, message_generating: @experiment)
+      patch :update, id: @experiment, experiment: attributes_for(:experiment, name: 'New name', start_date: Time.local(2000, 1, 1, 9, 0, 0), end_date: Time.local(2000, 2, 1, 9, 0, 0), message_distribution_start_date: Time.local(2000, 3, 1, 9, 0, 0), 
+                                      message_generation_parameter_set_attributes: {social_network_distribution: :random, medium_distribution: :random, image_present_distribution: :random, period_in_days: 10, number_of_messages_per_social_network: 5, social_network_choices: ['facebook', 'instagram', ''], medium_choices: ['ad', 'organic'], image_present_choices: ['with', 'without']})
     end
     
     context 'with valid attributes' do
@@ -202,9 +167,21 @@ RSpec.describe ExperimentsController, type: :controller do
         expect(@experiment.end_date).to eq(Time.local(2000, 2, 1, 9, 0, 0))
         expect(@experiment.message_distribution_start_date).to eq(Time.local(2000, 3, 1, 9, 0, 0))
       end
+      
+      it "changes the associated message generation parameter set's attribute" do
+        @experiment.reload
+        expect(@experiment.message_generation_parameter_set.social_network_choices).to eq(['facebook', 'instagram', ''])
+        expect(@experiment.message_generation_parameter_set.medium_choices).to eq(['ad', 'organic'])
+        expect(@experiment.message_generation_parameter_set.image_present_choices).to eq(['with', 'without'])
+        expect(@experiment.message_generation_parameter_set.social_network_distribution).to eq(:random)
+        expect(@experiment.message_generation_parameter_set.medium_distribution).to eq(:random)
+        expect(@experiment.message_generation_parameter_set.image_present_distribution).to eq(:random)
+        expect(@experiment.message_generation_parameter_set.period_in_days).to eq(10)
+        expect(@experiment.message_generation_parameter_set.number_of_messages_per_social_network).to eq(5)
+      end
     
-      it 'redirects to the index page' do
-        expect(response).to redirect_to experiments_url
+      it 'redirects to the experiment workspace' do
+        expect(response).to redirect_to experiment_url(Experiment.first)
       end
     end
   end

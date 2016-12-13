@@ -14,10 +14,11 @@
 class Experiment < ActiveRecord::Base
   validates :name, presence: true
   
+  # TODO: Small 
   has_one :message_generation_parameter_set, as: :message_generating
   has_many :messages, as: :message_generating
 
-  accepts_nested_attributes_for :message_generation_parameter_set
+  accepts_nested_attributes_for :message_generation_parameter_set, update_only: true
   
   def to_param
     "#{id}-#{name.parameterize}"

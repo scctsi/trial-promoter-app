@@ -28,7 +28,7 @@ class ExperimentsController < ApplicationController
     @experiment.message_generation_parameter_set.message_generating = @experiment if (!@experiment.message_generation_parameter_set.nil?)
 
     if @experiment.save
-      redirect_to experiments_url
+      redirect_to experiment_url(@experiment)
     else
       render :new
     end
@@ -39,7 +39,7 @@ class ExperimentsController < ApplicationController
 
   def update
     if @experiment.update(experiment_params)
-      redirect_to experiments_url
+      redirect_to experiment_url(@experiment)
     else
       render :edit
     end
