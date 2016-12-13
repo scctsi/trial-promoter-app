@@ -19,10 +19,13 @@ class ExperimentsController < ApplicationController
   
   def new
     @experiment = Experiment.new
+    @experiment.build_message_generation_parameter_set
   end
   
   def create
     @experiment = Experiment.new(experiment_params)
+    # TODO: There should be an easier way to automatically set the parent object
+    @experiment.message_generation_parameter_set.message_generating = @experiment if (!@experiment.message_generation_parameter_set.nil?)
 
     if @experiment.save
       redirect_to experiments_url
@@ -50,7 +53,7 @@ class ExperimentsController < ApplicationController
 
   def experiment_params
     # TODO: Unit test this
-    params[:experiment].permit(:name, :start_date, :end_date, :message_distribution_start_date, message_generation_parameter_set_attributes: [:id, :promoted_websites_tag, :promoted_clinical_trials_tag, :promoted_properties_cycle_type, :selected_message_templates_tag, :selected_message_templates_cycle_type, :social_network_distribution, :medium_distribution, :image_present_distribution, :period_in_days, :number_of_messages_per_social_network])
+    params.require(:experiment).permit(:name, :start_date, :end_date, :message_distribution_start_date, message_generation_parameter_set_attributes: [:social_network_distribution, :medium_distribution, :image_present_distribution, :period_in_days, :number_of_messages_per_social_network, social_network_choices: [], medium_choices: [], image_present_choices: []])
     # params[:experiment].permit(:name, :start_date, :end_date, :message_distribution_start_date, {:clinical_trial_ids => []}, message_generation_parameter_set_attributes: [:id, :promoted_websites_tag, :promoted_clinical_trials_tag, :promoted_properties_cycle_type, :selected_message_templates_tag, :selected_message_templates_cycle_type, :medium_cycle_type, :social_network_cycle_type, :image_present_cycle_type, :period_in_days, :number_of_messages_per_social_network])
   end
 end

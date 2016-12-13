@@ -80,11 +80,17 @@ RSpec.describe ExperimentsController, type: :controller do
 
   describe 'GET #new' do
     before do
+      @experiment = Experiment.new
+      allow(Experiment).to receive(:new).and_return(@experiment)
       get :new
     end
     
     it 'assigns a new experiment to @experiment' do
       expect(assigns(:experiment)).to be_a_new(Experiment)
+    end
+    
+    it 'builds an associated message generation parameter set' do
+      expect(@experiment.message_generation_parameter_set).not_to be_nil
     end
 
     it { is_expected.to respond_with :ok }
@@ -110,8 +116,15 @@ RSpec.describe ExperimentsController, type: :controller do
     context 'with valid attributes' do
       it 'creates a new experiment' do
         expect {
-          post :create, experiment: attributes_for(:experiment)
+          post :create, experiment: attributes_for(:experiment, message_generation_parameter_set_attributes: attributes_for(:message_generation_parameter_set))
         }.to change(Experiment, :count).by(1)
+      end
+
+      it 'creates an associated message generation parameter set' do
+        expect {
+          post :create, experiment: attributes_for(:experiment, message_generation_parameter_set_attributes: attributes_for(:message_generation_parameter_set))
+        }.to change(MessageGenerationParameterSet, :count).by(1)
+        expect(MessageGenerationParameterSet.first.message_generating).not_to be_nil
       end
       
       it 'redirects to the index page' do
@@ -134,6 +147,42 @@ RSpec.describe ExperimentsController, type: :controller do
     end
   end
   
+  
+  #   describe 'POST #create' do
+  #   before do
+  #     @experiment = create(:experiment)
+  #   end
+
+  #   context 'with valid attributes' do
+  #     it 'creates a new message generation parameter set' do
+  #       expect {
+  #         post :create, message_generation_parameter_set: attributes_for(:message_generation_parameter_set), experiment_id: @experiment.id
+  #       }.to change(MessageGenerationParameterSet, :count).by(1)
+  #       message_generation_parameter_set = MessageGenerationParameterSet.last
+  #       expect(message_generation_parameter_set.message_generating).to eq(@experiment)
+  #     end
+      
+  #     it 'redirects to the experiment workspace' do
+  #       post :create, message_generation_parameter_set: attributes_for(:message_generation_parameter_set), experiment_id: @experiment.id
+  #       expect(response).to redirect_to experiment_url(@experiment)
+  #     end
+  #   end
+
+  #   context 'with invalid attributes' do
+  #     it 'does not save the message generation parameter set to the database' do
+  #       expect {
+  #         post :create, message_generation_parameter_set: attributes_for(:invalid_message_generation_parameter_set), experiment_id: @experiment.id
+  #       }.to_not change(MessageGenerationParameterSet, :count)
+  #     end
+      
+  #     it "re-renders the new template" do
+  #         post :create, message_generation_parameter_set: attributes_for(:invalid_message_generation_parameter_set), experiment_id: @experiment.id
+  #       expect(response).to render_template :new
+  #     end
+  #   end
+  # end
+
+
   describe 'PATCH update' do
     before :each do
       @experiment = create(:experiment)

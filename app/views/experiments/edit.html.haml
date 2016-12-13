@@ -12,9 +12,4 @@
 %h3.ui.top.attached.header
   Edit experiment: #{@experiment.name}
 .ui.attached.segment
-  = simple_form_for @experiment do |f|
-    = f.input :name, label: 'Name your experiment', hint: 'Give your experiment a good name'
-    = f.input :start_date, as: :string
-    = f.input :end_date, as: :string
-    = f.input :message_distribution_start_date, as: :string
-    = f.button :submit
+  = render partial: 'shared/forms/experiment'
