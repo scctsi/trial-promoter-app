@@ -2,23 +2,31 @@ require 'rails_helper'
 
 RSpec.describe ImageImporter do
   before do
-    @image_importer = ImageImporter.new
+    @image_urls = ['http://www.images.com/image1.png', 'http://www.images.com/image2.png']
+    @experiment_tag = '1-tcors'
+    @image_importer = ImageImporter.new(@image_urls, @experiment_tag)
   end
   
-  it 'has a predefined CSV file column index attribute mapping' do
-    expect(ImageImporter::COLUMN_INDEX_ATTRIBUTE_MAPPING).to eq({ 0 => 'url', 1 => 'original_filename', 2 => 'tag_list' })
+  it 'defines a post_initialize method which sets the import_class and column_index_attribute_mapping attributes' do
+    @image_importer.post_initialize
+    expect(@image_importer.import_class).to eq(Image)
+    expect(@image_importer.column_index_attribute_mapping).to eq({ 0 => 'url', 1 => 'original_filename', 2 => 'tag_list' })
+  end
+  
+  it 'defines a pre_import_prepare method which converts the image URLs to parsable CSV content' do
+    prepared_csv_content = @image_importer.pre_import_prepare(@image_urls)
+    
+    expect(prepared_csv_content).not_to eq(@image_urls)
+    expect(prepared_csv_content).not_to eq([])
   end
 
   it 'successfully imports images' do
-    image_urls = ['http://www.images.com/image1.png', 'http://www.images.com/image2.png']
-    experiment_tag = '1-tcors'
-
-    @image_importer.import(image_urls, experiment_tag)
+    @image_importer.import
     
-    expect(Image.count).to eq(image_urls.size)
+    expect(Image.count).to eq(@image_urls.size)
     image = Image.first
-    expect(image.url).to eq(image_urls[0])
+    expect(image.url).to eq(@image_urls[0])
     expect(image.original_filename).to eq('N/A')
-    expect(image.experiment_list).to eq([experiment_tag])
+    expect(image.experiment_list).to eq([@experiment_tag])
   end
 end

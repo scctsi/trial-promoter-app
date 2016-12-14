@@ -1,10 +1,34 @@
 class Importer
-  # TODO: This class is only unit tested via its subclasses.
-  def import(klass, parsed_csv_content, column_index_attribute_mapping, experiment_tag = '')
-    # Remove the heading row for the parsed_csv_content
-    parsed_csv_content = parsed_csv_content.drop(1)
+  attr_accessor :import_class, :parsed_csv_content, :column_index_attribute_mapping, :experiment_tag
+  
+  def initialize(parsed_csv_content, experiment_tag)
+    self.parsed_csv_content = parsed_csv_content
+    self.experiment_tag = experiment_tag
+    
+    post_initialize
+  end
+  
+  def post_initialize
+    self.import_class = nil
+    self.column_index_attribute_mapping = {}
+  end
 
-    parsed_csv_content.each do |row|
+  def pre_import_prepare(parsed_csv_content)
+    # Always return a duplicate of the parsed_csv_content so that we can modify that content as needed without affecting the original.
+    return parsed_csv_content.dup
+  end
+  
+  def post_import(prepared_csv_content)
+  end
+
+  # TODO: This class is only unit tested via its subclasses.
+  def import
+    prepared_csv_content = pre_import_prepare(parsed_csv_content)
+
+    # Remove the heading row for the parsed_csv_content
+    prepared_csv_content = prepared_csv_content.drop(1)
+
+    prepared_csv_content.each do |row|
       attributes = {}
       
       row.each.with_index do |value, i|
@@ -16,11 +40,9 @@ class Importer
         attributes['experiment_list'] = experiment_tag if !experiment_tag.blank?
       end
       
-      create(klass, attributes)
+      import_class.create!(attributes)
     end
-  end
-  
-  def create(klass, attributes)
-    return klass.create!(attributes)
+    
+    post_import(prepared_csv_content)
   end
 end

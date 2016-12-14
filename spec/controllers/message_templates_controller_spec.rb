@@ -99,18 +99,21 @@ RSpec.describe MessageTemplatesController, type: :controller do
   describe 'GET #import' do
     it 'imports message templates from a CSV file accessible at a URL' do
       experiment = create(:experiment)
-      message_template_importer = MessageTemplateImporter.new
-      allow(MessageTemplateImporter).to receive(:new).and_return(message_template_importer)
-      allow(message_template_importer).to receive(:import).and_call_original
       csv_url = 'http://sc-ctsi.org/trial-promoter/message_templates.csv'
       expected_json = { success: true, imported_count: 2}.to_json
 
+      message_template_importer = nil
       VCR.use_cassette 'message_templates/import' do
+        csv_file_reader = CsvFileReader.new
+        message_template_importer = MessageTemplateImporter.new(csv_file_reader.read(csv_url), experiment.to_param)
+        allow(MessageTemplateImporter).to receive(:new).with(instance_of(Array), experiment.to_param).and_return(message_template_importer)
+        allow(message_template_importer).to receive(:import).and_call_original
         get :import, url: csv_url, experiment_id: experiment.id
       end
 
       expect(MessageTemplate.count).to eq(2)
-      expect(message_template_importer).to have_received(:import).with(instance_of(Array), experiment.to_param)
+      expect(MessageTemplateImporter).to have_received(:new).with(instance_of(Array), experiment.to_param)
+      expect(message_template_importer).to have_received(:import)
       expect(response.header['Content-Type']).to match(/json/)
       expect(response.body).to eq(expected_json)
     end

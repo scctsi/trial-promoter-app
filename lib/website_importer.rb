@@ -1,7 +1,6 @@
 class WebsiteImporter < Importer
-  COLUMN_INDEX_ATTRIBUTE_MAPPING = { 0 => 'name', 1 => 'url', 2 => 'tag_list' }
-
-  def import(parsed_csv_content, experiment_tag = '')
-    super(Website, parsed_csv_content, COLUMN_INDEX_ATTRIBUTE_MAPPING, experiment_tag)
+  def post_initialize
+    self.import_class = Website
+    self.column_index_attribute_mapping = { 0 => 'name', 1 => 'url', 2 => 'tag_list' }
   end
 end
