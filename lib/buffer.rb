@@ -12,6 +12,19 @@ class Buffer
     }
   end
   
+  def self.get_social_media_profiles
+    response = get("https://api.bufferapp.com/1/profiles.json?access_token=#{Setting[:buffer_access_token]}")
+    response.parsed_response.each do |social_media_profile|
+      if SocialMediaProfile.find_by(buffer_id: social_media_profile["_id"]).nil?
+        SocialMediaProfile.create!(buffer_id: social_media_profile["_id"],
+                                    platform: social_media_profile["service"].to_sym,
+                                    service_id: social_media_profile["service_id"].to_sym,
+                                    service_type: social_media_profile["service_type"].to_sym,
+                                    service_username: social_media_profile["service_username"].to_sym)
+      end
+    end
+  end
+  
   def self.get_update(message)
     response = get("https://api.bufferapp.com/1/updates/#{message.buffer_update.buffer_id}.json?access_token=#{Setting[:buffer_access_token]}")
     message.buffer_update.status = response.parsed_response["status"]

@@ -11,7 +11,7 @@ RSpec.describe Buffer do
   end
   
   describe "(development only tests)", :development_only_tests => true do
-    it "returns the body of the POST request for creating a Buffer update via the Buffer API" do
+    it 'returns the body of the POST request for creating a Buffer update via the Buffer API' do
       post_request_body = Buffer.post_request_body_for_create(@message)
       
       expect(post_request_body[:profile_ids]).to eq(@message.buffer_profile_ids)
@@ -20,7 +20,39 @@ RSpec.describe Buffer do
       expect(post_request_body[:access_token]).to eq(Setting[:buffer_access_token])
     end
     
-    it "uses the Buffer API to create an update" do
+    describe 'synchronizing the list of social profiles' do
+      it 'uses the Buffer API to get an initial of social media profiles' do
+        VCR.use_cassette 'buffer/get_social_media_profiles' do
+          Buffer.get_social_media_profiles
+        end
+    
+        expect(Buffer).to have_received(:get).with("https://api.bufferapp.com/1/profiles.json?access_token=#{Setting[:buffer_access_token]}")
+        expect(SocialMediaProfile.count).to eq(7)
+        social_media_profile = SocialMediaProfile.first
+        expect(social_media_profile.platform).to eq(:facebook)
+        expect(social_media_profile.service_id).to eq('864687273610386')
+        expect(social_media_profile.service_type).to eq('page')
+        expect(social_media_profile.service_username).to eq('Boosted-Staging USC Clinical Trials')
+        expect(social_media_profile.buffer_id).to eq('55c11ce246042c5e7f8ae843')
+      end
+
+      it 'does not add a profile if it already exists (based on buffer_id being unique)' do
+        SocialMediaProfile.create!(buffer_id: '55c11ce246042c5e7f8ae843', service_id: '1', service_username: 'user', platform: :twitter)
+
+        VCR.use_cassette 'buffer/get_social_media_profiles' do
+          Buffer.get_social_media_profiles
+        end
+    
+        social_media_profiles = SocialMediaProfile.all
+        expect(social_media_profiles.count).to eq(7)
+        # Are the buffer ids unique?
+        buffer_ids = social_media_profiles.map(&:buffer_id)
+        # NOTE: Very inefficient code, but number of social media profiles should be < 25 in most installations.
+        expect(buffer_ids.detect{ |buffer_id| buffer_ids.count(buffer_id) > 1 }).to be_nil
+      end
+    end
+      
+    it 'uses the Buffer API to create an update' do
       VCR.use_cassette 'buffer/create_update' do
         Buffer.create_update(@message)
       end
@@ -34,7 +66,7 @@ RSpec.describe Buffer do
       expect(@message.buffer_update.persisted?).to be_truthy
     end
     
-    it "uses the Buffer API to get an update to the status (pending, sent) of a BufferUpdate and simultaneously updates the metrics for the corresponding message" do
+    it 'uses the Buffer API to get an update to the status (pending, sent) of a BufferUpdate and simultaneously updates the metrics for the corresponding message' do
       buffer_id = '55f8a111b762b0cf06d79116'
       @message.buffer_update = BufferUpdate.new(:buffer_id => buffer_id)
   
