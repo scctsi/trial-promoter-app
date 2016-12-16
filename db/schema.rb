@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161214204418) do
+ActiveRecord::Schema.define(version: 20161214221028) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -54,6 +54,13 @@ ActiveRecord::Schema.define(version: 20161214204418) do
     t.datetime "created_at",                                   null: false
     t.datetime "updated_at",                                   null: false
   end
+
+  create_table "experiments_social_media_profiles", force: :cascade do |t|
+    t.integer "experiment_id"
+    t.integer "social_media_profile_id"
+  end
+
+  add_index "experiments_social_media_profiles", ["experiment_id", "social_media_profile_id"], name: "index_experiments_social_media_profiles", unique: true, using: :btree
 
   create_table "hashtags", force: :cascade do |t|
     t.string   "phrase"
