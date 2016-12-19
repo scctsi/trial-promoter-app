@@ -8,7 +8,6 @@ class MessageFactory
     websites = Website.belonging_to(message_generating_instance)
 
     message_generating_instance.message_generation_parameter_set.social_network_choices.each do |social_network|
-      # TODO: Unit test this (Bug 1012)
       message_templates_for_social_network = message_templates.select{ |message_template| message_template.platform == social_network }
       message_generating_instance.message_generation_parameter_set.medium_choices.each do |medium|
         (0...message_generating_instance.message_generation_parameter_set.period_in_days).each do |day|
