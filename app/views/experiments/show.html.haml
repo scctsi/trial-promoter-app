@@ -52,7 +52,7 @@
   - else
     = render partial: 'shared/images', locals: { images: @images }
 .ui.bottom.attached.tab.segment{ 'data-tab': 'generated-messages' }
-  %a.ui.primary.labeled.icon.button{:href => generate_messages_path}
+  %a.ui.primary.labeled.icon.button{:href => create_messages_experiment_path(@experiment)}
     %i.send.icon
     Generate messages
   - if @messages.count == 0

@@ -1,5 +1,5 @@
 class ExperimentsController < ApplicationController
-  before_action :set_experiment, only: [:show, :edit, :update, :parameterized_slug]
+  before_action :set_experiment, only: [:show, :edit, :update, :parameterized_slug, :create_messages]
   layout "workspace", only: [:show]
   
   def index
@@ -14,6 +14,7 @@ class ExperimentsController < ApplicationController
     @message_templates = MessageTemplate.belonging_to(@experiment)
     @images = Image.belonging_to(@experiment)
     @websites = Website.belonging_to(@experiment)
+    # TODO: Unit test this
     @messages = Message.all
   end
   
@@ -43,6 +44,11 @@ class ExperimentsController < ApplicationController
     else
       render :edit
     end
+  end
+  
+  def create_messages
+    # TODO: Unit test this
+    @experiment.create_messages
   end
   
   private

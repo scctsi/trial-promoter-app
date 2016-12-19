@@ -43,22 +43,45 @@ RSpec.describe MessageFactory do
     end
     @experiment.message_generation_parameter_set = message_generation_parameter_set
 
-    messages = @message_factory.create(@experiment) 
+    @message_factory.create(@experiment) 
+    messages = @experiment.messages
 
     expect(messages.count).to eq(message_generation_parameter_set.expected_generated_message_count)
+    messages.each do |message|
+      expect(message.message_generating).to eq(@experiment)
+    end
     # Are the messages equally distributed across social networks?
-    messages_grouped_by_social_network = messages.group_by { |message| message.message_template.platform }
-    keys = messages_grouped_by_social_network.keys
-    # TODO: This test should be fixed to work with any number of social networks
-    expect(messages_grouped_by_social_network[keys[0]].length == messages_grouped_by_social_network[keys[1]].length)
-    expect(messages_grouped_by_social_network[keys[1]].length == messages_grouped_by_social_network[keys[2]].length)
+    expect_equal_distribution(messages.group_by { |message| message.message_template.platform })
     # Are the messages equally distributed across mediums?
-    messages_grouped_by_medium = messages.group_by { |message| message.medium }
-    keys = messages_grouped_by_medium.keys
-    expect(messages_grouped_by_medium[keys[0]].length == messages_grouped_by_medium[keys[1]].length)
+    expect_equal_distribution(messages.group_by { |message| message.medium })
     # Are the messages equally distributed across image present choices?
-    messages_grouped_by_image_present = messages.group_by { |message| message.image_present }
-    keys = messages_grouped_by_image_present.keys
-    expect(messages_grouped_by_image_present[keys[0]].length == messages_grouped_by_image_present[keys[1]].length)
+    expect_equal_distribution(messages.group_by { |message| message.image_present })
+  end
+  
+  it 'recreates the messages each time' do
+    message_generation_parameter_set = MessageGenerationParameterSet.new do |m|
+      m.social_network_choices = ['facebook']
+      m.social_network_distribution = :equal
+      m.medium_choices = ['ad']
+      m.medium_distribution = :equal
+      m.image_present_choices = ['with']
+      m.image_present_distribution = :equal
+      m.period_in_days = 10
+      m.number_of_messages_per_social_network = 3
+    end
+    @experiment.message_generation_parameter_set = message_generation_parameter_set
+
+    @message_factory.create(@experiment)
+    @message_factory.create(@experiment)
+    
+    messages = Message.all
+    expect(messages.count).to eq(message_generation_parameter_set.expected_generated_message_count)
+  end
+  
+  def expect_equal_distribution(grouped_messages)
+    keys = grouped_messages.keys
+    (0...(keys.count - 1)).each do |index|
+      expect(grouped_messages[keys[index]].length == grouped_messages[keys[index + 1]].length)
+    end
   end
 end
