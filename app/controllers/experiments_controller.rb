@@ -47,8 +47,8 @@ class ExperimentsController < ApplicationController
   end
   
   def create_messages
-    # TODO: Unit test this
     @experiment.create_messages
+    redirect_to experiment_url(@experiment)
   end
   
   private

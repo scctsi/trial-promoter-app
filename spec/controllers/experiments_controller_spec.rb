@@ -78,6 +78,23 @@ RSpec.describe ExperimentsController, type: :controller do
     end
   end
 
+  describe 'GET #create_messages' do
+    before do
+      @experiment = create(:experiment)
+      allow(Experiment).to receive(:find).and_return(@experiment)
+      allow(@experiment).to receive(:create_messages)
+      get :create_messages, id: @experiment
+    end
+
+    it 'asks the experiment to create messages' do
+      expect(@experiment).to have_received(:create_messages)
+    end
+    
+    it 'redirects to the experiment workspace' do
+      expect(response).to redirect_to experiment_url(Experiment.first)
+    end
+  end
+
   describe 'GET #new' do
     before do
       @experiment = Experiment.new
