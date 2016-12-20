@@ -96,13 +96,13 @@ $(document).ready(function() {
     });
   }
 
-  function popupInfo() {
-    $('.ui.fluid.big.olive.labeled.icon.button').popup({
+  function setupPopupInfo() {
+    $('.ui.fluid.big.teal.labeled.icon.button.start-experiment-button').popup({
       title   : 'What is an experiment?',
       content : 'An experiment applies scientific study design techniques and allows you to set up a project to test a hypothesis.'
     });
 
-    $('.ui.fluid.big.teal.labeled.icon.button').popup({
+    $('.ui.fluid.big.teal.labeled.icon.button.start-campaign-button').popup({
       title   : 'What is a campaign?',
       content : 'A campaign allows you to promote one or multiple types of contents (news, research studies, research findings, award announcements, etc.) without applying scientific study design techniques.'
     });
@@ -110,7 +110,7 @@ $(document).ready(function() {
 
 
   // Initialize
-  popupInfo();
+  setupPopupInfo();
   setUpDatePickers();
   setUpChosenDropdowns();
   setUpTagListInputs();

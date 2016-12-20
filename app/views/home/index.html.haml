@@ -1,22 +1,22 @@
 %h2.header
   Home
 %h3.ui.header
-  Before you begin using Trial Promoter
 - if Setting[:buffer_access_token].blank?
+  Before you begin using Trial Promoter
   .ui.negative.message
     .header
       It looks like you have not yet entered your Buffer access token. To fix this:
     %ul.list
       %li Setup a <a href='www.buffer.com' target='_blank'>Buffer</a> account.
       %li Enter your buffer access token in <a href="#{admin_settings_path}">settings</a>.
-.ui.segment
+.ui.container
   .ui.two.column.middle.aligned.grid
     .column
-      %a.ui.fluid.big.olive.labeled.icon.button{:href => new_experiment_path}
+      %a.ui.fluid.huge.teal.labeled.icon.button.start-experiment-button{:href => new_experiment_path}
         %i.line.chart.icon
         Start an experiment
     .column
-      %a.ui.fluid.big.teal.labeled.icon.button{:href => new_campaign_path}
+      %a.ui.fluid.huge.teal.labeled.icon.button.start-campaign-button{:href => new_campaign_path}
         %i.announcement.outline.icon
         Start a campaign
 
