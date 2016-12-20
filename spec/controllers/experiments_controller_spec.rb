@@ -187,9 +187,9 @@ RSpec.describe ExperimentsController, type: :controller do
       
       it "changes the associated message generation parameter set's attribute" do
         @experiment.reload
-        expect(@experiment.message_generation_parameter_set.social_network_choices).to eq(['facebook', 'instagram', ''])
-        expect(@experiment.message_generation_parameter_set.medium_choices).to eq(['ad', 'organic'])
-        expect(@experiment.message_generation_parameter_set.image_present_choices).to eq(['with', 'without'])
+        expect(@experiment.message_generation_parameter_set.social_network_choices).to eq([:facebook, :instagram, :''])
+        expect(@experiment.message_generation_parameter_set.medium_choices).to eq([:ad, :organic])
+        expect(@experiment.message_generation_parameter_set.image_present_choices).to eq([:with, :without])
         expect(@experiment.message_generation_parameter_set.social_network_distribution).to eq(:random)
         expect(@experiment.message_generation_parameter_set.medium_distribution).to eq(:random)
         expect(@experiment.message_generation_parameter_set.image_present_distribution).to eq(:random)

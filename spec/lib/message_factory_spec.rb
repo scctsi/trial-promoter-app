@@ -12,7 +12,7 @@ RSpec.describe MessageFactory do
 
   it 'creates a set of messages for one website, five message templates, 1 social network (equal distribution), 1 medium (equal distribution), with images (equal distribution), for 10 days and 3 messages per network per day' do
     message_generation_parameter_set = MessageGenerationParameterSet.new do |m|
-      m.social_network_choices = ['facebook']
+      m.social_network_choices = [:facebook]
       m.social_network_distribution = :equal
       m.medium_choices = ['ad']
       m.medium_distribution = :equal
@@ -57,7 +57,7 @@ RSpec.describe MessageFactory do
     # Are the messages equally distributed across image present choices?
     expect_equal_distribution(messages.group_by { |message| message.image_present })
   end
-  
+
   it 'recreates the messages each time' do
     message_generation_parameter_set = MessageGenerationParameterSet.new do |m|
       m.social_network_choices = ['facebook']

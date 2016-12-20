@@ -43,7 +43,7 @@ class MessageTemplate < ActiveRecord::Base
       end
     end
 
-    write_attribute(:content, cleaned_content)
+    self[:content] = cleaned_content
   end
   
   def hashtags=(hashtags)
@@ -63,7 +63,7 @@ class MessageTemplate < ActiveRecord::Base
       end
     end
     
-    write_attribute(:hashtags, cleaned_hashtags)
+    self[:hashtags] = cleaned_hashtags
   end
   
   def generate_message(clinical_trial)
