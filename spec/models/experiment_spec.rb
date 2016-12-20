@@ -26,4 +26,17 @@ RSpec.describe Experiment, type: :model do
     
     expect(experiment.to_param).to eq("#{experiment.id}-#{experiment.name.parameterize}")
   end
+  
+  it 'creates messages using a message factory' do
+    experiment = create(:experiment)
+    allow(experiment).to receive(:create_messages).and_call_original
+    message_factory = MessageFactory.new
+    allow(message_factory).to receive(:create).with(experiment)
+    allow(MessageFactory).to receive(:new).and_return(message_factory)
+    
+    experiment.create_messages
+
+    expect(MessageFactory).to have_received(:new)
+    expect(message_factory).to have_received(:create).with(experiment)
+  end
 end

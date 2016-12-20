@@ -26,7 +26,6 @@ class Experiment < ActiveRecord::Base
   end
   
   def create_messages
-    # TODO: Unit test this!
     message_factory = MessageFactory.new
     message_factory.create(self)
   end
