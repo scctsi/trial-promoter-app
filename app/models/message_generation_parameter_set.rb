@@ -34,15 +34,15 @@ class MessageGenerationParameterSet < ActiveRecord::Base
   belongs_to :message_generating, polymorphic: true
   
   def social_network_choices
-    self[:social_network_choices].map{ |social_network_choice| social_network_choice.to_sym }
+    self[:social_network_choices].map{ |social_network_choice| social_network_choice.to_sym }.select{ |symbol| symbol != :"" }
   end
 
   def medium_choices
-    self[:medium_choices].map{ |medium_choice| medium_choice.to_sym }
+    self[:medium_choices].map{ |medium_choice| medium_choice.to_sym }.select{ |symbol| symbol != :"" }
   end
 
   def image_present_choices
-    self[:image_present_choices].map{ |image_present_choice| image_present_choice.to_sym }
+    self[:image_present_choices].map{ |image_present_choice| image_present_choice.to_sym }.select{ |symbol| symbol != :"" }
   end
   
   def expected_generated_message_count

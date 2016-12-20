@@ -88,6 +88,36 @@ describe MessageGenerationParameterSet do
     expect(message_generation_parameter_set.image_present_choices).to eq([:with, :without])
   end
 
+  it 'returns social network choices stripped of the empty string that is inserted by the editing form' do
+    message_generation_parameter_set = build(:message_generation_parameter_set)
+    message_generation_parameter_set.social_network_choices = ['instagram', 'twitter', ""]
+    
+    message_generation_parameter_set.save
+    message_generation_parameter_set.reload
+    
+    expect(message_generation_parameter_set.social_network_choices).to eq([:instagram, :twitter])
+  end
+
+  it 'returns medium choices as an array of symbols stripped of the empty string that is inserted by the editing form' do
+    message_generation_parameter_set = build(:message_generation_parameter_set)
+    message_generation_parameter_set.medium_choices = ['ad', 'organic', ""]
+    
+    message_generation_parameter_set.save
+    message_generation_parameter_set.reload
+    
+    expect(message_generation_parameter_set.medium_choices).to eq([:ad, :organic])
+  end
+
+  it 'returns image choices as an array of symbols stripped of the empty string that is inserted by the editing form' do
+    message_generation_parameter_set = build(:message_generation_parameter_set)
+    message_generation_parameter_set.image_present_choices = ['with', 'without', ""]
+    
+    message_generation_parameter_set.save
+    message_generation_parameter_set.reload
+    
+    expect(message_generation_parameter_set.image_present_choices).to eq([:with, :without])
+  end
+
   describe 'number of generated messages' do
     before do
       experiment = create(:experiment)
