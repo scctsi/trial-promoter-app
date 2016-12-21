@@ -96,7 +96,7 @@ $(document).ready(function() {
     });
   }
 
-  function popupInfo() {
+  function setupPopupInfo() {
     $('.ui.fluid.huge.teal.labeled.icon.button.start-experiment-button').popup({
       title   : 'What is an experiment?',
       content : 'An experiment applies scientific study design techniques and allows you to set up a project to test a hypothesis.'
@@ -108,7 +108,8 @@ $(document).ready(function() {
     });
   }
   // Initialize
-  popupInfo();
+
+  setupPopupInfo();
   setUpDatePickers();
   setUpChosenDropdowns();
   setUpTagListInputs();
