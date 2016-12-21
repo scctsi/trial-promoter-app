@@ -97,12 +97,12 @@ $(document).ready(function() {
   }
 
   function popupInfo() {
-    $('.ui.fluid.big.teal.labeled.icon.button.start-experiment-button').popup({
+    $('.ui.fluid.huge.teal.labeled.icon.button.start-experiment-button').popup({
       title   : 'What is an experiment?',
       content : 'An experiment applies scientific study design techniques and allows you to set up a project to test a hypothesis.'
     });
 
-    $('.ui.fluid.big.teal.labeled.icon.button.2').popup({
+    $('.ui.fluid.huge.teal.labeled.icon.button.start-campaign-button').popup({
       title   : 'What is a campaign?',
       content : 'A campaign allows you to promote one or multiple types of contents (news, research studies, research findings, award announcements, etc.) without applying scientific study design techniques.'
     });
