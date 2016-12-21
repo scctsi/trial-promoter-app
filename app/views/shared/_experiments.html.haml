@@ -1,5 +1,5 @@
 %table.ui.celled.striped.table
-  %thead 
+  %thead
     %tr
       %th Name
       %th Start
@@ -21,8 +21,8 @@
             = experiment.message_distribution_start_date.strftime('%B %d, %Y')
         %td
           .ui.buttons
-            %a.ui.button{ href: experiment_path(experiment) }
+            %a.ui.button.workspace-button{ href: experiment_path(experiment) }
               Workspace
             .or
-            %a.ui.button{ href: experiment_path(experiment) }
+            %a.ui.button.dashboard-button{ href: experiment_path(experiment, dashboard: true) }
               Dashboard

@@ -1,8 +1,11 @@
 %h2.header
   %i.announcement.icon
   Campaigns
-%a.ui.primary.labeled.icon.button{:href => new_campaign_path}
-  %i.announcement.outline.icon
-  Add campaign
+.ui.container
+  .ui.three.column.middle.aligned.grid
+    .column
+      %a.ui.fluid.huge.teal.labeled.icon.button{:href => new_campaign_path}
+        %i.announcement.outline.icon
+        Add campaign
 = render partial: 'shared/campaigns', locals: {campaigns: @campaigns}
 

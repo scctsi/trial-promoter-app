@@ -1,7 +1,7 @@
 class ExperimentsController < ApplicationController
   before_action :set_experiment, only: [:show, :edit, :update, :parameterized_slug, :create_messages]
   layout "workspace", only: [:show]
-  
+
   def index
     @experiments = Experiment.all
   end
@@ -9,20 +9,21 @@ class ExperimentsController < ApplicationController
   def parameterized_slug
     render json: { parameterized_slug: @experiment.to_param }
   end
-  
+
   def show
+    @dashboard = !!params[:dashboard]
     @message_templates = MessageTemplate.belonging_to(@experiment)
     @images = Image.belonging_to(@experiment)
     @websites = Website.belonging_to(@experiment)
     # TODO: Unit test this
     @messages = Message.all
   end
-  
+
   def new
     @experiment = Experiment.new
     @experiment.build_message_generation_parameter_set
   end
-  
+
   def create
     @experiment = Experiment.new(experiment_params)
     # TODO: There should be an easier way to automatically set the parent object
@@ -45,14 +46,14 @@ class ExperimentsController < ApplicationController
       render :edit
     end
   end
-  
+
   def create_messages
     @experiment.create_messages
     redirect_to experiment_url(@experiment)
   end
-  
+
   private
-  
+
   def set_experiment
     @experiment = Experiment.find(params[:id])
   end
