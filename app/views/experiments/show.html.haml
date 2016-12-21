@@ -8,17 +8,30 @@
 .ui.divider
 %h2.ui.center.aligned.header
   #{@experiment.name} workspace
-.ui.top.attached.tabular.menu
-  %a{ class: 'item active', 'data-tab': 'setup' }
-    Setup
-  %a{ class: 'item', 'data-tab': 'message-templates' }
-    Message templates
-  %a{ class: 'item', 'data-tab': 'images' }
-    Images
-  %a{ class: 'item', 'data-tab': 'generated-messages' }
-    Generated messages
-  %a{ class: 'item', 'data-tab': 'dashboard' }
-    Dashboard
+-if @dashboard
+  .ui.top.attached.tabular.menu
+    %a{ class: 'item', 'data-tab': 'setup' }
+      Setup
+    %a{ class: 'item', 'data-tab': 'message-templates' }
+      Message templates
+    %a{ class: 'item', 'data-tab': 'images' }
+      Images
+    %a{ class: 'item', 'data-tab': 'generated-messages' }
+      Generated messages
+    %a{ class: 'item active', 'data-tab': 'dashboard' }
+      Dashboard
+-else
+  .ui.top.attached.tabular.menu
+    %a{ class: 'item active', 'data-tab': 'setup' }
+      Setup
+    %a{ class: 'item', 'data-tab': 'message-templates' }
+      Message templates
+    %a{ class: 'item', 'data-tab': 'images' }
+      Images
+    %a{ class: 'item', 'data-tab': 'generated-messages' }
+      Generated messages
+    %a{ class: 'item', 'data-tab': 'dashboard' }
+      Dashboard
 .ui.bottom.attached.tab.segment.active{ 'data-tab': 'setup' }
   %a.ui.primary.labeled.icon.button{ :href => edit_experiment_path(@experiment) }
     %i.industry.icon
@@ -96,7 +109,7 @@
             %input.hidden{:name => "fruit", :tabindex => "0", :type => "checkbox"}/
             %label Unpaid (organic)
       .inline.fields
-        %label Images: 
+        %label Images:
         .field
           .ui.checkbox
             %input.hidden{:name => "fruit", :tabindex => "0", :type => "checkbox", checked: "checked"}/
@@ -106,16 +119,16 @@
             %input.hidden{:name => "fruit", :tabindex => "0", :type => "checkbox"}/
             %label Without
       .inline.field
-        %label 
+        %label
           Number of top messages to show:
         %input{:type => "text", :placeholder => "5"}
   .ui.three.column.grid
     .column
       .ui.fluid.card
         .content
-          .header 
+          .header
             %i.twitter.icon
-            Engagements: 50  
+            Engagements: 50
           .meta 2 days ago
           .description
             %p
@@ -124,26 +137,26 @@
           .ui.three.column.grid
             .column
               .mini.statistic
-                .value 
+                .value
                   25
                 .label
                   retweets
             .column
               .mini.statistic
-                .value 
+                .value
                   15
                 .label
                   mentions
             .column
               .mini.statistic
-                .value 
+                .value
                   10
                 .label
                   likes
     .column
       .ui.fluid.card
         .content
-          .header 
+          .header
             %i.facebook.f.icon
             Here is an example of a much longer message sent via Facebook. This message is longer than 140 characters and is an example of what happens where a really long message is present.
           .meta 2 days ago

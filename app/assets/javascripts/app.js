@@ -7,7 +7,7 @@ $(document).ready(function() {
       showDropdowns: true,
       format: 'MM-DD-YYYY',
       startDate: '08-01-2016'
-    }); 
+    });
   }
 
   function setUpChosenDropdowns() {
@@ -38,15 +38,15 @@ $(document).ready(function() {
       }
     });
   }
-  
+
   function setUpFilepicker() {
     filepicker.setKey("AU0m7oO6OSQW5bqqVk0HTz");
   }
-  
+
   function setUpMessageTemplateImports() {
     $('#message-templates-file-upload-button').click(function() {
       var experimentId = $(this).data('experiment-id');
-      
+
       filepicker.pick({
           mimetype: '*/*',
           container: 'modal',
@@ -63,7 +63,7 @@ $(document).ready(function() {
             }
           });
         }
-      );      
+      );
     });
   }
 
@@ -78,7 +78,7 @@ $(document).ready(function() {
         },
         function(Blobs) {
           var imageUrls = [];
-          
+
           for (var i = 0; i < Blobs.length; i++) {
             imageUrls.push(Blobs[i].url);
             $.ajax({
@@ -96,7 +96,20 @@ $(document).ready(function() {
     });
   }
 
+  function setupPopupInfo() {
+    $('.ui.fluid.huge.teal.labeled.icon.button.start-experiment-button').popup({
+      title   : 'What is an experiment?',
+      content : 'An experiment applies scientific study design techniques and allows you to set up a project to test a hypothesis.'
+    });
+
+    $('.ui.fluid.huge.teal.labeled.icon.button.start-campaign-button').popup({
+      title   : 'What is a campaign?',
+      content : 'A campaign allows you to promote one or multiple types of contents (news, research studies, research findings, award announcements, etc.) without applying scientific study design techniques.'
+    });
+  }
+
   // Initialize
+  setupPopupInfo();
   setUpDatePickers();
   setUpChosenDropdowns();
   setUpTagListInputs();
