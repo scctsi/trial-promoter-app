@@ -107,8 +107,6 @@ $(document).ready(function() {
       content : 'A campaign allows you to promote one or multiple types of contents (news, research studies, research findings, award announcements, etc.) without applying scientific study design techniques.'
     });
   }
-
-
   // Initialize
   popupInfo();
   setUpDatePickers();
