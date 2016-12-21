@@ -4,6 +4,7 @@ class Admin::SettingsController < ApplicationController
   
   def index
     @settings = Setting.get_all
+    @social_media_profiles = SocialMediaProfile.all
   end
   
   def edit

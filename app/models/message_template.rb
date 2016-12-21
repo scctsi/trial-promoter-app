@@ -27,6 +27,11 @@ class MessageTemplate < ActiveRecord::Base
   scope :belonging_to, ->(experiment) { tagged_with(experiment.to_param, on: :experiments) }
 
   STANDARD_VARIABLES = [/{\s*pi_first_name\s*}/i, /{\s*pi_last_name\s*}/i, /{\s*disease\s*}/i, /{\s*title\s*}/i, /{\s*name\s*}/i, /{\s*url\s*}/i]
+  
+  def platform
+    return self[:platform].to_sym if !self[:platform].nil?
+    nil
+  end
     
   def content=(content)
     cleaned_content = content
@@ -43,7 +48,7 @@ class MessageTemplate < ActiveRecord::Base
       end
     end
 
-    write_attribute(:content, cleaned_content)
+    self[:content] = cleaned_content
   end
   
   def hashtags=(hashtags)
@@ -63,7 +68,7 @@ class MessageTemplate < ActiveRecord::Base
       end
     end
     
-    write_attribute(:hashtags, cleaned_hashtags)
+    self[:hashtags] = cleaned_hashtags
   end
   
   def generate_message(clinical_trial)

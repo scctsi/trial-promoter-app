@@ -25,39 +25,97 @@ describe MessageGenerationParameterSet do
   it { is_expected.to enumerize(:image_present_distribution).in(:equal, :random).with_default(:equal) }
   it { is_expected.to validate_presence_of :period_in_days }
   it { is_expected.to validate_presence_of :number_of_messages_per_social_network }
-  # TODO: Test period_in_days is an integer >= 0
-  # TODO: Test number_of_messages_per_social_network is an integer >= 0
   it { is_expected.to validate_presence_of :message_generating }
   it { is_expected.to belong_to(:message_generating) }
 
   it 'stores an array of social network choices' do
+    message_generation_parameter_set = build(:message_generation_parameter_set)
+    message_generation_parameter_set.social_network_choices = [:instagram, :twitter]
+    
+    message_generation_parameter_set.save
+    message_generation_parameter_set.reload
+    
+    expect(message_generation_parameter_set.social_network_choices).to eq([:instagram, :twitter])
+  end
+
+  it 'stores an array of medium choices' do
+    message_generation_parameter_set = build(:message_generation_parameter_set)
+    message_generation_parameter_set.medium_choices = [:ad, :organic]
+    
+    message_generation_parameter_set.save
+    message_generation_parameter_set.reload
+    
+    expect(message_generation_parameter_set.medium_choices).to eq([:ad, :organic])
+  end
+
+  it 'stores an array of image choices' do
+    message_generation_parameter_set = build(:message_generation_parameter_set)
+    message_generation_parameter_set.image_present_choices = [:with, :without]
+    
+    message_generation_parameter_set.save
+    message_generation_parameter_set.reload
+    
+    expect(message_generation_parameter_set.image_present_choices).to eq([:with, :without])
+  end
+
+  it 'returns social network choices as an array of symbols' do
     message_generation_parameter_set = build(:message_generation_parameter_set)
     message_generation_parameter_set.social_network_choices = ['instagram', 'twitter']
     
     message_generation_parameter_set.save
     message_generation_parameter_set.reload
     
-    expect(message_generation_parameter_set.social_network_choices).to eq(['instagram', 'twitter'])
+    expect(message_generation_parameter_set.social_network_choices).to eq([:instagram, :twitter])
   end
 
-  it 'stores an array of medium choices' do
+  it 'returns medium choices as an array of symbols' do
     message_generation_parameter_set = build(:message_generation_parameter_set)
     message_generation_parameter_set.medium_choices = ['ad', 'organic']
     
     message_generation_parameter_set.save
     message_generation_parameter_set.reload
     
-    expect(message_generation_parameter_set.medium_choices).to eq(['ad', 'organic'])
+    expect(message_generation_parameter_set.medium_choices).to eq([:ad, :organic])
   end
 
-  it 'stores an array of image choices' do
+  it 'returns image choices as an array of symbols' do
     message_generation_parameter_set = build(:message_generation_parameter_set)
     message_generation_parameter_set.image_present_choices = ['with', 'without']
     
     message_generation_parameter_set.save
     message_generation_parameter_set.reload
     
-    expect(message_generation_parameter_set.image_present_choices).to eq(['with', 'without'])
+    expect(message_generation_parameter_set.image_present_choices).to eq([:with, :without])
+  end
+
+  it 'returns social network choices stripped of the empty string that is inserted by the editing form' do
+    message_generation_parameter_set = build(:message_generation_parameter_set)
+    message_generation_parameter_set.social_network_choices = ['instagram', 'twitter', ""]
+    
+    message_generation_parameter_set.save
+    message_generation_parameter_set.reload
+    
+    expect(message_generation_parameter_set.social_network_choices).to eq([:instagram, :twitter])
+  end
+
+  it 'returns medium choices as an array of symbols stripped of the empty string that is inserted by the editing form' do
+    message_generation_parameter_set = build(:message_generation_parameter_set)
+    message_generation_parameter_set.medium_choices = ['ad', 'organic', ""]
+    
+    message_generation_parameter_set.save
+    message_generation_parameter_set.reload
+    
+    expect(message_generation_parameter_set.medium_choices).to eq([:ad, :organic])
+  end
+
+  it 'returns image choices as an array of symbols stripped of the empty string that is inserted by the editing form' do
+    message_generation_parameter_set = build(:message_generation_parameter_set)
+    message_generation_parameter_set.image_present_choices = ['with', 'without', ""]
+    
+    message_generation_parameter_set.save
+    message_generation_parameter_set.reload
+    
+    expect(message_generation_parameter_set.image_present_choices).to eq([:with, :without])
   end
 
   describe 'number of generated messages' do

@@ -18,6 +18,12 @@ RSpec.describe MessageTemplate do
   it { is_expected.to enumerize(:platform).in(:twitter, :facebook, :instagram) }
   it { is_expected.to have_many :messages }
 
+  it 'returns the platform as a symbol' do
+    message_template = create(:message_template, platform: 'twitter')
+
+    expect(message_template.platform).to be(:twitter)
+  end
+  
   describe 'standardizing variables' do
     it 'downcases the pi_first_name variable' do
       message_template = MessageTemplate.new(content: 'This is a message_template containing a {PI_first_name} variable')

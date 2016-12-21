@@ -10,7 +10,7 @@
     - messages.each do |message|
       %tr
         %td= message.content
-        %td= message.message_template.platform.titleize
+        %td= message.message_template.platform.to_s.titleize
         %td= message.medium
         %td= message.image_present
         %td
