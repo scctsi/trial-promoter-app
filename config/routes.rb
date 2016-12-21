@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'social_media_profiles/sync_with_buffer'
+
   root 'home#index'
 
   # Campaigns

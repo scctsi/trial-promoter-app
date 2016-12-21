@@ -12,3 +12,26 @@
         %td= key.humanize
         %td= Setting[key]
         %td= link_to 'Edit', edit_admin_setting_path(key)
+%h2.header
+  Social media profiles
+%a.ui.large.teal.labeled.icon.button{:href => social_media_profiles_sync_with_buffer_path}
+  %i.refresh.icon
+  Sync with Buffer
+%table.ui.celled.striped.table
+  %thead
+    %tr
+      %th Service ID
+      %th Service username
+      %th Buffer ID
+      %th Platform
+  %tbody
+    - @social_media_profiles.each do |social_media_profile|
+      %tr
+        %td= social_media_profile.service_id
+        %td= social_media_profile.service_username
+        %td= social_media_profile.buffer_id
+        %td= social_media_profile.platform
+
+      
+
+        
