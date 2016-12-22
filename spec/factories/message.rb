@@ -4,6 +4,6 @@ FactoryGirl.define do
     association :message_generating, factory: :experiment
     association :promotable, factory: :website
     content 'Content'
-    status :new
+    publish_status :new
   end
 end
