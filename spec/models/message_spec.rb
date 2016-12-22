@@ -59,6 +59,14 @@ describe Message do
     skip "Test this later."
   end
   
+  it "parameterizes id and the experiments's param together" do
+    experiment = create(:experiment, name: 'TCORS 2')
+    
+    message = create(:message, message_generating: experiment)
+    expect(message.to_param).to eq("#{experiment.to_param}-message-#{message.id.to_s}")
+  end
+
+  
   describe 'querying' do
     before do
       @messages = build_list(:message, 5)

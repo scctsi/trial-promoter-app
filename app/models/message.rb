@@ -60,4 +60,8 @@ class Message < ActiveRecord::Base
     return nil if buffer_updates.length == 0
     buffer_updates.first.message
   end
+  
+  def to_param
+    "#{message_generating.to_param}-message-#{id}"
+  end
 end
