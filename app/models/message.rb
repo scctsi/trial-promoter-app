@@ -62,6 +62,6 @@ class Message < ActiveRecord::Base
   end
   
   def to_param
-    "#{message_generating.to_param}-message-#{id.to_s}"
+    "#{message_generating.to_param}-message-#{id}"
   end
 end
