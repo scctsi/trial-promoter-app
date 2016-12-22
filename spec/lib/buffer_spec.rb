@@ -60,7 +60,7 @@ RSpec.describe Buffer do
       expect(Buffer).to have_received(:post).with('https://api.bufferapp.com/1/updates/create.json', {:body => Buffer.post_request_body_for_create(@message)})
       expect(@message.buffer_update).not_to be_nil
       # The response returned from Buffer contains a Buffer ID that we need to store in a newly created buffer_update
-      expect(@message.buffer_update.buffer_id).to eq('57c5dffd2afb543875c27440')
+      expect(@message.buffer_update.buffer_id).not_to be_blank
       # The message and the new Buffer update should be persisted
       expect(@message.persisted?).to be_truthy
       expect(@message.buffer_update.persisted?).to be_truthy

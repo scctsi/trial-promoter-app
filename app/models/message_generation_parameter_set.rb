@@ -36,27 +36,15 @@ class MessageGenerationParameterSet < ActiveRecord::Base
   belongs_to :message_generating, polymorphic: true
 
   def social_network_choices
-    if !self[:social_network_choices].nil?
-      self[:social_network_choices].map{ |social_network_choice| social_network_choice.to_sym }.select{ |symbol| symbol != :"" }
-    else
-      nil
-    end
+    return symbolize_array_items(self[:social_network_choices])
   end
 
   def medium_choices
-    if !self[:medium_choices].nil?
-      self[:medium_choices].map{ |medium_choice| medium_choice.to_sym }.select{ |symbol| symbol != :"" } || self[:medium_choices]
-    else
-      nil
-    end
+    return symbolize_array_items(self[:medium_choices])
   end
 
   def image_present_choices
-    if !self[:image_present_choices].nil?
-      self[:image_present_choices].map{ |image_present_choice| image_present_choice.to_sym }.select{ |symbol| symbol != :"" } || self[:image_present_choices]
-    else
-      nil
-    end
+    return symbolize_array_items(self[:image_present_choices])
   end
 
   def expected_generated_message_count
@@ -73,5 +61,14 @@ class MessageGenerationParameterSet < ActiveRecord::Base
     calculated_count *= number_of_messages_per_social_network
 
     return calculated_count
+  end
+  
+  private
+  
+  def symbolize_array_items(array)
+    # Convert an array of strings to an array of symbols, removing any blank string first
+    # Remove any blank string first.
+    return array.select{ |item| !item.blank? }.map{ |item| item.to_sym } if !array.nil?
+    nil
   end
 end
