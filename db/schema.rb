@@ -103,7 +103,7 @@ ActiveRecord::Schema.define(version: 20161222203610) do
   create_table "messages", force: :cascade do |t|
     t.integer  "message_template_id"
     t.text     "content"
-    t.string   "tracking_url",                limit: 2000
+    t.string   "tracking_url",            limit: 2000
     t.text     "buffer_profile_ids"
     t.datetime "created_at",                               null: false
     t.datetime "updated_at",                               null: false
