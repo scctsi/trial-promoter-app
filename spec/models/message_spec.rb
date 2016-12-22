@@ -2,22 +2,24 @@
 #
 # Table name: messages
 #
-#  id                      :integer          not null, primary key
-#  message_template_id     :integer
-#  content                 :text
-#  tracking_url            :string(2000)
-#  status                  :string
-#  buffer_profile_ids      :text
-#  created_at              :datetime         not null
-#  updated_at              :datetime         not null
-#  website_id              :integer
-#  message_generating_id   :integer
-#  message_generating_type :string
-#  promotable_id           :integer
-#  promotable_type         :string
-#  medium                  :string
-#  image_present           :string
-#  image_id                :integer
+#  id                          :integer          not null, primary key
+#  message_template_id         :integer
+#  content                     :text
+#  tracking_url                :string(2000)
+#  buffer_profile_ids          :text
+#  created_at                  :datetime         not null
+#  updated_at                  :datetime         not null
+#  website_id                  :integer
+#  message_generating_id       :integer
+#  message_generating_type     :string
+#  promotable_id               :integer
+#  promotable_type             :string
+#  medium                      :string
+#  image_present               :string
+#  image_id                    :integer
+#  publish_status              :string
+#  buffer_publish_date         :datetime
+#  social_network_publish_date :datetime
 #
 
 require 'rails_helper'
@@ -25,7 +27,7 @@ require 'rails_helper'
 describe Message do
   it { is_expected.to validate_presence_of :content }
   it { is_expected.to belong_to :message_template }
-  it { is_expected.to enumerize(:publish_status).in(:new, :sent_to_buffer).with_default(:new).with_predicates(true) }
+  it { is_expected.to enumerize(:publish_status).in(:pending, :published_to_buffer, :published_to_social_network).with_default(:pending).with_predicates(true) }
   it { is_expected.to have_one :buffer_update }
   it { is_expected.to have_many :metrics }
   it { is_expected.to validate_presence_of :message_generating }

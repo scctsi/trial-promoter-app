@@ -2,22 +2,24 @@
 #
 # Table name: messages
 #
-#  id                      :integer          not null, primary key
-#  message_template_id     :integer
-#  content                 :text
-#  tracking_url            :string(2000)
-#  publish_status                  :string
-#  buffer_profile_ids      :text
-#  created_at              :datetime         not null
-#  updated_at              :datetime         not null
-#  website_id              :integer
-#  message_generating_id   :integer
-#  message_generating_type :string
-#  promotable_id           :integer
-#  promotable_type         :string
-#  medium                  :string
-#  image_present           :string
-#  image_id                :integer
+#  id                          :integer          not null, primary key
+#  message_template_id         :integer
+#  content                     :text
+#  tracking_url                :string(2000)
+#  buffer_profile_ids          :text
+#  created_at                  :datetime         not null
+#  updated_at                  :datetime         not null
+#  website_id                  :integer
+#  message_generating_id       :integer
+#  message_generating_type     :string
+#  promotable_id               :integer
+#  promotable_type             :string
+#  medium                      :string
+#  image_present               :string
+#  image_id                    :integer
+#  publish_status              :string
+#  buffer_publish_date         :datetime
+#  social_network_publish_date :datetime
 #
 
 class Message < ActiveRecord::Base
