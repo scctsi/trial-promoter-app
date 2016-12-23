@@ -105,8 +105,8 @@ ActiveRecord::Schema.define(version: 20161222185101) do
     t.text     "content"
     t.string   "tracking_url",            limit: 2000
     t.text     "buffer_profile_ids"
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
     t.integer  "website_id"
     t.integer  "message_generating_id"
     t.string   "message_generating_type"
@@ -116,7 +116,8 @@ ActiveRecord::Schema.define(version: 20161222185101) do
     t.string   "image_present"
     t.integer  "image_id"
     t.string   "publish_status"
-  end
+    t.datetime "buffer_publish_date"
+    t.datetime "social_network_publish_date"
 
   add_index "messages", ["message_generating_type", "message_generating_id"], name: "index_on_message_generating_for_messages", using: :btree
   add_index "messages", ["promotable_type", "promotable_id"], name: "index_on_promotable_for_messages", using: :btree
