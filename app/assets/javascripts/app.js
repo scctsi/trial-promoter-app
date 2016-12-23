@@ -48,7 +48,7 @@ $(document).ready(function() {
       var experimentId = $(this).data('experiment-id');
 
       filepicker.pick({
-          mimetype: '*/*',
+          mimetypes: ['text/csv', 'application/vnd.ms-excel'],
           container: 'modal',
           services: ['COMPUTER', 'GOOGLE_DRIVE', 'DROPBOX']
         },
@@ -60,6 +60,7 @@ $(document).ready(function() {
             dataType: 'json',
             async: false,
             success: function(retdata) {
+
             }
           });
         }
