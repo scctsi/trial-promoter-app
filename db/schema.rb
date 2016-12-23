@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161214221028) do
+ActiveRecord::Schema.define(version: 20161222203610) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -104,10 +104,9 @@ ActiveRecord::Schema.define(version: 20161214221028) do
     t.integer  "message_template_id"
     t.text     "content"
     t.string   "tracking_url",            limit: 2000
-    t.string   "status"
     t.text     "buffer_profile_ids"
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
     t.integer  "website_id"
     t.integer  "message_generating_id"
     t.string   "message_generating_type"
@@ -116,6 +115,9 @@ ActiveRecord::Schema.define(version: 20161214221028) do
     t.string   "medium"
     t.string   "image_present"
     t.integer  "image_id"
+    t.string   "publish_status"
+    t.datetime "buffer_publish_date"
+    t.datetime "social_network_publish_date"
   end
 
   add_index "messages", ["message_generating_type", "message_generating_id"], name: "index_on_message_generating_for_messages", using: :btree
