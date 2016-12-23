@@ -2,6 +2,10 @@
 defaults: &defaults
   buffer_access_token: ""
   enable_data_sharing: true
+  twitter_consumer_key: ""
+  twitter_consumer_secret: ""
+  twitter_access_token: ""
+  twitter_access_token_secret: ""
 
 development:
   <<: *defaults
