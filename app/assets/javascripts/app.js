@@ -119,6 +119,6 @@ $(document).ready(function() {
   setUpFilepicker();
   setUpMessageTemplateImports();
   setUpImageImports();
-  $('.tabular.menu .item').tab();
+  $('.menu .item').tab();
 });
 

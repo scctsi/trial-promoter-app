@@ -32,8 +32,7 @@
       Generated messages
     %a{ class: 'item', 'data-tab': 'dashboard' }
       Dashboard
-  = render partial: 'shared/tabs/setup'
-.ui.bottom.attached.tab.segment{ 'data-tab': 'setup' }
+.ui.bottom.attached.tab.segment.active{ 'data-tab': 'setup' }
   %a.ui.primary.labeled.icon.button{ :href => edit_experiment_path(@experiment) }
     %i.industry.icon
     Change experiment setup
@@ -50,8 +49,22 @@
       %ul
         %li Content
         %li Platform (Twitter, Facebook or Instagram)
-        %li Tags
         %li Hashtags
+        %li Tags
+      %p e.g.
+      %table
+      %tr
+        %td{colspan: 2}
+          %td Content,
+          %td Platform,
+          %td Hashtags,
+          %td Tags
+      %table
+      %tr
+        %td Help us fight breast cancer!,
+        %td Twitter,
+        %td "#cancer,#brca1",
+        %td "stem-1, theme-1"
   - else
     = render partial: 'shared/message_templates', locals: { message_templates: @message_templates }
 .ui.bottom.attached.tab.segment{ 'data-tab': 'images' }
