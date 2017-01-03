@@ -61,7 +61,11 @@ $(document).ready(function() {
             async: false,
             success: function(retdata) {
               url = window.location.href;
-              window.location.href = url.split("=")[0] + "=message_templates";
+              if (url.indexOf("?") === -1){
+                window.location.href = url + "?selected_tab=message_templates";
+              } else {
+                window.location.href = url.split("=")[0] + "=message_templates";
+              }
             }
           });
         }
