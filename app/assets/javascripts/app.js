@@ -61,6 +61,7 @@ $(document).ready(function() {
             async: false,
             success: function(retdata) {
 
+
             }
           });
         }
@@ -89,6 +90,7 @@ $(document).ready(function() {
               dataType: 'json',
               async: false,
               success: function(retdata) {
+
               }
             });
           }
@@ -117,6 +119,6 @@ $(document).ready(function() {
   setUpFilepicker();
   setUpMessageTemplateImports();
   setUpImageImports();
-  $('.menu .item').tab();
+  $('.tabular.menu .item').tab();
 });
 
