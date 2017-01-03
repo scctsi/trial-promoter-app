@@ -60,8 +60,8 @@ $(document).ready(function() {
             dataType: 'json',
             async: false,
             success: function(retdata) {
-
-
+              url = window.location.href;
+              window.location.href = url.split("=")[0] + "=message_templates";
             }
           });
         }
@@ -121,4 +121,3 @@ $(document).ready(function() {
   setUpImageImports();
   $('.menu .item').tab();
 });
-
