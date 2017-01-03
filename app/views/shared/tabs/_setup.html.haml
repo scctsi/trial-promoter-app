@@ -1,0 +1,5 @@
+.ui.bottom.attached.tab.segment.active{ 'data-tab': 'setup' }
+  %a.ui.primary.labeled.icon.button{ :href => edit_experiment_path(@experiment) }
+    %i.industry.icon
+    Change experiment setup
+  = render partial: 'shared/message_generation_parameter_set', locals: { message_generation_parameter_set: @experiment.message_generation_parameter_set }
