@@ -50,5 +50,5 @@ bower.json
 /config/application.yml
 
 # Ignore secrets in the spec directory
-/spec/support/secrets.yml
+/spec/secrets/**
 /spec/vcr/**
