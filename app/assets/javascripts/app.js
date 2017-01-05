@@ -48,7 +48,7 @@ $(document).ready(function() {
       var experimentId = $(this).data('experiment-id');
 
       filepicker.pick({
-          mimetype: '*/*',
+          mimetypes: ['text/csv', 'application/vnd.ms-excel'],
           container: 'modal',
           services: ['COMPUTER', 'GOOGLE_DRIVE', 'DROPBOX']
         },
@@ -60,6 +60,12 @@ $(document).ready(function() {
             dataType: 'json',
             async: false,
             success: function(retdata) {
+              url = window.location.href;
+              if (url.indexOf("?") === -1){
+                window.location.href = url + "?selected_tab=message_templates";
+              } else {
+                window.location.href = url.split("=")[0] + "=message_templates";
+              }
             }
           });
         }
@@ -88,6 +94,7 @@ $(document).ready(function() {
               dataType: 'json',
               async: false,
               success: function(retdata) {
+
               }
             });
           }
@@ -118,4 +125,3 @@ $(document).ready(function() {
   setUpImageImports();
   $('.menu .item').tab();
 });
-

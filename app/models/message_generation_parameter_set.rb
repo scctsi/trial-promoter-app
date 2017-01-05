@@ -24,15 +24,17 @@ class MessageGenerationParameterSet < ActiveRecord::Base
   serialize :image_present_choices
 
   validates :period_in_days, presence: true
+  validates :period_in_days, numericality: { only_integer: true, greater_than: 0 }
   validates :number_of_messages_per_social_network, presence: true
+  validates :number_of_messages_per_social_network, numericality: { only_integer: true, greater_than: 0 }
   validates :message_generating, presence: true
-  
+
   enumerize :social_network_distribution, in: [:equal, :random], default: :equal
   enumerize :medium_distribution, in: [:equal, :random], default: :equal
   enumerize :image_present_distribution, in: [:equal, :random], default: :equal
 
   belongs_to :message_generating, polymorphic: true
-  
+
   def social_network_choices
     return symbolize_array_items(self[:social_network_choices])
   end
@@ -44,10 +46,10 @@ class MessageGenerationParameterSet < ActiveRecord::Base
   def image_present_choices
     return symbolize_array_items(self[:image_present_choices])
   end
-  
+
   def expected_generated_message_count
     calculated_count = 1
-    
+
     #  Number of social networks
     calculated_count *= social_network_choices.select { |network| !network.blank? }.count
     # Number of mediums

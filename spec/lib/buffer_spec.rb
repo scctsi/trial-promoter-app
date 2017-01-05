@@ -9,23 +9,23 @@ RSpec.describe Buffer do
     allow(Buffer).to receive(:get).and_call_original
     @message = build(:message, :buffer_profile_ids => ['53275ff6c441ced7264e4ca5'], :content => 'Some content')
   end
-  
+
   describe "(development only tests)", :development_only_tests => true do
     it 'returns the body of the POST request for creating a Buffer update via the Buffer API' do
       post_request_body = Buffer.post_request_body_for_create(@message)
-      
+
       expect(post_request_body[:profile_ids]).to eq(@message.buffer_profile_ids)
       expect(post_request_body[:text]).to eq(@message.content)
       expect(post_request_body[:shorten]).to eq(true)
       expect(post_request_body[:access_token]).to eq(Setting[:buffer_access_token])
     end
-    
+
     describe 'synchronizing the list of social profiles' do
       it 'uses the Buffer API to get an initial of social media profiles' do
         VCR.use_cassette 'buffer/get_social_media_profiles' do
           Buffer.get_social_media_profiles
         end
-    
+
         expect(Buffer).to have_received(:get).with("https://api.bufferapp.com/1/profiles.json?access_token=#{Setting[:buffer_access_token]}")
         expect(SocialMediaProfile.count).to eq(7)
         social_media_profile = SocialMediaProfile.first
@@ -42,7 +42,7 @@ RSpec.describe Buffer do
         VCR.use_cassette 'buffer/get_social_media_profiles' do
           Buffer.get_social_media_profiles
         end
-    
+
         social_media_profiles = SocialMediaProfile.all
         expect(social_media_profiles.count).to eq(7)
         # Are the buffer ids unique?
@@ -51,12 +51,12 @@ RSpec.describe Buffer do
         expect(buffer_ids.detect{ |buffer_id| buffer_ids.count(buffer_id) > 1 }).to be_nil
       end
     end
-      
+
     it 'uses the Buffer API to create an update' do
       VCR.use_cassette 'buffer/create_update' do
         Buffer.create_update(@message)
       end
-  
+
       expect(Buffer).to have_received(:post).with('https://api.bufferapp.com/1/updates/create.json', {:body => Buffer.post_request_body_for_create(@message)})
       expect(@message.buffer_update).not_to be_nil
       # The response returned from Buffer contains a Buffer ID that we need to store in a newly created buffer_update
@@ -65,15 +65,15 @@ RSpec.describe Buffer do
       expect(@message.persisted?).to be_truthy
       expect(@message.buffer_update.persisted?).to be_truthy
     end
-    
+
     it 'uses the Buffer API to get an update to the status (pending, sent) of a BufferUpdate and simultaneously updates the metrics for the corresponding message' do
       buffer_id = '55f8a111b762b0cf06d79116'
       @message.buffer_update = BufferUpdate.new(:buffer_id => buffer_id)
-  
+
       VCR.use_cassette 'buffer/get_update' do
         Buffer.get_update(@message)
       end
-      
+
       expect(Buffer).to have_received(:get).with("https://api.bufferapp.com/1/updates/#{buffer_id}.json?access_token=#{Setting[:buffer_access_token]}")
       expect(@message.buffer_update.status).to eq(:sent)
       # When Buffer sends out a message on a social media platform, it stores an ID supplied by the social media platform
