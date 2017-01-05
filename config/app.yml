@@ -2,6 +2,7 @@
 defaults: &defaults
   buffer_access_token: ""
   enable_data_sharing: true
+  google_auth_json_file: ""
 
 development:
   <<: *defaults
