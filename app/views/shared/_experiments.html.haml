@@ -21,8 +21,8 @@
             = experiment.message_distribution_start_date.strftime('%B %d, %Y')
         %td
           .ui.buttons
-            %a.ui.button.workspace-button{ href: experiment_path(experiment) }
+            %a.ui.button.workspace-button{ href: experiment_path(experiment, selected_tab: 'setup') }
               Workspace
             .or
-            %a.ui.button.dashboard-button{ href: experiment_path(experiment, dashboard: true) }
+            %a.ui.button.dashboard-button{ href: experiment_path(experiment, selected_tab: 'dashboard') }
               Dashboard

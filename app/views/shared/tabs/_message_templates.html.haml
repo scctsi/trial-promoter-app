@@ -1,0 +1,19 @@
+.ui.buttons
+  %a#message-templates-file-upload-button.ui.primary.labeled.icon.button{ 'data-experiment-id': @experiment.id }
+    %i.upload.icon
+    Import message templates
+  .or
+  %a#example-button.ui.labeled.icon.button{ href: asset_path('example.csv') }
+    Download an example
+- if @message_templates.count == 0
+  .ui.message
+    .header
+      Import message templates.
+    %p Trial Promoter uses message templates in order to generate the messages for this experiment. Please upload a CSV file with the columns listed below:
+    %ul
+      %li Content
+      %li Platform (Twitter, Facebook or Instagram)
+      %li Hashtags
+      %li Tags
+- else
+  = render partial: 'shared/message_templates', locals: { message_templates: @message_templates }
