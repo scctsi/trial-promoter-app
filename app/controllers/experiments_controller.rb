@@ -11,11 +11,12 @@ class ExperimentsController < ApplicationController
   end
 
   def show
-    @dashboard = !!params[:dashboard]
     @message_templates = MessageTemplate.belonging_to(@experiment)
     @images = Image.belonging_to(@experiment)
     @websites = Website.belonging_to(@experiment)
     # TODO: Unit test this
+    @selected_tab = params[:selected_tab] || 'setup'
+    # @selected_tab = 'setup' if !@selected_tab
     @messages = Message.all
   end
 
