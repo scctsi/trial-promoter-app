@@ -44,9 +44,9 @@ class Message < ActiveRecord::Base
       source_metrics_exists = false
 
       proxy_association.owner.metrics.each do |metric|
-        # Only allow it a metric to be added if the source is same as the message platform (excluding buffer and google_analytics)
-        if SocialNetworks::SUPPORTED_NETWORKS.include?(value.source) && value.source != proxy_association.owner.message_template.platform
-          raise InvalidMetricSourceError(value.source, proxy_association.owner.message_template.platform)
+        # Only allow a metric to be added if the source is same as the message platform (excluding buffer and google_analytics)
+        if TrialPromoter.supports?(value.source) && value.source != proxy_association.owner.message_template.platform
+          raise InvalidMetricSourceError.new(value.source, proxy_association.owner.message_template.platform)
         end
 
         # There should always be only one set of metrics from a single source.
@@ -66,6 +66,11 @@ class Message < ActiveRecord::Base
 
     return nil if buffer_updates.length == 0
     buffer_updates.first.message
+  end
+  
+  def self.find_by_param(param)
+    id = param[(param.rindex('-') + 1)..-1]
+    Message.find(id)
   end
   
   def to_param
