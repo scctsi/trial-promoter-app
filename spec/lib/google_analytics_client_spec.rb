@@ -25,7 +25,7 @@ RSpec.describe GoogleAnalyticsClient do
       expect(GoogleAnalyticsClient::DEFAULT_DIMENSIONS).to eq(%w(ga:campaign ga:sourceMedium ga:adContent))
     end
     
-    it 'gets analytics data given a start and end date (using the default metrics and dimensions)' do
+    it 'calls the correct method on the service object given a start and end date (using the default metrics and dimensions)' do
       google_analytics_client = GoogleAnalyticsClient.new('92952002')
       allow(google_analytics_client.service).to receive(:get_ga_data)
 
@@ -34,7 +34,7 @@ RSpec.describe GoogleAnalyticsClient do
       expect(google_analytics_client.service).to have_received(:get_ga_data).with(google_analytics_client.table_id, '2016-01-01', '2016-01-02', GoogleAnalyticsClient::DEFAULT_METRICS.join(","), dimensions: GoogleAnalyticsClient::DEFAULT_DIMENSIONS.join(","), max_results: 100000)
     end
 
-    it 'gets analytics data given a start, end date, metric and dimension list' do
+    it 'calls the correct method on the service object given a start date, end date, metric and dimension list' do
       google_analytics_client = GoogleAnalyticsClient.new('92952002')
       allow(google_analytics_client.service).to receive(:get_ga_data)
 
@@ -42,7 +42,7 @@ RSpec.describe GoogleAnalyticsClient do
       expect(google_analytics_client.service).to have_received(:get_ga_data).with(google_analytics_client.table_id, '2016-01-01', '2016-01-02', 'ga:sessions,ga:users', dimensions: 'ga:campaign,ga:sourceMedium', max_results: 100000)
     end
     
-    it 'does' do
+    it 'gets data from Google Analytics' do
       google_analytics_client = GoogleAnalyticsClient.new('92952002')
       ga_data = nil
       metric_list = %w(ga:sessions ga:users)
