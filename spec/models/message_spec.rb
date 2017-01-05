@@ -48,7 +48,7 @@ describe Message do
   end
 
   it 'always updates existing metrics from a particular source' do
-    message = Message.new
+    message = build(:message)
 
     message.metrics << Metric.new(source: :facebook, data: {"likes": 1})
     message.metrics << Metric.new(source: :facebook, data: {"likes": 2})
@@ -57,8 +57,22 @@ describe Message do
     expect(message.metrics[0].data[:likes]).to eq(2)
   end
 
-  it "only allows metrics from buffer and the specific platform that the message is going to be posted on" do
-    skip "Test this later."
+  it "allows metrics from buffer, google_analytics and the message's platform" do
+    message = build(:message)
+
+    message.metrics << Metric.new(source: :twitter, data: {"likes": 1})
+    message.metrics << Metric.new(source: :google_analytics, data: {"users": 1})
+    message.metrics << Metric.new(source: :buffer, data: {"likes": 1})
+
+    expect(message.metrics.length).to eq(3)
+  end
+
+  it "raises an error if metrics are being added from a platform other than the message's platform" do
+    message = Message.new
+    message.message_template = build(:message_template)
+
+    expect { message.metrics << Metric.new(source: :facebook, data: {"likes": 1}); }.to raise_error(InvalidMetricSourceError, "Message platform is Twitter, but metric source was Facebook")
+    p message.metrics
   end
   
   it "parameterizes id and the experiments's param together" do
