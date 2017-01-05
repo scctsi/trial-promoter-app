@@ -3,7 +3,7 @@ require 'yaml'
 
 RSpec.describe Buffer do
   before do
-    secrets = YAML.load_file("#{Rails.root}/spec/support/secrets.yml")
+    secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
     allow(Setting).to receive(:[]).with(:buffer_access_token).and_return(secrets['buffer_access_token'])
     allow(Buffer).to receive(:post).and_call_original
     allow(Buffer).to receive(:get).and_call_original

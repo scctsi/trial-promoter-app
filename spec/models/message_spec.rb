@@ -60,10 +60,9 @@ describe Message do
   it "only allows metrics from buffer and the specific platform that the message is going to be posted on" do
     skip "Test this later."
   end
-
+  
   it "parameterizes id and the experiments's param together" do
     experiment = create(:experiment, name: 'TCORS 2')
-
     message = create(:message, message_generating: experiment)
     expect(message.to_param).to eq("#{experiment.to_param}-message-#{message.id.to_s}")
   end
