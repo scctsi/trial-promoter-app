@@ -146,7 +146,7 @@ describe MessageGenerationParameterSet do
     before do
       experiment = create(:experiment)
       create(:website, experiment_list: experiment.to_param)
-      SocialNetworks::SUPPORTED_NETWORKS.each do |social_network|
+      TrialPromoter::SUPPORTED_NETWORKS.each do |social_network|
         create_list(:message_template, 5, platform: social_network, experiment_list: experiment.to_param)
       end
     end
