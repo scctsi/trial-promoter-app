@@ -73,7 +73,6 @@ describe Message do
       skip "Cannot get this test to work!"
       message = build(:message)
   
-      message.metrics << Metric.new(source: :facebook, data: {'likes': 1})
       expect { message.metrics << Metric.new(source: :facebook, data: {"likes": 1}) }.to raise_error(InvalidMetricSourceError, "Message platform is twitter, but metric source was facebook")
     end
   end
