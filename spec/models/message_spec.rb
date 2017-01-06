@@ -127,7 +127,7 @@ describe Message do
       expect(@messages[2].metrics[0].data).to eq({ 'ga:sessions' => 4, 'ga:users' => 5 })
     end
   end
-
+  
   it "parameterizes id and the experiments's param together" do
     experiment = create(:experiment, name: 'TCORS 2')
     message = create(:message, message_generating: experiment)
