@@ -102,4 +102,12 @@ class Message < ActiveRecord::Base
     
     parsed_data
   end
+  
+  def self.update_ga_metrics(ga_metrics)
+    ga_metrics.each do |key, value|
+      message = Message.find_by_param(key)
+      message.metrics << Metric.new(source: :google_analytics, data: value)
+      message.save
+    end
+  end
 end
