@@ -5,7 +5,7 @@ $(document).ready(function() {
     $("[id$='_date']").daterangepicker({
       singleDatePicker: true,
       showDropdowns: true,
-      format: 'MM-DD-YYYY',
+      format: 'DD-MM-YYYY',
       startDate: '08-01-2016'
     });
   }
@@ -113,6 +113,11 @@ $(document).ready(function() {
       title   : 'What is a campaign?',
       content : 'A campaign allows you to promote one or multiple types of contents (news, research studies, research findings, award announcements, etc.) without applying scientific study design techniques.'
     });
+
+    $('.ui.labeled.icon.button.disable-message-generation-button').popup({
+      title : 'Why can\'t I generate messages?',
+      content : 'The date is within the scheduled 24-hour window for message generation.'
+    })
   }
 
   // Initialize
