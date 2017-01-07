@@ -51,7 +51,7 @@ RSpec.describe GoogleAnalyticsClient do
       VCR.use_cassette 'google_analytics_client/get_data' do
         ga_data = google_analytics_client.get_data('2016-01-01', '2016-01-02', metric_list, dimension_list)
       end
-      
+
       # Check that all the requested columns are present in the returned data.
       expect(ga_data.column_headers.count).to eq(metric_list.count + dimension_list.count)
       column_index = 0

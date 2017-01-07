@@ -47,7 +47,6 @@ RSpec.describe Buffer do
         expect(social_media_profiles.count).to eq(7)
         # Are the buffer ids unique?
         buffer_ids = social_media_profiles.map(&:buffer_id)
-        # NOTE: Very inefficient code, but number of social media profiles should be < 25 in most installations.
         expect(buffer_ids.detect{ |buffer_id| buffer_ids.count(buffer_id) > 1 }).to be_nil
       end
     end

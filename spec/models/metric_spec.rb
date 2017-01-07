@@ -15,7 +15,7 @@ require 'rails_helper'
 RSpec.describe Metric, type: :model do
   it { is_expected.to validate_presence_of :data }
   it { is_expected.to validate_presence_of :source }
-  it { is_expected.to enumerize(:source).in(:buffer, :twitter, :facebook) }
+  it { is_expected.to enumerize(:source).in(:buffer, :twitter, :facebook, :instagram, :google_analytics) }
   it { is_expected.to belong_to(:message) }
   
   it 'stores data as a hash' do
