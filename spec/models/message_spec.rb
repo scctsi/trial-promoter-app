@@ -23,7 +23,6 @@
 #
 
 require 'rails_helper'
-require 'google/apis/analytics_v3'
 
 describe Message do
   it { is_expected.to validate_presence_of :content }
@@ -77,96 +76,9 @@ describe Message do
     end
   end
   
-  describe 'parsing and adding Google Analytics data' do
-    before do
-      @messages = create_list(:message, 3)
-      @ga_data = Google::Apis::AnalyticsV3::GaData.new
-      @ga_data.column_headers = []
-      %w(ga:campaign ga:sourceMedium ga:adContent).each do |dimension|
-        column_header = Google::Apis::AnalyticsV3::GaData::ColumnHeader.new
-        column_header.column_type = "DIMENSION"
-        column_header.data_type = "STRING"
-        column_header.name = dimension
-        @ga_data.column_headers << column_header
-      end
-      %w(ga:sessions ga:users).each do |metric|
-        column_header = Google::Apis::AnalyticsV3::GaData::ColumnHeader.new
-        column_header.column_type = "METRIC"
-        column_header.data_type = "INTEGER"
-        column_header.name = metric
-        @ga_data.column_headers << column_header
-      end
-      # Data returned by google uses the same order as the column_headers added above
-      @ga_data.rows = []
-      @ga_data.rows << ['trial-promoter', 'google / organic', @messages[0].to_param, '1', '2']
-      @ga_data.rows << ['trial-promoter', 'google / organic', @messages[1].to_param, '2', '3']
-      @ga_data.rows << ['trial-promoter', 'google / organic', @messages[2].to_param, '4', '5']
-    end
-
-    it 'parses Google Analytics data into a format that can be used to add metrics to individual messages' do
-      ga_metrics = Message.parse_ga_data(@ga_data)
-      
-      expect(ga_metrics).to eq({ @messages[0].to_param => { 'ga:sessions' => 1, 'ga:users' => 2}, @messages[1].to_param => { 'ga:sessions' => 2, 'ga:users' => 3}, @messages[2].to_param => { 'ga:sessions' => 4, 'ga:users' => 5} })
-    end
-    
-    it 'raises an exception if asked to parse Google Analytics data with no ga:adContent dimension metric' do
-      @ga_data.column_headers.delete_if { |column_header| column_header.name == 'ga:adContent' }
-    
-      expect { Message.parse_ga_data(@ga_data) }.to raise_error(MissingAdContentDimensionError, 'Google Analytics data must contain the ga:adContent dimension')
-    end
-    
-    it 'updates metrics from Google Analytics on messages' do
-      ga_metrics = Message.parse_ga_data(@ga_data)
-      
-      Message.update_ga_metrics(ga_metrics)
-
-      @messages.each { |message| expect(message.metrics.count).to eq(1) }
-      @messages.each { |message| expect(message.metrics[0].source).to eq(:google_analytics) }
-      expect(@messages[0].metrics[0].data).to eq({ 'ga:sessions' => 1, 'ga:users' => 2 })
-      expect(@messages[1].metrics[0].data).to eq({ 'ga:sessions' => 2, 'ga:users' => 3 })
-      expect(@messages[2].metrics[0].data).to eq({ 'ga:sessions' => 4, 'ga:users' => 5 })
-    end
-  end
-  
   it "parameterizes id and the experiments's param together" do
     experiment = create(:experiment, name: 'TCORS 2')
     message = create(:message, message_generating: experiment)
     expect(message.to_param).to eq("#{experiment.to_param}-message-#{message.id.to_s}")
-  end
-
-  describe 'querying' do
-    before do
-      @messages = build_list(:message, 5)
-      @messages[0].buffer_update = BufferUpdate.new(:buffer_id => "buffer1", :status => :sent, :service_update_id => 'service1')
-      @messages[0].save
-      @messages[1].buffer_update = BufferUpdate.new(:buffer_id => "buffer2", :status => :sent, :service_update_id => 'service2')
-      @messages[1].save
-      @messages[2].buffer_update = BufferUpdate.new(:buffer_id => "buffer3", :status => :pending, :service_update_id => nil)
-      @messages[2].save
-    end
-
-    it 'finds the message that has a specific service update id' do
-      message = Message.find_by_service_update_id('service2')
-
-      expect(message).not_to be_nil
-      expect(message.buffer_update.service_update_id).to eq('service2')
-    end
-
-    it 'returns nil if no message exists for a specific service update id' do
-      message = Message.find_by_service_update_id('unknown')
-
-      expect(message).to be_nil
-    end
-    
-    it 'finds the message that has a specific param' do
-      message = Message.find_by_param(@messages[2].to_param)
-      
-      expect(message).not_to be_nil
-      expect(message.to_param).to eq(@messages[2].to_param)
-    end
-
-    it 'raises an exception if there is no message with the param' do
-      expect { Message.find_by_param('missing-param') }.to raise_error(ActiveRecord::RecordNotFound)
-    end
   end
 end
