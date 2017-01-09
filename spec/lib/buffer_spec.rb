@@ -77,6 +77,8 @@ RSpec.describe Buffer do
       expect(@message.buffer_update.status).to eq(:sent)
       # When Buffer sends out a message on a social media platform, it stores an ID supplied by the social media platform
       expect(@message.buffer_update.service_update_id).to eq('644520020861681664')
+      # Did the message copy over the service_update_id from Buffer?
+      expect(@message.social_network_id).to eq('644520020861681664')
       expect(@message.metrics.length).not_to eq(0)
       expect(@message.metrics[0].source).to eq(:buffer)
       expect(@message.metrics[0].data).not_to eq(0)
