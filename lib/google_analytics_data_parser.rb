@@ -3,7 +3,6 @@ class GoogleAnalyticsDataParser
     column_headers = data.column_headers
     rows = data.rows
 
-    # TODO: This method really doesn't belong to the Message model; implement a Parser class once we get more sources of metrics
     # This method parses the data (returned by google-api-ruby-client) into a { message_param: { metric_1_name: metric_1_value } } hash
     # Step 1: Determine which column contains the ga:adContent dimension (The ga:adContent dimension should contain the to_param value of a message, which should be unique within any given installation of Trial Promoter.)
     ad_content_column_index = column_headers.index{ |column_header| column_header.name == 'ga:adContent' }
