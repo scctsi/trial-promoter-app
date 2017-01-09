@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161222203610) do
+ActiveRecord::Schema.define(version: 20170107003936) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -118,6 +118,7 @@ ActiveRecord::Schema.define(version: 20161222203610) do
     t.string   "publish_status"
     t.datetime "buffer_publish_date"
     t.datetime "social_network_publish_date"
+    t.string   "social_network_id"
   end
 
   add_index "messages", ["message_generating_type", "message_generating_id"], name: "index_on_message_generating_for_messages", using: :btree

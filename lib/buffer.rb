@@ -29,6 +29,9 @@ class Buffer
     response = get("https://api.bufferapp.com/1/updates/#{message.buffer_update.buffer_id}.json?access_token=#{Setting[:buffer_access_token]}")
     message.buffer_update.status = response.parsed_response["status"]
     message.buffer_update.service_update_id = response.parsed_response["service_update_id"]
+    # It's usually a bad idea to do what we do in the next line, namely copy the service_update_id to the message. 
+    # However it makes sense in this case, because 1) it's convenient to access the social_network_id from the message and 2) the social_network_id should remain unchanged for ever.
+    message.social_network_id = message.buffer_update.service_update_id
     message.metrics << Metric.new(source: :buffer, data: response.parsed_response["statistics"])
     message.save
   end
