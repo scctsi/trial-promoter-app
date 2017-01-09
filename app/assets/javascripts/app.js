@@ -5,8 +5,8 @@ $(document).ready(function() {
     $("[id$='_date']").daterangepicker({
       singleDatePicker: true,
       showDropdowns: true,
-      format: 'DD-MM-YYYY',
-      startDate: '08-01-2016'
+      format: 'MMM DD, YYYY',
+      startDate: '01 01, 2017'
     });
   }
 
