@@ -52,3 +52,12 @@ bower.json
 # Ignore secrets in the spec directory
 /spec/secrets/**
 /spec/vcr/**
+
+# Ignore bin files
+bin/rails
+bin/rake
+bin/rspec
+bin/spring
+
+#Ignore guard file
+Guardfile
