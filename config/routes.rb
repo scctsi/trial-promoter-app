@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  devise_for :users
   get 'social_media_profiles/sync_with_buffer'
 
   root 'home#index'

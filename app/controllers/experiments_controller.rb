@@ -1,6 +1,8 @@
 class ExperimentsController < ApplicationController
   before_action :set_experiment, only: [:show, :edit, :update, :parameterized_slug, :create_messages]
   layout "workspace", only: [:show]
+  before_action :authenticate_user!
+
 
   def index
     @experiments = Experiment.all
