@@ -4,12 +4,12 @@ class ClinicalTrialsController < ApplicationController
   def index
     @clinical_trials = ClinicalTrial.all
   end
-  
+
   def new
     @clinical_trial = ClinicalTrial.new
     @hashtags = Hashtag.all
   end
-  
+
   def edit
     @hashtags = Hashtag.all
   end
@@ -31,16 +31,16 @@ class ClinicalTrialsController < ApplicationController
       render :edit
     end
   end
-  
+
   private
-  
+
   def set_clinical_trial
     @clinical_trial = ClinicalTrial.find(params[:id])
   end
-  
+
   def clinical_trial_params
     # TODO: Unit test this
-    params[:clinical_trial].permit(:title, :pi_first_name, :pi_last_name, :url, :disease, :hashtags) 
+    params[:clinical_trial].permit(:title, :pi_first_name, :pi_last_name, :url, :disease, :hashtags)
   end
 end
 
