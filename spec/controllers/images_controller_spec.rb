@@ -1,6 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe ImagesController, type: :controller do
+  before do
+    sign_in create(:user)
+  end
   describe 'POST #create' do
     context 'with valid attributes' do
       it 'creates a new image' do
@@ -12,13 +15,21 @@ RSpec.describe ImagesController, type: :controller do
       it 'returns a success value of true and the id of the created image' do
         post :create, image: attributes_for(:image)
         expected_json = { success: true, id: Image.first.id }.to_json
-        
+
         expect(response.header['Content-Type']).to match(/json/)
         expect(response.body).to eq(expected_json)
       end
     end
+
+    it 'redirects unauthenticated user to sign-in page' do
+      sign_out(:user)
+
+      post :create
+
+      expect(response).to redirect_to :new_user_session
+    end
   end
-  
+
   describe 'POST #import' do
     it 'imports multiple images accessible at multiple URLs' do
       experiment = create(:experiment)
@@ -38,6 +49,14 @@ RSpec.describe ImagesController, type: :controller do
       expect(image_importer).to have_received(:import)
       expect(response.header['Content-Type']).to match(/json/)
       expect(response.body).to eq(expected_json)
+    end
+
+    it 'redirects unauthenticated user to sign-in page' do
+      sign_out(:user)
+
+      post :import
+
+      expect(response).to redirect_to :new_user_session
     end
   end
 end

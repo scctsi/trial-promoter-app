@@ -196,7 +196,7 @@ RSpec.describe ExperimentsController, type: :controller do
       it 'redirects unauthenticated user to sign-in page' do
         sign_out(:user)
 
-        post :create, experiment: attributes_for(:experiment, message_generation_parameter_set_attributes: attributes_for(:message_generation_parameter_set))
+        post :create
 
         expect(response).to redirect_to :new_user_session
       end

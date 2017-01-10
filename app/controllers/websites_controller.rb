@@ -4,11 +4,11 @@ class WebsitesController < ApplicationController
   def index
     @websites = Website.all
   end
-  
+
   def new
     @website = Website.new
   end
-  
+
   def edit
   end
 
@@ -29,13 +29,13 @@ class WebsitesController < ApplicationController
       render :edit
     end
   end
-  
+
   private
-  
+
   def set_website
     @website = Website.find(params[:id])
   end
-  
+
   def website_params
     # TODO: Unit test this
     params[:website].permit(:name, :url)

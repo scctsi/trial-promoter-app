@@ -103,7 +103,7 @@ RSpec.describe CampaignsController, type: :controller do
     it 'redirects unauthenticated user to sign-in page' do
       sign_out(:user)
 
-      post :create, campaign: attributes_for(:campaign)
+      post :create
 
       expect(response).to redirect_to :new_user_session
     end
