@@ -118,6 +118,7 @@ ActiveRecord::Schema.define(version: 20170109193404) do
     t.string   "publish_status"
     t.datetime "buffer_publish_date"
     t.datetime "social_network_publish_date"
+    t.string   "social_network_id"
   end
 
   add_index "messages", ["message_generating_type", "message_generating_id"], name: "index_on_message_generating_for_messages", using: :btree
