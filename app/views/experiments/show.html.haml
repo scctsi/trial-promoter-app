@@ -69,9 +69,19 @@
   - else
     = render partial: 'shared/images', locals: { images: @images }
 .ui.bottom.attached.tab.segment{ 'data-tab': 'generated-messages' }
-  %a.ui.primary.labeled.icon.button{:href => create_messages_experiment_path(@experiment)}
-    %i.send.icon
-    Generate messages
+  -if @experiment.disable_message_generation?
+    .disabled.button
+      %a.ui.labeled.icon.button.disable-message-generation-button
+        %i.send.icon
+        Generate messages
+  -else
+    %a.ui.primary.labeled.icon.button{:href => create_messages_experiment_path(@experiment)}
+      %i.send.icon
+      Generate messages
+  -if @experiment.message_distribution_start_date.nil?
+    .ui.negative.message
+      .header
+        Please enter the message generation start date
   - if @messages.count == 0
     .ui.message
       .header
@@ -85,9 +95,9 @@
         %li All messages for a experiment are deleted each time messages are generated.
         %li A day before the experiment is scheduled to start message distribution, message generation will be locked.
     = render partial: 'shared/messages', locals: { messages: @messages }
--if @selected_tab == 'dashboard'
-  .ui.bottom.attached.tab.segment.active{ 'data-tab': 'dashboard' }
+  -if @selected_tab == 'dashboard'
+    .ui.bottom.attached.tab.segment.active{ 'data-tab': 'dashboard' }
     = render partial: 'shared/tabs/dashboard'
--else
-  .ui.bottom.attached.tab.segment{ 'data-tab': 'dashboard' }
-    = render partial: 'shared/tabs/dashboard'
+  -else
+    .ui.bottom.attached.tab.segment{ 'data-tab': 'dashboard' }
+      = render partial: 'shared/tabs/dashboard'

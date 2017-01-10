@@ -13,18 +13,23 @@
 
 class Experiment < ActiveRecord::Base
   validates :name, presence: true
-  
-  # TODO: Small 
+
+  # TODO: Small
   has_one :message_generation_parameter_set, as: :message_generating
   has_many :messages, as: :message_generating
   has_and_belongs_to_many :social_media_profiles
 
   accepts_nested_attributes_for :message_generation_parameter_set, update_only: true
-  
+
   def to_param
     "#{id}-#{name.parameterize}"
   end
-  
+
+  def disable_message_generation?
+    return false if self.message_distribution_start_date.nil?
+    (self.message_distribution_start_date - Time.now ) < 1.day
+  end
+
   def create_messages
     message_factory = MessageFactory.new
     message_factory.create(self)
