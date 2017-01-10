@@ -4,11 +4,11 @@ class CampaignsController < ApplicationController
   def index
     @campaigns = Campaign.all
   end
-  
+
   def new
     @campaign = Campaign.new
   end
-  
+
   def edit
   end
 
@@ -29,9 +29,9 @@ class CampaignsController < ApplicationController
       render :edit
     end
   end
-  
+
   private
-  
+
   def set_campaign
     @campaign = Campaign.find(params[:id])
   end
