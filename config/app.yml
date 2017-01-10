@@ -1,8 +1,9 @@
 # config/app.yml for rails-settings-cached
 defaults: &defaults
   buffer_access_token: ""
-  enable_data_sharing: true
+  facebook_access_token: ""
   google_auth_json_file: ""
+  enable_data_sharing: true
 
 development:
   <<: *defaults
