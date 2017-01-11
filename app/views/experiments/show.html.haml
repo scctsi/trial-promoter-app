@@ -8,55 +8,21 @@
 .ui.divider
 %h2.ui.center.aligned.header
   #{@experiment.name} workspace
-- case @selected_tab
-- when 'dashboard'
-  .ui.top.attached.tabular.menu
-    %a{ class: 'item', 'data-tab': 'setup' }
-      Setup
-    %a{ class: 'item', 'data-tab': 'message-templates' }
-      Message templates
-    %a{ class: 'item', 'data-tab': 'images' }
-      Images
-    %a{ class: 'item', 'data-tab': 'generated-messages' }
-      Generated messages
-    %a{ class: 'item active', 'data-tab': 'dashboard' }
-      Dashboard
-- when 'setup'
-  .ui.top.attached.tabular.menu
-    %a{ class: 'item active', 'data-tab': 'setup' }
-      Setup
-    %a{ class: 'item', 'data-tab': 'message-templates' }
-      Message templates
-    %a{ class: 'item', 'data-tab': 'images' }
-      Images
-    %a{ class: 'item', 'data-tab': 'generated-messages' }
-      Generated messages
-    %a{ class: 'item', 'data-tab': 'dashboard' }
-      Dashboard
-- when 'message_templates'
-  .ui.top.attached.tabular.menu
-    %a{ class: 'item', 'data-tab': 'setup' }
-      Setup
-    %a{ class: 'item active', 'data-tab': 'message-templates' }
-      Message templates
-    %a{ class: 'item', 'data-tab': 'images' }
-      Images
-    %a{ class: 'item', 'data-tab': 'generated-messages' }
-      Generated messages
-    %a{ class: 'item', 'data-tab': 'dashboard' }
-      Dashboard
--if @selected_tab == 'setup'
-  .ui.bottom.attached.tab.segment.active{ 'data-tab': 'setup' }
-    = render partial: 'shared/tabs/setup'
--else
-  .ui.bottom.attached.tab.segment{ 'data-tab': 'setup' }
-    = render partial: 'shared/tabs/setup'
--if @selected_tab == 'message_templates'
-  .ui.bottom.attached.tab.segment.active{ 'data-tab': 'message-templates' }
-    = render partial: 'shared/tabs/message_templates'
--else
-  .ui.bottom.attached.tab.segment{ 'data-tab': 'message-templates' }
-    = render partial: 'shared/tabs/message_templates'
+.ui.top.attached.tabular.menu
+  %a{ class: ['item', ('active' if @selected_tab == 'setup')], 'data-tab': 'setup' }
+    Setup
+  %a{ class: ['item', ('active' if @selected_tab == 'message-templates')], 'data-tab': 'message-templates' }
+    Message templates
+  %a{ class: 'item', 'data-tab': 'images' }
+    Images
+  %a{ class: 'item', 'data-tab': 'generated-messages' }
+    Generated messages
+  %a{ class: ['item', ('active' if @selected_tab == 'dashboard')], 'data-tab': 'dashboard' }
+    Dashboard
+.ui.bottom.attached.tab.segment{class: ('active' if @selected_tab == 'setup'), 'data-tab': 'setup' }
+  = render partial: 'shared/tabs/setup'
+.ui.bottom.attached.tab.segment{class: ('active' if @selected_tab == 'message-templates'), 'data-tab': 'message-templates' }
+  = render partial: 'shared/tabs/message_templates'
 .ui.bottom.attached.tab.segment{ 'data-tab': 'images' }
   %a#images-upload-button.ui.primary.labeled.icon.button{'data-experiment-id': @experiment.id}
     %i.upload.icon
@@ -95,9 +61,5 @@
         %li All messages for a experiment are deleted each time messages are generated.
         %li A day before the experiment is scheduled to start message distribution, message generation will be locked.
     = render partial: 'shared/messages', locals: { messages: @messages }
-  -if @selected_tab == 'dashboard'
-    .ui.bottom.attached.tab.segment.active{ 'data-tab': 'dashboard' }
-    = render partial: 'shared/tabs/dashboard'
-  -else
-    .ui.bottom.attached.tab.segment{ 'data-tab': 'dashboard' }
-      = render partial: 'shared/tabs/dashboard'
+.ui.bottom.attached.tab.segment{class: ('active' if @selected_tab == 'dashboard'), 'data-tab': 'dashboard' }
+  = render partial: 'shared/tabs/dashboard'
