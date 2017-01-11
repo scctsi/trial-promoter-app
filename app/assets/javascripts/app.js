@@ -115,8 +115,8 @@ $(document).ready(function() {
     });
 
     $('.ui.labeled.icon.button.disable-message-generation-button').popup({
-      title : 'Why can\'t I generate messages?',
-      content : 'The date is within the scheduled 24-hour window for message generation.'
+      title : "Why can't I generate messages?",
+      content : 'This experiment has already started distributing messages. You can no longer generate messages for this experiment.'
     })
   }
 

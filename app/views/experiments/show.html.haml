@@ -20,9 +20,9 @@
   %a{ class: ['item', ('active' if @selected_tab == 'dashboard')], 'data-tab': 'dashboard' }
     Dashboard
 .ui.bottom.attached.tab.segment{class: ('active' if @selected_tab == 'setup'), 'data-tab': 'setup' }
-  = render partial: 'shared/tabs/setup'
+  = render partial: 'experiments/tabs/setup'
 .ui.bottom.attached.tab.segment{class: ('active' if @selected_tab == 'message-templates'), 'data-tab': 'message-templates' }
-  = render partial: 'shared/tabs/message_templates'
+  = render partial: 'experiments/tabs/message_templates'
 .ui.bottom.attached.tab.segment{ 'data-tab': 'images' }
   %a#images-upload-button.ui.primary.labeled.icon.button{'data-experiment-id': @experiment.id}
     %i.upload.icon
@@ -62,4 +62,4 @@
         %li A day before the experiment is scheduled to start message distribution, message generation will be locked.
     = render partial: 'shared/messages', locals: { messages: @messages }
 .ui.bottom.attached.tab.segment{class: ('active' if @selected_tab == 'dashboard'), 'data-tab': 'dashboard' }
-  = render partial: 'shared/tabs/dashboard'
+  = render partial: 'experiments/tabs/dashboard'
