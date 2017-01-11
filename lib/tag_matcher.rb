@@ -13,6 +13,6 @@ class TagMatcher
       end
     end
 
-    matches.uniq!
+    matches
   end
 end

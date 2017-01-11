@@ -56,18 +56,19 @@ RSpec.describe TagMatcher do
     expect(tagged_websites.length).to eq(0)
   end
   
-  it 'finds all instances of a specified class whose tags include the tags for a specified tagged instance (possibly of another class)' do
+  it 'finds all instances of a specified class whose tags are included in the tags for a tagged instance (of another class)' do
     websites = create_list(:website, 3)
     websites[0].tag_list.add('tag-1')
     websites[1].tag_list.add('tag-2', 'tag-3')
     websites[2].tag_list.add('tag-1', 'tag-2', 'tag-3', 'tag-4', 'tag-5')
     websites.each { |website| website.save }
-    images = create_list(:image, 5)
+    images = create_list(:image, 6)
     images[0].tag_list.add('tag-1')
     images[1].tag_list.add('tag-2', 'tag-3')
     images[2].tag_list.add('tag-4', 'tag-5')
     images[3].tag_list.add('tag-3', 'tag-4')
     images[4].tag_list.add('tag-5', 'tag-6')
+    images[5].tag_list.add('tag-7', 'tag-8')
     images.each { |image| image.save }
 
     matched_images = @tag_matcher.match(Image, websites[2])
