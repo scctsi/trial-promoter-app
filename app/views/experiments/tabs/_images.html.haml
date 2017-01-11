@@ -1,0 +1,10 @@
+%a#images-upload-button.ui.primary.labeled.icon.button{'data-experiment-id': @experiment.id}
+  %i.upload.icon
+  Import images
+- if @images.count == 0
+  .ui.message
+    .header
+      Import images.
+    %p Trial Promoter can add an image to any message that it generated. Please click on "Import images" to import images into Trial Promoter.
+- else
+  = render partial: 'shared/images', locals: { images: @images }

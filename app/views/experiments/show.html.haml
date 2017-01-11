@@ -19,47 +19,18 @@
     Generated messages
   %a{ class: ['item', ('active' if @selected_tab == 'dashboard')], 'data-tab': 'dashboard' }
     Dashboard
+  %a{ class: 'item', 'data-tab': 'reports' }
+    Reports
 .ui.bottom.attached.tab.segment{class: ('active' if @selected_tab == 'setup'), 'data-tab': 'setup' }
   = render partial: 'experiments/tabs/setup'
 .ui.bottom.attached.tab.segment{class: ('active' if @selected_tab == 'message-templates'), 'data-tab': 'message-templates' }
   = render partial: 'experiments/tabs/message_templates'
 .ui.bottom.attached.tab.segment{ 'data-tab': 'images' }
-  %a#images-upload-button.ui.primary.labeled.icon.button{'data-experiment-id': @experiment.id}
-    %i.upload.icon
-    Import images
-  - if @images.count == 0
-    .ui.message
-      .header
-        Import images.
-      %p Trial Promoter can add an image to any message that it generated. Please click on "Import images" to import images into Trial Promoter.
-  - else
-    = render partial: 'shared/images', locals: { images: @images }
+  = render partial: 'experiments/tabs/images'
 .ui.bottom.attached.tab.segment{ 'data-tab': 'generated-messages' }
-  -if @experiment.disable_message_generation?
-    .disabled.button
-      %a.ui.labeled.icon.button.disable-message-generation-button
-        %i.send.icon
-        Generate messages
-  -else
-    %a.ui.primary.labeled.icon.button{:href => create_messages_experiment_path(@experiment)}
-      %i.send.icon
-      Generate messages
-  -if @experiment.message_distribution_start_date.nil?
-    .ui.negative.message
-      .header
-        Please enter the message generation start date
-  - if @messages.count == 0
-    .ui.message
-      .header
-        Generate messages when you are ready.
-      %p When you have set up the message generation parameters and imported all your message templates and images, you are ready to generate the messages for this experiment. Please click on "Generate images" to generate all the messages for this experiment.
-  - else
-    .ui.negative.message
-      .header
-        Regarding message generation
-      %ul.list
-        %li All messages for a experiment are deleted each time messages are generated.
-        %li A day before the experiment is scheduled to start message distribution, message generation will be locked.
-    = render partial: 'shared/messages', locals: { messages: @messages }
+  = render partial: 'experiments/tabs/generated_messages'
 .ui.bottom.attached.tab.segment{class: ('active' if @selected_tab == 'dashboard'), 'data-tab': 'dashboard' }
   = render partial: 'experiments/tabs/dashboard'
+.ui.bottom.attached.tab.segment{ 'data-tab': 'reports' }
+  = render partial: 'experiments/tabs/reports'
+  
