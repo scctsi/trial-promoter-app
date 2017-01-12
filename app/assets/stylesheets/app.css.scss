@@ -19,7 +19,6 @@ header {
   padding: 0;
 }
 
-
 // Semantic UI form styling
 // Hide * displayed before required fields
 form {
@@ -36,4 +35,14 @@ form {
 // Bold labels for message generation parameter set
 table.message-generation-parameter-set td.collapsing {
   font-weight: bold;
+}
+
+// Create space for sign in button
+.ui.fluid.large.teal.initial-signin-button {
+  margin-top: 1rem;
+}
+
+// Move signin to the left side of header
+.login-name-in-header {
+  float: right;
 }

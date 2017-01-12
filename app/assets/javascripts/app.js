@@ -100,7 +100,7 @@ $(document).ready(function() {
           }
         }
       );
-    });
+    })
   }
 
   function setupPopupInfo() {
@@ -120,7 +120,26 @@ $(document).ready(function() {
     })
   }
 
+function setupFormWarningMessages() {
+  $('.ui.form-inputs')
+    .form({
+      fields: {
+        email: {
+          identifier: 'email',
+          rules: [
+            {
+              type   : 'email',
+              prompt : 'Please enter a valid email'
+            }
+          ]
+        }
+      }
+    });
+  }
+
+
   // Initialize
+  setupFormWarningMessages();
   setupPopupInfo();
   setUpDatePickers();
   setUpChosenDropdowns();
