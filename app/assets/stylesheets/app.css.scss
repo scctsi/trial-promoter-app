@@ -42,7 +42,7 @@ table.message-generation-parameter-set td.collapsing {
   margin-top: 1rem;
 }
 
-// Move signin to the left side of header
-.login-name-in-header {
+// Move welcome message and logout link to the right side of header
+.login-header {
   float: right;
 }

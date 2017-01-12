@@ -2,11 +2,12 @@
   = image_tag("logo.png", alt: "Trial Promoter logo")
   %h2 Making science communication more efficient
   .ui.divider
-  - if user_signed_in?
-    .login-name-in-header
+  .login-header
+    - if user_signed_in?
       Welcome to Trial Promoter,
       %strong= current_user.email
+      |
       = link_to "Logout", destroy_user_session_path, method: :delete, :class => 'navbar-link'
-
+%br
 
 

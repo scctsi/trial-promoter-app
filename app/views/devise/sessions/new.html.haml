@@ -1,15 +1,17 @@
 .ui.three.column.centered.grid
   .column
-    .ui.form
-      %h2 Sign in to Trial Promoter
-      = simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
-        .field
-          .ui.left.icon.input
-            = f.input_field :email, :required => false, :placeholder => "email@example.com"
-            %i.user.icon
-        .field
-          .ui.left.icon.input
-            = f.input_field :password, :required => false, :placeholder => "password"
-            %i.lock.icon
-        = f.input :remember_me, :wrapper_class => 'ui checkbox', :label => 'Stay signed in', as: :boolean if devise_mapping.rememberable?
-        = f.button :submit, "Sign in", :class => 'ui fluid large teal initial-signin-button'
+    %h2 Sign in to Trial Promoter
+    - if flash[:alert]
+      .ui.negative.message
+        = flash[:alert]
+    = simple_form_for(resource, as: resource_name, html: { novalidate: false }, url: session_path(resource_name)) do |f|
+      .field
+        .ui.left.icon.input
+          = f.input_field :email, :required => true, :placeholder => "email@example.com"
+          %i.user.icon
+      .field
+        .ui.left.icon.input
+          = f.input_field :password, :required => false, :placeholder => "password"
+          %i.lock.icon
+      = f.input :remember_me, :wrapper_class => 'ui checkbox', :label => 'Stay signed in', as: :boolean if devise_mapping.rememberable?
+      = f.button :submit, "Sign in", :class => 'ui fluid large teal initial-signin-button'
