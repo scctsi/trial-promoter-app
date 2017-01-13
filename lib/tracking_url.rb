@@ -3,7 +3,7 @@ class TrackingUrl
     utm_parameters = {}
     
     utm_parameters[:source] = message.message_template.platform.to_s
-    utm_parameters[:source] = message.message_template.platform.to_s
+    utm_parameters[:medium] = message.medium
     utm_parameters[:campaign] = message.message_generating.to_param
     utm_parameters[:term] = nil
     utm_parameters[:content] = message.to_param
