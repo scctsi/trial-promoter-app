@@ -31,7 +31,8 @@ class Experiment < ActiveRecord::Base
   end
 
   def create_messages
-    message_factory = MessageFactory.new
+    tag_matcher = TagMatcher.new
+    message_factory = MessageFactory.new(tag_matcher)
     message_factory.create(self)
   end
 end
