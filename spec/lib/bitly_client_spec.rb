@@ -9,16 +9,41 @@ RSpec.describe BitlyClient do
   end
 
   describe "(development only tests)", :development_only_tests => true do
-    it 'shortens an URL while preserving the UTM parameters for that URL' do
-      message = create(:message)
-      campaign_url = TrackingUrl.campaign_url(message)
+    it 'shortens a URL' do
       short_url = ''
       
       VCR.use_cassette 'bitly_client/shorten' do
+        short_url = @bitly_client.shorten('http://www.sc-ctsi.org/')
+      end
+
+      expect(short_url).to match(/http:\/\/bit.ly\/[A-Za-z0-9]{7}/)
+      p short_url
+    end
+    
+    it 'expands a URL' do
+      long_url = ''
+      
+      VCR.use_cassette 'bitly_client/expand' do
+        long_url = @bitly_client.expand('http://bit.ly/1zDgg9K')
+      end
+      
+      expect(long_url).to eq('http://www.sc-ctsi.org/')
+    end
+
+    it 'retains URM parameters present in a URL' do
+      campaign_url = 'http://www.website.com/?utm_source=twitter&utm_campaign=957-name&utm_medium=organic&utm_term=&utm_content=957-name-message-2838'
+      short_url = ''
+      long_url = ''
+      
+      VCR.use_cassette 'bitly_client/shorten_url_with_utm_parameters' do
         short_url = @bitly_client.shorten(campaign_url)
       end
 
-      p short_url    
+      expect(short_url).to match(/http:\/\/bit.ly\/[A-Za-z0-9]{7}/)
+      VCR.use_cassette 'bitly_client/expand_url_with_utm_parameters' do
+        long_url = @bitly_client.expand(short_url)
+      end
+      expect(long_url).to eq(campaign_url)
     end
   end
 end
