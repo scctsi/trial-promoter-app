@@ -100,7 +100,7 @@ $(document).ready(function() {
           }
         }
       );
-    });
+    })
   }
 
   function setupPopupInfo() {
