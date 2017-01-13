@@ -4,6 +4,7 @@ ruby '2.3.1'
 
 gem 'acts-as-taggable-on', '~> 4.0'
 gem 'annotate'
+gem 'bitly'
 gem 'devise'
 gem 'enumerize'
 gem 'fit-commit'
