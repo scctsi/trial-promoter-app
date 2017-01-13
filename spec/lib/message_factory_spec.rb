@@ -81,7 +81,7 @@ RSpec.describe MessageFactory do
     end
     # Do the images selected for each message belong to the set of images matched to the message template?
     messages.all.each do |message|
-      expect(@tag_matcher.match(Image, message.message_template.tag_list)).to include(message.image) if message.image_present
+      expect(@tag_matcher.match(Image, message.message_template.tag_list)).to include(message.image) if message.image_present == :with
     end
   end
 

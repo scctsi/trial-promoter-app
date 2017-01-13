@@ -36,13 +36,15 @@ class MessageFactory
   def attach_images(messages, distribution=:equal)
     include_image = false
     
-    messages.each do |message|
+    messages.all.each do |message|
       if include_image
         image = tag_matcher.match(Image, message.message_template.tag_list).sample
         message.image_present = :with
         message.image = image
-        message.save
+      else
+        message.image_present = :without
       end
+      message.save
       
       # EXACTLY equal distribution
       include_image = !include_image
