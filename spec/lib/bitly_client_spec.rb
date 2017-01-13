@@ -17,7 +17,6 @@ RSpec.describe BitlyClient do
       end
 
       expect(short_url).to match(/http:\/\/bit.ly\/[A-Za-z0-9]{7}/)
-      p short_url
     end
     
     it 'expands a URL' do

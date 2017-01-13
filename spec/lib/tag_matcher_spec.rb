@@ -71,7 +71,7 @@ RSpec.describe TagMatcher do
     images[5].tag_list.add('tag-7', 'tag-8')
     images.each { |image| image.save }
 
-    matched_images = @tag_matcher.match(Image, websites[2])
+    matched_images = @tag_matcher.match(Image, websites[2].tag_list)
     
     expect(matched_images.length).to eq(4)
   end
