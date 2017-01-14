@@ -1,11 +1,13 @@
 class ImagesController < ApplicationController
   def create
+    authorize Image
     image = Image.create!(image_params)
 
     render json: { success: true, id: image.id }
   end
 
   def import
+    authorize Image
     experiment = Experiment.find(params[:experiment_id])
 
     # Import images

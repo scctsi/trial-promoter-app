@@ -1,13 +1,13 @@
 class ExperimentPolicy < ApplicationPolicy
-  def show?
-    false
-  end
-
   def create_messages?
-    false
-  end
+      user.role.administrator?
+    end
 
   def set_experiment?
-    false
+    user.role.administrator?
+  end
+
+  def parameterized_slug?
+    user.role.administrator?
   end
 end

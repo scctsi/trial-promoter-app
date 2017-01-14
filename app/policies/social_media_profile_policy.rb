@@ -1,5 +1,5 @@
 class SocialMediaProfilePolicy < ApplicationPolicy
   def sync_with_buffer?
-    false
+    user.role.administrator?
   end
 end
