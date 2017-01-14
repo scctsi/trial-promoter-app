@@ -3,8 +3,6 @@
   Import images
 - if @images.count == 0
   .ui.message
-    .header
-      Import images.
-    %p Trial Promoter can add an image to any message that it generated. Please click on "Import images" to import images into Trial Promoter.
+    %p Trial Promoter can add an image to any message. You can upload images from Dropbox, Google Drive or from your computer. Consider using free image databases such as pixabay.com. Limitations: If you have images that are suitable for only certain message templates, this tool will require manual editing of the tags associated with each image once the images are uploaded.
 - else
   = render partial: 'shared/images', locals: { images: @images }

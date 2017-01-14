@@ -5,12 +5,12 @@
   .or
   %a#example-button.ui.labeled.icon.button{ href: asset_path('example.csv') }
     %i.download.icon
-    Download an example
+    Download sample CSV file
 - if @message_templates.count == 0
   .ui.message
     .header
       Import message templates.
-    %p Trial Promoter uses message templates in order to generate the messages for this experiment. Please upload a CSV file with the columns listed below:
+    %p Trial Promoter uses parameterized message templates in order the generate the final messages for the experiment. The sample CSV file includes the data elements you will need and example message templates for Twitter, Facebook, and Instagram.
     %ul
       %li Content
       %li Platform (Twitter, Facebook or Instagram)
