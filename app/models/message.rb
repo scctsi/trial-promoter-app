@@ -61,19 +61,12 @@ class Message < ActiveRecord::Base
     end
   end
 
-  def self.find_by_service_update_id(service_update_id)
-    buffer_updates = BufferUpdate.where(service_update_id: service_update_id)
-
-    return nil if buffer_updates.length == 0
-    buffer_updates.first.message
+  def to_param
+    "#{message_generating.to_param}-message-#{id}"
   end
   
   def self.find_by_param(param)
     id = param[(param.rindex('-') + 1)..-1]
     Message.find(id)
-  end
-  
-  def to_param
-    "#{message_generating.to_param}-message-#{id}"
   end
 end

@@ -3,11 +3,10 @@ class BitlyClient
     Bitly.use_api_version_3
 
     Bitly.configure do |config|
-      config.api_version = 3
       config.access_token = Setting[:bitly_access_token]
     end
   end
-  
+
   def shorten(url)
     Bitly.client.shorten(url).short_url
   end
