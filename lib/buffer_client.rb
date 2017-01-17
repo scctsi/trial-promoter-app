@@ -1,4 +1,4 @@
-class Buffer
+class BufferClient
   include HTTParty
   
   # This class is a facade to the Buffer API
@@ -37,7 +37,7 @@ class Buffer
   end
   
   def self.create_update(message)
-    response = post('https://api.bufferapp.com/1/updates/create.json', {:body => Buffer.post_request_body_for_create(message)})
+    response = post('https://api.bufferapp.com/1/updates/create.json', {:body => BufferClient.post_request_body_for_create(message)})
     buffer_update = BufferUpdate.new(:buffer_id => response.parsed_response["updates"][0]["id"])
     message.buffer_update = buffer_update
     message.save
