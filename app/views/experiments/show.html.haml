@@ -95,9 +95,9 @@
         %li All messages for a experiment are deleted each time messages are generated.
         %li A day before the experiment is scheduled to start message distribution, message generation will be locked.
     = render partial: 'shared/messages', locals: { messages: @messages }
-  -if @selected_tab == 'dashboard'
-    .ui.bottom.attached.tab.segment.active{ 'data-tab': 'dashboard' }
+-if @selected_tab == 'dashboard'
+  .ui.bottom.attached.tab.segment.active{ 'data-tab': 'dashboard' }
     = render partial: 'shared/tabs/dashboard'
-  -else
-    .ui.bottom.attached.tab.segment{ 'data-tab': 'dashboard' }
-      = render partial: 'shared/tabs/dashboard'
+-else
+  .ui.bottom.attached.tab.segment{ 'data-tab': 'dashboard' }
+    = render partial: 'shared/tabs/dashboard'
