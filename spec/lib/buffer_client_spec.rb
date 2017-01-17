@@ -1,18 +1,18 @@
 require 'rails_helper'
 require 'yaml'
 
-RSpec.describe Buffer do
+RSpec.describe BufferClient do
   before do
     secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
     allow(Setting).to receive(:[]).with(:buffer_access_token).and_return(secrets['buffer_access_token'])
-    allow(Buffer).to receive(:post).and_call_original
-    allow(Buffer).to receive(:get).and_call_original
+    allow(BufferClient).to receive(:post).and_call_original
+    allow(BufferClient).to receive(:get).and_call_original
     @message = build(:message, :buffer_profile_ids => ['53275ff6c441ced7264e4ca5'], :content => 'Some content')
   end
 
   describe "(development only tests)", :development_only_tests => true do
     it 'returns the body of the POST request for creating a Buffer update via the Buffer API' do
-      post_request_body = Buffer.post_request_body_for_create(@message)
+      post_request_body = BufferClient.post_request_body_for_create(@message)
 
       expect(post_request_body[:profile_ids]).to eq(@message.buffer_profile_ids)
       expect(post_request_body[:text]).to eq(@message.content)
@@ -23,10 +23,10 @@ RSpec.describe Buffer do
     describe 'synchronizing the list of social profiles' do
       it 'uses the Buffer API to get an initial of social media profiles' do
         VCR.use_cassette 'buffer/get_social_media_profiles' do
-          Buffer.get_social_media_profiles
+          BufferClient.get_social_media_profiles
         end
 
-        expect(Buffer).to have_received(:get).with("https://api.bufferapp.com/1/profiles.json?access_token=#{Setting[:buffer_access_token]}")
+        expect(BufferClient).to have_received(:get).with("https://api.bufferapp.com/1/profiles.json?access_token=#{Setting[:buffer_access_token]}")
         expect(SocialMediaProfile.count).to eq(7)
         social_media_profile = SocialMediaProfile.first
         expect(social_media_profile.platform).to eq(:facebook)
@@ -40,7 +40,7 @@ RSpec.describe Buffer do
         SocialMediaProfile.create!(buffer_id: '55c11ce246042c5e7f8ae843', service_id: '1', service_username: 'user', platform: :twitter)
 
         VCR.use_cassette 'buffer/get_social_media_profiles' do
-          Buffer.get_social_media_profiles
+          BufferClient.get_social_media_profiles
         end
 
         social_media_profiles = SocialMediaProfile.all
@@ -53,10 +53,10 @@ RSpec.describe Buffer do
 
     it 'uses the Buffer API to create an update' do
       VCR.use_cassette 'buffer/create_update' do
-        Buffer.create_update(@message)
+        BufferClient.create_update(@message)
       end
 
-      expect(Buffer).to have_received(:post).with('https://api.bufferapp.com/1/updates/create.json', {:body => Buffer.post_request_body_for_create(@message)})
+      expect(BufferClient).to have_received(:post).with('https://api.bufferapp.com/1/updates/create.json', {:body => BufferClient.post_request_body_for_create(@message)})
       expect(@message.buffer_update).not_to be_nil
       # The response returned from Buffer contains a Buffer ID that we need to store in a newly created buffer_update
       expect(@message.buffer_update.buffer_id).not_to be_blank
@@ -70,10 +70,10 @@ RSpec.describe Buffer do
       @message.buffer_update = BufferUpdate.new(:buffer_id => buffer_id)
 
       VCR.use_cassette 'buffer/get_update' do
-        Buffer.get_update(@message)
+        BufferClient.get_update(@message)
       end
 
-      expect(Buffer).to have_received(:get).with("https://api.bufferapp.com/1/updates/#{buffer_id}.json?access_token=#{Setting[:buffer_access_token]}")
+      expect(BufferClient).to have_received(:get).with("https://api.bufferapp.com/1/updates/#{buffer_id}.json?access_token=#{Setting[:buffer_access_token]}")
       expect(@message.buffer_update.status).to eq(:sent)
       # When Buffer sends out a message on a social media platform, it stores an ID supplied by the social media platform
       expect(@message.buffer_update.service_update_id).to eq('644520020861681664')
