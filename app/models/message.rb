@@ -64,4 +64,9 @@ class Message < ActiveRecord::Base
   def to_param
     "#{message_generating.to_param}-message-#{id}"
   end
+  
+  def self.find_by_param(param)
+    id = param[(param.rindex('-') + 1)..-1]
+    Message.find(id)
+  end
 end
