@@ -81,4 +81,16 @@ describe Message do
     message = create(:message, message_generating: experiment)
     expect(message.to_param).to eq("#{experiment.to_param}-message-#{message.id.to_s}")
   end
+  
+  it 'finds a message by the param' do
+    create(:message)
+    
+    message = Message.find_by_param(Message.first.to_param)
+    
+    expect(message).to eq(Message.first)
+  end
+  
+  it 'raises an exception if a message cannot be found with a certain param' do
+    expect { Message.find_by_param('unknown-param') }.to raise_error(ActiveRecord::RecordNotFound)
+  end
 end
