@@ -27,6 +27,7 @@ group :development, :test do
   gem "binding_of_caller"
   gem 'byebug'
   gem 'database_cleaner'
+  gem 'faker'
   gem 'rspec-rails', '~> 3.5'
   gem 'spring-commands-rspec'
   gem 'vcr'
@@ -42,7 +43,6 @@ end
 group :test do
   gem "codeclimate-test-reporter", "~> 1.0.0"
   gem 'factory_girl_rails', "~> 4.0"
-  gem 'faker'
   gem 'shoulda-matchers', '~> 3.1', require: false
   gem "simplecov"
 end

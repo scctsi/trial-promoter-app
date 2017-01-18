@@ -16,3 +16,15 @@ if Hashtag.count == 0
     end
   end
 end
+
+user_attributes = [
+  { email: "default@sc-ctsi.org", password: "default321", password_confirmation: "default321", role: 'user'  },
+  { email: "admin@sc-ctsi.org", password: "dic101!!", password_confirmation: "dic101!!", role: 'administrator'  },
+  { email: "read@sc-ctsi.org", password: "read321", password_confirmation: "read321", role: 'read_only'  },
+  { email: "stat@sc-ctsi.org", password: "stat321", password_confirmation: "stat321", role: 'statistician'  },
+]
+
+user_attributes.each do |attributes|
+  user = User.find_by(email: attributes[:email])
+  User.create(attributes) if user.nil?
+end
