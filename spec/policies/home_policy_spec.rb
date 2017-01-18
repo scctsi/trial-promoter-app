@@ -18,7 +18,7 @@ RSpec.describe HomePolicy, type: :policy do
   context "for a statistician" do
     let(:user) { create(:statistician) }
 
-    it { should_not be_permitted_to(:index) }
+    it { should be_permitted_to(:index) }
   end
 
   context "for a read_only" do
