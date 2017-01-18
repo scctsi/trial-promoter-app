@@ -1,7 +1,7 @@
 class ExperimentPolicy < ApplicationPolicy
   def create_messages?
-      user.role.administrator?
-    end
+    user.role.administrator?
+  end
 
   def set_experiment?
     user.role.administrator?
