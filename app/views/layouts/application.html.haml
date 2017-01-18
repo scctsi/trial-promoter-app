@@ -1,6 +1,7 @@
 !!!
 %html
   %head
+    = favicon_link_tag("airplane_favicon.png")
     %title Trial Promoter
     = stylesheet_link_tag     'application', media: 'all'
     = stylesheet_link_tag     'https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css'
@@ -10,18 +11,19 @@
   %body{'data-environment' => Rails.env}
     .ui.container
       = render 'layouts/header'
-      .ui.grid
-        .fluid.four.wide.column
-          = render 'layouts/menu'
-        .twelve.wide.column
-          - if notice
-            .ui.info.message
-              %p
-                = notice
-          - if alert
-            .ui.negative.message
-              %p
-                = alert
-          %p.alert
-            = alert
-          = yield
+      - if user_signed_in?
+        .ui.grid
+          .fluid.four.wide.column
+            = render 'layouts/menu'
+          .twelve.wide.column
+            - if notice
+              .ui.info.message
+                %p
+                  = notice
+            - if alert
+              .ui.negative.message
+                %p
+                  = alert
+            = yield
+      - else
+        = yield

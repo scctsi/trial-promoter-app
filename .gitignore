@@ -61,3 +61,6 @@ bin/spring
 
 #Ignore guard file
 Guardfile
+
+#Ignore log file
+*.log
