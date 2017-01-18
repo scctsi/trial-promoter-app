@@ -6,7 +6,7 @@ RSpec.describe SocialMediaProfilesController, type: :controller do
     before do
 
       sign_in create(:administrator)
-      allow(Buffer).to receive(:get_social_media_profiles)
+      allow(BufferClient).to receive(:get_social_media_profiles)
       get :sync_with_buffer
     end
 
