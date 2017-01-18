@@ -20,6 +20,7 @@
 #  publish_status              :string
 #  buffer_publish_date         :datetime
 #  social_network_publish_date :datetime
+#  social_network_id           :string
 #
 
 require 'rails_helper'

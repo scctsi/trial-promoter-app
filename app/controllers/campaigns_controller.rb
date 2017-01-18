@@ -2,19 +2,23 @@ class CampaignsController < ApplicationController
   before_action :set_campaign, only: [:edit, :update]
 
   def index
+    authorize Campaign
     @campaigns = Campaign.all
   end
 
   def new
     @campaign = Campaign.new
+    authorize @campaign
   end
 
   def edit
+    authorize @campaign
   end
 
   def create
     @campaign = Campaign.new(campaign_params)
 
+    authorize @campaign
     if @campaign.save
       redirect_to root_url
     else
@@ -23,6 +27,7 @@ class CampaignsController < ApplicationController
   end
 
   def update
+    authorize @campaign
     if @campaign.update(campaign_params)
       redirect_to root_url
     else

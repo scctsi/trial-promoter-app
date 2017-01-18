@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   # Campaigns
   resources :campaigns do
   end
-  
+
   # Experiments
   resources :experiments, shallow: true do
     member do
@@ -16,14 +16,14 @@ Rails.application.routes.draw do
     member do
       get 'create_messages', to: 'experiments#create_messages'
     end
-    
+
     resources :message_generation_parameter_sets
   end
-  
+
   # Clinical trials
   resources :clinical_trials do
   end
-  
+
   # Message templates
   resources :message_templates do
     collection do
@@ -41,12 +41,12 @@ Rails.application.routes.draw do
   # Websites
   resources :websites do
   end
-  
+
   # App settings
   namespace :admin do
     resources :settings
   end
-  
+
   # Images
   resources :images do
     member do
@@ -56,5 +56,5 @@ Rails.application.routes.draw do
       post :import
     end
   end
-  
+
 end

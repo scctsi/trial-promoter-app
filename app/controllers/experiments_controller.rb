@@ -3,6 +3,7 @@ class ExperimentsController < ApplicationController
   layout "workspace", only: [:show]
 
   def index
+    authorize Experiment
     @experiments = Experiment.all
   end
 
@@ -11,6 +12,7 @@ class ExperimentsController < ApplicationController
   end
 
   def show
+    authorize @experiment
     @message_templates = MessageTemplate.belonging_to(@experiment)
     @images = Image.belonging_to(@experiment)
     @websites = Website.belonging_to(@experiment)
@@ -22,11 +24,13 @@ class ExperimentsController < ApplicationController
 
   def new
     @experiment = Experiment.new
+    authorize @experiment
     @experiment.build_message_generation_parameter_set
   end
 
   def create
     @experiment = Experiment.new(experiment_params)
+    authorize @experiment
     # TODO: There should be an easier way to automatically set the parent object
     @experiment.message_generation_parameter_set.message_generating = @experiment if (!@experiment.message_generation_parameter_set.nil?)
 
@@ -57,6 +61,7 @@ class ExperimentsController < ApplicationController
 
   def set_experiment
     @experiment = Experiment.find(params[:id])
+    authorize @experiment
   end
 
   def experiment_params

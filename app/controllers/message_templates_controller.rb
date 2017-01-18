@@ -2,19 +2,23 @@ class MessageTemplatesController < ApplicationController
   before_action :set_message_template, only: [:edit, :update]
 
   def index
+    authorize MessageTemplate
     @message_templates = MessageTemplate.all
   end
 
   def new
+    authorize MessageTemplate
     @message_template = MessageTemplate.new
   end
 
   def edit
+    authorize MessageTemplate
     @message_template = MessageTemplate.find(params[:id])
   end
 
   def create
     @message_template = MessageTemplate.new(message_template_params)
+    authorize MessageTemplate
 
     if @message_template.save
       redirect_to message_templates_url
@@ -24,6 +28,7 @@ class MessageTemplatesController < ApplicationController
   end
 
   def update
+    authorize MessageTemplate
     if @message_template.update(message_template_params)
       redirect_to message_templates_url
     else
@@ -32,6 +37,7 @@ class MessageTemplatesController < ApplicationController
   end
 
   def import
+    authorize MessageTemplate
     experiment = Experiment.find(params[:experiment_id])
 
     # Read CSV file from a URL

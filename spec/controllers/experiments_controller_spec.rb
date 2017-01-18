@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe ExperimentsController, type: :controller do
   before do
-    sign_in create(:user)
+    sign_in create(:administrator)
   end
 
   describe 'GET #index' do

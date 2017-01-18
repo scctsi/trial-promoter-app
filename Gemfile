@@ -13,6 +13,7 @@ gem 'haml-rails', '~> 0.9'
 gem 'httparty'
 gem 'jquery-rails'
 gem 'pg'
+gem 'pundit'
 gem 'rails', '4.2.6'
 gem 'rails-settings-cached'
 gem 'sass-rails', '~> 5.0'
@@ -26,6 +27,7 @@ group :development, :test do
   gem "binding_of_caller"
   gem 'byebug'
   gem 'database_cleaner'
+  gem 'faker'
   gem 'rspec-rails', '~> 3.5'
   gem 'spring-commands-rspec'
   gem 'vcr'
@@ -41,7 +43,6 @@ end
 group :test do
   gem "codeclimate-test-reporter", "~> 1.0.0"
   gem 'factory_girl_rails', "~> 4.0"
-  gem 'faker'
   gem 'shoulda-matchers', '~> 3.1', require: false
   gem "simplecov"
 end
