@@ -30,5 +30,13 @@
     //   %td= m.input :image_present_distribution, as: :radio_buttons, wrapper_class: 'inline fields', item_wrapper_class: 'ui field radio checkbox', label: false
     =m.input :period_in_days
     =m.input :number_of_messages_per_social_network
+  .ui.message
+    .header
+      Experiment details
+    %ul.list
+      %li Messages will be distributed equally on Facebook, Instagram and Twitter.
+      %li An equal number of ads and organic messages will be created per platform.
+      %li None of the messages will include an image.
+      %li A total of 180 messages will be created for this experiment.
   = f.button :submit
 

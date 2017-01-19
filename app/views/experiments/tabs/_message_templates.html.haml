@@ -9,12 +9,6 @@
 - if @message_templates.count == 0
   .ui.message
     .header
-      Import message templates.
-    %p Trial Promoter uses parameterized message templates in order the generate the final messages for the experiment. The sample CSV file includes the data elements you will need and example message templates for Twitter, Facebook, and Instagram.
-    %ul
-      %li Content
-      %li Platform (Twitter, Facebook or Instagram)
-      %li Hashtags
-      %li Tags
+    %p Trial Promoter uses parameterized message templates in order to generate the final messages for the experiment. The sample CSV file includes the data elements you will need and example message templates for Twitter, Facebook, and Instagram.
 - else
   = render partial: 'shared/message_templates', locals: { message_templates: @message_templates }
