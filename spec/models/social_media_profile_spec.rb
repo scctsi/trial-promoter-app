@@ -20,4 +20,24 @@ RSpec.describe SocialMediaProfile, type: :model do
   it { is_expected.to validate_presence_of :service_username }
   it { is_expected.to validate_presence_of :service_id }
   it { is_expected.to have_and_belong_to_many :experiments }
+  
+  it 'stores an array of allowed mediums' do
+    social_media_profile = build(:social_media_profile)
+    social_media_profile.allowed_mediums = [:ad, :organic]
+    
+    social_media_profile.save
+    social_media_profile.reload
+    
+    expect(social_media_profile.allowed_mediums).to eq([:ad, :organic])
+  end
+  
+  it 'converts allowed mediums grom strings to symbols' do
+    social_media_profile = build(:social_media_profile)
+    social_media_profile.allowed_mediums = ['ad', 'organic']
+    
+    social_media_profile.save
+    social_media_profile.reload
+    
+    expect(social_media_profile.allowed_mediums).to eq([:ad, :organic])
+  end
 end
