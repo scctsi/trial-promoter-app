@@ -26,14 +26,4 @@ class SocialMediaProfile < ActiveRecord::Base
   def allowed_mediums
     return symbolize_array_items(self[:allowed_mediums])
   end
-  
-  private
-  
-  def symbolize_array_items(array)
-    # Convert an array of strings to an array of symbols, removing any blank string first
-    # Remove any blank string first.
-    # TODO: This code is duplicated in MessageGenerationParameterSet; fix!
-    return array.select{ |item| !item.blank? }.map(&:to_sym) if !array.nil?
-    nil
-  end
 end
