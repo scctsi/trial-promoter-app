@@ -56,5 +56,8 @@ Rails.application.routes.draw do
       post :import
     end
   end
-
+  
+  # Social media profiles
+  resources :social_media_profiles do
+  end
 end

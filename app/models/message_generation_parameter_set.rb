@@ -68,7 +68,7 @@ class MessageGenerationParameterSet < ActiveRecord::Base
   def symbolize_array_items(array)
     # Convert an array of strings to an array of symbols, removing any blank string first
     # Remove any blank string first.
-    return array.select{ |item| !item.blank? }.map{ |item| item.to_sym } if !array.nil?
+    return array.select{ |item| !item.blank? }.map(&:to_sym) if !array.nil?
     nil
   end
 end
