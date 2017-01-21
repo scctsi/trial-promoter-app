@@ -3,11 +3,11 @@ RSpec::Matchers.define :be_permitted_to do |action|
     policy.public_send("#{action}?")
   end
 
-  failure_message_for_should do |policy|
+  failure_message do |policy|
     "#{policy.class} does not permit #{action} on #{policy.record} for #{policy.user.inspect}."
   end
 
-  failure_message_for_should_not do |policy|
+  failure_message do |policy|
     "#{policy.class} does not forbid #{action} on #{policy.record} for #{policy.user.inspect}."
   end
 end
