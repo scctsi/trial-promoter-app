@@ -120,7 +120,24 @@ $(document).ready(function() {
     })
   }
 
+  function changeExperimentDetails() {
+    var listHtml = '';
+    var checkedValues = $.map($("input:checked"), function (elem) { return elem.value || ""; }).join( "," );
+    var periodInDays;
+    var messagesPerSocialNetwork;
+
+    console.log(values);
+    listHtml += '</ul>'
+  }
+
+  function setupExperimentRealTime() {
+    $('.ui.new_experiment_form').change(function(e){
+      changeExperimentDetails();
+    });
+  }
+
   // Initialize
+  setupExperimentRealTime();
   setupPopupInfo();
   setUpDatePickers();
   setUpChosenDropdowns();
