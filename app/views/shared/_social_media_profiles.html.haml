@@ -1,0 +1,23 @@
+%table.ui.celled.striped.table
+  %thead
+    %tr
+      %th Platform
+      %th Service ID
+      %th Service type
+      %th Service username
+      %th Buffer ID
+      %th Allowed mediums
+      %th 
+  %tbody
+    - social_media_profiles.each do |social_media_profile|
+      %tr
+        %td= social_media_profile.platform
+        %td= social_media_profile.service_id
+        %td= social_media_profile.service_type 
+        %td= social_media_profile.service_username
+        %td= social_media_profile.buffer_id
+        %td= social_media_profile.allowed_mediums
+        %td
+          %a{ href: edit_social_media_profile_path(social_media_profile) }
+            Edit
+  

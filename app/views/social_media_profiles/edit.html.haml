@@ -1,0 +1,23 @@
+.ui.breadcrumb
+  %a{:href => root_path}
+    Home
+  %i.right.angle.icon.divider
+  .section
+    %a{:href => social_media_profiles_path}
+      Social media Profile
+  %i.right.angle.icon.divider
+  .active.section
+    Edit social media profile: #{@social_media_profile.service_username}
+.ui.divider
+%h3.ui.top.attached.header
+  Edit social media profile: #{@social_media_profile.service_username}
+.ui.attached.segment
+  = simple_form_for @social_media_profile do |f|
+    = f.input :platform, disabled: true
+    = f.input :service_id, disabled: true
+    = f.input :service_type, disabled: true
+    = f.input :service_username, disabled: true
+    = f.input :buffer_id, disabled: true
+    = f.input :allowed_mediums, as: :check_boxes, wrapper_class: 'inline fields', item_wrapper_class: 'ui field checkbox', collection: { 'Ad' => :ad, 'Organic' => :organic }
+    = f.button :submit
+
