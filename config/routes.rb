@@ -16,6 +16,9 @@ Rails.application.routes.draw do
     member do
       get 'create_messages', to: 'experiments#create_messages'
     end
+    member do
+      get 'create_analytics_file_todos', to: 'experiments#create_analytics_file_todos'
+    end
 
     resources :message_generation_parameter_sets
   end

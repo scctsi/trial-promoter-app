@@ -11,10 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170119205134) do
+ActiveRecord::Schema.define(version: 20170123220034) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "analytics_files", force: :cascade do |t|
+    t.string   "url",                     limit: 2000
+    t.string   "original_filename"
+    t.integer  "social_media_profile_id"
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
+    t.datetime "required_upload_date"
+  end
 
   create_table "buffer_updates", force: :cascade do |t|
     t.string   "buffer_id"
@@ -69,6 +78,7 @@ ActiveRecord::Schema.define(version: 20170119205134) do
     t.datetime "message_distribution_start_date"
     t.datetime "created_at",                                   null: false
     t.datetime "updated_at",                                   null: false
+    t.boolean  "analytics_file_todos_created"
   end
 
   create_table "experiments_social_media_profiles", force: :cascade do |t|

@@ -1,5 +1,5 @@
 class ExperimentsController < ApplicationController
-  before_action :set_experiment, only: [:show, :edit, :update, :parameterized_slug, :create_messages]
+  before_action :set_experiment, only: [:show, :edit, :update, :parameterized_slug, :create_messages, :create_analytics_file_todos]
   layout "workspace", only: [:show]
 
   def index
@@ -54,6 +54,11 @@ class ExperimentsController < ApplicationController
 
   def create_messages
     @experiment.create_messages
+    redirect_to experiment_url(@experiment)
+  end
+  
+  def create_analytics_file_todos
+    @experiment.create_analytics_file_todos
     redirect_to experiment_url(@experiment)
   end
 
