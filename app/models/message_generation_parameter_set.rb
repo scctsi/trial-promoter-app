@@ -62,4 +62,8 @@ class MessageGenerationParameterSet < ActiveRecord::Base
 
     return calculated_count
   end
+
+  def self.expected_generated_message_count(social_network_choices_count, medium_choices_count, period_in_days, number_of_messages_per_social_network)
+
+  end
 end

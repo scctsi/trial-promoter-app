@@ -120,14 +120,44 @@ $(document).ready(function() {
     })
   }
 
+  String.prototype.capitalizeFirstLetter = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+  }
+
   function changeExperimentDetails() {
     var listHtml = '';
-    var checkedValues = $.map($("input:checked"), function (elem) { return elem.value || ""; }).join( "," );
-    var periodInDays;
-    var messagesPerSocialNetwork;
+    var periodInDays = $("#experiment_message_generation_parameter_set_attributes_period_in_days").val();
+    var messagesPerSocialNetwork = '';
+    var checkedValues = $.map($("input:checked"), function (elem) { return elem.value.capitalizeFirstLetter()  || ""; }).join( ", " );
+    console.log(periodInDays);
+    var socialNetworkChoices = [];
+    ['Facebook', 'Instagram', 'Twitter'].forEach(function(socialNetwork) {
+      if (checkedValues.includes(socialNetwork)) {
+        socialNetworkChoices.push(socialNetwork);
+      }
+    });
 
-    console.log(values);
-    listHtml += '</ul>'
+    if (socialNetworkChoices.length === 1) {
+      listHtml += '<li>All messages will be generated for distribution on ' + socialNetworkChoices[0];
+    } else {
+      listHtml += '<li>Equal number of messages will be generated per platform: ' + socialNetworkChoices.join(", ");
+    }
+
+    if ((checkedValues).includes('Ad, Organic')) {
+      listHtml += '<li>Half of the generated messages for each platform will be organic (unpaid) and half will be ads (paid).'
+    } else if ((checkedValues).includes('Ad')) {
+      listHtml += '<li>All messages will be ads (paid).'
+    } else if ((checkedValues).includes('Organic')) {
+      listHtml += '<li>All messages will be organic (unpaid).'
+    }
+
+    if ((checkedValues).includes('Without')) {
+      listHtml += '<li>All messages will be without images.'
+    } else if ((checkedValues).includes('With')) {
+      listHtml += '<li>Half of the generated messages will have an attached image and half will have no attached image.'
+    }
+
+    $('.list.experiment-details-real-time').html(listHtml);
   }
 
   function setupExperimentRealTime() {
