@@ -103,6 +103,32 @@ $(document).ready(function() {
     })
   }
 
+  function setUpAnalyticsFileImports() {
+    $('.analytics-file-upload-button').click(function() {
+      var analyticsFileId = $(this).data('analytics-file-id');
+      console.log(analyticsFileId.toString());
+      
+      filepicker.pick({
+          mimetypes: ['text/csv', 'application/vnd.ms-excel'],
+          container: 'modal',
+          services: ['COMPUTER', 'GOOGLE_DRIVE', 'DROPBOX']
+        },
+        function(Blob) {
+          $.ajax({
+            url : '/analytics_files/update/',
+            type: 'POST',
+            data: {url: Blob.url, id: analyticsFileId.toString()},
+            dataType: 'json',
+            async: false,
+            success: function(retdata) {
+              console.log('Successful!');
+            }
+          });
+        }
+      );
+    })
+  }
+
   function setupPopupInfo() {
     $('.ui.fluid.huge.teal.labeled.icon.button.start-experiment-button').popup({
       title   : 'What is an experiment?',
@@ -128,5 +154,6 @@ $(document).ready(function() {
   setUpFilepicker();
   setUpMessageTemplateImports();
   setUpImageImports();
+  setUpAnalyticsFileImports();
   $('.menu .item').tab();
 });

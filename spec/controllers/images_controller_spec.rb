@@ -4,32 +4,6 @@ RSpec.describe ImagesController, type: :controller do
   before do
     sign_in create(:administrator)
   end
-  
-  describe 'POST #create' do
-    context 'with valid attributes' do
-      it 'creates a new image' do
-        expect {
-          post :create, image: attributes_for(:image)
-        }.to change(Image, :count).by(1)
-      end
-
-      it 'returns a success value of true and the id of the created image' do
-        post :create, image: attributes_for(:image)
-        expected_json = { success: true, id: Image.first.id }.to_json
-
-        expect(response.header['Content-Type']).to match(/json/)
-        expect(response.body).to eq(expected_json)
-      end
-    end
-
-    it 'redirects unauthenticated user to sign-in page' do
-      sign_out(:user)
-
-      post :create
-
-      expect(response).to redirect_to :new_user_session
-    end
-  end
 
   describe 'POST #import' do
     it 'imports multiple images accessible at multiple URLs' do

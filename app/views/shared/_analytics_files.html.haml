@@ -20,7 +20,7 @@
         %td= analytics_file.social_media_profile.allowed_mediums[0]
         - if analytics_file.url.nil?
           %td.collapsing
-            %a.analytics-file-upload-button.ui.primary.labeled.icon.button{'analytics-file-id': analytics_file.id}
+            %a.analytics-file-upload-button.ui.primary.labeled.icon.button{'data-analytics-file-id': analytics_file.id}
               %i.upload.icon
               Upload analytics file
         - else

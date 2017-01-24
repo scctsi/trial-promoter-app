@@ -12,11 +12,7 @@ Rails.application.routes.draw do
   resources :experiments, shallow: true do
     member do
       get 'parameterized_slug', to: 'experiments#parameterized_slug', constraints: lambda { |req| req.format == :json }
-    end
-    member do
       get 'create_messages', to: 'experiments#create_messages'
-    end
-    member do
       get 'create_analytics_file_todos', to: 'experiments#create_analytics_file_todos'
     end
 
@@ -63,7 +59,7 @@ Rails.application.routes.draw do
   # Analytics files
   resources :analytics_files do
     member do
-      post 'update', to: 'analytics_files#update', constraints: lambda { |req| req.format == :json }
+      patch 'update', to: 'analytics_files#update', constraints: lambda { |req| req.format == :json }
     end
   end
   
