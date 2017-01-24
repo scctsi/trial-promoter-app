@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170123220034) do
+ActiveRecord::Schema.define(version: 20170123234635) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,6 +23,8 @@ ActiveRecord::Schema.define(version: 20170123220034) do
     t.datetime "created_at",                           null: false
     t.datetime "updated_at",                           null: false
     t.datetime "required_upload_date"
+    t.integer  "message_generating_id"
+    t.string   "message_generating_type"
   end
 
   create_table "buffer_updates", force: :cascade do |t|
@@ -147,6 +149,7 @@ ActiveRecord::Schema.define(version: 20170123220034) do
     t.string   "social_network_id"
   end
 
+  add_index "messages", ["message_generating_type", "message_generating_id"], name: "index_on_message_generating_for_analytics_files", using: :btree
   add_index "messages", ["message_generating_type", "message_generating_id"], name: "index_on_message_generating_for_messages", using: :btree
   add_index "messages", ["promotable_type", "promotable_id"], name: "index_on_promotable_for_messages", using: :btree
 

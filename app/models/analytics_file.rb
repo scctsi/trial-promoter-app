@@ -13,6 +13,8 @@
 class AnalyticsFile < ActiveRecord::Base
   validates :social_media_profile, presence: true
   validates :required_upload_date, presence: true
-  
+  validates :message_generating, presence: true
+
   belongs_to :social_media_profile
+  belongs_to :message_generating, polymorphic: true
 end

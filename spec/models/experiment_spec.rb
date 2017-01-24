@@ -26,6 +26,7 @@ RSpec.describe Experiment, type: :model do
   it { is_expected.to have_one(:message_generation_parameter_set) }
   it { is_expected.to accept_nested_attributes_for(:message_generation_parameter_set) }
   it { is_expected.to have_many(:messages) }
+  it { is_expected.to have_many(:analytics_files) }
   it { is_expected.to have_and_belong_to_many :social_media_profiles }
 
   it 'disables message generation when distribution start date is less than 24 hours from current time' do
@@ -123,6 +124,7 @@ RSpec.describe Experiment, type: :model do
       
       analytics_files = AnalyticsFile.all
       expect(analytics_files.count).to eq(4)
+      analytics_files.each { |analytics_file| expect(analytics_file.message_generating).to eq(experiment)}
       expect(analytics_files[0].social_media_profile).to eq(@social_media_profiles[0])
       expect(analytics_files[0].required_upload_date).to eq(experiment.start_date)
       expect(analytics_files[1].social_media_profile).to eq(@social_media_profiles[1])

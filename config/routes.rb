@@ -59,6 +59,13 @@ Rails.application.routes.draw do
       post :import
     end
   end
+
+  # Analytics files
+  resources :analytics_files do
+    member do
+      post 'update', to: 'analytics_files#update', constraints: lambda { |req| req.format == :json }
+    end
+  end
   
   # Social media profiles
   resources :social_media_profiles do

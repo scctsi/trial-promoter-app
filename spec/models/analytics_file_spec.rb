@@ -15,5 +15,7 @@ require 'rails_helper'
 RSpec.describe AnalyticsFile do
   it { is_expected.to validate_presence_of :social_media_profile }
   it { is_expected.to validate_presence_of :required_upload_date }
+  it { is_expected.to validate_presence_of :message_generating }
   it { is_expected.to belong_to :social_media_profile }
+  it { is_expected.to belong_to :message_generating }
 end

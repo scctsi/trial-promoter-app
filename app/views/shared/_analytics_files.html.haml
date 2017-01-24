@@ -1,0 +1,28 @@
+%table.ui.celled.striped.table
+  %thead
+    %tr
+      %th
+      %th Required upload date
+      %th Social network
+      %th Type
+      %th
+  %tbody
+    - analytics_files.each do |analytics_file|
+      %tr{ class: [('positive' if !analytics_file.url.nil?)] }
+        - if analytics_file.url.nil?
+          %td
+            %i.square.outline.icon
+        - else
+          %td
+            %i.checkmark.box.icon
+        %td= analytics_file.required_upload_date.strftime('%B %d, %Y')
+        %td= analytics_file.social_media_profile.platform
+        %td= analytics_file.social_media_profile.allowed_mediums[0]
+        - if analytics_file.url.nil?
+          %td.collapsing
+            %a.analytics-file-upload-button.ui.primary.labeled.icon.button{'analytics-file-id': analytics_file.id}
+              %i.upload.icon
+              Upload analytics file
+        - else
+          %td
+            Download

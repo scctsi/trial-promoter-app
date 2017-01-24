@@ -4,6 +4,7 @@ RSpec.describe ImagesController, type: :controller do
   before do
     sign_in create(:administrator)
   end
+  
   describe 'POST #create' do
     context 'with valid attributes' do
       it 'creates a new image' do

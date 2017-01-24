@@ -19,6 +19,7 @@ class Experiment < ActiveRecord::Base
   # TODO: Small
   has_one :message_generation_parameter_set, as: :message_generating
   has_many :messages, as: :message_generating
+  has_many :analytics_files, as: :message_generating
   has_and_belongs_to_many :social_media_profiles
 
   accepts_nested_attributes_for :message_generation_parameter_set, update_only: true
@@ -56,7 +57,7 @@ class Experiment < ActiveRecord::Base
     if profiles.count > 0
       each_day do |day|
         profiles.each do |profile|
-          AnalyticsFile.create(:required_upload_date => day, :social_media_profile => profile)
+          AnalyticsFile.create(:required_upload_date => day, :social_media_profile => profile, :message_generating => self)
         end
       end
     end
