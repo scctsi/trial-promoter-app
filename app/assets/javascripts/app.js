@@ -124,13 +124,30 @@ $(document).ready(function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
   }
 
+  function calculateMessageCount(socialNetworkChoicesCount, mediumChoicesCount, periodInDays, numberOfMessagesPerSocialNetwork) {
+    var messageCountHtml;
+    $.ajax({
+      type: 'GET',
+      url: '/experiments/calculate_message_count',
+      data: { social_network_choices_count: socialNetworkChoicesCount, medium_choices_count: mediumChoicesCount, period_in_days: periodInDays, number_of_messages_per_social_network: numberOfMessagesPerSocialNetwork},
+      dataType: 'json',
+      success: function (data) {
+        messageCountHtml = '<li>The total message count is ' + data['message_count'];
+        if (parseInt(data['message_count']) > 0) {
+          $('.experiment-details-real-time').append(messageCountHtml);
+        }
+      }
+    });
+  }
+
   function changeExperimentDetails() {
     var listHtml = '';
+    var mediumCount;
     var periodInDays = $("#experiment_message_generation_parameter_set_attributes_period_in_days").val();
-    var messagesPerSocialNetwork = '';
+    var numberOfMessagesPerSocialNetwork = $("#experiment_message_generation_parameter_set_attributes_number_of_messages_per_social_network").val();
     var checkedValues = $.map($("input:checked"), function (elem) { return elem.value.capitalizeFirstLetter()  || ""; }).join( ", " );
-    console.log(periodInDays);
     var socialNetworkChoices = [];
+
     ['Facebook', 'Instagram', 'Twitter'].forEach(function(socialNetwork) {
       if (checkedValues.includes(socialNetwork)) {
         socialNetworkChoices.push(socialNetwork);
@@ -144,11 +161,14 @@ $(document).ready(function() {
     }
 
     if ((checkedValues).includes('Ad, Organic')) {
+      mediumCount = 2;
       listHtml += '<li>Half of the generated messages for each platform will be organic (unpaid) and half will be ads (paid).'
     } else if ((checkedValues).includes('Ad')) {
       listHtml += '<li>All messages will be ads (paid).'
+      mediumCount = 1;
     } else if ((checkedValues).includes('Organic')) {
       listHtml += '<li>All messages will be organic (unpaid).'
+      mediumCount = 1;
     }
 
     if ((checkedValues).includes('Without')) {
@@ -158,6 +178,8 @@ $(document).ready(function() {
     }
 
     $('.list.experiment-details-real-time').html(listHtml);
+
+    calculateMessageCount(socialNetworkChoices.length, mediumCount, periodInDays, numberOfMessagesPerSocialNetwork);
   }
 
   function setupExperimentRealTime() {

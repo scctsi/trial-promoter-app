@@ -12,11 +12,11 @@ Rails.application.routes.draw do
   resources :experiments, shallow: true do
     member do
       get 'parameterized_slug', to: 'experiments#parameterized_slug', constraints: lambda { |req| req.format == :json }
-    end
-    member do
       get 'create_messages', to: 'experiments#create_messages'
     end
-
+    collection do
+      get 'calculate_message_count', to: 'experiments#calculate_message_count', constraints: lambda { |req| req.format == :json }
+    end
     resources :message_generation_parameter_sets
   end
 
@@ -56,7 +56,7 @@ Rails.application.routes.draw do
       post :import
     end
   end
-  
+
   # Social media profiles
   resources :social_media_profiles do
   end

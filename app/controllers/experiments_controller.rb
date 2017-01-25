@@ -50,11 +50,18 @@ class ExperimentsController < ApplicationController
     else
       render :edit
     end
+
   end
 
   def create_messages
     @experiment.create_messages
     redirect_to experiment_url(@experiment)
+  end
+
+  def calculate_message_count
+    authorize Experiment
+    message_count = MessageGenerationParameterSet.calculate_message_count(params[:social_network_choices_count].to_i, params[:medium_choices_count].to_i, params[:period_in_days].to_i, params[:number_of_messages_per_social_network].to_i)
+    render json: { message_count: message_count }
   end
 
   private

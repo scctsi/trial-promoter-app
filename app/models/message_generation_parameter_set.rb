@@ -48,22 +48,13 @@ class MessageGenerationParameterSet < ActiveRecord::Base
   end
 
   def expected_generated_message_count
-    calculated_count = 1
+    social_network_choices_count = social_network_choices.select { |network| !network.blank? }.count
+    medium_choices_count = medium_choices.select { |medium| !medium.blank? }.count
 
-    #  Number of social networks
-    calculated_count *= social_network_choices.select { |network| !network.blank? }.count
-    # Number of mediums
-    calculated_count *= medium_choices.select { |medium| !medium.blank? }.count
-    # NOTE: Images are distributed equally among the messages that are generated. Unlike social networks and mediums, new messages are not generated to get an equal or random distribution of messages containing images.
-    # Period in days
-    calculated_count *= period_in_days
-    # Number of messages per social network
-    calculated_count *= number_of_messages_per_social_network
-
-    return calculated_count
+    MessageGenerationParameterSet.calculate_message_count(social_network_choices_count, medium_choices_count, period_in_days, number_of_messages_per_social_network)
   end
 
-  def self.expected_generated_message_count(social_network_choices_count, medium_choices_count, period_in_days, number_of_messages_per_social_network)
-
+  def self.calculate_message_count(social_network_choices_count, medium_choices_count, period_in_days, number_of_messages_per_social_network)
+    social_network_choices_count * medium_choices_count * period_in_days * number_of_messages_per_social_network
   end
 end
