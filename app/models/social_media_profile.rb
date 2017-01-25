@@ -10,6 +10,7 @@
 #  buffer_id        :string
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
+#  allowed_mediums  :string
 #
 
 class SocialMediaProfile < ActiveRecord::Base
@@ -22,6 +23,7 @@ class SocialMediaProfile < ActiveRecord::Base
   validates :platform, presence: true
   enumerize :platform, in: [:facebook, :instagram, :twitter]
   has_and_belongs_to_many :experiments
+  has_many :analytics_files
 
   def allowed_mediums
     return symbolize_array_items(self[:allowed_mediums])
