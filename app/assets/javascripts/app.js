@@ -159,7 +159,7 @@ $(document).ready(function() {
       dataType: 'json',
       success: function (data) {
         messageCountHtml = '<li>The total message count is ' + data['message_count'];
-        if (parseInt(data['message_count']) > 0) {
+        if (parseInt(data['message_count'], 10) > 0) {
           $('.experiment-details-real-time').append(messageCountHtml);
         }
       }
