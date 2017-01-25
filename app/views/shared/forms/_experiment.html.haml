@@ -1,42 +1,25 @@
-= simple_form_for @experiment do |f|
-  - if @experiment.errors.any?
-    .ui.message.error.visible
+.ui.new_experiment_form
+  = simple_form_for @experiment do |f|
+    - if @experiment.errors.any?
+      .ui.message.error.visible
+        .header
+          There were some errors with your submission
+        .ul.list
+          - @experiment.errors.full_messages.each do |message|
+            %li= message
+    = f.input :name, label: 'Name your experiment', hint: 'Give your experiment a good name'
+    = f.input :start_date, as: :string
+    = f.input :end_date, as: :string
+    = f.input :message_distribution_start_date, as: :string
+    = f.association :social_media_profiles, as: :check_boxes, label_method: :service_username, value_method: :id, wrapper_class: 'grouped fields', item_wrapper_class: 'ui field checkbox', label: 'What social media accounts(s) do you want to use?'
+    = f.simple_fields_for :message_generation_parameter_set do |m|
+      = m.input :social_network_choices, as: :check_boxes, wrapper_class: 'inline fields', item_wrapper_class: 'ui field checkbox', collection: { 'Facebook' => 'facebook', 'Instagram' => 'instagram', 'Twitter' => 'twitter' }, label: 'Which social media social media type(s) do you want to use?'
+      = m.input :medium_choices, as: :check_boxes, wrapper_class: 'inline fields', item_wrapper_class: 'ui field checkbox', collection: { 'Ad' => 'ad', 'Organic/Unpaid' => 'organic' }, label: 'What type(s) of message do you want to use?'
+      = m.input :image_present_choices, as: :check_boxes, wrapper_class: 'inline fields', item_wrapper_class: 'ui field checkbox', collection: { 'Yes' => 'with', 'No' => 'without' }, label: 'Do you want to use images in the messages?'
+      =m.input :period_in_days
+      =m.input :number_of_messages_per_social_network
+    .ui.message
       .header
-        There were some errors with your submission
-      .ul.list
-        - @experiment.errors.full_messages.each do |message|
-          %li= message
-  = f.input :name, label: 'Name your experiment', hint: 'Give your experiment a good name'
-  = f.input :start_date, as: :string
-  = f.input :end_date, as: :string
-  = f.input :message_distribution_start_date, as: :string
-  = f.association :social_media_profiles, as: :check_boxes, label_method: :service_username, value_method: :id, wrapper_class: 'grouped fields', item_wrapper_class: 'ui field checkbox', label: 'What social media accounts(s) do you want to use?'
-  = f.simple_fields_for :message_generation_parameter_set do |m|
-    = m.input :social_network_choices, as: :check_boxes, wrapper_class: 'inline fields', item_wrapper_class: 'ui field checkbox', collection: { 'Facebook' => :facebook, 'Instagram' => :instagram, 'Twitter' => :twitter }, label: 'Which social media network(s) do you want to use?'
-    = m.input :medium_choices, as: :check_boxes, wrapper_class: 'inline fields', item_wrapper_class: 'ui field checkbox', collection: { 'Ad' => :ad, 'Organic/Unpaid' => :organic }, label: 'What type(s) of message do you want to use?'
-    = m.input :image_present_choices, as: :check_boxes, wrapper_class: 'inline fields', item_wrapper_class: 'ui field checkbox', collection: { 'With' => :with, 'Without' => :without }, label: 'Do you want to use images in the messages?'
-    // %tr
-    //   %td.collapsing
-    //   %td
-    // %tr
-    //   %td.collapsing How do you want to distribute the messages across the selected social media?
-    //   %td= m.input :social_network_distribution, as: :radio_buttons, wrapper_class: 'inline fields', item_wrapper_class: 'ui field radio checkbox', label: false
-    // %tr
-    // %tr
-    //   %td.collapsing How do you want to distribute paid ads vs. unpaid (organic) messages across each selected social media?
-    //   %td= m.input :medium_distribution, as: :radio_buttons, wrapper_class: 'inline fields', item_wrapper_class: 'ui field radio checkbox', label: false
-    // %tr
-    //   %td.collapsing How do you want to distribute the messages with or without images across each selected social media?
-    //   %td= m.input :image_present_distribution, as: :radio_buttons, wrapper_class: 'inline fields', item_wrapper_class: 'ui field radio checkbox', label: false
-    =m.input :period_in_days
-    =m.input :number_of_messages_per_social_network
-  .ui.message
-    .header
-      Experiment details
-    %ul.list
-      %li Messages will be distributed equally on Facebook, Instagram and Twitter.
-      %li An equal number of ads and organic messages will be created per platform.
-      %li None of the messages will include an image.
-      %li A total of 180 messages will be created for this experiment.
-  = f.button :submit
-
+        Experiment details
+      %ul.list.experiment-details-real-time
+    = f.button :submit

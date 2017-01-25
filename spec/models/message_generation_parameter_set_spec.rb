@@ -182,18 +182,9 @@ describe MessageGenerationParameterSet do
       # Number of social networks (3) * Number of mediums (2) * Period in days(10) * Number of messages per social network (3)
       expect(message_generation_parameter_set.expected_generated_message_count).to eq(3 * 2 * 1 * 10 * 3)
     end
+
+    it 'calculates the number of messages' do
+      expect(MessageGenerationParameterSet.calculate_message_count(2, 3, 4, 5)).to eq(2 * 3 * 4 * 5)
+    end
   end
-
-
-
-
-
-  # it 'is greater than 0' do
-  #   message_generation_parameter_set = build(:message_generation_parameter_set)
-
-  #   # message_generation_parameter_set = MessageGenerationParameterSet.new() do |m|
-  #   #   m.period_in_days = 0
-  #   # end
-  #   expect(message_generation_parameter_set.period_in_days).not_to eq (0)
-  # end
 end
