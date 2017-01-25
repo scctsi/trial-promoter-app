@@ -3,6 +3,10 @@ class ExperimentPolicy < ApplicationPolicy
     user.role.administrator?
   end
 
+  def create_analytics_file_todos?
+    user.role.administrator?
+  end
+  
   def set_experiment?
     user.role.administrator?
   end
