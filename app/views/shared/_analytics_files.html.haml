@@ -1,4 +1,4 @@
-%table.ui.celled.striped.table
+%table.ui.celled.table
   %thead
     %tr
       %th
@@ -7,7 +7,7 @@
       %th Type
       %th
   %tbody
-    - analytics_files.each do |analytics_file|
+    - analytics_files.to_a.sort!{ |x, y| x.required_upload_date <=> y.required_upload_date }.each do |analytics_file|
       %tr{ class: [('positive' if !analytics_file.url.nil?)] }
         - if analytics_file.url.nil?
           %td

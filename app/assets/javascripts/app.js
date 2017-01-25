@@ -115,9 +115,9 @@ $(document).ready(function() {
         },
         function(Blob) {
           $.ajax({
-            url : '/analytics_files/update/',
-            type: 'POST',
-            data: {url: Blob.url, id: analyticsFileId.toString()},
+            url : '/analytics_files/' + analyticsFileId.toString() + '/update',
+            type: 'PATCH',
+            data: {url: Blob.url},
             dataType: 'json',
             async: false,
             success: function(retdata) {
