@@ -98,6 +98,19 @@ RSpec.describe ExperimentsController, type: :controller do
     end
   end
 
+  describe 'GET #calculate_message_count' do
+    before do
+      @experiment = create(:experiment)
+      get :calculate_message_count, id: @experiment, :social_network_choices_count => '2', :medium_choices_count => '3', :period_in_days => '4', :number_of_messages_per_social_network => '5'
+    end
+
+    it 'returns the number of total calculated messages' do
+      expected_json = { :message_count => 120 }.to_json
+
+      expect(response.body).to eq(expected_json)
+  end
+end
+
   describe 'GET #create_messages' do
     before do
       @experiment = create(:experiment)

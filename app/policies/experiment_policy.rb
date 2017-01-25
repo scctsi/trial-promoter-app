@@ -14,4 +14,8 @@ class ExperimentPolicy < ApplicationPolicy
   def parameterized_slug?
     user.role.administrator?
   end
+
+  def calculate_message_count?
+    user.role.administrator?
+  end
 end

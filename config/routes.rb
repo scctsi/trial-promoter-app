@@ -15,7 +15,9 @@ Rails.application.routes.draw do
       get 'create_messages', to: 'experiments#create_messages'
       get 'create_analytics_file_todos', to: 'experiments#create_analytics_file_todos'
     end
-
+    collection do
+      get 'calculate_message_count', to: 'experiments#calculate_message_count', constraints: lambda { |req| req.format == :json }
+    end
     resources :message_generation_parameter_sets
   end
 
@@ -62,7 +64,7 @@ Rails.application.routes.draw do
       patch 'update', to: 'analytics_files#update', constraints: lambda { |req| req.format == :json }
     end
   end
-  
+
   # Social media profiles
   resources :social_media_profiles do
   end
