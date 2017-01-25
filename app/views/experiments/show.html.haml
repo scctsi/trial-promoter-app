@@ -21,6 +21,8 @@
     Dashboard
   %a{ class: 'item', 'data-tab': 'reports' }
     Reports
+  %a{ class: 'item', 'data-tab': 'analytics-file-uploads' }
+    Analytics file uploads
 .ui.bottom.attached.tab.segment{class: ('active' if @selected_tab == 'setup'), 'data-tab': 'setup' }
   = render partial: 'experiments/tabs/setup'
 .ui.bottom.attached.tab.segment{class: ('active' if @selected_tab == 'message-templates'), 'data-tab': 'message-templates' }
@@ -33,3 +35,5 @@
   = render partial: 'experiments/tabs/dashboard'
 .ui.bottom.attached.tab.segment{ 'data-tab': 'reports' }
   = render partial: 'experiments/tabs/reports'
+.ui.bottom.attached.tab.segment{ 'data-tab': 'analytics-file-uploads' }
+  = render partial: 'experiments/tabs/analytics_file_uploads'

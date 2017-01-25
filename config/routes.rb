@@ -13,6 +13,7 @@ Rails.application.routes.draw do
     member do
       get 'parameterized_slug', to: 'experiments#parameterized_slug', constraints: lambda { |req| req.format == :json }
       get 'create_messages', to: 'experiments#create_messages'
+      get 'create_analytics_file_todos', to: 'experiments#create_analytics_file_todos'
     end
     collection do
       get 'calculate_message_count', to: 'experiments#calculate_message_count', constraints: lambda { |req| req.format == :json }
@@ -54,6 +55,13 @@ Rails.application.routes.draw do
     end
     collection do
       post :import
+    end
+  end
+
+  # Analytics files
+  resources :analytics_files do
+    member do
+      patch 'update', to: 'analytics_files#update', constraints: lambda { |req| req.format == :json }
     end
   end
 

@@ -136,6 +136,31 @@ end
     end
   end
 
+  describe 'GET #create_analytics_file_todos' do
+    before do
+      @experiment = create(:experiment)
+      allow(Experiment).to receive(:find).and_return(@experiment)
+      allow(@experiment).to receive(:create_analytics_file_todos)
+      get :create_analytics_file_todos, id: @experiment
+    end
+
+    it 'asks the experiment to create analytics file todos' do
+      expect(@experiment).to have_received(:create_analytics_file_todos)
+    end
+
+    it 'redirects to the experiment workspace' do
+      expect(response).to redirect_to experiment_url(Experiment.first)
+    end
+
+    it 'redirects unauthenticated user to sign-in page' do
+        sign_out(:user)
+
+        get :create_analytics_file_todos, id: @experiment
+
+        expect(response).to redirect_to :new_user_session
+    end
+  end
+
   describe 'GET #new' do
     before do
       @experiment = Experiment.new
@@ -233,7 +258,9 @@ end
     before :each do
       @experiment = create(:experiment)
       @experiment.message_generation_parameter_set = create(:message_generation_parameter_set, message_generating: @experiment)
+      @social_media_profiles = create_list(:social_media_profile, 3)
       patch :update, id: @experiment, experiment: attributes_for(:experiment, name: 'New name', start_date: Time.local(2000, 1, 1, 9, 0, 0), end_date: Time.local(2000, 2, 1, 9, 0, 0), message_distribution_start_date: Time.local(2000, 3, 1, 9, 0, 0),
+                                      social_media_profile_ids: [@social_media_profiles[0].id, @social_media_profiles[2].id],
                                       message_generation_parameter_set_attributes: {social_network_distribution: :random, medium_distribution: :random, image_present_distribution: :random, period_in_days: 10, number_of_messages_per_social_network: 5, social_network_choices: ['facebook', 'instagram', ''], medium_choices: ['ad', 'organic'], image_present_choices: ['with', 'without']})
     end
 
@@ -260,6 +287,13 @@ end
         expect(@experiment.message_generation_parameter_set.image_present_distribution).to eq(:random)
         expect(@experiment.message_generation_parameter_set.period_in_days).to eq(10)
         expect(@experiment.message_generation_parameter_set.number_of_messages_per_social_network).to eq(5)
+      end
+
+      it "changes the associated social media profiles" do
+        @experiment.reload
+        expect(@experiment.social_media_profiles.count).to eq(2)
+        expect(@experiment.social_media_profiles[0]).to eq(@social_media_profiles[0])
+        expect(@experiment.social_media_profiles[1]).to eq(@social_media_profiles[2])
       end
 
       it 'redirects to the experiment workspace' do

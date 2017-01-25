@@ -1,5 +1,5 @@
 class ExperimentsController < ApplicationController
-  before_action :set_experiment, only: [:show, :edit, :update, :parameterized_slug, :create_messages]
+  before_action :set_experiment, only: [:show, :edit, :update, :parameterized_slug, :create_messages, :create_analytics_file_todos]
   layout "workspace", only: [:show]
 
   def index
@@ -57,6 +57,11 @@ class ExperimentsController < ApplicationController
     @experiment.create_messages
     redirect_to experiment_url(@experiment)
   end
+  
+  def create_analytics_file_todos
+    @experiment.create_analytics_file_todos
+    redirect_to experiment_url(@experiment)
+  end
 
   def calculate_message_count
     authorize Experiment
@@ -73,7 +78,6 @@ class ExperimentsController < ApplicationController
 
   def experiment_params
     # TODO: Unit test this
-    params.require(:experiment).permit(:name, :start_date, :end_date, :message_distribution_start_date, message_generation_parameter_set_attributes: [:social_network_distribution, :medium_distribution, :image_present_distribution, :period_in_days, :number_of_messages_per_social_network, social_network_choices: [], medium_choices: [], image_present_choices: []])
-    # params[:experiment].permit(:name, :start_date, :end_date, :message_distribution_start_date, {:clinical_trial_ids => []}, message_generation_parameter_set_attributes: [:id, :promoted_websites_tag, :promoted_clinical_trials_tag, :promoted_properties_cycle_type, :selected_message_templates_tag, :selected_message_templates_cycle_type, :medium_cycle_type, :social_network_cycle_type, :image_present_cycle_type, :period_in_days, :number_of_messages_per_social_network])
+    params.require(:experiment).permit(:name, :start_date, :end_date, :message_distribution_start_date, {:social_media_profile_ids => []}, message_generation_parameter_set_attributes: [:social_network_distribution, :medium_distribution, :image_present_distribution, :period_in_days, :number_of_messages_per_social_network, social_network_choices: [], medium_choices: [], image_present_choices: []])
   end
 end
