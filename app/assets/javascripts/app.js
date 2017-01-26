@@ -40,7 +40,7 @@ $(document).ready(function() {
   }
 
   function setUpFilepicker() {
-    if ($('body').data('environment') != 'development') {
+    if ($('body').data('environment') !== 'development') {
       filepicker.setKey($('body').data('filepicker-api-key'));
     } else {
       filepicker.setKey("AU0m7oO6OSQW5bqqVk0HTz");
