@@ -1,0 +1,16 @@
+.ui.top.attached.tabular.menu
+  %a{ class: ['item', 'active'], 'data-tab': 'dashboard-messages-by-platform-facebook' }
+    %i.facebook.icon
+    Facebook
+  %a{ class: ['item'], 'data-tab': 'dashboard-messages-by-platform-instagram' }
+    %i.instagram.icon
+    Instagram
+  %a{ class: ['item'], 'data-tab': 'dashboard-messages-by-platform-twitter' }
+    %i.twitter.icon
+    Twitter
+.ui.active.bottom.attached.tab.segment{ 'data-tab': 'dashboard-messages-by-platform-facebook' }
+  = render partial: 'experiments/tabs/dashboard_messages_by_platform_facebook'
+.ui.bottom.attached.tab.segment{ 'data-tab': 'dashboard-messages-by-platform-instagram' }
+  = render partial: 'experiments/tabs/dashboard_messages_by_platform_instagram'
+.ui.bottom.attached.tab.segment{ 'data-tab': 'dashboard-messages-by-platform-twitter' }
+  = render partial: 'experiments/tabs/dashboard_messages_by_platform_twitter'
