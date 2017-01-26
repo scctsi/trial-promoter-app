@@ -40,7 +40,11 @@ $(document).ready(function() {
   }
 
   function setUpFilepicker() {
-    filepicker.setKey("AU0m7oO6OSQW5bqqVk0HTz");
+    if ($('body').data('filepicker-api-key')) {
+      filepicker.setKey($('body').data('filepicker-api-key'));
+    } else {
+      filepicker.setKey("AU0m7oO6OSQW5bqqVk0HTz");
+    }
   }
 
   function setUpMessageTemplateImports() {
@@ -107,7 +111,7 @@ $(document).ready(function() {
     $('.analytics-file-upload-button').click(function() {
       var analyticsFileId = $(this).data('analytics-file-id');
       console.log(analyticsFileId.toString());
-      
+
       filepicker.pick({
           mimetypes: ['text/csv', 'application/vnd.ms-excel'],
           container: 'modal',
