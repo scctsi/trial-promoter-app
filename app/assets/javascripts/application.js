@@ -17,5 +17,4 @@
 //= require daterangepicker.min
 //= require chosen.jquery.min
 //= require selectize.min
-//= require tablesort
 //= require_tree .
