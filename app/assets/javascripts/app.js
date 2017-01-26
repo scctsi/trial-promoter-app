@@ -40,7 +40,7 @@ $(document).ready(function() {
   }
 
   function setUpFilepicker() {
-    if ($('body').data('filepicker-api-key')) {
+    if ($('body').data('environment') != 'development') {
       filepicker.setKey($('body').data('filepicker-api-key'));
     } else {
       filepicker.setKey("AU0m7oO6OSQW5bqqVk0HTz");
@@ -203,8 +203,10 @@ $(document).ready(function() {
 
     if ((checkedValues).includes('Without')) {
       listHtml += '<li>All messages will be without images.'
+      $('#experiment_message_generation_parameter_set_attributes_image_present_choices_with').prop('checked', false);
     } else if ((checkedValues).includes('With')) {
       listHtml += '<li>Half of the generated messages will have an attached image and half will have no attached image.'
+      $('#experiment_message_generation_parameter_set_attributes_image_present_choices_without').prop('checked', false);
     }
 
     $('.list.experiment-details-real-time').html(listHtml);
