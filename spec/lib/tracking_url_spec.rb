@@ -9,8 +9,8 @@ RSpec.describe TrackingUrl do
   it 'returns a hash of UTM parameters for a message' do
     utm_parameters = TrackingUrl.utm_parameters(@message)
     
-    expect(utm_parameters[:source]).to eq(@message.message_template.platform.to_s)
-    expect(utm_parameters[:medium]).to eq(@message.medium.to_s)
+    expect(utm_parameters[:source]).to eq(@message.message_template.platform)
+    expect(utm_parameters[:medium]).to eq(@message.medium)
     expect(utm_parameters[:campaign]).to eq(@message.message_generating.to_param)
     expect(utm_parameters[:term]).to eq(nil)
     expect(utm_parameters[:content]).to eq(@message.to_param)
