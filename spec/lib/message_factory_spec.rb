@@ -3,6 +3,9 @@ require 'rails_helper'
 RSpec.describe MessageFactory do
   before do
     @experiment = create(:experiment)
+    @suitable_social_media_profiles = create_list(:social_media_profile, 3)
+    @suitable_social_media_profiles.each { |social_media_profile| @experiment.social_media_profiles << social_media_profile }
+    @experiment.save
     tag_lists = [['tag-1'], ['tag-4', 'tag-5', 'tag-6'], ['tag-2', 'tag-3', 'tag-4']]
     TrialPromoter::SUPPORTED_NETWORKS.each do |social_network|
       # Randomly tag each message template with a set of tags taken from tag_lists
@@ -18,13 +21,17 @@ RSpec.describe MessageFactory do
     allow(@tag_matcher).to receive(:match).with(Website, tag_lists[0]).and_return(@website_sets_matching_tag_sets[0])
     allow(@tag_matcher).to receive(:match).with(Website, tag_lists[1]).and_return(@website_sets_matching_tag_sets[1])
     allow(@tag_matcher).to receive(:match).with(Website, tag_lists[2]).and_return(@website_sets_matching_tag_sets[2])
-    @message_factory = MessageFactory.new(@tag_matcher)
+    # Set up social media profile picking
+    @social_media_profile_picker = SocialMediaProfilePicker.new
+    allow(@social_media_profile_picker).to receive(:pick).with(@suitable_social_media_profiles, Message).and_return(@suitable_social_media_profiles[1])
+    @message_factory = MessageFactory.new(@tag_matcher, @social_media_profile_picker)
   end
 
-  it 'can be initialized with a tag matcher' do
-    @message_factory = MessageFactory.new(@tag_matcher)
+  it 'can be initialized with a tag matcher and a social media profile picker' do
+    @message_factory = MessageFactory.new(@tag_matcher, @social_media_profile_picker)
     
     expect(@message_factory.tag_matcher).to eq(@tag_matcher)
+    expect(@message_factory.social_media_profile_picker).to eq(@social_media_profile_picker)
   end
   
   it 'creates a set of messages for one website, five message templates, 1 social network (equal distribution), 1 medium (equal distribution), with images (equal distribution), for 10 days and 3 messages per network per day' do
@@ -82,6 +89,11 @@ RSpec.describe MessageFactory do
     # Do the images selected for each message belong to the set of images matched to the message template?
     messages.all.each do |message|
       expect(@tag_matcher.match(Image, message.message_template.tag_list)).to include(message.image) if message.image_present == :with
+    end
+    
+    # Social media profile picking
+    messages.all.each do |message|
+      expect(message.social_media_profile).to eq(@suitable_social_media_profiles[1])
     end
   end
 

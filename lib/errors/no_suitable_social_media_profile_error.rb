@@ -1,0 +1,2 @@
+class NoSuitableSocialMediaProfileError < StandardError
+end
