@@ -224,5 +224,8 @@ $(document).ready(function() {
   setUpMessageTemplateImports();
   setUpImageImports();
   setUpAnalyticsFileImports();
+  
+  // Set up Semantic UI
   $('.menu .item').tab();
+  $('.table').tablesort();
 });
