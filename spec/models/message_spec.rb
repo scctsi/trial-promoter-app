@@ -47,7 +47,14 @@ describe Message do
 
     expect(message.buffer_profile_ids).to eq(["1234abcd", "1234efgh", "1234ijkl"])
   end
-  
+
+  it 'returns the medium as a sumbol' do
+    message = build(:message)
+    message.medium = :ad
+    
+    expect(message.medium).to be :ad
+  end
+
   describe "adding metrics" do
     it 'always updates existing metrics from a particular source' do
       message = build(:message)

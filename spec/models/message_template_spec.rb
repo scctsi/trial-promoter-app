@@ -23,7 +23,7 @@ RSpec.describe MessageTemplate do
 
     expect(message_template.platform).to be(:twitter)
   end
-  
+
   describe 'standardizing variables' do
     it 'downcases the pi_first_name variable' do
       message_template = MessageTemplate.new(content: 'This is a message_template containing a {PI_first_name} variable')
