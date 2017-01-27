@@ -47,13 +47,13 @@ $(document).ready(function() {
     var container = '';
     switch ($('body').data('environment')) {
       case 'development':
-        return 'scctsi-tp-development'
+        return 'scctsi-tp-development';
         break;
       case 'staging':
-        return 'scctsi-tp-staging'
+        return 'scctsi-tp-staging';
         break;
       case 'production':
-        return 'scctsi-tp-production'
+        return 'scctsi-tp-production';
     }
   }
 
@@ -105,6 +105,12 @@ $(document).ready(function() {
         function(Blobs) {
           var imageUrls = [];
           for (var i = 0; i < Blobs.length; i++) {
+
+get the key from the Blob[i]
+
+
+
+
             imageUrls.push(Blobs[i].url);
             $.ajax({
               url : '/images/import',
@@ -113,17 +119,19 @@ $(document).ready(function() {
               dataType: 'json',
               success: function(retdata) {
 
-                console.log(retdata);
+                console.log("Store successful:", JSON.stringify(retdata));
 
               }
             });
           }
+
+          console.log(imageUrls[0].url);
         },
         function(error){
-         // console.log(JSON.stringify(error));
+         console.log(JSON.stringify(error));
         },
         function(progress){
-          // console.log(JSON.stringify(progress));
+          console.log(JSON.stringify(progress));
         }
       );
     })
