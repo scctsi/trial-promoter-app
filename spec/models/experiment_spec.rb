@@ -56,7 +56,7 @@ RSpec.describe Experiment, type: :model do
   it 'creates messages using a message factory' do
     experiment = build(:experiment)
     allow(experiment).to receive(:create_messages).and_call_original
-    message_factory = MessageFactory.new(TagMatcher.new)
+    message_factory = MessageFactory.new(TagMatcher.new, SocialMediaProfilePicker.new)
     allow(message_factory).to receive(:create).with(experiment)
     allow(MessageFactory).to receive(:new).and_return(message_factory)
 

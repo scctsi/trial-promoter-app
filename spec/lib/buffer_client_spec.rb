@@ -7,14 +7,16 @@ RSpec.describe BufferClient do
     allow(Setting).to receive(:[]).with(:buffer_access_token).and_return(secrets['buffer_access_token'])
     allow(BufferClient).to receive(:post).and_call_original
     allow(BufferClient).to receive(:get).and_call_original
-    @message = build(:message, :buffer_profile_ids => ['53275ff6c441ced7264e4ca5'], :content => 'Some content')
+    @message = build(:message)
+    social_media_profile = build(:social_media_profile, buffer_id: '53275ff6c441ced7264e4ca5')
+    @message.social_media_profile = social_media_profile
   end
 
   describe "(development only tests)", :development_only_tests => true do
     it 'returns the body of the POST request for creating a Buffer update via the Buffer API' do
       post_request_body = BufferClient.post_request_body_for_create(@message)
 
-      expect(post_request_body[:profile_ids]).to eq(@message.buffer_profile_ids)
+      expect(post_request_body[:profile_ids]).to eq(@message.social_media_profile.buffer_id)
       expect(post_request_body[:text]).to eq(@message.content)
       expect(post_request_body[:shorten]).to eq(true)
       expect(post_request_body[:access_token]).to eq(Setting[:buffer_access_token])
