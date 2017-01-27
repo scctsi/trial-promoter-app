@@ -43,18 +43,8 @@ $(document).ready(function() {
     filepicker.setKey("At8mEYziyTc6axVbB4njtz");
   }
 
-  function setUpBucketContainer() {
-    var container = '';
-    switch ($('body').data('environment')) {
-      case 'development':
-        return 'scctsi-tp-development';
-        break;
-      case 'staging':
-        return 'scctsi-tp-staging';
-        break;
-      case 'production':
-        return 'scctsi-tp-production';
-    }
+  function s3BucketContainer() {
+    return 'scctsi-tp-' + $('body').data('environment');
   }
 
   function setUpMessageTemplateImports() {
@@ -86,11 +76,15 @@ $(document).ready(function() {
     });
   }
 
+  function createS3Url(bucket, key) {
+    return 'https://s3-us-west-1.amazonaws.com/' + bucket + '/' + key;
+  }
+
   function setUpImageImports() {
     $('#images-upload-button').click(function() {
       var experimentId = $(this).data('experiment-id');
       var experimentParam = $(this).data('experiment-param');
-      var bucketContainer = setUpBucketContainer();
+
       filepicker.pickAndStore({
           mimetype: 'image/*',
           container: 'modal',
@@ -99,19 +93,15 @@ $(document).ready(function() {
         {
           location: 'S3',
           path: '/' + experimentParam + '/images/',
-          container: bucketContainer,
+          container: s3BucketContainer(),
           access: 'public'
         },
         function(Blobs) {
           var imageUrls = [];
+          var bucketName = '';
           for (var i = 0; i < Blobs.length; i++) {
-
-get the key from the Blob[i]
-
-
-
-
-            imageUrls.push(Blobs[i].url);
+            bucketName = Blobs[0].container;
+            imageUrls.push(createS3Url(bucketName, Blobs[i].key));
             $.ajax({
               url : '/images/import',
               type: 'POST',
@@ -119,19 +109,13 @@ get the key from the Blob[i]
               dataType: 'json',
               success: function(retdata) {
 
-                console.log("Store successful:", JSON.stringify(retdata));
-
               }
             });
           }
-
-          console.log(imageUrls[0].url);
         },
         function(error){
-         console.log(JSON.stringify(error));
         },
         function(progress){
-          console.log(JSON.stringify(progress));
         }
       );
     })
@@ -140,7 +124,6 @@ get the key from the Blob[i]
   function setUpAnalyticsFileImports() {
     $('.analytics-file-upload-button').click(function() {
       var analyticsFileId = $(this).data('analytics-file-id');
-      console.log(analyticsFileId.toString());
 
       filepicker.pick({
           mimetypes: ['text/csv', 'application/vnd.ms-excel'],
@@ -154,7 +137,6 @@ get the key from the Blob[i]
             data: {url: Blob.url},
             dataType: 'json',
             success: function(retdata) {
-              console.log('Successful!');
             }
           });
         }
