@@ -1,4 +1,4 @@
-%a#images-upload-button.ui.primary.labeled.icon.button{'data-experiment-id': @experiment.id}
+%a#images-upload-button.ui.primary.labeled.icon.button{'data-experiment-id': @experiment.id, 'data-experiment-param': @experiment.to_param}
   %i.upload.icon
   Import images
 - if @images.count == 0
