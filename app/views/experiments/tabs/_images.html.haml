@@ -1,8 +1,8 @@
-%a#images-upload-button.ui.primary.labeled.icon.button{'data-experiment-id': @experiment.id}
+%a#images-upload-button.ui.primary.labeled.icon.button{'data-experiment-id': @experiment.id, 'data-experiment-param': @experiment.to_param}
   %i.upload.icon
   Import images
 - if @images.count == 0
   .ui.message
     %p Trial Promoter can add an image to any message. You can upload images from Dropbox, Google Drive or from your computer. Consider using free image databases such as pixabay.com. Limitations: If you have images that are suitable for only certain message templates, this tool will require manual editing of the tags associated with each image once the images are uploaded.
 - else
-  = render partial: 'shared/images', locals: { images: @images }
+  = render partial: 'shared/images', locals: { images: @images, experiment: @experiment.name }

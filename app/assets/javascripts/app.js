@@ -40,10 +40,20 @@ $(document).ready(function() {
   }
 
   function setUpFilepicker() {
-    if ($('body').data('environment') !== 'development') {
-      filepicker.setKey($('body').data('filepicker-api-key'));
-    } else {
-      filepicker.setKey("AU0m7oO6OSQW5bqqVk0HTz");
+    filepicker.setKey("At8mEYziyTc6axVbB4njtz");
+  }
+
+  function setUpBucketContainer() {
+    var container = '';
+    switch ($('body').data('environment')) {
+      case 'development':
+        return 'scctsi-tp-development'
+        break;
+      case 'staging':
+        return 'scctsi-tp-staging'
+        break;
+      case 'production':
+        return 'scctsi-tp-production'
     }
   }
 
@@ -62,7 +72,6 @@ $(document).ready(function() {
             type: 'GET',
             data: {url: Blob.url, experiment_id: experimentId.toString()},
             dataType: 'json',
-            async: false,
             success: function(retdata) {
               url = window.location.href;
               if (url.indexOf("?") === -1){
@@ -80,15 +89,21 @@ $(document).ready(function() {
   function setUpImageImports() {
     $('#images-upload-button').click(function() {
       var experimentId = $(this).data('experiment-id');
-
-      filepicker.pickMultiple({
+      var experimentParam = $(this).data('experiment-param');
+      var bucketContainer = setUpBucketContainer();
+      filepicker.pickAndStore({
           mimetype: 'image/*',
           container: 'modal',
           services: ['COMPUTER', 'GOOGLE_DRIVE', 'DROPBOX']
         },
+        {
+          location: 'S3',
+          path: '/' + experimentParam + '/images/',
+          container: bucketContainer,
+          access: 'public'
+        },
         function(Blobs) {
           var imageUrls = [];
-
           for (var i = 0; i < Blobs.length; i++) {
             imageUrls.push(Blobs[i].url);
             $.ajax({
@@ -96,12 +111,19 @@ $(document).ready(function() {
               type: 'POST',
               data: {image_urls: imageUrls, experiment_id: experimentId.toString()},
               dataType: 'json',
-              async: false,
               success: function(retdata) {
+
+                console.log(retdata);
 
               }
             });
           }
+        },
+        function(error){
+         // console.log(JSON.stringify(error));
+        },
+        function(progress){
+          // console.log(JSON.stringify(progress));
         }
       );
     })
@@ -123,7 +145,6 @@ $(document).ready(function() {
             type: 'PATCH',
             data: {url: Blob.url},
             dataType: 'json',
-            async: false,
             success: function(retdata) {
               console.log('Successful!');
             }
