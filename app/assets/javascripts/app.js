@@ -40,7 +40,11 @@ $(document).ready(function() {
   }
 
   function setUpFilepicker() {
-    filepicker.setKey("AU0m7oO6OSQW5bqqVk0HTz");
+    filepicker.setKey("At8mEYziyTc6axVbB4njtz");
+  }
+
+  function s3BucketContainer() {
+    return 'scctsi-tp-' + $('body').data('environment');
   }
 
   function setUpMessageTemplateImports() {
@@ -58,7 +62,6 @@ $(document).ready(function() {
             type: 'GET',
             data: {url: Blob.url, experiment_id: experimentId.toString()},
             dataType: 'json',
-            async: false,
             success: function(retdata) {
               url = window.location.href;
               if (url.indexOf("?") === -1){
@@ -73,31 +76,46 @@ $(document).ready(function() {
     });
   }
 
+  function createS3Url(bucket, key) {
+    return 'https://s3-us-west-1.amazonaws.com/' + bucket + '/' + key;
+  }
+
   function setUpImageImports() {
     $('#images-upload-button').click(function() {
       var experimentId = $(this).data('experiment-id');
+      var experimentParam = $(this).data('experiment-param');
 
-      filepicker.pickMultiple({
+      filepicker.pickAndStore({
           mimetype: 'image/*',
           container: 'modal',
           services: ['COMPUTER', 'GOOGLE_DRIVE', 'DROPBOX']
         },
+        {
+          location: 'S3',
+          path: '/' + experimentParam + '/images/',
+          container: s3BucketContainer(),
+          access: 'public'
+        },
         function(Blobs) {
           var imageUrls = [];
-
+          var bucketName = '';
           for (var i = 0; i < Blobs.length; i++) {
-            imageUrls.push(Blobs[i].url);
+            bucketName = Blobs[0].container;
+            imageUrls.push(createS3Url(bucketName, Blobs[i].key));
             $.ajax({
               url : '/images/import',
               type: 'POST',
               data: {image_urls: imageUrls, experiment_id: experimentId.toString()},
               dataType: 'json',
-              async: false,
               success: function(retdata) {
 
               }
             });
           }
+        },
+        function(error){
+        },
+        function(progress){
         }
       );
     })
@@ -106,8 +124,7 @@ $(document).ready(function() {
   function setUpAnalyticsFileImports() {
     $('.analytics-file-upload-button').click(function() {
       var analyticsFileId = $(this).data('analytics-file-id');
-      console.log(analyticsFileId.toString());
-      
+
       filepicker.pick({
           mimetypes: ['text/csv', 'application/vnd.ms-excel'],
           container: 'modal',
@@ -119,9 +136,7 @@ $(document).ready(function() {
             type: 'PATCH',
             data: {url: Blob.url},
             dataType: 'json',
-            async: false,
             success: function(retdata) {
-              console.log('Successful!');
             }
           });
         }
@@ -199,8 +214,10 @@ $(document).ready(function() {
 
     if ((checkedValues).includes('Without')) {
       listHtml += '<li>All messages will be without images.'
+      $('#experiment_message_generation_parameter_set_attributes_image_present_choices_with').prop('checked', false);
     } else if ((checkedValues).includes('With')) {
       listHtml += '<li>Half of the generated messages will have an attached image and half will have no attached image.'
+      $('#experiment_message_generation_parameter_set_attributes_image_present_choices_without').prop('checked', false);
     }
 
     $('.list.experiment-details-real-time').html(listHtml);
