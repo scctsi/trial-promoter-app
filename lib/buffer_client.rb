@@ -5,7 +5,7 @@ class BufferClient
   def self.post_request_body_for_create(message)
     # https://buffer.com/developers/api/updates#updatescreate
     {
-      :profile_ids => message.buffer_profile_ids,
+      :profile_ids => message.social_media_profile.buffer_id,
       :text => message.content,
       :shorten => true,
       :access_token => Setting[:buffer_access_token]

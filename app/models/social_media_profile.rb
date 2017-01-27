@@ -24,7 +24,13 @@ class SocialMediaProfile < ActiveRecord::Base
   enumerize :platform, in: [:facebook, :instagram, :twitter]
   has_and_belongs_to_many :experiments
   has_many :analytics_files
+  has_many :messages
 
+  def platform
+    return self[:platform].to_sym if !self[:platform].nil?
+    nil
+  end
+  
   def allowed_mediums
     return symbolize_array_items(self[:allowed_mediums])
   end
