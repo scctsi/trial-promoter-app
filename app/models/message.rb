@@ -39,6 +39,7 @@ class Message < ActiveRecord::Base
   belongs_to :promotable, polymorphic: true
   belongs_to :message_template
   belongs_to :image
+  belongs_to :social_media_profile
   has_one :buffer_update
   has_many :metrics do
     def << (value)

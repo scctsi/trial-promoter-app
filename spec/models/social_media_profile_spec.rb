@@ -22,6 +22,7 @@ RSpec.describe SocialMediaProfile, type: :model do
   it { is_expected.to validate_presence_of :service_id }
   it { is_expected.to have_and_belong_to_many :experiments }
   it { is_expected.to have_many :analytics_files }
+  it { is_expected.to have_many :messages }
 
   it 'returns the platform as a symbol' do
     social_media_profile = create(:social_media_profile, platform: 'twitter')

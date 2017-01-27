@@ -1,8 +1,9 @@
 class MessageFactory
-  attr_reader :tag_matcher
+  attr_reader :tag_matcher, :social_media_profile_picker
   
-  def initialize(tag_matcher)
+  def initialize(tag_matcher, social_media_profile_picker)
     @tag_matcher = tag_matcher
+    @social_media_profile_picker = social_media_profile_picker
   end
   
   def create(message_generating_instance)
@@ -24,6 +25,12 @@ class MessageFactory
           end
         end
       end
+    end
+    
+    # Pick the social media profile on which to send out each message
+    message_generating_instance.messages.all.each do |message|
+      message.social_media_profile = social_media_profile_picker.pick(message_generating_instance.social_media_profiles.to_a, message)
+      message.save
     end
     
     # If we need to add images

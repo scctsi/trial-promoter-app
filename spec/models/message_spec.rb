@@ -37,6 +37,7 @@ describe Message do
   it { is_expected.to enumerize(:medium).in(:ad, :organic).with_default(:organic) }
   it { is_expected.to enumerize(:image_present).in(:with, :without).with_default(:without) }
   it { is_expected.to belong_to :image }
+  it { is_expected.to belong_to :social_media_profile }
 
   it 'stores an array of Buffer profiles ids' do
     message = build(:message)
