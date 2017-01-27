@@ -7,6 +7,7 @@
   %a.ui.primary.labeled.icon.button{:href => create_messages_experiment_path(@experiment)}
     %i.send.icon
     Generate messages
+  = render partial: 'shared/progress', locals: { value: 1, total: @experiment.message_generation_parameter_set.expected_generated_message_count }
 -if @experiment.message_distribution_start_date.nil?
   .ui.negative.message
     .header
