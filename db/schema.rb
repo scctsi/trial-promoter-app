@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170123234635) do
+ActiveRecord::Schema.define(version: 20170127172214) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,6 +56,22 @@ ActiveRecord::Schema.define(version: 20170123234635) do
     t.datetime "updated_at",                    null: false
     t.text     "hashtags"
   end
+
+  create_table "delayed_jobs", force: :cascade do |t|
+    t.integer  "priority",   default: 0, null: false
+    t.integer  "attempts",   default: 0, null: false
+    t.text     "handler",                null: false
+    t.text     "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string   "locked_by"
+    t.string   "queue"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
 
   create_table "experiments", force: :cascade do |t|
     t.string   "name",                            limit: 1000
@@ -116,7 +132,6 @@ ActiveRecord::Schema.define(version: 20170123234635) do
     t.integer  "message_template_id"
     t.text     "content"
     t.string   "tracking_url",                limit: 2000
-    t.text     "buffer_profile_ids"
     t.datetime "created_at",                               null: false
     t.datetime "updated_at",                               null: false
     t.integer  "website_id"
@@ -131,6 +146,7 @@ ActiveRecord::Schema.define(version: 20170123234635) do
     t.datetime "buffer_publish_date"
     t.datetime "social_network_publish_date"
     t.string   "social_network_id"
+    t.integer  "social_media_profile_id"
   end
 
   add_index "messages", ["message_generating_type", "message_generating_id"], name: "index_on_message_generating_for_analytics_files", using: :btree
@@ -220,4 +236,5 @@ ActiveRecord::Schema.define(version: 20170123234635) do
     t.datetime "updated_at",              null: false
   end
 
+  add_foreign_key "messages", "social_media_profiles"
 end
