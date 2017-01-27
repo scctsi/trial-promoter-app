@@ -39,16 +39,6 @@ describe Message do
   it { is_expected.to belong_to :image }
   it { is_expected.to belong_to :social_media_profile }
 
-  it 'stores an array of Buffer profiles ids' do
-    message = build(:message)
-    message.buffer_profile_ids = ["1234abcd", "1234efgh", "1234ijkl"]
-
-    message.save
-    message.reload
-
-    expect(message.buffer_profile_ids).to eq(["1234abcd", "1234efgh", "1234ijkl"])
-  end
-
   it 'returns the medium as a sumbol' do
     message = build(:message)
     message.medium = :ad
