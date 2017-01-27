@@ -2,7 +2,7 @@ class TrackingUrl
   def self.utm_parameters(message)
     utm_parameters = {}
     
-    utm_parameters[:source] = message.message_template.platform.to_s
+    utm_parameters[:source] = message.message_template.platform
     utm_parameters[:medium] = message.medium
     utm_parameters[:campaign] = message.message_generating.to_param
     utm_parameters[:term] = nil

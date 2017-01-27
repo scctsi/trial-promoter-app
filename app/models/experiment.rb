@@ -13,10 +13,13 @@
 
 class Experiment < ActiveRecord::Base
   validates :name, presence: true
+  validates :start_date, presence: true
+  validates :end_date, presence: true
 
   # TODO: Small
   has_one :message_generation_parameter_set, as: :message_generating
   has_many :messages, as: :message_generating
+  has_many :analytics_files, as: :message_generating
   has_and_belongs_to_many :social_media_profiles
 
   accepts_nested_attributes_for :message_generation_parameter_set, update_only: true
@@ -32,7 +35,35 @@ class Experiment < ActiveRecord::Base
 
   def create_messages
     tag_matcher = TagMatcher.new
-    message_factory = MessageFactory.new(tag_matcher)
+    social_media_profile_picker = SocialMediaProfilePicker.new
+    message_factory = MessageFactory.new(tag_matcher, social_media_profile_picker)
     message_factory.create(self)
+  end
+  
+  def each_day
+    day = start_date
+    
+    while day <= end_date
+      yield(day)
+      day += 1.day
+    end
+  end
+  
+  def social_media_profiles_needing_analytics_uploads
+    social_media_profiles.select { |social_media_profile| social_media_profile.platform == :twitter }
+  end
+  
+  def create_analytics_file_todos
+    profiles = social_media_profiles_needing_analytics_uploads
+    if profiles.count > 0
+      each_day do |day|
+        profiles.each do |profile|
+          AnalyticsFile.create(:required_upload_date => day, :social_media_profile => profile, :message_generating => self)
+        end
+      end
+    end
+    
+    self.analytics_file_todos_created = true
+    save
   end
 end

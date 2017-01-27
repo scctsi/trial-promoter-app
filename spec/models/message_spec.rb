@@ -20,6 +20,7 @@
 #  publish_status              :string
 #  buffer_publish_date         :datetime
 #  social_network_publish_date :datetime
+#  social_network_id           :string
 #
 
 require 'rails_helper'
@@ -36,17 +37,15 @@ describe Message do
   it { is_expected.to enumerize(:medium).in(:ad, :organic).with_default(:organic) }
   it { is_expected.to enumerize(:image_present).in(:with, :without).with_default(:without) }
   it { is_expected.to belong_to :image }
+  it { is_expected.to belong_to :social_media_profile }
 
-  it 'stores an array of Buffer profiles ids' do
+  it 'returns the medium as a sumbol' do
     message = build(:message)
-    message.buffer_profile_ids = ["1234abcd", "1234efgh", "1234ijkl"]
-
-    message.save
-    message.reload
-
-    expect(message.buffer_profile_ids).to eq(["1234abcd", "1234efgh", "1234ijkl"])
+    message.medium = :ad
+    
+    expect(message.medium).to be :ad
   end
-  
+
   describe "adding metrics" do
     it 'always updates existing metrics from a particular source' do
       message = build(:message)

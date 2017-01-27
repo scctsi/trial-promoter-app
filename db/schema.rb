@@ -11,10 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170117225013) do
-
+ActiveRecord::Schema.define(version: 20170127172214) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "analytics_files", force: :cascade do |t|
+    t.string   "url",                     limit: 2000
+    t.string   "original_filename"
+    t.integer  "social_media_profile_id"
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
+    t.datetime "required_upload_date"
+    t.integer  "message_generating_id"
+    t.string   "message_generating_type"
+  end
 
   create_table "buffer_updates", force: :cascade do |t|
     t.string   "buffer_id"
@@ -69,6 +79,7 @@ ActiveRecord::Schema.define(version: 20170117225013) do
     t.datetime "message_distribution_start_date"
     t.datetime "created_at",                                   null: false
     t.datetime "updated_at",                                   null: false
+    t.boolean  "analytics_file_todos_created"
   end
 
   create_table "experiments_social_media_profiles", force: :cascade do |t|
@@ -120,7 +131,6 @@ ActiveRecord::Schema.define(version: 20170117225013) do
     t.integer  "message_template_id"
     t.text     "content"
     t.string   "tracking_url",                limit: 2000
-    t.text     "buffer_profile_ids"
     t.datetime "created_at",                               null: false
     t.datetime "updated_at",                               null: false
     t.integer  "website_id"
@@ -135,8 +145,10 @@ ActiveRecord::Schema.define(version: 20170117225013) do
     t.datetime "buffer_publish_date"
     t.datetime "social_network_publish_date"
     t.string   "social_network_id"
+    t.integer  "social_media_profile_id"
   end
 
+  add_index "messages", ["message_generating_type", "message_generating_id"], name: "index_on_message_generating_for_analytics_files", using: :btree
   add_index "messages", ["message_generating_type", "message_generating_id"], name: "index_on_message_generating_for_messages", using: :btree
   add_index "messages", ["promotable_type", "promotable_id"], name: "index_on_promotable_for_messages", using: :btree
 
@@ -167,6 +179,7 @@ ActiveRecord::Schema.define(version: 20170117225013) do
     t.string   "buffer_id"
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
+    t.string   "allowed_mediums"
   end
 
   create_table "taggings", force: :cascade do |t|
@@ -196,6 +209,25 @@ ActiveRecord::Schema.define(version: 20170117225013) do
 
   add_index "tags", ["name"], name: "index_tags_on_name", unique: true, using: :btree
 
+  create_table "users", force: :cascade do |t|
+    t.string   "email",                  default: "",     null: false
+    t.string   "encrypted_password",     default: "",     null: false
+    t.string   "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer  "sign_in_count",          default: 0,      null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.inet     "current_sign_in_ip"
+    t.inet     "last_sign_in_ip"
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
+    t.string   "role",                   default: "user", null: false
+  end
+
+  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
+  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+
   create_table "websites", force: :cascade do |t|
     t.string   "name",       limit: 1000
     t.string   "url",        limit: 2000
@@ -203,4 +235,5 @@ ActiveRecord::Schema.define(version: 20170117225013) do
     t.datetime "updated_at",              null: false
   end
 
+  add_foreign_key "messages", "social_media_profiles"
 end

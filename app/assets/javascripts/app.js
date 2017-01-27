@@ -40,7 +40,11 @@ $(document).ready(function() {
   }
 
   function setUpFilepicker() {
-    filepicker.setKey("AU0m7oO6OSQW5bqqVk0HTz");
+    filepicker.setKey("At8mEYziyTc6axVbB4njtz");
+  }
+
+  function s3BucketContainer() {
+    return 'scctsi-tp-' + $('body').data('environment');
   }
 
   function setUpMessageTemplateImports() {
@@ -58,7 +62,6 @@ $(document).ready(function() {
             type: 'GET',
             data: {url: Blob.url, experiment_id: experimentId.toString()},
             dataType: 'json',
-            async: false,
             success: function(retdata) {
               url = window.location.href;
               if (url.indexOf("?") === -1){
@@ -73,34 +76,72 @@ $(document).ready(function() {
     });
   }
 
+  function createS3Url(bucket, key) {
+    return 'https://s3-us-west-1.amazonaws.com/' + bucket + '/' + key;
+  }
+
   function setUpImageImports() {
     $('#images-upload-button').click(function() {
       var experimentId = $(this).data('experiment-id');
+      var experimentParam = $(this).data('experiment-param');
 
-      filepicker.pickMultiple({
+      filepicker.pickAndStore({
           mimetype: 'image/*',
           container: 'modal',
           services: ['COMPUTER', 'GOOGLE_DRIVE', 'DROPBOX']
         },
+        {
+          location: 'S3',
+          path: '/' + experimentParam + '/images/',
+          container: s3BucketContainer(),
+          access: 'public'
+        },
         function(Blobs) {
           var imageUrls = [];
-
+          var bucketName = '';
           for (var i = 0; i < Blobs.length; i++) {
-            imageUrls.push(Blobs[i].url);
+            bucketName = Blobs[0].container;
+            imageUrls.push(createS3Url(bucketName, Blobs[i].key));
             $.ajax({
               url : '/images/import',
               type: 'POST',
               data: {image_urls: imageUrls, experiment_id: experimentId.toString()},
               dataType: 'json',
-              async: false,
               success: function(retdata) {
 
               }
             });
           }
+        },
+        function(error){
+        },
+        function(progress){
         }
       );
-    });
+    })
+  }
+
+  function setUpAnalyticsFileImports() {
+    $('.analytics-file-upload-button').click(function() {
+      var analyticsFileId = $(this).data('analytics-file-id');
+
+      filepicker.pick({
+          mimetypes: ['text/csv', 'application/vnd.ms-excel'],
+          container: 'modal',
+          services: ['COMPUTER', 'GOOGLE_DRIVE', 'DROPBOX']
+        },
+        function(Blob) {
+          $.ajax({
+            url : '/analytics_files/' + analyticsFileId.toString() + '/update',
+            type: 'PATCH',
+            data: {url: Blob.url},
+            dataType: 'json',
+            success: function(retdata) {
+            }
+          });
+        }
+      );
+    })
   }
 
   function setupPopupInfo() {
@@ -120,7 +161,78 @@ $(document).ready(function() {
     })
   }
 
+  String.prototype.capitalizeFirstLetter = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+  }
+
+  function calculateMessageCount(socialNetworkChoicesCount, mediumChoicesCount, periodInDays, numberOfMessagesPerSocialNetwork) {
+    var messageCountHtml;
+    $.ajax({
+      type: 'GET',
+      url: '/experiments/calculate_message_count',
+      data: { social_network_choices_count: socialNetworkChoicesCount, medium_choices_count: mediumChoicesCount, period_in_days: periodInDays, number_of_messages_per_social_network: numberOfMessagesPerSocialNetwork},
+      dataType: 'json',
+      success: function (data) {
+        messageCountHtml = '<li>The total message count is ' + data['message_count'];
+        if (parseInt(data['message_count'], 10) > 0) {
+          $('.experiment-details-real-time').append(messageCountHtml);
+        }
+      }
+    });
+  }
+
+  function changeExperimentDetails() {
+    var listHtml = '';
+    var mediumCount;
+    var periodInDays = $("#experiment_message_generation_parameter_set_attributes_period_in_days").val();
+    var numberOfMessagesPerSocialNetwork = $("#experiment_message_generation_parameter_set_attributes_number_of_messages_per_social_network").val();
+    var checkedValues = $.map($("input:checked"), function (elem) { return elem.value.capitalizeFirstLetter()  || ""; }).join( ", " );
+    var socialNetworkChoices = [];
+
+    ['Facebook', 'Instagram', 'Twitter'].forEach(function(socialNetwork) {
+      if (checkedValues.includes(socialNetwork)) {
+        socialNetworkChoices.push(socialNetwork);
+      }
+    });
+
+    if (socialNetworkChoices.length === 1) {
+      listHtml += '<li>All messages will be generated for distribution on ' + socialNetworkChoices[0];
+    } else {
+      listHtml += '<li>Equal number of messages will be generated per platform: ' + socialNetworkChoices.join(", ");
+    }
+
+    if ((checkedValues).includes('Ad, Organic')) {
+      mediumCount = 2;
+      listHtml += '<li>Half of the generated messages for each platform will be organic (unpaid) and half will be ads (paid).'
+    } else if ((checkedValues).includes('Ad')) {
+      listHtml += '<li>All messages will be ads (paid).'
+      mediumCount = 1;
+    } else if ((checkedValues).includes('Organic')) {
+      listHtml += '<li>All messages will be organic (unpaid).'
+      mediumCount = 1;
+    }
+
+    if ((checkedValues).includes('Without')) {
+      listHtml += '<li>All messages will be without images.'
+      $('#experiment_message_generation_parameter_set_attributes_image_present_choices_with').prop('checked', false);
+    } else if ((checkedValues).includes('With')) {
+      listHtml += '<li>Half of the generated messages will have an attached image and half will have no attached image.'
+      $('#experiment_message_generation_parameter_set_attributes_image_present_choices_without').prop('checked', false);
+    }
+
+    $('.list.experiment-details-real-time').html(listHtml);
+
+    calculateMessageCount(socialNetworkChoices.length, mediumCount, periodInDays, numberOfMessagesPerSocialNetwork);
+  }
+
+  function setupExperimentRealTime() {
+    $('.ui.new_experiment_form').change(function(e){
+      changeExperimentDetails();
+    });
+  }
+
   // Initialize
+  setupExperimentRealTime();
   setupPopupInfo();
   setUpDatePickers();
   setUpChosenDropdowns();
@@ -128,5 +240,9 @@ $(document).ready(function() {
   setUpFilepicker();
   setUpMessageTemplateImports();
   setUpImageImports();
+  setUpAnalyticsFileImports();
+  
+  // Set up Semantic UI
   $('.menu .item').tab();
+  $('.table').tablesort();
 });

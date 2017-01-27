@@ -17,7 +17,7 @@ RSpec.describe MessageConstructor do
     expect(message.message_template).to eq(message_template)
     expect(message.promotable).to eq(clinical_trial)
     expect(message.message_generating).to eq(@experiment)
-    expect(message.organic?).to be true
+    expect(message.medium).to eq :organic
     expect(message.image_present).to eq(:without)
     expect(message.image).to be_nil
   end
@@ -33,7 +33,7 @@ RSpec.describe MessageConstructor do
     expect(message.message_template).to eq(message_template)
     expect(message.promotable).to eq(website)
     expect(message.message_generating).to eq(@experiment)
-    expect(message.organic?).to be true
+    expect(message.medium).to be :organic
     expect(message.image_present).to eq(:without)
     expect(message.image).to be_nil
   end
@@ -44,6 +44,6 @@ RSpec.describe MessageConstructor do
 
     message = @message_constructor.construct(@experiment, message_template, website, :ad)
 
-    expect(message.ad?).to be true
+    expect(message.medium).to be :ad
   end
 end

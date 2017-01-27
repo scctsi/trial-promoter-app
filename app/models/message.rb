@@ -20,6 +20,7 @@
 #  publish_status              :string
 #  buffer_publish_date         :datetime
 #  social_network_publish_date :datetime
+#  social_network_id           :string
 #
 
 class Message < ActiveRecord::Base
@@ -28,7 +29,7 @@ class Message < ActiveRecord::Base
 
   validates :content, presence: true
   enumerize :publish_status, in: [:pending, :published_to_buffer, :published_to_social_network], default: :pending, predicates: true
-  enumerize :medium, in: [:ad, :organic], default: :organic, predicates: true
+  enumerize :medium, in: [:ad, :organic], default: :organic
   enumerize :image_present, in: [:with, :without], default: :without
 
   serialize :buffer_profile_ids
@@ -38,6 +39,7 @@ class Message < ActiveRecord::Base
   belongs_to :promotable, polymorphic: true
   belongs_to :message_template
   belongs_to :image
+  belongs_to :social_media_profile
   has_one :buffer_update
   has_many :metrics do
     def << (value)
@@ -61,6 +63,11 @@ class Message < ActiveRecord::Base
     end
   end
 
+  def medium
+    return self[:medium].to_sym if !self[:medium].nil?
+    nil
+  end
+  
   def to_param
     "#{message_generating.to_param}-message-#{id}"
   end
