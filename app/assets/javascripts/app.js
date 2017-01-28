@@ -83,6 +83,7 @@ $(document).ready(function() {
 
       filepicker.pickAndStore({
           mimetype: 'image/*',
+          multiple: true,
           container: 'modal',
           services: ['COMPUTER', 'GOOGLE_DRIVE', 'DROPBOX']
         },
@@ -98,16 +99,16 @@ $(document).ready(function() {
           for (var i = 0; i < Blobs.length; i++) {
             bucketName = Blobs[0].container;
             imageUrls.push(createS3Url(bucketName, Blobs[i].key));
-            $.ajax({
-              url : '/images/import',
-              type: 'POST',
-              data: {image_urls: imageUrls, experiment_id: experimentId.toString()},
-              dataType: 'json',
-              success: function(retdata) {
-                $('.ui.success.message.hidden.ask-refresh-page').removeClass('hidden');
-              }
-            });
           }
+          $.ajax({
+            url : '/images/import',
+            type: 'POST',
+            data: {image_urls: imageUrls, experiment_id: experimentId.toString()},
+            dataType: 'json',
+            success: function(retdata) {
+              $('.ui.success.message.hidden.ask-refresh-page').removeClass('hidden');
+            }
+          });
         },
         function(error){
         },
