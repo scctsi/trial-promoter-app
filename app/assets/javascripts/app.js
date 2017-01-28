@@ -10,6 +10,7 @@ $(document).ready(function() {
     });
   }
 
+
   function setUpChosenDropdowns() {
     $('#clinical_trial_hashtags').chosen({
       no_results_text: 'Oops, no hashtags were found! Sometimes hashtags do not contain the full name of the disease, please try an acronym instead.',
@@ -63,12 +64,7 @@ $(document).ready(function() {
             data: {url: Blob.url, experiment_id: experimentId.toString()},
             dataType: 'json',
             success: function(retdata) {
-              url = window.location.href;
-              if (url.indexOf("?") === -1){
-                window.location.href = url + "?selected_tab=message_templates";
-              } else {
-                window.location.href = url.split("=")[0] + "=message_templates";
-              }
+              $('.ui.success.message.hidden.ask-refresh-page').removeClass('hidden');
             }
           });
         }
@@ -108,7 +104,7 @@ $(document).ready(function() {
               data: {image_urls: imageUrls, experiment_id: experimentId.toString()},
               dataType: 'json',
               success: function(retdata) {
-
+                $('.ui.success.message.hidden.ask-refresh-page').removeClass('hidden');
               }
             });
           }
@@ -241,8 +237,12 @@ $(document).ready(function() {
   setUpMessageTemplateImports();
   setUpImageImports();
   setUpAnalyticsFileImports();
-  
+
   // Set up Semantic UI
-  $('.menu .item').tab();
+  $('.menu .item').tab({
+    history: true,
+    historyType: 'hash',
+    context: 'parent'
+  });
   $('.table').tablesort();
 });
