@@ -10,6 +10,7 @@ $(document).ready(function() {
     });
   }
 
+
   function setUpChosenDropdowns() {
     $('#clinical_trial_hashtags').chosen({
       no_results_text: 'Oops, no hashtags were found! Sometimes hashtags do not contain the full name of the disease, please try an acronym instead.',
@@ -63,12 +64,7 @@ $(document).ready(function() {
             data: {url: Blob.url, experiment_id: experimentId.toString()},
             dataType: 'json',
             success: function(retdata) {
-              url = window.location.href;
-              if (url.indexOf("?") === -1){
-                window.location.href = url + "?selected_tab=message_templates";
-              } else {
-                window.location.href = url.split("=")[0] + "=message_templates";
-              }
+              $('.ui.success.message.hidden.ask-refresh-page').removeClass('hidden');
             }
           });
         }
@@ -87,6 +83,7 @@ $(document).ready(function() {
 
       filepicker.pickAndStore({
           mimetype: 'image/*',
+          multiple: true,
           container: 'modal',
           services: ['COMPUTER', 'GOOGLE_DRIVE', 'DROPBOX']
         },
@@ -102,16 +99,16 @@ $(document).ready(function() {
           for (var i = 0; i < Blobs.length; i++) {
             bucketName = Blobs[0].container;
             imageUrls.push(createS3Url(bucketName, Blobs[i].key));
-            $.ajax({
-              url : '/images/import',
-              type: 'POST',
-              data: {image_urls: imageUrls, experiment_id: experimentId.toString()},
-              dataType: 'json',
-              success: function(retdata) {
-
-              }
-            });
           }
+          $.ajax({
+            url : '/images/import',
+            type: 'POST',
+            data: {image_urls: imageUrls, experiment_id: experimentId.toString()},
+            dataType: 'json',
+            success: function(retdata) {
+              $('.ui.success.message.hidden.ask-refresh-page').removeClass('hidden');
+            }
+          });
         },
         function(error){
         },
@@ -241,8 +238,12 @@ $(document).ready(function() {
   setUpMessageTemplateImports();
   setUpImageImports();
   setUpAnalyticsFileImports();
-  
+
   // Set up Semantic UI
-  $('.menu .item').tab();
+  $('.menu .item').tab({
+    history: true,
+    historyType: 'hash',
+    context: 'parent'
+  });
   $('.table').tablesort();
 });
