@@ -22,6 +22,7 @@ class MessageFactory
             website = tag_matcher.match(Website, message_template.tag_list).sample
             message = message_constructor.construct(message_generating_instance, message_template, website, medium)
             message.save
+            Pusher['progress'].trigger('progress', {:event => 'Message generated'})
           end
         end
       end

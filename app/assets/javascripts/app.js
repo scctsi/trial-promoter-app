@@ -1,5 +1,6 @@
 /*global $*/
 /*global filepicker*/
+/*global Pusher*/
 $(document).ready(function() {
   function setUpDatePickers() {
     $("[id$='_date']").daterangepicker({
@@ -230,6 +231,31 @@ $(document).ready(function() {
       changeExperimentDetails();
     });
   }
+  
+  function setUpPusherChannels() {
+    var pusher = new Pusher('645d88fef1ee61febc2d'); // uses your APP KEY
+    var channel = pusher.subscribe('progress');
+    channel.bind('progress', function(data) {
+      console.log(data.event);
+    });
+  }
+  
+  function setUpAsyncMessageGeneration() {
+    $('#generate-messages-button').click(function() {
+      var experimentId = $(this).data('experiment-id');
+      
+      $.ajax({
+        type: 'GET',
+        url: '/experiments/' + experimentId + '/create_messages.json',
+        data: { id: experimentId },
+        dataType: 'json',
+        success: function(data) {
+        }
+      });
+      
+      return false;
+    });    
+  }
 
   // Initialize
   setupExperimentRealTime();
@@ -241,6 +267,8 @@ $(document).ready(function() {
   setUpMessageTemplateImports();
   setUpImageImports();
   setUpAnalyticsFileImports();
+  setUpPusherChannels();
+  setUpAsyncMessageGeneration();
   
   // Set up Semantic UI
   $('.menu .item').tab();

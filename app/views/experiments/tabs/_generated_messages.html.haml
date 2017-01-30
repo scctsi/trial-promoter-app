@@ -4,7 +4,7 @@
       %i.send.icon
       Generate messages
 -else
-  %a.ui.primary.labeled.icon.button{:href => create_messages_experiment_path(@experiment)}
+  %a#generate-messages-button.ui.primary.labeled.icon.button{:href => "/experiments/#{@experiment.id}/create_messages.html", 'data-experiment-id' => @experiment.id}
     %i.send.icon
     Generate messages
   = render partial: 'shared/progress', locals: { value: 1, total: @experiment.message_generation_parameter_set.expected_generated_message_count }
