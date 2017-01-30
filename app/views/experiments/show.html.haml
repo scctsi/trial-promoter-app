@@ -8,32 +8,33 @@
 .ui.divider
 %h2.ui.center.aligned.header
   #{@experiment.name} workspace
-.ui.top.attached.tabular.menu
-  %a{ class: ['item', ('active' if @selected_tab == 'setup')], 'data-tab': 'setup' }
-    Setup
-  %a{ class: ['item', ('active' if @selected_tab == 'message-templates')], 'data-tab': 'message-templates' }
-    Message templates
-  %a{ class: 'item', 'data-tab': 'images' }
-    Images
-  %a{ class: 'item', 'data-tab': 'generated-messages' }
-    Generated messages
-  %a{ class: ['item', ('active' if @selected_tab == 'dashboard')], 'data-tab': 'dashboard' }
-    Dashboard
-  %a{ class: 'item', 'data-tab': 'reports' }
-    Reports
-  %a{ class: 'item', 'data-tab': 'analytics-file-uploads' }
-    Analytics file uploads
-.ui.bottom.attached.tab.segment{class: ('active' if @selected_tab == 'setup'), 'data-tab': 'setup' }
-  = render partial: 'experiments/tabs/setup'
-.ui.bottom.attached.tab.segment{class: ('active' if @selected_tab == 'message-templates'), 'data-tab': 'message-templates' }
-  = render partial: 'experiments/tabs/message_templates'
-.ui.bottom.attached.tab.segment{ 'data-tab': 'images' }
-  = render partial: 'experiments/tabs/images'
-.ui.bottom.attached.tab.segment{ 'data-tab': 'generated-messages' }
-  = render partial: 'experiments/tabs/generated_messages'
-.ui.bottom.attached.tab.segment{class: ('active' if @selected_tab == 'dashboard'), 'data-tab': 'dashboard' }
-  = render partial: 'experiments/tabs/dashboard'
-.ui.bottom.attached.tab.segment{ 'data-tab': 'reports' }
-  = render partial: 'experiments/tabs/reports'
-.ui.bottom.attached.tab.segment{ 'data-tab': 'analytics-file-uploads' }
-  = render partial: 'experiments/tabs/analytics_file_uploads'
+#experiment
+  .ui.top.attached.tabular.menu
+    %a{ class: 'item', 'data-tab': 'setup' }
+      Setup
+    %a{ class: 'item', 'data-tab': 'message-templates' }
+      Message templates
+    %a{ class: 'item', 'data-tab': 'images' }
+      Images
+    %a{ class: 'item', 'data-tab': 'generated-messages' }
+      Generated messages
+    %a{ class: 'item', 'data-tab': 'dashboard' }
+      Dashboard
+    %a{ class: 'item', 'data-tab': 'reports' }
+      Reports
+    %a{ class: 'item', 'data-tab': 'analytics-file-uploads' }
+      Analytics file uploads
+  .ui.bottom.attached.tab.segment{ 'data-tab': 'setup' }
+    = render partial: 'experiments/tabs/setup'
+  .ui.bottom.attached.tab.segment{ 'data-tab': 'message-templates' }
+    = render partial: 'experiments/tabs/message_templates'
+  .ui.bottom.attached.tab.segment{ 'data-tab': 'images' }
+    = render partial: 'experiments/tabs/images'
+  .ui.bottom.attached.tab.segment{ 'data-tab': 'generated-messages' }
+    = render partial: 'experiments/tabs/generated_messages'
+  .ui.bottom.attached.tab.segment{ 'data-tab': 'dashboard' }
+    = render partial: 'experiments/tabs/dashboard'
+  .ui.bottom.attached.tab.segment{ 'data-tab': 'reports' }
+    = render partial: 'experiments/tabs/reports'
+  .ui.bottom.attached.tab.segment{ 'data-tab': 'analytics-file-uploads' }
+    = render partial: 'experiments/tabs/analytics_file_uploads'
