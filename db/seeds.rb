@@ -18,10 +18,10 @@ if Hashtag.count == 0
 end
 
 user_attributes = [
-  { email: "unger@usc.edu", password: "Unger123", password_confirmation: "Unger123", role: "read_only"),
-  { email: "emkaiser@usc.edu", password: "Kaiser123", password_confirmation: "Kaiser123", role: "read_only"),
-  { email: "melisslw@usc.edu", password: "Wilson123", password_confirmation: "Wilson123", role: "read_only"),
-  { email: "dconti@usc.edu", password: "Conti123", password_confirmation: "Conti123", role: "read_only")
+  { email: "unger@usc.edu", password: "Unger123", password_confirmation: "Unger123", role: "read_only" },
+  { email: "emkaiser@usc.edu", password: "Kaiser123", password_confirmation: "Kaiser123", role: "read_only" },
+  { email: "melisslw@usc.edu", password: "Wilson123", password_confirmation: "Wilson123", role: "read_only" },
+  { email: "dconti@usc.edu", password: "Conti123", password_confirmation: "Conti123", role: "read_only"}
 ]
 
 user_attributes.each do |attributes|
