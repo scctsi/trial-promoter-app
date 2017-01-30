@@ -19,6 +19,10 @@ header {
   padding: 0;
 }
 
+.hidden-content {
+  display: none;
+}
+
 // Semantic UI form styling
 // Hide * displayed before required fields
 form {
@@ -37,6 +41,7 @@ table.message-generation-parameter-set td.collapsing {
   font-weight: bold;
 }
 
+// Devise styling
 // Create space for sign in button
 .ui.fluid.large.teal.initial-signin-button {
   margin-top: 1rem;
