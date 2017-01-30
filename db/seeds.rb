@@ -12,7 +12,7 @@ if Hashtag.count == 0
     begin
       Hashtag.create!(phrase: row[0])
     rescue ActiveRecord::RecordInvalid => e
-      throw e if e.message != 'Validation failed: Phrase has already been taken)
+      throw e if e.message != 'Validation failed: Phrase has already been taken'
     end
   end
 end
