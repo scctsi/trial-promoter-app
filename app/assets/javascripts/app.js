@@ -1,5 +1,6 @@
 /*global $*/
 /*global filepicker*/
+/*global Pusher*/
 $(document).ready(function() {
   function setUpDatePickers() {
     $("[id$='_date']").daterangepicker({
@@ -230,6 +231,14 @@ $(document).ready(function() {
       changeExperimentDetails();
     });
   }
+  
+  function setUpPusherChannels() {
+    var pusher = new Pusher('645d88fef1ee61febc2d'); // uses your APP KEY
+    var channel = pusher.subscribe('progress');
+    channel.bind('greet', function(data) {
+      alert(data.greeting);
+    });
+  }
 
   // Initialize
   setupExperimentRealTime();
@@ -241,6 +250,7 @@ $(document).ready(function() {
   setUpMessageTemplateImports();
   setUpImageImports();
   setUpAnalyticsFileImports();
+  setUpPusherChannels();
   
   // Set up Semantic UI
   $('.menu .item').tab();

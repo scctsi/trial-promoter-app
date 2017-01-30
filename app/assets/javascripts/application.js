@@ -17,4 +17,5 @@
 //= require daterangepicker.min
 //= require chosen.jquery.min
 //= require selectize.min
+//= require pusher-2.2.min
 //= require_tree .
