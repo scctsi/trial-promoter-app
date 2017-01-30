@@ -54,8 +54,11 @@ class ExperimentsController < ApplicationController
   end
 
   def create_messages
-    @experiment.create_messages
-    redirect_to experiment_url(@experiment)
+    respond_to do |format|
+      @experiment.create_messages
+      format.html { redirect_to experiment_url(@experiment) }
+      format.json { render json: { success: true } }
+    end 
   end
   
   def create_analytics_file_todos

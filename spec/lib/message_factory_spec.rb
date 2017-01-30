@@ -57,10 +57,10 @@ RSpec.describe MessageFactory do
     expect(messages.count).to eq(message_generation_parameter_set.expected_generated_message_count)
     expect((messages.select { |message| message.message_template.platform != :facebook }).count).to eq(0)
     # Have the pusher events been triggered?
-    expect(@pusher_channel).to have_received(:trigger).exactly(message_generation_parameter_set.expected_generated_message_count).times
+    expect(@pusher_channel).to have_received(:trigger).exactly(message_generation_parameter_set.expected_generated_message_count).times.with('progress', {:event => 'Message generated'})
   end
 
-  it 'creates a set of messages for one website, five message templates, 3 social networks (equal distribution), 2 mediums (equal distribution), with and without images (equal distribution), for 10 days and 3 messages per network per day' do
+  it 'creates a set of messages for one website, five message templates, 3 social networks (equal distribution), 2 mediums (equal distribution), with and without images (equal distribution), for 3 days and 3 messages per network per day' do
     message_generation_parameter_set = MessageGenerationParameterSet.new do |m|
       m.social_network_choices = [:facebook, :twitter, :instagram]
       m.social_network_distribution = :equal
@@ -68,7 +68,7 @@ RSpec.describe MessageFactory do
       m.medium_distribution = :equal
       m.image_present_choices = [:with, :without]
       m.image_present_distribution = :equal
-      m.period_in_days = 10
+      m.period_in_days = 3
       m.number_of_messages_per_social_network = 3
     end
     @experiment.message_generation_parameter_set = message_generation_parameter_set

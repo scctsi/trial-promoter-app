@@ -4,7 +4,7 @@
       %i.send.icon
       Generate messages
 -else
-  %a.ui.primary.labeled.icon.button{:href => create_messages_experiment_path(@experiment)}
+  %a#generate-messages-button.ui.primary.labeled.icon.button{:href => "/experiments/#{@experiment.id}/create_messages.html", 'data-experiment-id' => @experiment.id}
     %i.send.icon
     Generate messages
 -if @experiment.message_distribution_start_date.nil?

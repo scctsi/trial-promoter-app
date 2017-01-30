@@ -18,4 +18,5 @@
 //= require chosen.jquery.min
 //= require selectize.min
 //= require pusher-2.2.min
+//= require tablesort
 //= require_tree .

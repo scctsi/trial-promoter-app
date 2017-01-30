@@ -235,9 +235,26 @@ $(document).ready(function() {
   function setUpPusherChannels() {
     var pusher = new Pusher('645d88fef1ee61febc2d'); // uses your APP KEY
     var channel = pusher.subscribe('progress');
-    channel.bind('greet', function(data) {
-      alert(data.greeting);
+    channel.bind('progress', function(data) {
+      console.log(data.event);
     });
+  }
+  
+  function setUpAsyncMessageGeneration() {
+    $('#generate-messages-button').click(function() {
+      var experimentId = $(this).data('experiment-id');
+      
+      $.ajax({
+        type: 'GET',
+        url: '/experiments/' + experimentId + '/create_messages.json',
+        data: { id: experimentId },
+        dataType: 'json',
+        success: function(data) {
+        }
+      });
+      
+      return false;
+    });    
   }
 
   // Initialize
@@ -251,6 +268,7 @@ $(document).ready(function() {
   setUpImageImports();
   setUpAnalyticsFileImports();
   setUpPusherChannels();
+  setUpAsyncMessageGeneration();
   
   // Set up Semantic UI
   $('.menu .item').tab();
