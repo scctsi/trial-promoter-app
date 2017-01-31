@@ -1,11 +1,31 @@
 %table.ui.celled.striped.table
-  %thead
-    %tr
-      %th Image
-      %th Tags
-  %tbody
-    - images.each do |image|
+  %form#image-tagging-form
+    %thead
       %tr
-        %td
-          %img{ :src => "#{image.url}", :width => 150, :height => 150 }
-        %td= image.tag_list
+        %th 
+        %th Image
+        %th Tags
+    %tbody
+      - images.each do |image|
+        %tr
+          %td
+            .ui.fitted.checkbox
+              %input{ :type => 'checkbox', :id => "image-#{image.id}-selected", 'data-image-id' => "#{image.id}" }
+              %label{ :for => "image-#{image.id}-selected" }
+          %td
+            %img{ :src => "#{image.url}", :width => 150, :height => 150 }
+          %td= image.tag_list
+    %tfoot.full-width
+      %tr
+        %th.collapsing
+          #select-all-images-button.ui.tiny.button
+            Select all
+          #deselect-all-images-button.ui.tiny.button
+            Deselect all
+        %th
+        %th
+          .ui.form
+            .field
+              %input#image-tags{ :type => 'text' }
+              %button#add-image-tags-button.ui.button
+                Add tags

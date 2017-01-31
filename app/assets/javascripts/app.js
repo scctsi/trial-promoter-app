@@ -227,6 +227,18 @@ $(document).ready(function() {
       changeExperimentDetails();
     });
   }
+  
+  function setUpImageTagging() {
+    $('#image-tags').selectize({
+      delimiter: ',',
+      persist: false,
+      create: true
+    });
+    
+    $('#image-tagging-form .ui.checkbox').checkbox();
+    $('#image-tagging-form .ui.checkbox').checkbox('attach events', '#select-all-images-button', 'check');
+    $('#image-tagging-form .ui.checkbox').checkbox('attach events', '#deselect-all-images-button', 'uncheck');
+  }
 
   // Initialize
   setupExperimentRealTime();
@@ -238,6 +250,7 @@ $(document).ready(function() {
   setUpMessageTemplateImports();
   setUpImageImports();
   setUpAnalyticsFileImports();
+  setUpImageTagging();
 
   // Set up Semantic UI
   $('.menu .item').tab({
