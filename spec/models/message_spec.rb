@@ -6,7 +6,6 @@
 #  message_template_id         :integer
 #  content                     :text
 #  tracking_url                :string(2000)
-#  buffer_profile_ids          :text
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
 #  website_id                  :integer
@@ -21,6 +20,7 @@
 #  buffer_publish_date         :datetime
 #  social_network_publish_date :datetime
 #  social_network_id           :string
+#  social_media_profile_id     :integer
 #
 
 require 'rails_helper'
