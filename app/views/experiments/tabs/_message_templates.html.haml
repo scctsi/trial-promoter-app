@@ -6,6 +6,9 @@
   %a#example-button.ui.labeled.icon.button{ href: asset_path('example.csv') }
     %i.download.icon
     Download sample CSV file
+.ui.success.message.hidden.ask-refresh-page
+  .header
+    %p Your upload was successful. Please refresh the page to see the messages.
 - if @message_templates.count == 0
   .ui.message
     .header
