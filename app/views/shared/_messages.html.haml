@@ -6,6 +6,8 @@
       %th Medium
       %th Image
       %th
+  %tfoot
+    = paginate messages
   %tbody
     - messages.each do |message|
       %tr
