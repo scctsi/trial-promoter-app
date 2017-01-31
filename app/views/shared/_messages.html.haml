@@ -6,6 +6,8 @@
       %th Medium
       %th Image
       %th
+  %tfoot
+    = paginate messages
   %tbody
     - messages.each do |message|
       %tr
@@ -16,5 +18,3 @@
         %td
           %a{:href => edit_message_path(message)}
             Edit
-  %tfoot
-    = paginate messages
