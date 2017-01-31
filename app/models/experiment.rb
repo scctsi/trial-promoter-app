@@ -1,3 +1,4 @@
+
 # == Schema Information
 #
 # Table name: experiments
@@ -12,6 +13,8 @@
 #
 
 class Experiment < ActiveRecord::Base
+  include ActiveModel::Validations
+  validates_with ExperimentValidator
   validates :name, presence: true
   validates :start_date, presence: true
   validates :end_date, presence: true
@@ -39,20 +42,20 @@ class Experiment < ActiveRecord::Base
     message_factory = MessageFactory.new(tag_matcher, social_media_profile_picker)
     message_factory.create(self)
   end
-  
+
   def each_day
     day = start_date
-    
+
     while day <= end_date
       yield(day)
       day += 1.day
     end
   end
-  
+
   def social_media_profiles_needing_analytics_uploads
     social_media_profiles.select { |social_media_profile| social_media_profile.platform == :twitter }
   end
-  
+
   def create_analytics_file_todos
     profiles = social_media_profiles_needing_analytics_uploads
     if profiles.count > 0
@@ -62,7 +65,7 @@ class Experiment < ActiveRecord::Base
         end
       end
     end
-    
+
     self.analytics_file_todos_created = true
     save
   end

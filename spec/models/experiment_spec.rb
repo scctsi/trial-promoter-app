@@ -65,11 +65,11 @@ RSpec.describe Experiment, type: :model do
     expect(MessageFactory).to have_received(:new)
     expect(message_factory).to have_received(:create).with(experiment)
   end
-  
+
   it 'iterates over all the days in the experiment' do
     experiment = build(:experiment, start_date: Time.new(2017, 01, 01, 0, 0, 0, "+00:00"), end_date: Time.new(2017, 01, 02, 0, 0, 0, "+00:00"))
     number_of_days = 0
-    
+
     experiment.each_day do |day|
       expect(day).to be >= experiment.start_date
       expect(day).to be <= experiment.end_date
@@ -77,7 +77,61 @@ RSpec.describe Experiment, type: :model do
     end
     expect(number_of_days).to eq((experiment.end_date - experiment.start_date).to_i / (24 * 60 * 60) + 1)
   end
-  
+
+  it 'requires at least one social media profile to be selected' do
+    experiment = build(:experiment)
+    experiment.message_generation_parameter_set = build(:message_generation_parameter_set, message_generating: experiment, :social_network_choices => [:facebook],
+      :medium_choices => ['ad'])
+
+    experiment.save
+
+    expect(experiment).to_not be_valid
+    expect(experiment.errors[:social_media_profiles]).to include('requires at least one selected social media profile.')
+  end
+
+  it 'requires that the selected platform is from those listed in the social media profile' do
+    experiment = build(:experiment)
+    experiment.message_generation_parameter_set = build(:message_generation_parameter_set, message_generating: experiment, :social_network_choices => [:facebook],
+    :medium_choices => ['ad'])
+    social_media_profile = build(:social_media_profile)
+    social_media_profile.platform = 'twitter'
+    social_media_profile.allowed_mediums = [:ad, :organic]
+    experiment.social_media_profiles << social_media_profile
+
+    experiment.save
+
+    expect(experiment).to_not be_valid
+    expect(experiment.errors[:social_media_profiles]).to include('requires social media platform(s) to match the selected social media profile.')
+  end
+
+  it 'requires that the selected medium is from those listed in the social media profile' do
+    experiment = build(:experiment)
+    experiment.message_generation_parameter_set = build(:message_generation_parameter_set, message_generating: experiment, :social_network_choices => [:facebook],
+    :medium_choices => ['ad'])
+    social_media_profile = build(:social_media_profile)
+    social_media_profile.platform = 'facebook'
+    social_media_profile.allowed_mediums = [:organic]
+    experiment.social_media_profiles << social_media_profile
+
+    experiment.save
+
+    expect(experiment).to_not be_valid
+    expect(experiment.errors[:social_media_profiles]).to include('requires social media medium(s) to match the selected social media profile.')
+  end
+
+  xit "ignores the validation of selecting the medium 'organic' for Instagram" do
+    experiment = build(:experiment)
+    experiment.message_generation_parameter_set = build(:message_generation_parameter_set, message_generating: experiment, :social_network_choices => [:instagram],
+    :medium_choices => ['organic'])
+    social_media_profile = build(:social_media_profile)
+    social_media_profile.platform = 'instagram'
+    social_media_profile.allowed_mediums = [:ad]
+    experiment.social_media_profiles << social_media_profile
+
+    experiment.save
+    expect(experiment).to be_valid
+  end
+
   describe 'creating a todo list for analytics uploads' do
     before do
       @social_media_profiles = create_list(:social_media_profile, 4)
@@ -91,25 +145,25 @@ RSpec.describe Experiment, type: :model do
       @social_media_profiles[3].allowed_mediums = [:organic]
       @social_media_profiles.each { |social_media_profile| social_media_profile.save }
     end
-    
+
     it 'retrieves a list of all associated social media profiles that need analytics uploads' do
       experiment = build(:experiment)
       @social_media_profiles.each { |social_media_profile| experiment.social_media_profiles << social_media_profile }
       experiment.save
-      
+
       profiles = experiment.social_media_profiles_needing_analytics_uploads
-      
+
       expect(profiles.count).to eq(2)
       profiles.each { |profile| expect(profile.platform) == :twitter }
     end
-    
+
     it 'does not create todos if no social media profiles require analytics uploads' do
       experiment = build(:experiment)
       experiment.social_media_profiles << @social_media_profiles[2]
       experiment.save
 
       experiment.create_analytics_file_todos
-      
+
       expect(AnalyticsFile.count).to eq(0)
       expect(experiment.analytics_file_todos_created).to be true
     end
@@ -119,9 +173,9 @@ RSpec.describe Experiment, type: :model do
       experiment.social_media_profiles << @social_media_profiles[0]
       experiment.social_media_profiles << @social_media_profiles[1]
       experiment.save
-      
+
       experiment.create_analytics_file_todos
-      
+
       analytics_files = AnalyticsFile.all
       expect(analytics_files.count).to eq(4)
       analytics_files.each { |analytics_file| expect(analytics_file.message_generating).to eq(experiment)}
