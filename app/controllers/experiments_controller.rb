@@ -19,7 +19,7 @@ class ExperimentsController < ApplicationController
     # TODO: Unit test this
     @selected_tab = params[:selected_tab] || 'setup'
     # @selected_tab = 'setup' if !@selected_tab
-    @messages = Message.all
+    @messages = Message.where(:message_generating_id => @experiment.id).page(params[:page])
   end
 
   def new
@@ -50,7 +50,6 @@ class ExperimentsController < ApplicationController
     else
       render :edit
     end
-
   end
 
   def create_messages
