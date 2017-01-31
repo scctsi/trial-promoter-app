@@ -121,6 +121,8 @@ $(document).ready(function() {
 
   function setUpAnalyticsFileImports() {
     $('.analytics-file-upload-button').click(function() {
+      $(this).addClass('loading');
+      $(this).removeClass('primary');
       var analyticsFileId = $(this).data('analytics-file-id');
 
       filepicker.pick({
@@ -233,12 +235,27 @@ $(document).ready(function() {
     var pusher = new Pusher('645d88fef1ee61febc2d'); // uses your APP KEY
     var channel = pusher.subscribe('progress');
     channel.bind('progress', function(data) {
-      console.log(data.event);
+      $('.ui.progress').progress('increment');
+      
+      // if($('.ui.progress').progress('is complete')) {
+      //   console.log('All done');
+      // }
     });
   }
   
   function setUpAsyncMessageGeneration() {
+    // Set up progress bar
+    $('.ui.progress').progress({
+      duration : 200,
+      text     : {
+        active: '{value} of {total} done'
+      }
+    });
+    
+    // Set up AJAX call to create messages on experiment instance
     $('#generate-messages-button').click(function() {
+      $(this).addClass('loading');
+      $('.hidden-content').show();
       var experimentId = $(this).data('experiment-id');
       
       $.ajax({
