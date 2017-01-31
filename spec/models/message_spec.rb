@@ -92,4 +92,38 @@ describe Message do
   it 'raises an exception if a message cannot be found with a certain param' do
     expect { Message.find_by_param('unknown-param') }.to raise_error(ActiveRecord::RecordNotFound)
   end
+  
+  describe 'pagination' do
+    before do
+      create_list(:message, 30)
+      @messages = Message.order('created_at ASC')
+    end
+    
+    it 'has a default of 25 messages per page' do
+      page_of_messages = Message.page(1)
+      
+      expect(page_of_messages.count).to eq(25)
+    end
+    
+    it 'returns the first page of messages given a per page value' do
+      page_of_messages = Message.order('created_at ASC').page(1).per(5)
+      
+      expect(page_of_messages.count).to eq(5)
+      expect(page_of_messages[0]).to eq(@messages[0])
+    end
+
+    it 'returns the second page of messages given a per page value' do
+      page_of_messages = Message.order('created_at ASC').page(2).per(5)
+      
+      expect(page_of_messages.count).to eq(5)
+      expect(page_of_messages[0]).to eq(@messages[5])
+    end
+    
+    it 'returns a page of messages given a condition' do
+      page_of_messages = Message.where(content: 'Content').order('created_at ASC').page(2).per(5)
+      
+      expect(page_of_messages.count).to eq(5)
+      expect(page_of_messages[0]).to eq(@messages[5])
+    end
+  end
 end
