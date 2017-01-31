@@ -19,7 +19,7 @@ class ExperimentsController < ApplicationController
     # TODO: Unit test this
     @selected_tab = params[:selected_tab] || 'setup'
     # @selected_tab = 'setup' if !@selected_tab
-    @messages = Message.where(:message_generating_id => @experiment.id).page(params[:page])
+    @messages = Message.where(:message_generating_id => @experiment.id).page(params[:page]).order('created_at ASC')
   end
 
   def new

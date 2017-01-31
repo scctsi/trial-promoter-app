@@ -39,9 +39,11 @@ RSpec.describe ExperimentsController, type: :controller do
       @websites = []
       allow(Website).to receive(:belonging_to).with(@experiment).and_return(@websites)
       @experiment_messages = double('experiment_messages')
-      @paged_messages = []
+      @ordered_messages = []
+      @paged_messages = double('paged_messages')
       allow(Message).to receive(:where).with(:message_generating_id => @experiment.id).and_return(@experiment_messages)
       allow(@experiment_messages).to receive(:page).and_return(@paged_messages)
+      allow(@paged_messages).to receive(:order).and_return(@ordered_messages)
       get :show, id: @experiment, page: '2'
     end
 
@@ -67,7 +69,8 @@ RSpec.describe ExperimentsController, type: :controller do
     it 'assigns all messages to @messages' do
       expect(Message).to have_received(:where).with(:message_generating_id => @experiment.id)
       expect(@experiment_messages).to have_received(:page).with('2')
-      expect(assigns(:messages)).to eq(@paged_messages)
+      expect(@paged_messages).to have_received(:order).with('created_at ASC')
+      expect(assigns(:messages)).to eq(@ordered_messages)
     end
 
     it 'uses the workspace layout' do

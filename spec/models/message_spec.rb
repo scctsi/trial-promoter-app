@@ -106,21 +106,21 @@ describe Message do
     end
     
     it 'returns the first page of messages given a per page value' do
-      page_of_messages = Message.page(1).per(5)
+      page_of_messages = Message.order('created_at ASC').page(1).per(5)
       
       expect(page_of_messages.count).to eq(5)
       expect(page_of_messages[0]).to eq(@messages[0])
     end
 
     it 'returns the second page of messages given a per page value' do
-      page_of_messages = Message.page(2).per(5)
+      page_of_messages = Message.order('created_at ASC').page(2).per(5)
       
       expect(page_of_messages.count).to eq(5)
       expect(page_of_messages[0]).to eq(@messages[5])
     end
     
     it 'returns a page of messages given a condition' do
-      page_of_messages = Message.where(content: 'Content').page(2).per(5)
+      page_of_messages = Message.where(content: 'Content').order('created_at ASC').page(2).per(5)
       
       expect(page_of_messages.count).to eq(5)
       expect(page_of_messages[0]).to eq(@messages[5])
