@@ -29,5 +29,5 @@
               %label{ :for => "image-#{image.id}-selected" }
           %td
             %img{ :src => "#{image.url}", :width => 150, :height => 150 }
-          %td.image-tag
+          %td.image-tag.collapsing
             = render partial: 'shared/tag_list', locals: { tags: image.tag_list }
