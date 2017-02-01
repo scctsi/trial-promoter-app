@@ -57,7 +57,7 @@ class ExperimentsController < ApplicationController
     @experiment.create_messages
     redirect_to experiment_url(@experiment)
   end
-  
+
   def create_analytics_file_todos
     @experiment.create_analytics_file_todos
     redirect_to experiment_url(@experiment)

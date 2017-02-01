@@ -212,10 +212,16 @@ end
   end
 
   describe 'POST #create' do
+    before do
+      @experiment = build(:experiment)
+      @message_generation_parameter_set = create(:message_generation_parameter_set, social_network_choices: [:facebook], medium_choices: [:ad], message_generating: @experiment)
+    end
+
     context 'with valid attributes' do
       it 'creates a new experiment' do
+        p @message_generation_parameter_set.accessible_attributes
         expect {
-          post :create, experiment: attributes_for(:experiment, message_generation_parameter_set_attributes: attributes_for(:message_generation_parameter_set))
+          post :create, experiment: attributes_for(:experiment, message_generation_parameter_set_attributes: @experiment.message_generation_parameter_set.accessible_attributes, social_media_profile_ids: [@experiment.social_media_profiles[0].id])
         }.to change(Experiment, :count).by(1)
       end
 
@@ -259,9 +265,12 @@ end
       @experiment = create(:experiment)
       @experiment.message_generation_parameter_set = create(:message_generation_parameter_set, message_generating: @experiment)
       @social_media_profiles = create_list(:social_media_profile, 3)
+      @social_media_profiles[2].platform = :facebook
+      @social_media_profiles[2].allowed_mediums = [:ad]
+      @social_media_profiles[2].save
       patch :update, id: @experiment, experiment: attributes_for(:experiment, name: 'New name', start_date: Time.local(2000, 1, 1, 9, 0, 0), end_date: Time.local(2000, 2, 1, 9, 0, 0), message_distribution_start_date: Time.local(2000, 3, 1, 9, 0, 0),
                                       social_media_profile_ids: [@social_media_profiles[0].id, @social_media_profiles[2].id],
-                                      message_generation_parameter_set_attributes: {social_network_distribution: :random, medium_distribution: :random, image_present_distribution: :random, period_in_days: 10, number_of_messages_per_social_network: 5, social_network_choices: ['facebook', 'instagram', ''], medium_choices: ['ad', 'organic'], image_present_choices: ['with', 'without']})
+                                      message_generation_parameter_set_attributes: {social_network_distribution: :random, medium_distribution: :random, image_present_distribution: :random, period_in_days: 10, number_of_messages_per_social_network: 5, social_network_choices: ['facebook', ''], medium_choices: ['ad'], image_present_choices: ['with', 'without']})
     end
 
     context 'with valid attributes' do

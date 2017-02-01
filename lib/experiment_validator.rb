@@ -10,6 +10,7 @@ class ExperimentValidator < ActiveModel::Validator
     required_mediums = record.message_generation_parameter_set.medium_choices
     profile_grid = []
 
+    # if user has selected a platform that is not available in the associated social media profile(s)
     if !available_social_media_platforms.include?(required_social_media_platforms)
       record.errors[:social_media_profiles] << 'requires social media platform(s) to match the selected social media profile.'
     end
@@ -17,7 +18,7 @@ class ExperimentValidator < ActiveModel::Validator
     # if user selects organic medium for Instagram, validation below is ignored
     if (available_social_media_platforms.include?(:instagram) && (required_social_media_platforms).include?(:instagram) && required_mediums.include?(:organic))
 
-    # if user selects a medium that is not available in the associated social media profiles
+    # if user selects a medium that is not available in the associated social media profile(s)
     elsif !available_mediums.include?(required_mediums)
       record.errors[:social_media_profiles] << 'requires social media medium(s) to match the selected social media profile.'
     end
