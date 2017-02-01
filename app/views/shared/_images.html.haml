@@ -7,5 +7,5 @@
     - images.each do |image|
       %tr
         %td
-          %img{ :src => "#{image.url}", :width => 150, :height => 150 }
+          = image_tag "#{image.url}", width: '150', height: '150', lazy: true
         %td= image.tag_list
