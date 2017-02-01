@@ -2,30 +2,32 @@
   %form#image-tagging-form
     %thead
       %tr
+        %th.collapsing
+          #select-all-images-button.ui.tiny.labeled.icon.fluid.button
+            %i.checkmark.box.icon
+            Select all
+          .ui.horizontal.divider
+            Or
+          #deselect-all-images-button.ui.tiny.labeled.icon.fluid.button
+            %i.square.outline.icon
+            Deselect all
+        %th.center.aligned Image
         %th 
-        %th Image
-        %th Tags
+          Tags
+          .ui.form
+            .field
+              .ui.action.input
+                %input#image-tags.ui.input{ :type => 'text' }
+                %button#add-image-tags-button.ui.icon.button
+                  %i.plus.icon
     %tbody
       - images.each do |image|
-        %tr
+        %tr.center.aligned
           %td
-            .ui.fitted.checkbox.image-selector
-              %input{ :type => 'checkbox', :id => "image-#{image.id}-selector", 'data-image-id' => "#{image.id}" }
+            .ui.fitted.checkbox.image-selector{ 'data-image-id' => "#{image.id}" }
+              %input{ :type => 'checkbox', :id => "image-#{image.id}-selector" }
               %label{ :for => "image-#{image.id}-selected" }
           %td
             %img{ :src => "#{image.url}", :width => 150, :height => 150 }
-          %td= image.tag_list
-    %tfoot.full-width
-      %tr
-        %th.collapsing
-          #select-all-images-button.ui.tiny.button
-            Select all
-          #deselect-all-images-button.ui.tiny.button
-            Deselect all
-        %th
-        %th
-          .ui.form
-            .field
-              %input#image-tags{ :type => 'text' }
-              %button#add-image-tags-button.ui.button
-                Add tags
+          %td.image-tag
+            = render partial: 'shared/tag_list', locals: { tags: image.tag_list }

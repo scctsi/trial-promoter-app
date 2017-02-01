@@ -240,15 +240,48 @@ $(document).ready(function() {
     
     // Set up all checkboxes
     $imageSelectors.checkbox();
-    // WARNING: These two lines are not currently working
     $imageSelectors.checkbox('attach events', '#select-all-images-button', 'check');
     $imageSelectors.checkbox('attach events', '#deselect-all-images-button', 'uncheck');
 
     // Set up AJAX call to replace tags on selected images with contents of tag editor
+    var selectedImageIds = [];
+    var tags = '';
     $("#add-image-tags-button").on('click', function() {
+      selectedImageIds = [];
+      
       $imageSelectors.each(function() {
-        console.log($(this).find('input').is(':checked'));
+        if ($(this).find('input').is(':checked')) {
+          selectedImageIds.push($(this).data('image-id'));
+          tags = $('#image-tags').val();
+        };
       })
+      
+      $.ajax({
+        url : '/images/tag_images',
+        type: 'POST',
+        data: {image_ids: selectedImageIds, tags: tags},
+        dataType: 'json',
+        success: function(retdata) {
+          var imageTagCells = [];
+          
+          $imageSelectors.each(function() {
+            if ($(this).find('input').is(':checked')) {
+              imageTagCells.push($(this).parent().parent().find('td.image-tag'));
+            };
+          })
+
+          imageTagCells.forEach(function(imageTagCell) {
+            var tagHtml = '';
+            var splitTags = tags.split(',');
+
+            splitTags.forEach(function(tag) {
+              tagHtml += '<a class="ui small tag label">' + tag + '</a>';  
+            });
+            imageTagCell.html(tagHtml);
+          })
+        }
+      });
+
       return false;
     });
   }
