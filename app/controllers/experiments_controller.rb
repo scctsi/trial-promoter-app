@@ -59,7 +59,7 @@ class ExperimentsController < ApplicationController
       format.json { render json: { success: true } }
     end 
   end
-  
+
   def create_analytics_file_todos
     @experiment.create_analytics_file_todos
     redirect_to experiment_url(@experiment)

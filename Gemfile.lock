@@ -172,6 +172,8 @@ GEM
       activerecord
       kaminari-core (= 1.0.1)
     kaminari-core (1.0.1)
+    lazyload-rails (0.3.1)
+      nokogiri (~> 1.5)
     listen (3.1.5)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
@@ -373,6 +375,7 @@ DEPENDENCIES
   httparty
   jquery-rails
   kaminari
+  lazyload-rails
   pg
   pundit
   pusher

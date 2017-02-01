@@ -55,6 +55,7 @@ Rails.application.routes.draw do
     end
     collection do
       post :import
+      post 'tag_images', to: 'images#tag_images', constraints: lambda { |req| req.format == :json }
     end
   end
 

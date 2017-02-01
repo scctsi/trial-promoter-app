@@ -12,6 +12,7 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require jquery.lazyload.min
 //= require semantic-ui
 //= require moment.min
 //= require daterangepicker.min
