@@ -82,6 +82,7 @@ RSpec.describe Experiment, type: :model do
     experiment = build(:experiment)
     experiment.message_generation_parameter_set = build(:message_generation_parameter_set, message_generating: experiment, :social_network_choices => [:facebook],
       :medium_choices => ['ad'])
+    experiment.social_media_profiles = []
 
     experiment.save
 
@@ -89,13 +90,14 @@ RSpec.describe Experiment, type: :model do
     expect(experiment.errors[:social_media_profiles]).to include('requires at least one selected social media profile.')
   end
 
-  it 'requires that the selected platform is from those listed in the social media profile' do
+  it 'requires that the required platform is in the selected social media profiles' do
     experiment = build(:experiment)
     experiment.message_generation_parameter_set = build(:message_generation_parameter_set, message_generating: experiment, :social_network_choices => [:facebook],
     :medium_choices => ['ad'])
     social_media_profile = build(:social_media_profile)
     social_media_profile.platform = 'twitter'
     social_media_profile.allowed_mediums = [:ad, :organic]
+    experiment.social_media_profiles = []
     experiment.social_media_profiles << social_media_profile
 
     experiment.save
@@ -104,13 +106,12 @@ RSpec.describe Experiment, type: :model do
     expect(experiment.errors[:social_media_profiles]).to include('requires social media platform(s) to match the selected social media profile.')
   end
 
-  it 'requires that the selected medium is from those listed in the social media profile' do
+  it 'requires that the required medium is in the selected social media profiles' do
     experiment = build(:experiment)
     experiment.message_generation_parameter_set = build(:message_generation_parameter_set, message_generating: experiment, :social_network_choices => [:facebook],
     :medium_choices => ['ad'])
-    social_media_profile = build(:social_media_profile)
-    social_media_profile.platform = 'facebook'
-    social_media_profile.allowed_mediums = [:organic]
+    social_media_profile = build(:social_media_profile, platform: 'facebook', allowed_mediums: [:organic])
+    experiment.social_media_profiles = []
     experiment.social_media_profiles << social_media_profile
 
     experiment.save
