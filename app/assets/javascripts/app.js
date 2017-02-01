@@ -229,15 +229,28 @@ $(document).ready(function() {
   }
   
   function setUpImageTagging() {
+    var $imageSelectors = $('.image-selector');
+    
+    // Set up tag editor
     $('#image-tags').selectize({
       delimiter: ',',
       persist: false,
       create: true
     });
     
-    $('#image-tagging-form .ui.checkbox').checkbox();
-    $('#image-tagging-form .ui.checkbox').checkbox('attach events', '#select-all-images-button', 'check');
-    $('#image-tagging-form .ui.checkbox').checkbox('attach events', '#deselect-all-images-button', 'uncheck');
+    // Set up all checkboxes
+    $imageSelectors.checkbox();
+    // WARNING: These two lines are not currently working
+    $imageSelectors.checkbox('attach events', '#select-all-images-button', 'check');
+    $imageSelectors.checkbox('attach events', '#deselect-all-images-button', 'uncheck');
+
+    // Set up AJAX call to replace tags on selected images with contents of tag editor
+    $("#add-image-tags-button").on('click', function() {
+      $imageSelectors.each(function() {
+        console.log($(this).find('input').is(':checked'));
+      })
+      return false;
+    });
   }
 
   // Initialize

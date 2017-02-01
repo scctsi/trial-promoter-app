@@ -9,8 +9,8 @@
       - images.each do |image|
         %tr
           %td
-            .ui.fitted.checkbox
-              %input{ :type => 'checkbox', :id => "image-#{image.id}-selected", 'data-image-id' => "#{image.id}" }
+            .ui.fitted.checkbox.image-selector
+              %input{ :type => 'checkbox', :id => "image-#{image.id}-selector", 'data-image-id' => "#{image.id}" }
               %label{ :for => "image-#{image.id}-selected" }
           %td
             %img{ :src => "#{image.url}", :width => 150, :height => 150 }
