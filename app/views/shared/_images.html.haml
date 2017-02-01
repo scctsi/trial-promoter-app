@@ -28,6 +28,6 @@
               %input{ :type => 'checkbox', :id => "image-#{image.id}-selector" }
               %label{ :for => "image-#{image.id}-selected" }
           %td
-            %img{ :src => "#{image.url}", :width => 150, :height => 150 }
+            = image_tag "#{image.url}", width: '150', height: '150', lazy: true
           %td.image-tag.collapsing
             = render partial: 'shared/tag_list', locals: { tags: image.tag_list }
