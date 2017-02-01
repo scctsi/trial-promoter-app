@@ -246,4 +246,10 @@ $(document).ready(function() {
     context: 'parent'
   });
   $('.table').tablesort();
+
+  //lazyload for images
+  $("img").lazyload({
+    threshold : 500,
+    effect : "fadeIn"
+  });
 });
