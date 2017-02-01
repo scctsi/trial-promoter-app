@@ -76,5 +76,4 @@ RSpec.describe ImagesController, type: :controller do
       expect(response).to redirect_to :new_user_session
     end
   end
-
 end
