@@ -13,7 +13,7 @@ class MessageFactory
 
     message_constructor = MessageConstructor.new
     message_templates = MessageTemplate.belonging_to(message_generating_instance)
-    generated_message_index = 0
+    generated_message_index = 1
 
     message_generating_instance.message_generation_parameter_set.social_network_choices.each do |social_network|
       message_templates_for_social_network = message_templates.select{ |message_template| message_template.platform == social_network }

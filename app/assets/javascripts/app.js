@@ -239,25 +239,30 @@ $(document).ready(function() {
       console.log(data.total);
       console.log(data.event);
       $('.ui.progress').progress('increment');
-      
-      // if($('.ui.progress').progress('is complete')) {
-      //   console.log('All done');
-      // }
+
+      if(data.value === data.total) {
+        $('.ui.progress').progress('set success');
+        $('.ui.modal .approve.button').show();
+      }      
     });
   }
   
   function setUpAsyncMessageGeneration() {
     $('#generate-messages-button').click(function() { 
       var experimentId = $(this).data('experiment-id');
+      var total = $('.ui.modal').data('total');
       
-      $('.ui.modal').modal('show');
+      $('.ui.modal').modal('setting', 'transition', 'Vertical Flip').modal({ blurring: true }).modal('show');
+      $('.ui.modal .approve.button').hide();
 
       // Set up progress bar
       $('.ui.progress').progress({
         duration : 200,
-        total    : 200,
+        total    : total,
         text     : {
-          active: '{value} of {total} done'
+          active: '{value} of {total} done',
+          success: 'All the messages for this experiment were successfully generated!',
+          error: 'Something went wrong during message generation!'
         }
       });
 
@@ -267,7 +272,6 @@ $(document).ready(function() {
         data: { id: experimentId },
         dataType: 'json',
         success: function(data) {
-          $('.ui.progress').progress({ text: { active: 'All messages have been generated!' } });
         }
       });
       
