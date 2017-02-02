@@ -36,6 +36,6 @@ class SocialMediaProfile < ActiveRecord::Base
   end
 
   def description
-    return ("<i class = '#{platform.to_s} icon'></i> #{platform.to_s.titleize} [#{allowed_mediums.join(', ').titleize}] #{service_username}").html_safe
+    return ("<i class = '#{platform} icon'></i> #{platform.to_s.titleize} [#{allowed_mediums.join(', ').titleize}] #{service_username}").html_safe
   end
 end
