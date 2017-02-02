@@ -15,9 +15,9 @@
 
 class SocialMediaProfile < ActiveRecord::Base
   extend Enumerize
-  
+
   serialize :allowed_mediums
-  
+
   validates :service_id, presence: true
   validates :service_username, presence: true
   validates :platform, presence: true
@@ -30,8 +30,12 @@ class SocialMediaProfile < ActiveRecord::Base
     return self[:platform].to_sym if !self[:platform].nil?
     nil
   end
-  
+
   def allowed_mediums
     return symbolize_array_items(self[:allowed_mediums])
+  end
+
+  def description
+    return ("<i class = '#{platform.to_s} icon'></i> #{platform.to_s.titleize} [#{allowed_mediums.join(', ').titleize}] #{service_username}").html_safe
   end
 end
