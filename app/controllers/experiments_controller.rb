@@ -16,9 +16,6 @@ class ExperimentsController < ApplicationController
     @message_templates = MessageTemplate.belonging_to(@experiment)
     @images = Image.belonging_to(@experiment)
     @websites = Website.belonging_to(@experiment)
-    # TODO: Unit test this
-    @selected_tab = params[:selected_tab] || 'setup'
-    # @selected_tab = 'setup' if !@selected_tab
     @messages = Message.where(:message_generating_id => @experiment.id).page(params[:page]).order('created_at ASC')
   end
 
