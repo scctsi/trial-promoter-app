@@ -57,7 +57,7 @@ RSpec.describe MessageFactory do
     expect(messages.count).to eq(message_generation_parameter_set.expected_generated_message_count)
     expect((messages.select { |message| message.message_template.platform != :facebook }).count).to eq(0)
     # Have the pusher events been triggered?
-    expect(@pusher_channel).to have_received(:trigger).exactly(message_generation_parameter_set.expected_generated_message_count).times.with('progress', {:value => an_instance_of(Integer), :total => message_generation_parameter_set.expected_generated_message_count, :event => 'Message generated'})
+    expect(@pusher_channel).to have_received(:trigger).exactly(message_generation_parameter_set.expected_generated_message_count).times.with('progress', {:value => an_instance_of(Fixnum), :total => message_generation_parameter_set.expected_generated_message_count, :event => 'Message generated'})
   end
 
   it 'creates a set of messages for one website, five message templates, 3 social networks (equal distribution), 2 mediums (equal distribution), with and without images (equal distribution), for 3 days and 3 messages per network per day' do
