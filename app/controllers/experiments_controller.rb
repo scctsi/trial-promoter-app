@@ -54,7 +54,7 @@ class ExperimentsController < ApplicationController
 
   def create_messages
     respond_to do |format|
-      @experiment.create_messages
+      GenerateMessagesJob.perform_later(@experiment)
       format.html { redirect_to experiment_url(@experiment) }
       format.json { render json: { success: true } }
     end 

@@ -3,7 +3,7 @@
   .header
     Generating messages
   .content
-    .ui.indicating.progress
+    .ui.indicating.progress{ 'data-value' => '1', 'data-total' => "#{total}" }
       .bar
       .label 
         Click 'Generate messages' to (re)create messages.

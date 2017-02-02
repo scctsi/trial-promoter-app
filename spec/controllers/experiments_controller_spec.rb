@@ -122,6 +122,7 @@ RSpec.describe ExperimentsController, type: :controller do
       @experiment = create(:experiment)
       allow(Experiment).to receive(:find).and_return(@experiment)
       allow(@experiment).to receive(:create_messages)
+      allow(GenerateMessagesJob).to receive(:perform_later)
     end
   
     context 'HTML format' do
@@ -129,12 +130,8 @@ RSpec.describe ExperimentsController, type: :controller do
         get :create_messages, id: @experiment, format: 'html'
       end
 
-      it 'asks the experiment to create messages' do
-        expect(@experiment).to have_received(:create_messages)
-      end
-  
-      it 'redirects to the experiment workspace' do
-        expect(response).to redirect_to experiment_url(Experiment.first)
+      it 'enqueues a job to generate the messages' do
+        expect(GenerateMessagesJob).to have_received(:perform_later).with(an_instance_of(Experiment))
       end
   
       it 'redirects unauthenticated user to sign-in page' do
@@ -151,8 +148,8 @@ RSpec.describe ExperimentsController, type: :controller do
         get :create_messages, id: @experiment, format: 'json'
       end
       
-      it 'asks the experiment to create messages' do
-        expect(@experiment).to have_received(:create_messages)
+      it 'enqueues a job to generate the messages' do
+        expect(GenerateMessagesJob).to have_received(:perform_later).with(an_instance_of(Experiment))
       end
   
       it 'returns success' do

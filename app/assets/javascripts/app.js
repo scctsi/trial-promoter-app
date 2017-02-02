@@ -235,6 +235,9 @@ $(document).ready(function() {
     var pusher = new Pusher('645d88fef1ee61febc2d'); // uses your APP KEY
     var channel = pusher.subscribe('progress');
     channel.bind('progress', function(data) {
+      console.log(data.value);
+      console.log(data.total);
+      console.log(data.event);
       $('.ui.progress').progress('increment');
       
       // if($('.ui.progress').progress('is complete')) {
@@ -252,6 +255,7 @@ $(document).ready(function() {
       // Set up progress bar
       $('.ui.progress').progress({
         duration : 200,
+        total    : 200,
         text     : {
           active: '{value} of {total} done'
         }
@@ -263,7 +267,6 @@ $(document).ready(function() {
         data: { id: experimentId },
         dataType: 'json',
         success: function(data) {
-          console.log('DONE');
           $('.ui.progress').progress({ text: { active: 'All messages have been generated!' } });
         }
       });
@@ -271,23 +274,6 @@ $(document).ready(function() {
       return false;
     });
   }
-  
-  // function setUpAsyncMessageGeneration() {
-  //   // Set up progress bar
-    
-  //   // Set up AJAX call to create messages on experiment instance
-      
-  //     $.ajax({
-  //       type: 'GET',
-  //       url: '/experiments/' + experimentId + '/create_messages.json',
-  //       data: { id: experimentId },
-  //       dataType: 'json',
-  //       success: function(data) {
-  //       }
-  //     });
-      
-  //     return false;
-  //   });    
 
   function setUpImageTagging() {
     var $imageSelectors = $('.image-selector');
