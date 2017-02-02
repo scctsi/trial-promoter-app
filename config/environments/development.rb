@@ -1,3 +1,9 @@
+require 'pusher'
+
+Pusher.app_id = '295400'
+Pusher.key = '645d88fef1ee61febc2d'
+Pusher.secret = 'a08c6e0d4c355ff82186'
+
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 

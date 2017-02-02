@@ -1,5 +1,6 @@
 /*global $*/
 /*global filepicker*/
+/*global Pusher*/
 $(document).ready(function() {
   function setUpDatePickers() {
     $("[id$='_date']").daterangepicker({
@@ -120,6 +121,8 @@ $(document).ready(function() {
 
   function setUpAnalyticsFileImports() {
     $('.analytics-file-upload-button').click(function() {
+      $(this).addClass('loading');
+      $(this).removeClass('primary');
       var analyticsFileId = $(this).data('analytics-file-id');
 
       filepicker.pick({
@@ -228,6 +231,54 @@ $(document).ready(function() {
     });
   }
 
+  function setUpPusherChannels() {
+    var pusher = new Pusher('645d88fef1ee61febc2d'); // uses your APP KEY
+    var channel = pusher.subscribe('progress');
+    channel.bind('progress', function(data) {
+      console.log(data.value);
+      console.log(data.total);
+      console.log(data.event);
+      $('.ui.progress').progress('increment');
+
+      if(data.value === data.total) {
+        $('.ui.progress').progress('set success');
+        $('.ui.modal .approve.button').show();
+      }      
+    });
+  }
+  
+  function setUpAsyncMessageGeneration() {
+    $('#generate-messages-button').click(function() { 
+      var experimentId = $(this).data('experiment-id');
+      var total = $('.ui.modal').data('total');
+      
+      $('.ui.modal').modal('setting', 'transition', 'Vertical Flip').modal({ blurring: true }).modal('show');
+      $('.ui.modal .approve.button').hide();
+
+      // Set up progress bar
+      $('.ui.progress').progress({
+        duration : 200,
+        total    : total,
+        text     : {
+          active: '{value} of {total} done',
+          success: 'All the messages for this experiment were successfully generated!',
+          error: 'Something went wrong during message generation!'
+        }
+      });
+
+      $.ajax({
+        type: 'GET',
+        url: '/experiments/' + experimentId + '/create_messages.json',
+        data: { id: experimentId },
+        dataType: 'json',
+        success: function(data) {
+        }
+      });
+      
+      return false;
+    });
+  }
+
   function setUpImageTagging() {
     var $imageSelectors = $('.image-selector');
 
@@ -296,6 +347,8 @@ $(document).ready(function() {
   setUpMessageTemplateImports();
   setUpImageImports();
   setUpAnalyticsFileImports();
+  setUpPusherChannels();
+  setUpAsyncMessageGeneration();
   setUpImageTagging();
 
   // Set up Semantic UI

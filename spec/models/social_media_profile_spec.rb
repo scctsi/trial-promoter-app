@@ -33,7 +33,6 @@ RSpec.describe SocialMediaProfile, type: :model do
   it 'returns the description of the profile' do
     social_media_profile = create(:social_media_profile, service_username: 'USCTrials', platform: 'twitter', allowed_mediums: [:ad, :organic])
 
-p social_media_profile.description
     expect(social_media_profile.description).to match('USCTrials')
     expect(social_media_profile.description).to match('Twitter')
     expect(social_media_profile.description).to match('[Ad, Organic]')

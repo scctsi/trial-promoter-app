@@ -1,13 +1,16 @@
 %table.ui.celled.striped.table
   %thead 
     %tr
+      = paginate messages
+    %tr
       %th Content
       %th Platform
       %th Medium
       %th Image
       %th
   %tfoot
-    = paginate messages
+    %tr
+      = paginate messages
   %tbody
     - messages.each do |message|
       %tr

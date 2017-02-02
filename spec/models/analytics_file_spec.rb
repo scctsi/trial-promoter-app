@@ -8,6 +8,9 @@
 #  social_media_profile_id :integer
 #  created_at              :datetime         not null
 #  updated_at              :datetime         not null
+#  required_upload_date    :datetime
+#  message_generating_id   :integer
+#  message_generating_type :string
 #
 
 require 'rails_helper'

@@ -9,6 +9,7 @@
 #  message_distribution_start_date :datetime
 #  created_at                      :datetime         not null
 #  updated_at                      :datetime         not null
+#  analytics_file_todos_created    :boolean
 #
 
 require 'rails_helper'
