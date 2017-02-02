@@ -114,32 +114,59 @@ RSpec.describe ExperimentsController, type: :controller do
       expected_json = { :message_count => 120 }.to_json
 
       expect(response.body).to eq(expected_json)
+    end
   end
-end
 
   describe 'GET #create_messages' do
     before do
       @experiment = create(:experiment)
       allow(Experiment).to receive(:find).and_return(@experiment)
       allow(@experiment).to receive(:create_messages)
-      get :create_messages, id: @experiment
+      allow(GenerateMessagesJob).to receive(:perform_later)
     end
+  
+    context 'HTML format' do
+      before do
+        get :create_messages, id: @experiment, format: 'html'
+      end
 
-    it 'asks the experiment to create messages' do
-      expect(@experiment).to have_received(:create_messages)
-    end
-
-    it 'redirects to the experiment workspace' do
-      expect(response).to redirect_to experiment_url(Experiment.first)
-    end
-
-    it 'redirects unauthenticated user to sign-in page' do
+      it 'enqueues a job to generate the messages' do
+        expect(GenerateMessagesJob).to have_received(:perform_later).with(an_instance_of(Experiment))
+      end
+  
+      it 'redirects unauthenticated user to sign-in page' do
         sign_out(:user)
-
+  
         get :create_messages, id: @experiment
-
+  
         expect(response).to redirect_to :new_user_session
+      end
     end
+    
+    context 'JSON format' do
+      before do
+        get :create_messages, id: @experiment, format: 'json'
+      end
+      
+      it 'enqueues a job to generate the messages' do
+        expect(GenerateMessagesJob).to have_received(:perform_later).with(an_instance_of(Experiment))
+      end
+  
+      it 'returns success' do
+        expected_json = { :success => true }.to_json
+
+        expect(response.body).to eq(expected_json)      
+      end
+  
+      it 'redirects unauthenticated user to sign-in page' do
+        sign_out(:user)
+  
+        get :create_messages, id: @experiment
+  
+        expect(response).to redirect_to :new_user_session
+      end
+    end
+
   end
 
   describe 'GET #create_analytics_file_todos' do

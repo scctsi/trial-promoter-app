@@ -1,5 +1,6 @@
 /*global $*/
 /*global filepicker*/
+/*global Pusher*/
 $(document).ready(function() {
   function setUpDatePickers() {
     $("[id$='_date']").daterangepicker({
@@ -120,6 +121,8 @@ $(document).ready(function() {
 
   function setUpAnalyticsFileImports() {
     $('.analytics-file-upload-button').click(function() {
+      $(this).addClass('loading');
+      $(this).removeClass('primary');
       var analyticsFileId = $(this).data('analytics-file-id');
 
       filepicker.pick({
@@ -141,7 +144,7 @@ $(document).ready(function() {
     })
   }
 
-  function setupPopupInfo() {
+  function setUpPopupInfo() {
     $('.ui.fluid.huge.teal.labeled.icon.button.start-experiment-button').popup({
       title   : 'What is an experiment?',
       content : 'An experiment applies scientific study design techniques and allows you to set up a project to test a hypothesis.'
@@ -222,22 +225,70 @@ $(document).ready(function() {
     calculateMessageCount(socialNetworkChoices.length, mediumCount, periodInDays, numberOfMessagesPerSocialNetwork);
   }
 
-  function setupExperimentRealTime() {
+  function setUpExperimentRealTime() {
     $('.ui.new_experiment_form').change(function(e){
       changeExperimentDetails();
     });
   }
+
+  function setUpPusherChannels() {
+    var pusher = new Pusher('645d88fef1ee61febc2d'); // uses your APP KEY
+    var channel = pusher.subscribe('progress');
+    channel.bind('progress', function(data) {
+      console.log(data.value);
+      console.log(data.total);
+      console.log(data.event);
+      $('.ui.progress').progress('increment');
+
+      if(data.value === data.total) {
+        $('.ui.progress').progress('set success');
+        $('.ui.modal .approve.button').show();
+      }      
+    });
+  }
   
+  function setUpAsyncMessageGeneration() {
+    $('#generate-messages-button').click(function() { 
+      var experimentId = $(this).data('experiment-id');
+      var total = $('.ui.modal').data('total');
+      
+      $('.ui.modal').modal('setting', 'transition', 'Vertical Flip').modal({ blurring: true }).modal('show');
+      $('.ui.modal .approve.button').hide();
+
+      // Set up progress bar
+      $('.ui.progress').progress({
+        duration : 200,
+        total    : total,
+        text     : {
+          active: '{value} of {total} done',
+          success: 'All the messages for this experiment were successfully generated!',
+          error: 'Something went wrong during message generation!'
+        }
+      });
+
+      $.ajax({
+        type: 'GET',
+        url: '/experiments/' + experimentId + '/create_messages.json',
+        data: { id: experimentId },
+        dataType: 'json',
+        success: function(data) {
+        }
+      });
+      
+      return false;
+    });
+  }
+
   function setUpImageTagging() {
     var $imageSelectors = $('.image-selector');
-    
+
     // Set up tag editor
     $('#image-tags').selectize({
       delimiter: ',',
       persist: false,
       create: true
     });
-    
+
     // Set up all checkboxes
     $imageSelectors.checkbox();
     $imageSelectors.checkbox('attach events', '#select-all-images-button', 'check');
@@ -248,14 +299,14 @@ $(document).ready(function() {
     var tags = '';
     $("#add-image-tags-button").on('click', function() {
       selectedImageIds = [];
-      
+
       $imageSelectors.each(function() {
         if ($(this).find('input').is(':checked')) {
           selectedImageIds.push($(this).data('image-id'));
           tags = $('#image-tags').val();
         };
       })
-      
+
       $.ajax({
         url : '/images/tag_images',
         type: 'POST',
@@ -263,7 +314,7 @@ $(document).ready(function() {
         dataType: 'json',
         success: function(retdata) {
           var imageTagCells = [];
-          
+
           $imageSelectors.each(function() {
             if ($(this).find('input').is(':checked')) {
               imageTagCells.push($(this).parent().parent().find('td.image-tag'));
@@ -275,7 +326,7 @@ $(document).ready(function() {
             var splitTags = tags.split(',');
 
             splitTags.forEach(function(tag) {
-              tagHtml += '<a class="ui small tag label">' + tag + '</a>';  
+              tagHtml += '<a class="ui small tag label">' + tag + '</a>';
             });
             imageTagCell.html(tagHtml);
           })
@@ -287,8 +338,8 @@ $(document).ready(function() {
   }
 
   // Initialize
-  setupExperimentRealTime();
-  setupPopupInfo();
+  setUpExperimentRealTime();
+  setUpPopupInfo();
   setUpDatePickers();
   setUpChosenDropdowns();
   setUpTagListInputs();
@@ -296,6 +347,8 @@ $(document).ready(function() {
   setUpMessageTemplateImports();
   setUpImageImports();
   setUpAnalyticsFileImports();
+  setUpPusherChannels();
+  setUpAsyncMessageGeneration();
   setUpImageTagging();
 
   // Set up Semantic UI

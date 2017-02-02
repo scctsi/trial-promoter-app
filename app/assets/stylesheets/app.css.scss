@@ -32,11 +32,17 @@ form {
   font-weight: normal;
 }
 
+// Unbold choices for list of checkboxes for social media profiles
+.ui.form .grouped.fields .field > label {
+  font-weight: normal;
+}
+
 // Bold labels for message generation parameter set
 table.message-generation-parameter-set td.collapsing {
   font-weight: bold;
 }
 
+// Devise styling
 // Create space for sign in button
 .ui.fluid.large.teal.initial-signin-button {
   margin-top: 1rem;
