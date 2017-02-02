@@ -11,7 +11,7 @@
     = f.input :start_date, as: :string
     = f.input :end_date, as: :string
     = f.input :message_distribution_start_date, as: :string
-    = f.association :social_media_profiles, as: :check_boxes, label_method: :service_username value_method: :id, wrapper_class: 'grouped fields', item_wrapper_class: 'ui field checkbox', label: 'What social media accounts(s) do you want to use?'
+    = f.association :social_media_profiles, as: :check_boxes, label_method: :service_username, value_method: :id, wrapper_class: 'grouped fields', item_wrapper_class: 'ui field checkbox', label: 'What social media accounts(s) do you want to use?'
     = f.simple_fields_for :message_generation_parameter_set do |m|
       = m.input :social_network_choices, as: :check_boxes, wrapper_class: 'inline fields', item_wrapper_class: 'ui field checkbox', collection: { 'Facebook' => :facebook, 'Instagram' => :instagram, 'Twitter' => :twitter }, label: 'Which social media social media type(s) do you want to use?'
       = m.input :medium_choices, as: :check_boxes, wrapper_class: 'inline fields', item_wrapper_class: 'ui field checkbox', collection: { 'Ad' => :ad, 'Organic/Unpaid' => :organic }, label: 'What type(s) of message do you want to use?'
@@ -23,5 +23,3 @@
         Experiment details
       %ul.list.experiment-details-real-time
     = f.button :submit
-    
-    

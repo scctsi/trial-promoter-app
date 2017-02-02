@@ -120,6 +120,19 @@ RSpec.describe Experiment, type: :model do
     expect(experiment.errors[:social_media_profiles]).to include('requires social media medium(s) to match the selected social media profile.')
   end
 
+  it 'ignores medium validation if a social media profile has nil allowed mediums' do
+    experiment = build(:experiment)
+    experiment.message_generation_parameter_set = build(:message_generation_parameter_set, message_generating: experiment, :social_network_choices => [:facebook],
+    :medium_choices => ['ad'])
+    social_media_profile = build(:social_media_profile, platform: 'facebook', allowed_mediums: nil)
+    experiment.social_media_profiles = []
+    experiment.social_media_profiles << social_media_profile
+
+    experiment.save
+
+    expect(experiment).to be_valid
+  end
+
   xit "ignores the validation of selecting the medium 'organic' for Instagram" do
     experiment = build(:experiment)
     experiment.message_generation_parameter_set = build(:message_generation_parameter_set, message_generating: experiment, :social_network_choices => [:instagram],

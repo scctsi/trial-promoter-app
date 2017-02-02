@@ -225,7 +225,6 @@ end
 
     context 'with valid attributes' do
       it 'creates a new experiment' do
-        p @message_generation_parameter_set.accessible_attributes
         expect {
           post :create, experiment: attributes_for(:experiment, message_generation_parameter_set_attributes: @experiment.message_generation_parameter_set.accessible_attributes, social_media_profile_ids: [@experiment.social_media_profiles[0].id])
         }.to change(Experiment, :count).by(1)
