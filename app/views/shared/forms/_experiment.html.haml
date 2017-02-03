@@ -8,7 +8,7 @@
           - @experiment.errors.full_messages.each do |message|
             %li= message
     = f.input :name, label: 'Name your experiment', hint: 'Give your experiment a good name'
-    = f.input :message_distribution_start_date, as: :string
+    = f.input :message_distribution_start_date, as: :string, label: 'Start date'
     = f.input :end_date, as: :string
     = f.association :social_media_profiles, as: :check_boxes, label_method: :description, value_method: :id, wrapper_class: 'grouped fields', item_wrapper_class: 'ui field checkbox', label: 'What social media accounts(s) do you want to use?'
     = f.simple_fields_for :message_generation_parameter_set do |m|
