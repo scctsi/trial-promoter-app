@@ -1,11 +1,11 @@
 class MessageFactory
   attr_reader :tag_matcher, :social_media_profile_picker
-  
+
   def initialize(tag_matcher, social_media_profile_picker)
     @tag_matcher = tag_matcher
     @social_media_profile_picker = social_media_profile_picker
   end
-  
+
   def create(message_generating_instance)
     message_generating_instance.reload
     message_generating_instance.messages.destroy_all
@@ -30,23 +30,23 @@ class MessageFactory
         end
       end
     end
-    
+
     # Pick the social media profile on which to send out each message
     message_generating_instance.messages.all.each do |message|
       message.social_media_profile = social_media_profile_picker.pick(message_generating_instance.social_media_profiles.to_a, message)
       message.save
     end
-    
+
     # If we need to add images
     include_images = true if message_generating_instance.message_generation_parameter_set.image_present_choices.include?(:with)
     if include_images
       attach_images(message_generating_instance.messages, message_generating_instance.message_generation_parameter_set.image_present_distribution)
     end
   end
-  
+
   def attach_images(messages, distribution=:equal)
     include_image = false
-    
+
     messages.all.each do |message|
       if include_image
         image = tag_matcher.match(Image, message.message_template.tag_list).sample
@@ -56,7 +56,7 @@ class MessageFactory
         message.image_present = :without
       end
       message.save
-      
+
       # EXACTLY equal distribution
       include_image = !include_image
     end

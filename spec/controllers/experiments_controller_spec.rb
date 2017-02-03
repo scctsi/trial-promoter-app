@@ -3,6 +3,9 @@ require 'rails_helper'
 RSpec.describe ExperimentsController, type: :controller do
   before do
     sign_in create(:administrator)
+    
+    # Create a set of saved social media profiles for use in these tests
+    @social_media_profiles = create_list(:social_media_profile, 3)
   end
 
   describe 'GET #index' do
@@ -255,22 +258,30 @@ RSpec.describe ExperimentsController, type: :controller do
   end
 
   describe 'POST #create' do
+    before do
+      @experiment = build(:experiment)
+      # Make sure that we have a social media profile that will suit the social media profile validations
+      @social_media_profiles[0].platform = :facebook
+      @social_media_profiles[0].allowed_mediums = [:ad]
+      @social_media_profiles[0].save
+    end
+
     context 'with valid attributes' do
       it 'creates a new experiment' do
         expect {
-          post :create, experiment: attributes_for(:experiment, message_generation_parameter_set_attributes: attributes_for(:message_generation_parameter_set))
+          post :create, experiment: attributes_for(:experiment, message_generation_parameter_set_attributes: attributes_for(:message_generation_parameter_set), social_media_profile_ids: [@social_media_profiles[0].id])
         }.to change(Experiment, :count).by(1)
       end
 
       it 'creates an associated message generation parameter set' do
         expect {
-          post :create, experiment: attributes_for(:experiment, message_generation_parameter_set_attributes: attributes_for(:message_generation_parameter_set))
+          post :create, experiment: attributes_for(:experiment, message_generation_parameter_set_attributes: attributes_for(:message_generation_parameter_set), social_media_profile_ids: [@social_media_profiles[0].id])
         }.to change(MessageGenerationParameterSet, :count).by(1)
         expect(MessageGenerationParameterSet.first.message_generating).not_to be_nil
       end
 
       it 'redirects to the experiment workspace' do
-        post :create, experiment: attributes_for(:experiment, message_generation_parameter_set_attributes: attributes_for(:message_generation_parameter_set))
+        post :create, experiment: attributes_for(:experiment, message_generation_parameter_set_attributes: attributes_for(:message_generation_parameter_set), social_media_profile_ids: [@social_media_profiles[0].id])
         expect(response).to redirect_to experiment_url(Experiment.first)
       end
 
@@ -301,10 +312,15 @@ RSpec.describe ExperimentsController, type: :controller do
     before :each do
       @experiment = create(:experiment)
       @experiment.message_generation_parameter_set = create(:message_generation_parameter_set, message_generating: @experiment)
-      @social_media_profiles = create_list(:social_media_profile, 3)
+      @social_media_profiles[1].platform = :twitter
+      @social_media_profiles[1].allowed_mediums = [:organic]
+      @social_media_profiles[1].save
+      @social_media_profiles[2].platform = :facebook
+      @social_media_profiles[2].allowed_mediums = [:organic]
+      @social_media_profiles[2].save
       patch :update, id: @experiment, experiment: attributes_for(:experiment, name: 'New name', end_date: Time.local(2000, 2, 1, 9, 0, 0), message_distribution_start_date: Time.local(2000, 3, 1, 9, 0, 0),
-                                      social_media_profile_ids: [@social_media_profiles[0].id, @social_media_profiles[2].id],
-                                      message_generation_parameter_set_attributes: {social_network_distribution: :random, medium_distribution: :random, image_present_distribution: :random, period_in_days: 10, number_of_messages_per_social_network: 5, social_network_choices: ['facebook', 'instagram', ''], medium_choices: ['ad', 'organic'], image_present_choices: ['with', 'without']})
+                                      social_media_profile_ids: [@social_media_profiles[1].id, @social_media_profiles[2].id],
+                                      message_generation_parameter_set_attributes: {period_in_days: 10, number_of_messages_per_social_network: 5, social_network_choices: ['facebook', 'twitter'], medium_choices: ['organic'], image_present_choices: ['with', 'without']})
     end
 
     context 'with valid attributes' do
@@ -322,12 +338,9 @@ RSpec.describe ExperimentsController, type: :controller do
 
       it "changes the associated message generation parameter set's attribute" do
         @experiment.reload
-        expect(@experiment.message_generation_parameter_set.social_network_choices).to eq([:facebook, :instagram])
-        expect(@experiment.message_generation_parameter_set.medium_choices).to eq([:ad, :organic])
+        expect(@experiment.message_generation_parameter_set.social_network_choices).to eq([:facebook, :twitter])
+        expect(@experiment.message_generation_parameter_set.medium_choices).to eq([:organic])
         expect(@experiment.message_generation_parameter_set.image_present_choices).to eq([:with, :without])
-        expect(@experiment.message_generation_parameter_set.social_network_distribution).to eq(:random)
-        expect(@experiment.message_generation_parameter_set.medium_distribution).to eq(:random)
-        expect(@experiment.message_generation_parameter_set.image_present_distribution).to eq(:random)
         expect(@experiment.message_generation_parameter_set.period_in_days).to eq(10)
         expect(@experiment.message_generation_parameter_set.number_of_messages_per_social_network).to eq(5)
       end
@@ -335,7 +348,7 @@ RSpec.describe ExperimentsController, type: :controller do
       it "changes the associated social media profiles" do
         @experiment.reload
         expect(@experiment.social_media_profiles.count).to eq(2)
-        expect(@experiment.social_media_profiles[0]).to eq(@social_media_profiles[0])
+        expect(@experiment.social_media_profiles[0]).to eq(@social_media_profiles[1])
         expect(@experiment.social_media_profiles[1]).to eq(@social_media_profiles[2])
       end
 
