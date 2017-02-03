@@ -3,6 +3,9 @@ require 'rails_helper'
 RSpec.describe ExperimentsController, type: :controller do
   before do
     sign_in create(:administrator)
+    
+    # Create a set of saved social media profiles for use in these tests
+    @social_media_profiles = create_list(:social_media_profile, 3)
   end
 
   describe 'GET #index' do
@@ -263,7 +266,7 @@ RSpec.describe ExperimentsController, type: :controller do
     context 'with valid attributes' do
       it 'creates a new experiment' do
         expect {
-          post :create, experiment: attributes_for(:experiment, message_generation_parameter_set_attributes: @experiment.message_generation_parameter_set.accessible_attributes, social_media_profile_ids: [@experiment.social_media_profiles[0].id])
+          post :create, experiment: attributes_for(:experiment, message_generation_parameter_set_attributes: attributes_for(:message_generation_parameter_set), social_media_profile_ids: [@social_media_profiles[0].id])
         }.to change(Experiment, :count).by(1)
       end
 
@@ -306,7 +309,6 @@ RSpec.describe ExperimentsController, type: :controller do
     before :each do
       @experiment = create(:experiment)
       @experiment.message_generation_parameter_set = create(:message_generation_parameter_set, message_generating: @experiment)
-      @social_media_profiles = create_list(:social_media_profile, 3)
       @social_media_profiles[2].platform = :facebook
       @social_media_profiles[2].allowed_mediums = [:ad]
       @social_media_profiles[2].save
