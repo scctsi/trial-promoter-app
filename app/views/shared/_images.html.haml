@@ -17,7 +17,7 @@
           .ui.form
             .field
               .ui.action.input
-                %input#image-tags.ui.input{ :type => 'text' }
+                %input#image-tags.ui.input{ :type => 'text', 'data-allowed-tags' => allowed_tags }
                 %button#add-image-tags-button.ui.icon.button
                   %i.plus.icon
     %tbody
@@ -29,5 +29,5 @@
               %label{ :for => "image-#{image.id}-selected" }
           %td
             = image_tag "#{image.url}", width: '150', height: '150', lazy: true
-          %td.image-tag.collapsing
+          %td.image-tag
             = render partial: 'shared/tag_list', locals: { tags: image.tag_list }

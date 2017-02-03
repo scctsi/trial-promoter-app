@@ -11,7 +11,6 @@ $(document).ready(function() {
     });
   }
 
-
   function setUpChosenDropdowns() {
     $('#clinical_trial_hashtags').chosen({
       no_results_text: 'Oops, no hashtags were found! Sometimes hashtags do not contain the full name of the disease, please try an acronym instead.',
@@ -281,12 +280,20 @@ $(document).ready(function() {
 
   function setUpImageTagging() {
     var $imageSelectors = $('.image-selector');
-
+    var allowedTags = $('#image-tags').data('allowed-tags');
+    console.log(allowedTags);
+    
+    // Selectize requires options to be of the form [{'value': 'val', 'item', 'val'}]
+    allowedTags = allowedTags.map(function(x) { return { item: x } });
+    
     // Set up tag editor
     $('#image-tags').selectize({
       delimiter: ',',
       persist: false,
-      create: true
+      create: false,
+      valueField: 'item',
+      labelField: 'item',
+      options: allowedTags
     });
 
     // Set up all checkboxes
