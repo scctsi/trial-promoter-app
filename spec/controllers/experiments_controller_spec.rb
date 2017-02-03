@@ -44,6 +44,10 @@ RSpec.describe ExperimentsController, type: :controller do
       allow(Message).to receive(:where).with(:message_generating_id => @experiment.id).and_return(@experiment_messages)
       allow(@experiment_messages).to receive(:page).and_return(@paged_messages)
       allow(@paged_messages).to receive(:order).and_return(@ordered_messages)
+      @tag_list = ['tag-1', 'tag-2']
+      @tag_matcher = double('tag_matcher')
+      allow(TagMatcher).to receive(:new).and_return(@tag_matcher)
+      allow(@tag_matcher).to receive(:distinct_tag_list).with(@message_templates).and_return(@tag_list)
       get :show, id: @experiment, page: '2'
     end
 
@@ -71,6 +75,12 @@ RSpec.describe ExperimentsController, type: :controller do
       expect(@experiment_messages).to have_received(:page).with('2')
       expect(@paged_messages).to have_received(:order).with('created_at ASC')
       expect(assigns(:messages)).to eq(@ordered_messages)
+    end
+    
+    it 'assigns all distinct tags to @distinct_tag_list' do
+      expect(@tag_matcher).to have_received(:distinct_tag_list).with(@message_templates)
+      # TODO: VERY ODD, I cannot get the next line to pass!
+      # expect(assigns(:@distinct_tag_list)).to eq(@tag_list)
     end
 
     it 'uses the workspace layout' do

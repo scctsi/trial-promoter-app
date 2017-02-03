@@ -15,4 +15,14 @@ class TagMatcher
 
     matches
   end
+  
+  def distinct_tag_list(tagged_objects)
+    calculated_tag_list = []
+    
+    tagged_objects.each do |tagged_object|
+      calculated_tag_list.concat(tagged_object.tag_list)
+    end
+    
+    calculated_tag_list.uniq!
+  end
 end
