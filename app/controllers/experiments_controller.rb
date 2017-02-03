@@ -54,7 +54,7 @@ class ExperimentsController < ApplicationController
       GenerateMessagesJob.perform_later(@experiment)
       format.html { redirect_to experiment_url(@experiment) }
       format.json { render json: { success: true } }
-    end 
+    end
   end
 
   def create_analytics_file_todos
@@ -77,6 +77,6 @@ class ExperimentsController < ApplicationController
 
   def experiment_params
     # TODO: Unit test this
-    params.require(:experiment).permit(:name, :start_date, :end_date, :message_distribution_start_date, {:social_media_profile_ids => []}, message_generation_parameter_set_attributes: [:social_network_distribution, :medium_distribution, :image_present_distribution, :period_in_days, :number_of_messages_per_social_network, social_network_choices: [], medium_choices: [], image_present_choices: []])
+    params.require(:experiment).permit(:name, :end_date, :message_distribution_start_date, {:social_media_profile_ids => []}, message_generation_parameter_set_attributes: [:social_network_distribution, :medium_distribution, :image_present_distribution, :period_in_days, :number_of_messages_per_social_network, social_network_choices: [], medium_choices: [], image_present_choices: []])
   end
 end

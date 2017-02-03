@@ -124,7 +124,7 @@ RSpec.describe ExperimentsController, type: :controller do
       allow(@experiment).to receive(:create_messages)
       allow(GenerateMessagesJob).to receive(:perform_later)
     end
-  
+
     context 'HTML format' do
       before do
         get :create_messages, id: @experiment, format: 'html'
@@ -133,36 +133,36 @@ RSpec.describe ExperimentsController, type: :controller do
       it 'enqueues a job to generate the messages' do
         expect(GenerateMessagesJob).to have_received(:perform_later).with(an_instance_of(Experiment))
       end
-  
+
       it 'redirects unauthenticated user to sign-in page' do
         sign_out(:user)
-  
+
         get :create_messages, id: @experiment
-  
+
         expect(response).to redirect_to :new_user_session
       end
     end
-    
+
     context 'JSON format' do
       before do
         get :create_messages, id: @experiment, format: 'json'
       end
-      
+
       it 'enqueues a job to generate the messages' do
         expect(GenerateMessagesJob).to have_received(:perform_later).with(an_instance_of(Experiment))
       end
-  
+
       it 'returns success' do
         expected_json = { :success => true }.to_json
 
-        expect(response.body).to eq(expected_json)      
+        expect(response.body).to eq(expected_json)
       end
-  
+
       it 'redirects unauthenticated user to sign-in page' do
         sign_out(:user)
-  
+
         get :create_messages, id: @experiment
-  
+
         expect(response).to redirect_to :new_user_session
       end
     end
@@ -292,7 +292,7 @@ RSpec.describe ExperimentsController, type: :controller do
       @experiment = create(:experiment)
       @experiment.message_generation_parameter_set = create(:message_generation_parameter_set, message_generating: @experiment)
       @social_media_profiles = create_list(:social_media_profile, 3)
-      patch :update, id: @experiment, experiment: attributes_for(:experiment, name: 'New name', start_date: Time.local(2000, 1, 1, 9, 0, 0), end_date: Time.local(2000, 2, 1, 9, 0, 0), message_distribution_start_date: Time.local(2000, 3, 1, 9, 0, 0),
+      patch :update, id: @experiment, experiment: attributes_for(:experiment, name: 'New name', end_date: Time.local(2000, 2, 1, 9, 0, 0), message_distribution_start_date: Time.local(2000, 3, 1, 9, 0, 0),
                                       social_media_profile_ids: [@social_media_profiles[0].id, @social_media_profiles[2].id],
                                       message_generation_parameter_set_attributes: {social_network_distribution: :random, medium_distribution: :random, image_present_distribution: :random, period_in_days: 10, number_of_messages_per_social_network: 5, social_network_choices: ['facebook', 'instagram', ''], medium_choices: ['ad', 'organic'], image_present_choices: ['with', 'without']})
     end
@@ -305,7 +305,7 @@ RSpec.describe ExperimentsController, type: :controller do
       it "changes the experiment's attributes" do
         @experiment.reload
         expect(@experiment.name).to eq('New name')
-        expect(@experiment.start_date).to eq(Time.local(2000, 1, 1, 9, 0, 0))
+        expect(@experiment.message_distribution_start_date).to eq(Time.local(2000, 3, 1, 9, 0, 0))
         expect(@experiment.end_date).to eq(Time.local(2000, 2, 1, 9, 0, 0))
         expect(@experiment.message_distribution_start_date).to eq(Time.local(2000, 3, 1, 9, 0, 0))
       end
