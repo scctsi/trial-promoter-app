@@ -229,7 +229,7 @@ $(document).ready(function() {
       changeExperimentDetails();
     });
   }
-
+  
   function setUpPusherChannels() {
     var pusher = new Pusher('645d88fef1ee61febc2d'); // uses your APP KEY
     var channel = pusher.subscribe('progress');
