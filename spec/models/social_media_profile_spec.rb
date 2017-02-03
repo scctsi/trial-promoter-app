@@ -35,7 +35,15 @@ RSpec.describe SocialMediaProfile, type: :model do
 
     expect(social_media_profile.description).to match('USCTrials')
     expect(social_media_profile.description).to match('Twitter')
-    expect(social_media_profile.description).to match('[Ad, Organic]')
+    expect(social_media_profile.description).to match('Ad, Organic')
+    expect(social_media_profile.description).to match('.twitter.icon')
+  end
+
+  it 'returns the description of the profile when the allowed mediums are nil' do
+    social_media_profile = create(:social_media_profile, service_username: 'USCTrials', platform: 'twitter', allowed_mediums: nil)
+
+    expect(social_media_profile.description).to match('USCTrials')
+    expect(social_media_profile.description).to match('Twitter')
     expect(social_media_profile.description).to match('.twitter.icon')
   end
 
