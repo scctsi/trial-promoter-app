@@ -10,5 +10,6 @@
       %tr
         %td= message_template.content
         %td= message_template.platform
-        %td= message_template.tag_list
+        %td 
+          = render partial: 'shared/tag_list', locals: { tags: message_template.tag_list }
         %td= message_template.hashtags
