@@ -9,4 +9,6 @@
       %tr
         %td= website.name
         %td= website.url
-        %td= website.tag_list
+        %td
+          = render partial: 'shared/tag_list', locals: { tags: website.tag_list }
+
