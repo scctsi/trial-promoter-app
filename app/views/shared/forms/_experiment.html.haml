@@ -7,18 +7,37 @@
         .ul.list
           - @experiment.errors.full_messages.each do |message|
             %li= message
+    .ui.header
+      Details
+    %ul.list.experiment-details-real-time
     = f.input :name, label: 'Name your experiment', hint: 'Give your experiment a good name'
     = f.input :message_distribution_start_date, as: :string, label: 'Start date'
     = f.input :end_date, as: :string
-    = f.association :social_media_profiles, as: :check_boxes, label_method: :description, value_method: :id, wrapper_class: 'grouped fields', item_wrapper_class: 'ui field checkbox', label: 'What social media accounts(s) do you want to use?'
+    .ui.header
+      Specifications
     = f.simple_fields_for :message_generation_parameter_set do |m|
       = m.input :social_network_choices, as: :check_boxes, wrapper_class: 'inline fields', item_wrapper_class: 'ui field checkbox', collection: { 'Facebook' => :facebook, 'Instagram' => :instagram, 'Twitter' => :twitter }, label: 'Which social media social media type(s) do you want to use?'
       = m.input :medium_choices, as: :check_boxes, wrapper_class: 'inline fields', item_wrapper_class: 'ui field checkbox', collection: { 'Ad' => :ad, 'Organic/Unpaid' => :organic }, label: 'What type(s) of message do you want to use?'
       = m.input :image_present_choices, as: :check_boxes, wrapper_class: 'inline fields', item_wrapper_class: 'ui field checkbox', collection: { 'Yes' => :with, 'No' => :without }, label: 'Do you want to use images in the messages?'
-      =m.input :period_in_days
-      =m.input :number_of_messages_per_social_network
-    .ui.message
-      .header
-        Experiment details
-      %ul.list.experiment-details-real-time
+      =m.input :period_in_days, label: 'Length of experiment in days'
+      =m.input :number_of_messages_per_social_network, label: 'Number of messages per day per social network'
+    .ui.header
+      Social media profiles
+    .ui.message.social-media-profile-details
+      You must select at least one platform and medium above before you can select social media profiles to post to.
+    %ul.list.social-media-profile-details-real-time
+    = f.association :social_media_profiles, required: true, as: :check_boxes, label_method: :description, value_method: :id, wrapper_class: 'grouped fields', item_wrapper_class: 'ui field checkbox', label: 'What social media accounts(s) do you want to use?'
+    .ui.header
+      Schedule
+    %table.ui.celled.striped.table
+      %thead
+        %tr
+          %th
+          %th
+          %th
+      %tbody
+        %tr
+          %td some value
+          %td
+          %td
     = f.button :submit

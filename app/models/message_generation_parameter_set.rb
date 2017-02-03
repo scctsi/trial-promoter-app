@@ -27,6 +27,9 @@ class MessageGenerationParameterSet < ActiveRecord::Base
   validates :period_in_days, numericality: { only_integer: true, greater_than: 0 }
   validates :number_of_messages_per_social_network, presence: true
   validates :number_of_messages_per_social_network, numericality: { only_integer: true, greater_than: 0 }
+  validates :social_network_choices, presence: true
+  validates :medium_choices, presence: true
+  validates :image_present_choices, presence: true
   validates :message_generating, presence: true
 
   enumerize :social_network_distribution, in: [:equal, :random], default: :equal
