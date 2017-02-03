@@ -15,8 +15,8 @@ RSpec.describe SocialMediaProfilesController, type: :controller do
       expect(BufferClient).to have_received(:get_social_media_profiles)
     end
 
-    it 'redirects to the Settings index page' do
-      expect(response).to redirect_to admin_settings_url
+    it 'redirects to the social media profiles index page' do
+      expect(response).to redirect_to social_media_profiles_url
     end
 
     it 'redirects unauthenticated user to sign-in page' do
@@ -27,7 +27,7 @@ RSpec.describe SocialMediaProfilesController, type: :controller do
       expect(response).to redirect_to :new_user_session
     end
   end
-  
+
   describe 'GET #index' do
     let(:social_media_profiles) { build_pair(:social_media_profile) }
 
@@ -51,7 +51,7 @@ RSpec.describe SocialMediaProfilesController, type: :controller do
       expect(response).to redirect_to :new_user_session
     end
   end
-  
+
   describe 'GET #edit' do
     before do
       @social_media_profile = create(:social_media_profile)
