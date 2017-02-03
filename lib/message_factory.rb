@@ -9,9 +9,11 @@ class MessageFactory
   def create(message_generating_instance)
     message_generating_instance.reload
     message_generating_instance.messages.destroy_all
+    total_count = message_generating_instance.message_generation_parameter_set.expected_generated_message_count
 
     message_constructor = MessageConstructor.new
     message_templates = MessageTemplate.belonging_to(message_generating_instance)
+    generated_message_index = 1
 
     message_generating_instance.message_generation_parameter_set.social_network_choices.each do |social_network|
       message_templates_for_social_network = message_templates.select{ |message_template| message_template.platform == social_network }
@@ -22,6 +24,8 @@ class MessageFactory
             website = tag_matcher.match(Website, message_template.tag_list).sample
             message = message_constructor.construct(message_generating_instance, message_template, website, medium)
             message.save
+            Pusher['progress'].trigger('progress', {:value => generated_message_index, :total => total_count, :event => 'Message generated'})
+            generated_message_index += 1
           end
         end
       end

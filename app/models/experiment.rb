@@ -16,8 +16,8 @@ class Experiment < ActiveRecord::Base
   include ActiveModel::Validations
   validates_with ExperimentValidator
   validates :name, presence: true
-  validates :start_date, presence: true
   validates :end_date, presence: true
+  validates :message_distribution_start_date, presence: true
 
   # TODO: Small
   has_one :message_generation_parameter_set, as: :message_generating
@@ -44,7 +44,7 @@ class Experiment < ActiveRecord::Base
   end
 
   def each_day
-    day = start_date
+    day = message_distribution_start_date
 
     while day <= end_date
       yield(day)

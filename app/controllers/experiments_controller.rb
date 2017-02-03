@@ -16,10 +16,9 @@ class ExperimentsController < ApplicationController
     @message_templates = MessageTemplate.belonging_to(@experiment)
     @images = Image.belonging_to(@experiment)
     @websites = Website.belonging_to(@experiment)
-    # TODO: Unit test this
-    @selected_tab = params[:selected_tab] || 'setup'
-    # @selected_tab = 'setup' if !@selected_tab
     @messages = Message.where(:message_generating_id => @experiment.id).page(params[:page]).order('created_at ASC')
+    tag_matcher = TagMatcher.new
+    @distinct_tag_list = tag_matcher.distinct_tag_list(@message_templates) 
   end
 
   def new
@@ -53,8 +52,11 @@ class ExperimentsController < ApplicationController
   end
 
   def create_messages
-    @experiment.create_messages
-    redirect_to experiment_url(@experiment)
+    respond_to do |format|
+      GenerateMessagesJob.perform_later(@experiment)
+      format.html { redirect_to experiment_url(@experiment) }
+      format.json { render json: { success: true } }
+    end
   end
 
   def create_analytics_file_todos
@@ -77,6 +79,6 @@ class ExperimentsController < ApplicationController
 
   def experiment_params
     # TODO: Unit test this
-    params.require(:experiment).permit(:name, :start_date, :end_date, :message_distribution_start_date, {:social_media_profile_ids => []}, message_generation_parameter_set_attributes: [:social_network_distribution, :medium_distribution, :image_present_distribution, :period_in_days, :number_of_messages_per_social_network, social_network_choices: [], medium_choices: [], image_present_choices: []])
+    params.require(:experiment).permit(:name, :end_date, :message_distribution_start_date, {:social_media_profile_ids => []}, message_generation_parameter_set_attributes: [:social_network_distribution, :medium_distribution, :image_present_distribution, :period_in_days, :number_of_messages_per_social_network, social_network_choices: [], medium_choices: [], image_present_choices: []])
   end
 end

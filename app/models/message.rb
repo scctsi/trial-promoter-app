@@ -6,7 +6,6 @@
 #  message_template_id         :integer
 #  content                     :text
 #  tracking_url                :string(2000)
-#  buffer_profile_ids          :text
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
 #  website_id                  :integer
@@ -21,6 +20,7 @@
 #  buffer_publish_date         :datetime
 #  social_network_publish_date :datetime
 #  social_network_id           :string
+#  social_media_profile_id     :integer
 #
 
 class Message < ActiveRecord::Base
@@ -31,8 +31,6 @@ class Message < ActiveRecord::Base
   enumerize :publish_status, in: [:pending, :published_to_buffer, :published_to_social_network], default: :pending, predicates: true
   enumerize :medium, in: [:ad, :organic], default: :organic
   enumerize :image_present, in: [:with, :without], default: :without
-
-  serialize :buffer_profile_ids
 
   validates :message_generating, presence: true
   belongs_to :message_generating, polymorphic: true

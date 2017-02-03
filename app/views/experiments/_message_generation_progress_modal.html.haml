@@ -1,0 +1,12 @@
+#message-generation-progress.ui.modal
+  .header
+    Generating messages
+  .content
+    .ui.indicating.progress{ 'data-value' => '1', 'data-total' => "#{total}" }
+      .bar
+      .label 
+        Click 'Generate messages' to (re)create messages.
+  .actions
+    .ui.positive.right.labeled.icon.approve.button
+      %i.arrow.right.icon
+      Return to your experiment

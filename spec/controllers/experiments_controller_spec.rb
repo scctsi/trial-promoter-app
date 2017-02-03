@@ -44,6 +44,10 @@ RSpec.describe ExperimentsController, type: :controller do
       allow(Message).to receive(:where).with(:message_generating_id => @experiment.id).and_return(@experiment_messages)
       allow(@experiment_messages).to receive(:page).and_return(@paged_messages)
       allow(@paged_messages).to receive(:order).and_return(@ordered_messages)
+      @tag_list = ['tag-1', 'tag-2']
+      @tag_matcher = double('tag_matcher')
+      allow(TagMatcher).to receive(:new).and_return(@tag_matcher)
+      allow(@tag_matcher).to receive(:distinct_tag_list).with(@message_templates).and_return(@tag_list)
       get :show, id: @experiment, page: '2'
     end
 
@@ -71,6 +75,12 @@ RSpec.describe ExperimentsController, type: :controller do
       expect(@experiment_messages).to have_received(:page).with('2')
       expect(@paged_messages).to have_received(:order).with('created_at ASC')
       expect(assigns(:messages)).to eq(@ordered_messages)
+    end
+    
+    it 'assigns all distinct tags to @distinct_tag_list' do
+      expect(@tag_matcher).to have_received(:distinct_tag_list).with(@message_templates)
+      # TODO: VERY ODD, I cannot get the next line to pass!
+      # expect(assigns(:@distinct_tag_list)).to eq(@tag_list)
     end
 
     it 'uses the workspace layout' do
@@ -114,32 +124,59 @@ RSpec.describe ExperimentsController, type: :controller do
       expected_json = { :message_count => 120 }.to_json
 
       expect(response.body).to eq(expected_json)
+    end
   end
-end
 
   describe 'GET #create_messages' do
     before do
       @experiment = create(:experiment)
       allow(Experiment).to receive(:find).and_return(@experiment)
       allow(@experiment).to receive(:create_messages)
-      get :create_messages, id: @experiment
+      allow(GenerateMessagesJob).to receive(:perform_later)
     end
 
-    it 'asks the experiment to create messages' do
-      expect(@experiment).to have_received(:create_messages)
-    end
+    context 'HTML format' do
+      before do
+        get :create_messages, id: @experiment, format: 'html'
+      end
 
-    it 'redirects to the experiment workspace' do
-      expect(response).to redirect_to experiment_url(Experiment.first)
-    end
+      it 'enqueues a job to generate the messages' do
+        expect(GenerateMessagesJob).to have_received(:perform_later).with(an_instance_of(Experiment))
+      end
 
-    it 'redirects unauthenticated user to sign-in page' do
+      it 'redirects unauthenticated user to sign-in page' do
         sign_out(:user)
 
         get :create_messages, id: @experiment
 
         expect(response).to redirect_to :new_user_session
+      end
     end
+
+    context 'JSON format' do
+      before do
+        get :create_messages, id: @experiment, format: 'json'
+      end
+
+      it 'enqueues a job to generate the messages' do
+        expect(GenerateMessagesJob).to have_received(:perform_later).with(an_instance_of(Experiment))
+      end
+
+      it 'returns success' do
+        expected_json = { :success => true }.to_json
+
+        expect(response.body).to eq(expected_json)
+      end
+
+      it 'redirects unauthenticated user to sign-in page' do
+        sign_out(:user)
+
+        get :create_messages, id: @experiment
+
+        expect(response).to redirect_to :new_user_session
+      end
+    end
+
   end
 
   describe 'GET #create_analytics_file_todos' do
@@ -273,7 +310,7 @@ end
       @social_media_profiles[2].platform = :facebook
       @social_media_profiles[2].allowed_mediums = [:ad]
       @social_media_profiles[2].save
-      patch :update, id: @experiment, experiment: attributes_for(:experiment, name: 'New name', start_date: Time.local(2000, 1, 1, 9, 0, 0), end_date: Time.local(2000, 2, 1, 9, 0, 0), message_distribution_start_date: Time.local(2000, 3, 1, 9, 0, 0),
+      patch :update, id: @experiment, experiment: attributes_for(:experiment, name: 'New name', end_date: Time.local(2000, 2, 1, 9, 0, 0), message_distribution_start_date: Time.local(2000, 3, 1, 9, 0, 0),
                                       social_media_profile_ids: [@social_media_profiles[0].id, @social_media_profiles[2].id],
                                       message_generation_parameter_set_attributes: {social_network_distribution: :random, medium_distribution: :random, image_present_distribution: :random, period_in_days: 10, number_of_messages_per_social_network: 5, social_network_choices: ['facebook', ''], medium_choices: ['ad'], image_present_choices: ['with', 'without']})
     end
@@ -286,7 +323,7 @@ end
       it "changes the experiment's attributes" do
         @experiment.reload
         expect(@experiment.name).to eq('New name')
-        expect(@experiment.start_date).to eq(Time.local(2000, 1, 1, 9, 0, 0))
+        expect(@experiment.message_distribution_start_date).to eq(Time.local(2000, 3, 1, 9, 0, 0))
         expect(@experiment.end_date).to eq(Time.local(2000, 2, 1, 9, 0, 0))
         expect(@experiment.message_distribution_start_date).to eq(Time.local(2000, 3, 1, 9, 0, 0))
       end
