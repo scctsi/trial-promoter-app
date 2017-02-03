@@ -1,4 +1,7 @@
 %h2.header
   %i.line.at.icon
   Connected social media profiles
+  %a.ui.large.teal.labeled.icon.button.sync-with-buffer-button{:href => social_media_profiles_sync_with_buffer_path}
+    %i.refresh.icon
+    Sync with Buffer
 = render partial: 'shared/social_media_profiles', locals: {social_media_profiles: @social_media_profiles}
