@@ -213,7 +213,7 @@ $(document).ready(function() {
 
     $('.list.experiment-details-real-time').html(listHtml);
 
-    calculateMessageCount(socialNetworkChoices.length, mediumChoices.count, periodInDays, numberOfMessagesPerSocialNetwork);
+    calculateMessageCount(socialNetworkChoices.length, mediumChoices.length, periodInDays, numberOfMessagesPerSocialNetwork);
     showSocialMediaProfiles();
   }
 
@@ -234,7 +234,7 @@ $(document).ready(function() {
       }
     });
 
-    return {'socialNetworkChoices': socialNetworkChoices, 'mediumChoices': mediumChoices};
+    return {socialNetworkChoices: socialNetworkChoices, mediumChoices: mediumChoices};
   }
 
   function setUpExperimentRealTime() {
@@ -359,13 +359,15 @@ $(document).ready(function() {
 
   function showSocialMediaProfiles(){
     var socialMediaProfileFields = $('.experiment_social_media_profiles span.checkbox.ui');
-    var socialNetworkChoices = getRequiredPlatformsAndMediums().socialNetworkChoices;
-    var mediumChoices = getRequiredPlatformsAndMediums().mediumChoices;
+    var pickPlatformAndMediumMessage = $('.ui.message.social-media-profile-details');
+    var requiredPlatforms = getRequiredPlatformsAndMediums().socialNetworkChoices;
+    var requiredMediums = getRequiredPlatformsAndMediums().mediumChoices;
 
     socialMediaProfileFields.hide();
+    pickPlatformAndMediumMessage.hide();
 
-    if !((socialNetworkChoices.length > 0 ) & (mediumChoices.length > 0)) {
-      // ALICIA: Show default message
+    if ((requiredPlatforms.length == 0 ) || (requiredMediums.length == 0)) {
+      pickPlatformAndMediumMessage.show();
       return;
     }
 
