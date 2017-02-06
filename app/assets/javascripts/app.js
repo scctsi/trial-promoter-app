@@ -185,7 +185,7 @@ $(document).ready(function() {
     var mediumCount;
     var periodInDays = $("#experiment_message_generation_parameter_set_attributes_period_in_days").val();
     var numberOfMessagesPerSocialNetwork = $("#experiment_message_generation_parameter_set_attributes_number_of_messages_per_social_network").val();
-    var checkedValues = $.map($("input:checked"), function (elem) { return elem.value.capitalizeFirstLetter()  || ""; }).join( ", " );
+    var checkedValues = getCheckedValues();
     var socialNetworkChoices = getRequiredPlatformsAndMediums().socialNetworkChoices;
     var mediumChoices = getRequiredPlatformsAndMediums().mediumChoices;
 
@@ -217,8 +217,12 @@ $(document).ready(function() {
     showSocialMediaProfiles();
   }
 
+  function getCheckedValues() {
+    return $.map($("input:checked"), function (elem) { return elem.value.capitalizeFirstLetter()  || ""; }).join( ", " );
+  }
+
   function getRequiredPlatformsAndMediums() {
-    var checkedValues = $.map($("input:checked"), function (elem) { return elem.value.capitalizeFirstLetter()  || ""; }).join( ", " );
+    var checkedValues = getCheckedValues();
     var socialNetworkChoices = [];
     var mediumChoices = [];
 
