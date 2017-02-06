@@ -52,6 +52,12 @@ describe MessageGenerationParameterSet do
     expect(message_generation_parameter_set.valid?).to be false
   end
 
+  it 'validates that at least one social network choice is selected' do
+    message_generation_parameter_set = build(:message_generation_parameter_set, :social_network_choices => nil)
+
+    expect(message_generation_parameter_set.valid?).to be false
+  end
+
   it 'stores an array of social network choices' do
     message_generation_parameter_set = build(:message_generation_parameter_set)
     message_generation_parameter_set.social_network_choices = [:instagram, :twitter]
