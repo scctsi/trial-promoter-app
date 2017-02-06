@@ -359,21 +359,24 @@ $(document).ready(function() {
 
   function showSocialMediaProfiles(){
     var socialMediaProfileFields = $('.experiment_social_media_profiles span.checkbox.ui');
-    var pickPlatformAndMediumMessage = $('.ui.message.social-media-profile-details');
+    var pickPlatformAndMediumMessage = $('.social-media-profile-details');
+    var socialMediaAccountQuestionText = $('.experiment_social_media_profiles .check_boxes.required');
     var requiredPlatforms = getRequiredPlatformsAndMediums().socialNetworkChoices;
     var requiredMediums = getRequiredPlatformsAndMediums().mediumChoices;
 
     socialMediaProfileFields.hide();
     pickPlatformAndMediumMessage.hide();
 
-    if ((requiredPlatforms.length == 0 ) || (requiredMediums.length == 0)) {
+    if ((requiredPlatforms.length === 0 ) || (requiredMediums.length === 0)) {
       pickPlatformAndMediumMessage.show();
+      socialMediaAccountQuestionText.hide();
       return;
     }
 
     // Show suitable social media profiles choices
     socialMediaProfileFields.each(function(index, socialMediaProfileField) {
       requiredPlatforms.forEach(function(requiredPlatform) {
+      socialMediaAccountQuestionText.show();
         requiredMediums.forEach(function(requiredMedium) {
           var searchString = requiredPlatform + ' [' + requiredMedium + ']';
           if (socialMediaProfileField.textContent.includes(searchString)) {
@@ -385,7 +388,7 @@ $(document).ready(function() {
   }
 
   // Initialize
-  // showSocialMediaProfiles();
+  showSocialMediaProfiles();
   setUpExperimentRealTime();
   setUpPopupInfo();
   setUpDatePickers();
