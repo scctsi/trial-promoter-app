@@ -70,62 +70,7 @@ RSpec.describe Experiment, type: :model do
     end
     expect(number_of_days).to eq((experiment.end_date - experiment.message_distribution_start_date).to_i / (24 * 60 * 60) + 1)
   end
-
-  xit 'requires at least one social media profile to be selected' do
-    experiment = build(:experiment)
-    experiment.message_generation_parameter_set = build(:message_generation_parameter_set, message_generating: experiment, :social_network_choices => [:facebook],
-      :medium_choices => ['ad'])
-    experiment.social_media_profiles = []
-
-    experiment.save
-
-    expect(experiment).to_not be_valid
-    expect(experiment.errors[:social_media_profiles]).to include('requires at least one selected social media profile.')
-  end
-
-  xit 'requires that the required platform is in the selected social media profiles' do
-    experiment = build(:experiment)
-    experiment.message_generation_parameter_set = build(:message_generation_parameter_set, message_generating: experiment, :social_network_choices => [:facebook],
-    :medium_choices => ['ad'])
-    social_media_profile = build(:social_media_profile)
-    social_media_profile.platform = 'twitter'
-    social_media_profile.allowed_mediums = [:ad, :organic]
-    experiment.social_media_profiles = []
-    experiment.social_media_profiles << social_media_profile
-
-    experiment.save
-
-    expect(experiment).to_not be_valid
-    expect(experiment.errors[:social_media_profiles]).to include('requires social media platform(s) to match the selected social media profile.')
-  end
-
-  xit 'requires that the required medium is in the selected social media profiles' do
-    experiment = build(:experiment)
-    experiment.message_generation_parameter_set = build(:message_generation_parameter_set, message_generating: experiment, :social_network_choices => [:facebook],
-    :medium_choices => ['ad'])
-    social_media_profile = build(:social_media_profile, platform: 'facebook', allowed_mediums: [:organic])
-    experiment.social_media_profiles = []
-    experiment.social_media_profiles << social_media_profile
-
-    experiment.save
-
-    expect(experiment).to_not be_valid
-    expect(experiment.errors[:social_media_profiles]).to include('requires social media medium(s) to match the selected social media profile.')
-  end
-
-  xit "ignores the validation of selecting the medium 'organic' for Instagram" do
-    experiment = build(:experiment)
-    experiment.message_generation_parameter_set = build(:message_generation_parameter_set, message_generating: experiment, :social_network_choices => [:instagram],
-    :medium_choices => ['organic'])
-    social_media_profile = build(:social_media_profile)
-    social_media_profile.platform = 'instagram'
-    social_media_profile.allowed_mediums = [:ad]
-    experiment.social_media_profiles << social_media_profile
-
-    experiment.save
-    expect(experiment).to be_valid
-  end
-
+  
   describe 'creating a todo list for analytics uploads' do
     before do
       @social_media_profiles = create_list(:social_media_profile, 4)
