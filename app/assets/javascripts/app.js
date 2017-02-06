@@ -358,6 +358,7 @@ $(document).ready(function() {
   }
 
   function showSocialMediaProfiles(){
+    var socialMediaProfiles = $('.experiment_social_media_profiles');
     var socialMediaProfileFields = $('.experiment_social_media_profiles span.checkbox.ui');
     var pickPlatformAndMediumMessage = $('.social-media-profile-details');
     var socialMediaAccountQuestionText = $('.experiment_social_media_profiles .check_boxes.required');
@@ -374,13 +375,13 @@ $(document).ready(function() {
     }
 
     // Show suitable social media profiles choices
+    socialMediaAccountQuestionText.show();
     socialMediaProfileFields.each(function(index, socialMediaProfileField) {
       requiredPlatforms.forEach(function(requiredPlatform) {
-      socialMediaAccountQuestionText.show();
         requiredMediums.forEach(function(requiredMedium) {
           var searchString = requiredPlatform + ' [' + requiredMedium + ']';
           if (socialMediaProfileField.textContent.includes(searchString)) {
-            $(socialMediaProfileField).show();
+            $(socialMediaProfileField).transition('pulse');
           }
         });
       });
