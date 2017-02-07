@@ -185,14 +185,9 @@ $(document).ready(function() {
     var mediumCount;
     var periodInDays = $("#experiment_message_generation_parameter_set_attributes_period_in_days").val();
     var numberOfMessagesPerSocialNetwork = $("#experiment_message_generation_parameter_set_attributes_number_of_messages_per_social_network").val();
-    var checkedValues = $.map($("input:checked"), function (elem) { return elem.value.capitalizeFirstLetter()  || ""; }).join( ", " );
-    var socialNetworkChoices = [];
-
-    ['Facebook', 'Instagram', 'Twitter'].forEach(function(socialNetwork) {
-      if (checkedValues.includes(socialNetwork)) {
-        socialNetworkChoices.push(socialNetwork);
-      }
-    });
+    var checkedValues = getCheckedValues();
+    var socialNetworkChoices = getRequiredPlatformsAndMediums().socialNetworkChoices;
+    var mediumChoices = getRequiredPlatformsAndMediums().mediumChoices;
 
     if (socialNetworkChoices.length === 1) {
       listHtml += '<li>All messages will be generated for distribution on ' + socialNetworkChoices[0];
@@ -200,15 +195,12 @@ $(document).ready(function() {
       listHtml += '<li>Equal number of messages will be generated per platform: ' + socialNetworkChoices.join(", ");
     }
 
-    if ((checkedValues).includes('Ad, Organic')) {
-      mediumCount = 2;
+    if ((mediumChoices).includes('Ad, Organic')) {
       listHtml += '<li>Half of the generated messages for each platform will be organic (unpaid) and half will be ads (paid).'
-    } else if ((checkedValues).includes('Ad')) {
+    } else if ((mediumChoices).includes('Ad')) {
       listHtml += '<li>All messages will be ads (paid).'
-      mediumCount = 1;
-    } else if ((checkedValues).includes('Organic')) {
+    } else if ((mediumChoices).includes('Organic')) {
       listHtml += '<li>All messages will be organic (unpaid).'
-      mediumCount = 1;
     }
 
     if ((checkedValues).includes('Without')) {
@@ -221,7 +213,32 @@ $(document).ready(function() {
 
     $('.list.experiment-details-real-time').html(listHtml);
 
-    calculateMessageCount(socialNetworkChoices.length, mediumCount, periodInDays, numberOfMessagesPerSocialNetwork);
+    calculateMessageCount(socialNetworkChoices.length, mediumChoices.length, periodInDays, numberOfMessagesPerSocialNetwork);
+    showSocialMediaProfiles();
+  }
+
+  function getCheckedValues() {
+    return $.map($("input:checked"), function (elem) { return elem.value.capitalizeFirstLetter()  || ""; }).join( ", " );
+  }
+
+  function getRequiredPlatformsAndMediums() {
+    var checkedValues = getCheckedValues();
+    var socialNetworkChoices = [];
+    var mediumChoices = [];
+
+    ['Facebook', 'Instagram', 'Twitter'].forEach(function(socialNetwork) {
+      if (checkedValues.includes(socialNetwork)) {
+        socialNetworkChoices.push(socialNetwork);
+      }
+    });
+
+    ['Ad', 'Organic'].forEach(function(medium) {
+      if (checkedValues.includes(medium)) {
+        mediumChoices.push(medium);
+      }
+    });
+
+    return {socialNetworkChoices: socialNetworkChoices, mediumChoices: mediumChoices};
   }
 
   function setUpExperimentRealTime() {
@@ -229,7 +246,7 @@ $(document).ready(function() {
       changeExperimentDetails();
     });
   }
-  
+
   function setUpPusherChannels() {
     var pusher = new Pusher('645d88fef1ee61febc2d'); // uses your APP KEY
     var channel = pusher.subscribe('progress');
@@ -242,15 +259,15 @@ $(document).ready(function() {
       if(data.value === data.total) {
         $('.ui.progress').progress('set success');
         $('.ui.modal .approve.button').show();
-      }      
+      }
     });
   }
-  
+
   function setUpAsyncMessageGeneration() {
-    $('#generate-messages-button').click(function() { 
+    $('#generate-messages-button').click(function() {
       var experimentId = $(this).data('experiment-id');
       var total = $('.ui.modal').data('total');
-      
+
       $('.ui.modal').modal('setting', 'transition', 'Vertical Flip').modal({ blurring: true }).modal('show');
       $('.ui.modal .approve.button').hide();
 
@@ -273,7 +290,7 @@ $(document).ready(function() {
         success: function(data) {
         }
       });
-      
+
       return false;
     });
   }
@@ -282,10 +299,10 @@ $(document).ready(function() {
     var $imageSelectors = $('.image-selector');
     var allowedTags = $('#image-tags').data('allowed-tags');
     console.log(allowedTags);
-    
+
     // Selectize requires options to be of the form [{'value': 'val', 'item', 'val'}]
     allowedTags = allowedTags.map(function(x) { return { item: x } });
-    
+
     // Set up tag editor
     $('#image-tags').selectize({
       delimiter: ',',
@@ -344,7 +361,39 @@ $(document).ready(function() {
     });
   }
 
+  function showSocialMediaProfiles(){
+    var socialMediaProfiles = $('.experiment_social_media_profiles');
+    var socialMediaProfileFields = $('.experiment_social_media_profiles span.checkbox.ui');
+    var pickPlatformAndMediumMessage = $('.social-media-profile-details');
+    var socialMediaAccountQuestionText = $('.experiment_social_media_profiles .check_boxes.required');
+    var requiredPlatforms = getRequiredPlatformsAndMediums().socialNetworkChoices;
+    var requiredMediums = getRequiredPlatformsAndMediums().mediumChoices;
+
+    socialMediaProfileFields.hide();
+    pickPlatformAndMediumMessage.hide();
+
+    if ((requiredPlatforms.length === 0 ) || (requiredMediums.length === 0)) {
+      pickPlatformAndMediumMessage.show();
+      socialMediaAccountQuestionText.hide();
+      return;
+    }
+
+    // Show suitable social media profiles choices
+    socialMediaAccountQuestionText.show();
+    socialMediaProfileFields.each(function(index, socialMediaProfileField) {
+      requiredPlatforms.forEach(function(requiredPlatform) {
+        requiredMediums.forEach(function(requiredMedium) {
+          var searchString = requiredPlatform + ' [' + requiredMedium + ']';
+          if (socialMediaProfileField.textContent.includes(searchString)) {
+            $(socialMediaProfileField).transition('pulse');
+          }
+        });
+      });
+    });
+  }
+
   // Initialize
+  showSocialMediaProfiles();
   setUpExperimentRealTime();
   setUpPopupInfo();
   setUpDatePickers();
@@ -356,7 +405,7 @@ $(document).ready(function() {
   setUpAnalyticsFileImports();
   setUpPusherChannels();
   setUpAsyncMessageGeneration();
-  setUpImageTagging();
+  // setUpImageTagging();
 
   // Set up Semantic UI
   $('.menu .item').tab({
