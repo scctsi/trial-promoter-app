@@ -21,7 +21,7 @@ class DataDictionaryEntry < ActiveRecord::Base
 
   validates :trial_promoter_label, presence: true
   validates :source, presence: true
-  enumerize :source, in: [:buffer, :twitter, :facebook, :instagram, :google_analytics]
+  enumerize :source, in: [:buffer, :twitter, :facebook, :instagram, :google_analytics, :trial_promoter]
   
   belongs_to :data_dictionary
   validates :data_dictionary, presence: true
