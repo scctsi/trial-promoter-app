@@ -13,12 +13,4 @@ RSpec.describe DataDictionary do
     expect(data_elements[:facebook]).to eq(['impressions, shares, comments, likes'])
     expect(data_elements[:instagram]).to eq(['impressions, reposts, comments, likes'])
   end
-  
-  # it 'can create a blank dictionary for an experiment' do
-  #   experiment = create(:experiment)
-    
-  #   DataDictionary.create_blank_dictionary(experiment)
-    
-    
-  # end
 end
