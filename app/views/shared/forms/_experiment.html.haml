@@ -26,7 +26,7 @@
     .ui.message.social-media-profile-details
       You must select at least one platform and medium above before you can select social media profiles to post to.
     %ul.list.social-media-profile-details-real-time
-    = f.association :social_media_profiles, required: true, as: :check_boxes, label_method: :description, value_method: :id, wrapper_class: 'grouped fields', item_wrapper_class: 'ui field checkbox', label: 'What social media account(s) do you want to use?'
+    = f.association :social_media_profiles, required: true, as: :check_boxes, label_method: :description, value_method: :id, wrapper_class: 'grouped fields', item_wrapper_class: 'ui field checkbox', label: 'What social media profile(s) do you want to use?'
     .ui.header
       Schedule
     %table.ui.celled.striped.table
