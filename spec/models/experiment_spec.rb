@@ -8,7 +8,13 @@
 #  message_distribution_start_date :datetime
 #  created_at                      :datetime         not null
 #  updated_at                      :datetime         not null
+#  analytics_file_todos_created    :boolean
+#  posting_times                   :text
 #
+
+
+
+
 
 require 'rails_helper'
 
@@ -27,6 +33,27 @@ RSpec.describe Experiment, type: :model do
   it { is_expected.to have_many(:messages) }
   it { is_expected.to have_many(:analytics_files) }
   it { is_expected.to have_and_belong_to_many :social_media_profiles }
+
+  it 'stores posting times as an array' do
+    posting_times = [Time.now, Time.now, Time.now]
+    experiment = build(:experiment)
+    experiment.posting_times = posting_times
+
+    experiment.save
+    experiment.reload
+
+    expect(experiment.posting_times).to eq(posting_times)
+  end
+
+  it 'has one posting time per message per day' do
+    experiment = build(:experiment, message_distribution_start_date: Time.new(2017, 01, 01, 0, 0, 0, "+00:00"), end_date: Time.new(2017, 01, 04, 0, 0, 0, "+00:00"))
+    posting_times = [Time.new(2017, 01, 01, 0, 0, 0, "+00:00")]
+    experiment.posting_times = posting_times
+
+    experiment.save
+
+    expect(experiment).not_to be_valid
+  end
 
   it 'disables message generation when distribution start date is less than 24 hours from current time' do
     experiment = create(:experiment, message_distribution_start_date: Time.new(2017, 01, 01, 23, 59, 0,  "+00:00") )
@@ -70,7 +97,7 @@ RSpec.describe Experiment, type: :model do
     end
     expect(number_of_days).to eq((experiment.end_date - experiment.message_distribution_start_date).to_i / (24 * 60 * 60) + 1)
   end
-  
+
   describe 'creating a todo list for analytics uploads' do
     before do
       @social_media_profiles = create_list(:social_media_profile, 4)

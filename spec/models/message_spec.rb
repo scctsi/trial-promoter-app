@@ -23,6 +23,7 @@
 #  social_media_profile_id     :integer
 #
 
+
 require 'rails_helper'
 
 describe Message do
