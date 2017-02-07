@@ -1,15 +1,14 @@
-
 # == Schema Information
 #
 # Table name: experiments
 #
 #  id                              :integer          not null, primary key
 #  name                            :string(1000)
-#  start_date                      :datetime
 #  end_date                        :datetime
 #  message_distribution_start_date :datetime
 #  created_at                      :datetime         not null
 #  updated_at                      :datetime         not null
+#  analytics_file_todos_created    :boolean
 #
 
 class Experiment < ActiveRecord::Base

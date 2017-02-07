@@ -1,3 +1,13 @@
+# == Schema Information
+#
+# Table name: data_dictionaries
+#
+#  id            :integer          not null, primary key
+#  experiment_id :integer
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#
+
 require 'rails_helper'
 
 RSpec.describe DataDictionary do
@@ -8,9 +18,10 @@ RSpec.describe DataDictionary do
   it 'has a pre-defined hash of data elements (key is the source, value is an array of trial promoter labels)' do
     data_elements = DataDictionary::DATA_ELEMENTS
     
-    expect(data_elements[:trial_promoter]).to eq(['ordinal_day, date_set, day_of_week_sent, time_sent, platform, medium, image_used, tags, link_clicks, click_time'])
-    expect(data_elements[:twitter]).to eq(['impressions, retweets, replies, likes'])
-    expect(data_elements[:facebook]).to eq(['impressions, shares, comments, likes'])
-    expect(data_elements[:instagram]).to eq(['impressions, reposts, comments, likes'])
+    expect(data_elements[:facebook]).to eq(['impressions', 'shares', 'comments', 'likes'].sort)
+    expect(data_elements[:google_analytics]).to eq(['sessions', 'users', 'exits', 'shares', 'comments', 'likes'].sort)
+    expect(data_elements[:instagram]).to eq(['impressions', 'reposts', 'comments', 'likes'].sort)
+    expect(data_elements[:trial_promoter]).to eq(['ordinal_day', 'date_set', 'day_of_week_sent', 'time_sent', 'platform, medium', 'image_used', 'tags', 'link_clicks', 'click_time'].sort)
+    expect(data_elements[:twitter]).to eq(['impressions', 'retweets', 'replies', 'likes'].sort)
   end
 end
