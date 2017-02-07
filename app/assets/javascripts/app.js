@@ -418,7 +418,7 @@ $(document).ready(function() {
   });
   $('.table').tablesort();
 
-  //lazyload for images
+  // Lazyload for images
   $("img").lazyload({
     threshold : 500,
     effect : "fadeIn"
