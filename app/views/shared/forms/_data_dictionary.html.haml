@@ -1,0 +1,5 @@
+.ui
+  = simple_form_for @data_dictionary do |f|
+    = f.simple_fields_for :data_dictionary_entries do |dde|
+      = dde.input :trial_promoter_label
+    = f.button :submit

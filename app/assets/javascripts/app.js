@@ -242,7 +242,7 @@ $(document).ready(function() {
   }
 
   function setUpExperimentRealTime() {
-    $('.ui.new_experiment_form').change(function(e){
+    $('.ui.experiment_form').change(function(e){
       changeExperimentDetails();
     });
   }
