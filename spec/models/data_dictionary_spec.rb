@@ -18,6 +18,7 @@ RSpec.describe DataDictionary do
   it { is_expected.to have_many :data_dictionary_entries }
   it { is_expected.to belong_to :experiment }
   it { is_expected.to validate_presence_of :experiment }
+  it { is_expected.to accept_nested_attributes_for(:data_dictionary_entries) }
 
   it 'has a pre-defined hash of data elements (key is the source, value is an array of trial promoter labels)' do
     data_elements = DataDictionary::DATA_ELEMENTS

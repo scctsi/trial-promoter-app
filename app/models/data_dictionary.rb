@@ -13,6 +13,7 @@ class DataDictionary < ActiveRecord::Base
   validates :experiment, presence: true
   
   has_many :data_dictionary_entries
+  accepts_nested_attributes_for :data_dictionary_entries
 
   DATA_ELEMENTS = {
     :facebook => ['impressions', 'shares', 'comments', 'likes'].sort,
