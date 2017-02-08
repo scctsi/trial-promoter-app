@@ -2,6 +2,7 @@ class DataDictionariesController < ApplicationController
   before_action :set_data_dictionary, only: [:show]
   
   def show
+    DataDictionary.create_data_dictionary(@data_dictionary.experiment)
   end
 
   private

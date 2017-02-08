@@ -8,7 +8,13 @@ RSpec.describe DataDictionariesController, type: :controller do
   describe 'GET #show' do
     before do
       @data_dictionary = create(:data_dictionary)
+      allow(DataDictionary).to receive(:create_data_dictionary).with(@data_dictionary.experiment)
       get :show, id: @data_dictionary
+    end
+    
+    it 'creates a data dictionary for the experiment' do
+      # NOTE: create_data_dictionary can be run multiple times and will not delete an existing data dictionary for an experiment if one already exists.
+      expect(DataDictionary).to have_received(:create_data_dictionary).with(@data_dictionary.experiment)
     end
     
     it 'assigns the requested data dictionary to @data_dictionary' do
