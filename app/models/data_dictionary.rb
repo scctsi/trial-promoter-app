@@ -30,8 +30,8 @@ class DataDictionary < ActiveRecord::Base
   }
   
   def self.create_data_dictionary(experiment)
-    experiment.create_data_dictionary
-    
+    experiment.create_data_dictionary if experiment.data_dictionary.nil?
+
     DataDictionary::DATA_ELEMENTS.keys.each do |source|
       DataDictionary::DATA_ELEMENTS[source].each do |data_element_name|
         experiment.data_dictionary.data_dictionary_entries << DataDictionaryEntry.new(:trial_promoter_label => "#{source}_#{data_element_name}", :source => source)

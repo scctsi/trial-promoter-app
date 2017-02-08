@@ -69,4 +69,8 @@ Rails.application.routes.draw do
   # Social media profiles
   resources :social_media_profiles do
   end
+  
+  # Data dictionaries
+  resources :data_dictionaries do
+  end
 end

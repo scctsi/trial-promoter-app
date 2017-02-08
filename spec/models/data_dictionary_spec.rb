@@ -61,4 +61,14 @@ RSpec.describe DataDictionary do
       expect(entry_with_correct_label.allowed_values).to eq(DataDictionary::ALLOWED_VALUES[trial_promoter_label])
     end
   end
+  
+  it 'does not delete an existing data dictionary for an experiment' do
+    DataDictionary.create_data_dictionary(@experiment)
+    old_data_dictionary = @experiment.data_dictionary
+    DataDictionary.create_data_dictionary(@experiment)
+    new_data_dictionary = @experiment.data_dictionary
+    @experiment.reload
+    
+    expect(new_data_dictionary).to eq(old_data_dictionary)
+  end
 end
