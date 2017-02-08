@@ -264,6 +264,7 @@ RSpec.describe ExperimentsController, type: :controller do
       @social_media_profiles[0].platform = :facebook
       @social_media_profiles[0].allowed_mediums = [:ad]
       @social_media_profiles[0].save
+      allow(DataDictionary).to receive(:create_data_dictionary)
     end
 
     context 'with valid attributes' do
@@ -279,9 +280,16 @@ RSpec.describe ExperimentsController, type: :controller do
         }.to change(MessageGenerationParameterSet, :count).by(1)
         expect(MessageGenerationParameterSet.first.message_generating).not_to be_nil
       end
+      
+      it 'creates an empty data dictionary' do
+        post :create, experiment: attributes_for(:experiment, message_generation_parameter_set_attributes: attributes_for(:message_generation_parameter_set), social_media_profile_ids: [@social_media_profiles[0].id])
+
+        expect(DataDictionary).to have_received(:create_data_dictionary).with(Experiment.first)
+      end
 
       it 'redirects to the experiment workspace' do
         post :create, experiment: attributes_for(:experiment, message_generation_parameter_set_attributes: attributes_for(:message_generation_parameter_set), social_media_profile_ids: [@social_media_profiles[0].id])
+
         expect(response).to redirect_to experiment_url(Experiment.first)
       end
 

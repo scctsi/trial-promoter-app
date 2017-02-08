@@ -34,6 +34,7 @@ class ExperimentsController < ApplicationController
     @experiment.message_generation_parameter_set.message_generating = @experiment if (!@experiment.message_generation_parameter_set.nil?)
 
     if @experiment.save
+      DataDictionary.create_data_dictionary(@experiment)
       redirect_to experiment_url(@experiment)
     else
       render :new

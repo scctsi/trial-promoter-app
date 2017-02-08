@@ -12,15 +12,14 @@ RSpec.describe DataDictionariesController, type: :controller do
       get :show, id: @data_dictionary
     end
     
-    it 'creates a data dictionary for the experiment' do
-      # NOTE: create_data_dictionary can be run multiple times and will not delete an existing data dictionary for an experiment if one already exists.
-      expect(DataDictionary).to have_received(:create_data_dictionary).with(@data_dictionary.experiment)
-    end
-    
     it 'assigns the requested data dictionary to @data_dictionary' do
       expect(assigns(:data_dictionary)).to eq(@data_dictionary)
     end
-
+    
+    it 'uses the workspace layout' do
+      expect(response).to render_template :workspace
+    end
+    
     it 'redirects unauthenticated user to sign-in page' do
       sign_out(:user)
 

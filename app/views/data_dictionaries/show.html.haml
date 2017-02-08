@@ -1,0 +1,31 @@
+.ui.breadcrumb
+  %a{:href => root_path}
+    Home
+  %i.right.angle.icon.divider
+  .section
+    %a{:href => experiment_path(@data_dictionary.experiment)}
+      #{@data_dictionary.experiment.name} workspace
+  %i.right.angle.icon.divider
+  .active.section
+    Data dictionary
+.ui.divider
+%table.ui.celled.striped.table
+  %thead 
+    %tr
+      %th Include in report?
+      %th Trial Promoter label
+      %th Source
+      %th Report label
+      %th Allowed values
+      %th Value mapping
+      %th Note
+  %tbody
+    - @data_dictionary.data_dictionary_entries.each do |data_dictionary_entry|
+      %tr
+        %td= data_dictionary_entry.include_in_report
+        %td= data_dictionary_entry.trial_promoter_label
+        %td= data_dictionary_entry.source.to_s.titleize
+        %td= data_dictionary_entry.report_label
+        %td= data_dictionary_entry.allowed_values
+        %td= data_dictionary_entry.value_mapping
+        %td= data_dictionary_entry.note
