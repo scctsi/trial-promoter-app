@@ -218,10 +218,6 @@ RSpec.describe ExperimentsController, type: :controller do
       expect(assigns(:experiment)).to be_a_new(Experiment)
     end
 
-    it 'provides all the times in the day' do
-      expect((:experiment)).to include(Experiment.allowed_times)
-    end
-
     it 'builds an associated message generation parameter set' do
       expect(@experiment.message_generation_parameter_set).not_to be_nil
     end
@@ -322,9 +318,9 @@ RSpec.describe ExperimentsController, type: :controller do
       @social_media_profiles[2].platform = :facebook
       @social_media_profiles[2].allowed_mediums = [:organic]
       @social_media_profiles[2].save
-      patch :update, id: @experiment, experiment: attributes_for(:experiment, name: 'New name', end_date: Time.local(2000, 2, 1, 9, 0, 0), message_distribution_start_date: Time.local(2000, 3, 1, 9, 0, 0),
-                                      social_media_profile_ids: [@social_media_profiles[1].id, @social_media_profiles[2].id],
+      patch :update, id: @experiment, experiment: attributes_for(:experiment, name: 'New name', end_date: Time.local(2000, 2, 1, 9, 0, 0), message_distribution_start_date: Time.local(2000, 3, 1, 9, 0, 0), posting_times: [Time.new(2017, 01, 01, 0, 0, 0, "+00:00")], social_media_profile_ids: [@social_media_profiles[1].id, @social_media_profiles[2].id],
                                       message_generation_parameter_set_attributes: {period_in_days: 10, number_of_messages_per_social_network: 5, social_network_choices: ['facebook', 'twitter'], medium_choices: ['organic'], image_present_choices: ['with', 'without']})
+      p @experiment.errors
     end
 
     context 'with valid attributes' do
