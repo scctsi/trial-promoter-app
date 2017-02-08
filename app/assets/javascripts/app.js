@@ -361,6 +361,28 @@ $(document).ready(function() {
     });
   }
 
+  function setUpPostingTimeInputs() {
+    var allowedTimes = $('.ui.input#allowed-times').data('allowed-times');
+    console.log(allowedTimes);
+debugger
+    // Selectize requires options to be of the form [{'value': 'val', 'item', 'val'}]
+    allowedTimes = allowedTimes.map(function(x) { return { item: x } });
+
+    //Setup the posting times input
+    $('#posting-times').selectize({
+      plugins: ['restore_on_backspace', 'remove_button'],
+      delimiter: ',',
+      persist: false,
+      maxItems: null,
+      create: function(input) {
+        return {
+          value: input,
+          text: input
+        };
+      }
+    });
+  }
+
   function showSocialMediaProfiles(){
     var socialMediaProfiles = $('.experiment_social_media_profiles');
     var socialMediaProfileFields = $('.experiment_social_media_profiles span.checkbox.ui');
@@ -399,6 +421,7 @@ $(document).ready(function() {
   setUpDatePickers();
   setUpChosenDropdowns();
   setUpTagListInputs();
+  setUpPostingTimeInputs();
   setUpFilepicker();
   setUpMessageTemplateImports();
   setUpImageImports();
@@ -410,8 +433,8 @@ $(document).ready(function() {
   // Set up Semantic UI
   $('.menu .item').tab({
     history: true,
-    historyType: 'hash',
-    context: 'parent'
+    historyType: 'himeh',
+    conTimet: 'parent'
   });
   $('.table').tablesort();
 

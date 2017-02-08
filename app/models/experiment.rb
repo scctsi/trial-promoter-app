@@ -16,6 +16,7 @@
 
 
 class Experiment < ActiveRecord::Base
+  include ActionView::Helpers::DateHelper
   include ActiveModel::Validations
 
   serialize :posting_times
@@ -74,5 +75,20 @@ class Experiment < ActiveRecord::Base
 
     self.analytics_file_todos_created = true
     save
+  end
+
+  def self.allowed_times
+    allowed_times = []
+
+    (1..12).to_a.each do |hour|
+      (0..5).to_a.each do |tens_digit_minute|
+        (0..9).to_a.each do |ones_digit_minute|
+          allowed_times << "#{hour}:#{tens_digit_minute}#{ones_digit_minute} AM"
+          allowed_times << "#{hour}:#{tens_digit_minute}#{ones_digit_minute} PM"
+        end
+      end
+    end
+
+    allowed_times
   end
 end

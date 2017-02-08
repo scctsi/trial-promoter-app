@@ -9,7 +9,7 @@ class ExperimentValidator < ActiveModel::Validator
       return
     end
 
-    # Remove all social_media_profiles that have allowed_mediums set to nil. 
+    # Remove all social_media_profiles that have allowed_mediums set to nil.
     # 1) The experiment edit form will only show the user valid choices for social media profiles, so this might never actually be a problem.
     # 2) We might think about adding a validation for allowed_mediums in the future.
     record.social_media_profiles = record.social_media_profiles.to_a.reject{ |social_media_profile| social_media_profile.allowed_mediums.nil? }
@@ -33,9 +33,17 @@ class ExperimentValidator < ActiveModel::Validator
     missing_platform_medium_combinations = required_platform_medium_combinations - associated_platform_medium_combinations
     missing_platform_medium_combinations_string = missing_platform_medium_combinations.inject('') { |string, missing_platform_medium_combination| "#{missing_platform_medium_combination[0].to_s.titleize} [#{missing_platform_medium_combination[1].to_s.titleize}], #{string}" }
     missing_platform_medium_combinations_string = missing_platform_medium_combinations_string.chomp(', ')
-    
+
     if missing_platform_medium_combinations.count > 0
       record.errors[:social_media_profiles] << "requires at least one selection for #{missing_platform_medium_combinations_string}."
+      return
+    end
+
+    if record.posting_times.nil?
+      record.errors[:message_generation_parameter_set] << "requires that you select at least one posting time"
+      return
+    elsif record.posting_times.count != record.message_generation_parameter_set.number_of_messages_per_social_network
+      record.errors[:message_generation_parameter_set] << "requires that the number of selected posting times matches the number of messages per social network per day"
       return
     end
   end

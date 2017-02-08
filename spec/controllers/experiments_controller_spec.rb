@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe ExperimentsController, type: :controller do
   before do
     sign_in create(:administrator)
-    
+
     # Create a set of saved social media profiles for use in these tests
     @social_media_profiles = create_list(:social_media_profile, 3)
   end
@@ -79,7 +79,7 @@ RSpec.describe ExperimentsController, type: :controller do
       expect(@paged_messages).to have_received(:order).with('created_at ASC')
       expect(assigns(:messages)).to eq(@ordered_messages)
     end
-    
+
     it 'assigns all distinct tags to @distinct_tag_list' do
       expect(@tag_matcher).to have_received(:distinct_tag_list).with(@message_templates)
       # TODO: VERY ODD, I cannot get the next line to pass!
@@ -216,6 +216,10 @@ RSpec.describe ExperimentsController, type: :controller do
 
     it 'assigns a new experiment to @experiment' do
       expect(assigns(:experiment)).to be_a_new(Experiment)
+    end
+
+    it 'provides all the times in the day' do
+      expect((:experiment)).to include(Experiment.allowed_times)
     end
 
     it 'builds an associated message generation parameter set' do

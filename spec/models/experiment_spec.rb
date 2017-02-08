@@ -12,10 +12,6 @@
 #  posting_times                   :text
 #
 
-
-
-
-
 require 'rails_helper'
 
 RSpec.describe Experiment, type: :model do
@@ -45,14 +41,12 @@ RSpec.describe Experiment, type: :model do
     expect(experiment.posting_times).to eq(posting_times)
   end
 
-  it 'has one posting time per message per day' do
-    experiment = build(:experiment, message_distribution_start_date: Time.new(2017, 01, 01, 0, 0, 0, "+00:00"), end_date: Time.new(2017, 01, 04, 0, 0, 0, "+00:00"))
-    posting_times = [Time.new(2017, 01, 01, 0, 0, 0, "+00:00")]
-    experiment.posting_times = posting_times
+  it 'returns an array of all possible times in a day' do
+    expect(Experiment.allowed_times.count).to be(12 * 60 * 2)
+  end
 
-    experiment.save
-
-    expect(experiment).not_to be_valid
+  it 'includes various times of the day' do
+    expect(Experiment.allowed_times).to include('12:30 AM', '3:04 AM', '1:30 PM')
   end
 
   it 'disables message generation when distribution start date is less than 24 hours from current time' do
