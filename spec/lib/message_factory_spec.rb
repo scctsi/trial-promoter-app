@@ -38,7 +38,7 @@ RSpec.describe MessageFactory do
     expect(@message_factory.social_media_profile_picker).to eq(@social_media_profile_picker)
   end
   
-  it 'creates a set of messages for one website, five message templates, 1 social network (equal distribution), 1 medium (equal distribution), with images (equal distribution), for 10 days and 3 messages per network per day' do
+  it 'creates a set of messages for one website, five message templates, 1 social network (equal distribution), 1 medium (equal distribution), with images (equal distribution), for 10 days and 1 message per network per day' do
     message_generation_parameter_set = MessageGenerationParameterSet.new do |m|
       m.social_network_choices = [:facebook]
       m.social_network_distribution = :equal
@@ -47,17 +47,25 @@ RSpec.describe MessageFactory do
       m.image_present_choices = ['with']
       m.image_present_distribution = :equal
       m.period_in_days = 10
-      m.number_of_messages_per_social_network = 3
+      m.number_of_messages_per_social_network = 1
     end
     @experiment.message_generation_parameter_set = message_generation_parameter_set
 
     @message_factory.create(@experiment)
     
-    messages = Message.all
+    messages = Message.all.order('created_at ASC')
     expect(messages.count).to eq(message_generation_parameter_set.expected_generated_message_count)
     expect((messages.select { |message| message.message_template.platform != :facebook }).count).to eq(0)
     # Have the pusher events been triggered?
     expect(@pusher_channel).to have_received(:trigger).exactly(message_generation_parameter_set.expected_generated_message_count).times.with('progress', {:value => an_instance_of(Fixnum), :total => message_generation_parameter_set.expected_generated_message_count, :event => 'Message generated'})
+    
+    # Has social_network_publish_date been set correctly?
+    publish_date = @experiment.message_distribution_start_date
+    
+    messages.all.each do |message|
+      expect(message.social_network_publish_date).to eq(publish_date)
+      publish_date += 1.day
+    end
   end
 
   it 'creates a set of messages for one website, five message templates, 3 social networks (equal distribution), 2 mediums (equal distribution), with and without images (equal distribution), for 3 days and 3 messages per network per day' do

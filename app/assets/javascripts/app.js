@@ -301,6 +301,9 @@ $(document).ready(function() {
     console.log(allowedTags);
 
     // Selectize requires options to be of the form [{'value': 'val', 'item', 'val'}]
+    if (typeof allowedTags === "undefined") {
+      allowedTags = [];
+    }
     allowedTags = allowedTags.map(function(x) { return { item: x } });
 
     // Set up tag editor
@@ -405,7 +408,7 @@ $(document).ready(function() {
   setUpAnalyticsFileImports();
   setUpPusherChannels();
   setUpAsyncMessageGeneration();
-  // setUpImageTagging();
+  setUpImageTagging();
 
   // Set up Semantic UI
   $('.menu .item').tab({
