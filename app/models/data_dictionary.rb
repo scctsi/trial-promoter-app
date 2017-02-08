@@ -38,6 +38,12 @@ class DataDictionary < ActiveRecord::Base
       end
     end
 
+    DataDictionary::ALLOWED_VALUES.keys.each do |trial_promoter_label|
+      entry_with_correct_label = experiment.data_dictionary.data_dictionary_entries.select{ |data_dictionary_entry| data_dictionary_entry.trial_promoter_label == trial_promoter_label.to_s }[0]
+      entry_with_correct_label.allowed_values = DataDictionary::ALLOWED_VALUES[trial_promoter_label]
+      entry_with_correct_label.save
+    end
+
     experiment.save
   end
 end

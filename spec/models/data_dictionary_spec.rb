@@ -58,7 +58,7 @@ RSpec.describe DataDictionary do
     # Are all the pre-defined allowed values correctly set?
     DataDictionary::ALLOWED_VALUES.keys.map(&:to_s).each do |trial_promoter_label|
       entry_with_correct_label = @experiment.data_dictionary.data_dictionary_entries.select{ |data_dictionary_entry| data_dictionary_entry.trial_promoter_label == trial_promoter_label }[0]
-      expect(entry_with_correct_label.allowed_values).to eq(DataDictionary::ALLOWED_VALUES[trial_promoter_label])
+      expect(entry_with_correct_label.allowed_values).to eq(DataDictionary::ALLOWED_VALUES[trial_promoter_label.to_sym])
     end
   end
   

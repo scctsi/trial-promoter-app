@@ -26,6 +26,6 @@
         %td= data_dictionary_entry.trial_promoter_label
         %td= data_dictionary_entry.source.to_s.titleize
         %td= data_dictionary_entry.report_label
-        %td= data_dictionary_entry.allowed_values
+        %td= render partial: 'shared/array_of_strings', locals: { array_of_strings: data_dictionary_entry.allowed_values }
         %td= data_dictionary_entry.value_mapping
         %td= data_dictionary_entry.note
