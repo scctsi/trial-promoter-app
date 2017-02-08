@@ -8,4 +8,4 @@
 %h3.ui.top.attached.header
   Create new experiment
 .ui.attached.segment
-  = render partial: 'shared/forms/experiment'
+  = render partial: 'shared/forms/experiment', locals: { allowed_times: Experiment.allowed_times }

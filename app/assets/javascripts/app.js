@@ -365,24 +365,31 @@ $(document).ready(function() {
   }
 
   function setUpPostingTimeInputs() {
-    var allowedTimes = $('.ui.input#allowed-times').data('allowed-times');
-    console.log(allowedTimes);
-debugger
+    var allowedTimes = $('#allowed-times').data('allowed-times');
+    var maxTimes = $("#experiment_message_generation_parameter_set_attributes_number_of_messages_per_social_network").val();
+
     // Selectize requires options to be of the form [{'value': 'val', 'item', 'val'}]
     allowedTimes = allowedTimes.map(function(x) { return { item: x } });
 
-    //Setup the posting times input
-    $('#posting-times').selectize({
+    // Setup the posting times input
+    var $select = $('#allowed-times').selectize({
       plugins: ['restore_on_backspace', 'remove_button'],
+      maxItems: maxTimes,
+      valueField: 'item',
+      labelField: 'item',
       delimiter: ',',
-      persist: false,
-      maxItems: null,
-      create: function(input) {
-        return {
-          value: input,
-          text: input
-        };
-      }
+      options: allowedTimes,
+      create: false,
+      persist: false
+      });
+
+    var control = $select[0].selectize;
+
+    $('#add-posting-times-button').on('click', function() {
+      debugger
+
+      var selectedTimes = [];
+      selectedTimes.push($(this).data('allowed-times'));
     });
   }
 

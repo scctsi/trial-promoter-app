@@ -80,6 +80,7 @@ RSpec.describe ExperimentsController, type: :controller do
       expect(assigns(:messages)).to eq(@ordered_messages)
     end
 
+
     it 'assigns all distinct tags to @distinct_tag_list' do
       expect(@tag_matcher).to have_received(:distinct_tag_list).with(@message_templates)
       # TODO: VERY ODD, I cannot get the next line to pass!
@@ -218,6 +219,10 @@ RSpec.describe ExperimentsController, type: :controller do
       expect(assigns(:experiment)).to be_a_new(Experiment)
     end
 
+    it 'assigns allowed times to @allowed_times' do
+      expect(assigns(:allowed_times)).to eq(Experiment.allowed_times)
+    end
+
     it 'builds an associated message generation parameter set' do
       expect(@experiment.message_generation_parameter_set).not_to be_nil
     end
@@ -242,6 +247,10 @@ RSpec.describe ExperimentsController, type: :controller do
 
     it 'assigns the requested experiment to @experiment' do
       expect(assigns(:experiment)).to eq(@experiment)
+    end
+
+    it 'assigns allowed times to @allowed_times' do
+      expect(assigns(:allowed_times)).to eq(Experiment.allowed_times)
     end
 
     it 'renders the edit template' do
