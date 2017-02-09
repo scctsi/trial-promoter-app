@@ -5,15 +5,22 @@
 #
 #  id                              :integer          not null, primary key
 #  name                            :string(1000)
-#  start_date                      :datetime
 #  end_date                        :datetime
 #  message_distribution_start_date :datetime
 #  created_at                      :datetime         not null
 #  updated_at                      :datetime         not null
+#  analytics_file_todos_created    :boolean
+#  posting_times                   :text
 #
 
+
+
 class Experiment < ActiveRecord::Base
+  include ActionView::Helpers::DateHelper
   include ActiveModel::Validations
+
+  serialize :posting_times
+
   validates_with ExperimentValidator
   validates :name, presence: true
   validates :end_date, presence: true
@@ -68,5 +75,20 @@ class Experiment < ActiveRecord::Base
 
     self.analytics_file_todos_created = true
     save
+  end
+
+  def self.allowed_times
+    allowed_times = []
+
+    (1..12).to_a.each do |hour|
+      (0..5).to_a.each do |tens_digit_minute|
+        (0..9).to_a.each do |ones_digit_minute|
+          allowed_times << "#{hour}:#{tens_digit_minute}#{ones_digit_minute} AM"
+          allowed_times << "#{hour}:#{tens_digit_minute}#{ones_digit_minute} PM"
+        end
+      end
+    end
+
+    allowed_times
   end
 end

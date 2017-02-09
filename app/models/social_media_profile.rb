@@ -13,6 +13,7 @@
 #  allowed_mediums  :string
 #
 
+
 class SocialMediaProfile < ActiveRecord::Base
   extend Enumerize
 

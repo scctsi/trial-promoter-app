@@ -2,6 +2,8 @@
 /*global filepicker*/
 /*global Pusher*/
 $(document).ready(function() {
+  var $select_time;
+
   function setUpDatePickers() {
     $("[id$='_date']").daterangepicker({
       singleDatePicker: true,
@@ -192,7 +194,7 @@ $(document).ready(function() {
     if (socialNetworkChoices.length === 1) {
       listHtml += '<li>All messages will be generated for distribution on ' + socialNetworkChoices[0];
     } else {
-      listHtml += '<li>Equal number of messages will be generated per platform: ' + socialNetworkChoices.join(", ");
+      listHtml += '<li>Equal number of messages will be generated per social media platform: ' + socialNetworkChoices.join(", ");
     }
 
     if ((mediumChoices).includes('Ad, Organic')) {
@@ -251,9 +253,6 @@ $(document).ready(function() {
     var pusher = new Pusher('645d88fef1ee61febc2d'); // uses your APP KEY
     var channel = pusher.subscribe('progress');
     channel.bind('progress', function(data) {
-      console.log(data.value);
-      console.log(data.total);
-      console.log(data.event);
       $('.ui.progress').progress('increment');
 
       if(data.value === data.total) {
@@ -295,10 +294,10 @@ $(document).ready(function() {
     });
   }
 
+
   function setUpImageTagging() {
     var $imageSelectors = $('.image-selector');
     var allowedTags = $('#image-tags').data('allowed-tags');
-    console.log(allowedTags);
 
     // Selectize requires options to be of the form [{'value': 'val', 'item', 'val'}]
     if (typeof allowedTags === "undefined") {
@@ -364,6 +363,28 @@ $(document).ready(function() {
     });
   }
 
+  function setUpPostingTimeInputs() {
+    var allowedTimes = $('#experiment_posting_times').data('allowed-times');
+
+    // Selectize requires options to be of the form [{'value': 'val', 'item', 'val'}]
+    if (typeof allowedTimes === "undefined") {
+      allowedTimes = [];
+    }
+    allowedTimes = allowedTimes.map(function(x) { return { item: x } });
+
+    // Setup the posting times input
+    $select_time = $('#experiment_posting_times').selectize({
+      plugins: ['restore_on_backspace', 'remove_button'],
+      valueField: 'item',
+      labelField: 'item',
+      searchField: 'item',
+      delimiter: ',',
+      options: allowedTimes,
+      create: true,
+      persist: false
+    });
+  }
+
   function showSocialMediaProfiles(){
     var socialMediaProfiles = $('.experiment_social_media_profiles');
     var socialMediaProfileFields = $('.experiment_social_media_profiles span.checkbox.ui');
@@ -396,6 +417,7 @@ $(document).ready(function() {
   }
 
   // Initialize
+  setUpPostingTimeInputs();
   showSocialMediaProfiles();
   setUpExperimentRealTime();
   setUpPopupInfo();

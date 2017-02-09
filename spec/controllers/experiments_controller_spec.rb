@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe ExperimentsController, type: :controller do
   before do
     sign_in create(:administrator)
-    
+
     # Create a set of saved social media profiles for use in these tests
     @social_media_profiles = create_list(:social_media_profile, 3)
   end
@@ -79,7 +79,8 @@ RSpec.describe ExperimentsController, type: :controller do
       expect(@paged_messages).to have_received(:order).with('created_at ASC')
       expect(assigns(:messages)).to eq(@ordered_messages)
     end
-    
+
+
     it 'assigns all distinct tags to @distinct_tag_list' do
       expect(@tag_matcher).to have_received(:distinct_tag_list).with(@message_templates)
       # TODO: VERY ODD, I cannot get the next line to pass!
@@ -269,19 +270,19 @@ RSpec.describe ExperimentsController, type: :controller do
     context 'with valid attributes' do
       it 'creates a new experiment' do
         expect {
-          post :create, experiment: attributes_for(:experiment, message_generation_parameter_set_attributes: attributes_for(:message_generation_parameter_set), social_media_profile_ids: [@social_media_profiles[0].id])
+          post :create, experiment: attributes_for(:experiment, message_generation_parameter_set_attributes: attributes_for(:message_generation_parameter_set), posting_times: '4:09 PM', social_media_profile_ids: [@social_media_profiles[0].id])
         }.to change(Experiment, :count).by(1)
       end
 
       it 'creates an associated message generation parameter set' do
         expect {
-          post :create, experiment: attributes_for(:experiment, message_generation_parameter_set_attributes: attributes_for(:message_generation_parameter_set), social_media_profile_ids: [@social_media_profiles[0].id])
+          post :create, experiment: attributes_for(:experiment, message_generation_parameter_set_attributes: attributes_for(:message_generation_parameter_set), posting_times: '4:09 PM', social_media_profile_ids: [@social_media_profiles[0].id])
         }.to change(MessageGenerationParameterSet, :count).by(1)
         expect(MessageGenerationParameterSet.first.message_generating).not_to be_nil
       end
 
       it 'redirects to the experiment workspace' do
-        post :create, experiment: attributes_for(:experiment, message_generation_parameter_set_attributes: attributes_for(:message_generation_parameter_set), social_media_profile_ids: [@social_media_profiles[0].id])
+        post :create, experiment: attributes_for(:experiment, message_generation_parameter_set_attributes: attributes_for(:message_generation_parameter_set), posting_times: '4:09 PM', social_media_profile_ids: [@social_media_profiles[0].id])
         expect(response).to redirect_to experiment_url(Experiment.first)
       end
 
@@ -318,9 +319,7 @@ RSpec.describe ExperimentsController, type: :controller do
       @social_media_profiles[2].platform = :facebook
       @social_media_profiles[2].allowed_mediums = [:organic]
       @social_media_profiles[2].save
-      patch :update, id: @experiment, experiment: attributes_for(:experiment, name: 'New name', end_date: Time.local(2000, 2, 1, 9, 0, 0), message_distribution_start_date: Time.local(2000, 3, 1, 9, 0, 0),
-                                      social_media_profile_ids: [@social_media_profiles[1].id, @social_media_profiles[2].id],
-                                      message_generation_parameter_set_attributes: {period_in_days: 10, number_of_messages_per_social_network: 5, social_network_choices: ['facebook', 'twitter'], medium_choices: ['organic'], image_present_choices: ['with', 'without']})
+      patch :update, id: @experiment, experiment: attributes_for(:experiment, name: 'New name', end_date: Time.local(2000, 2, 1, 9, 0, 0), message_distribution_start_date: Time.local(2000, 3, 1, 9, 0, 0), posting_times: '4:09 PM,6:22 PM,9:34 AM,10:02 PM,2:12 AM', social_media_profile_ids: [@social_media_profiles[1].id, @social_media_profiles[2].id], message_generation_parameter_set_attributes: {period_in_days: 10, number_of_messages_per_social_network: 5, social_network_choices: ['facebook', 'twitter'], medium_choices: ['organic'], image_present_choices: ['with', 'without']})
     end
 
     context 'with valid attributes' do
@@ -334,6 +333,7 @@ RSpec.describe ExperimentsController, type: :controller do
         expect(@experiment.message_distribution_start_date).to eq(Time.local(2000, 3, 1, 9, 0, 0))
         expect(@experiment.end_date).to eq(Time.local(2000, 2, 1, 9, 0, 0))
         expect(@experiment.message_distribution_start_date).to eq(Time.local(2000, 3, 1, 9, 0, 0))
+        expect(@experiment.posting_times).to eq('4:09 PM,6:22 PM,9:34 AM,10:02 PM,2:12 AM')
       end
 
       it "changes the associated message generation parameter set's attribute" do
