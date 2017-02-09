@@ -59,8 +59,11 @@ RSpec.describe DataDictionariesController, type: :controller do
     before do
       experiment = create(:experiment)
       DataDictionary.create_data_dictionary(experiment)
-      @data_dictionary = experiment.data_dictionary
-      patch :update, id: @data_dictionary, experiment: attributes_for(:data_dictionary, data_dictionary_entries_attributes: [ ])
+      
+      @data_dictionary = create(:data_dictionary)
+      @data_dictionary.data_dictionary_entries << create(:data_dictionary_entry, data_dictionary: @data_dictionary)
+      
+      patch :update, id: @data_dictionary, data_dictionary: attributes_for(:data_dictionary, data_dictionary_entries_attributes: { "0" => { "include_in_report" => "1", "report_label" => "new_report_label", "value_mapping" => "{ 'new_value' => 'new_mapping' }", "note" => "New note", "id" => "#{@data_dictionary.data_dictionary_entries[0].id}" } })
     end
     
     context 'with valid attributes' do
@@ -70,6 +73,13 @@ RSpec.describe DataDictionariesController, type: :controller do
 
       it "changes the attributes of the data dictionary entries" do
         @data_dictionary.reload
+        data_dictionary_entry = @data_dictionary.data_dictionary_entries[0]
+        data_dictionary_entry.reload
+        
+        # expect(data_dictionary_entry.include_in_report).to be true
+        expect(data_dictionary_entry.report_label).to eq('new_report_label')
+        expect(data_dictionary_entry.value_mapping).to eq("{ 'new_value' => 'new_mapping' }")
+        expect(data_dictionary_entry.note).to eq('New note')
       end
 
       it 'redirects to the show page' do

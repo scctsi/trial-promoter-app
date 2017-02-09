@@ -9,6 +9,11 @@ class DataDictionariesController < ApplicationController
   end
   
   def update
+    if @data_dictionary.update(data_dictionary_params)
+      redirect_to data_dictionary_url(@data_dictionary)
+    else
+      render :edit
+    end
   end
 
   private
@@ -17,81 +22,9 @@ class DataDictionariesController < ApplicationController
     @data_dictionary = DataDictionary.find(params[:id])
     authorize @data_dictionary
   end
+
+  def data_dictionary_params
+    # TODO: Unit test this
+    params.require(:data_dictionary).permit(data_dictionary_entries_attributes: [:id, :include_in_report, :report_label, :allowed_values, :value_mapping, :note])
+  end
 end
-
-  # layout "workspace", only: [:show]
-
-  # def index
-  #   authorize Experiment
-  #   @experiments = Experiment.all
-  # end
-
-  # def parameterized_slug
-  #   render json: { parameterized_slug: @experiment.to_param }
-  # end
-
-  # def show
-  #   authorize @experiment
-  #   @message_templates = MessageTemplate.belonging_to(@experiment)
-  #   @images = Image.belonging_to(@experiment)
-  #   @websites = Website.belonging_to(@experiment)
-  #   @messages = Message.where(:message_generating_id => @experiment.id).page(params[:page]).order('created_at ASC')
-  #   tag_matcher = TagMatcher.new
-  #   @distinct_tag_list = tag_matcher.distinct_tag_list(@message_templates) 
-  # end
-
-  # def new
-  #   @experiment = Experiment.new
-  #   authorize @experiment
-  #   @experiment.build_message_generation_parameter_set
-  # end
-
-  # def create
-  #   @experiment = Experiment.new(experiment_params)
-  #   authorize @experiment
-  #   # TODO: There should be an easier way to automatically set the parent object
-  #   @experiment.message_generation_parameter_set.message_generating = @experiment if (!@experiment.message_generation_parameter_set.nil?)
-
-  #   if @experiment.save
-  #     redirect_to experiment_url(@experiment)
-  #   else
-  #     render :new
-  #   end
-  # end
-
-  # def edit
-  # end
-
-  # def update
-  #   if @experiment.update(experiment_params)
-  #     redirect_to experiment_url(@experiment)
-  #   else
-  #     render :edit
-  #   end
-  # end
-
-  # def create_messages
-  #   respond_to do |format|
-  #     GenerateMessagesJob.perform_later(@experiment)
-  #     format.html { redirect_to experiment_url(@experiment) }
-  #     format.json { render json: { success: true } }
-  #   end
-  # end
-
-  # def create_analytics_file_todos
-  #   @experiment.create_analytics_file_todos
-  #   redirect_to experiment_url(@experiment)
-  # end
-
-  # def calculate_message_count
-  #   authorize Experiment
-  #   message_count = MessageGenerationParameterSet.calculate_message_count(params[:social_network_choices_count].to_i, params[:medium_choices_count].to_i, params[:period_in_days].to_i, params[:number_of_messages_per_social_network].to_i)
-  #   render json: { message_count: message_count }
-  # end
-
-
-  # def experiment_params
-  #   # TODO: Unit test this
-  #   params.require(:experiment).permit(:name, :end_date, :message_distribution_start_date, {:social_media_profile_ids => []}, message_generation_parameter_set_attributes: [:social_network_distribution, :medium_distribution, :image_present_distribution, :period_in_days, :number_of_messages_per_social_network, social_network_choices: [], medium_choices: [], image_present_choices: []])
-  # end
-# end
