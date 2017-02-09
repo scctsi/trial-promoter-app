@@ -283,7 +283,7 @@ RSpec.describe ExperimentsController, type: :controller do
       end
       
       it 'creates an empty data dictionary' do
-        post :create, experiment: attributes_for(:experiment, message_generation_parameter_set_attributes: attributes_for(:message_generation_parameter_set), social_media_profile_ids: [@social_media_profiles[0].id])
+        post :create, experiment: attributes_for(:experiment, message_generation_parameter_set_attributes: attributes_for(:message_generation_parameter_set), posting_times: '4:09 PM', social_media_profile_ids: [@social_media_profiles[0].id])
 
         expect(DataDictionary).to have_received(:create_data_dictionary).with(Experiment.first)
       end
