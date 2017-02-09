@@ -1,0 +1,15 @@
+.ui.breadcrumb
+  %a{:href => root_path}
+    Home
+  %i.right.angle.icon.divider
+  .section
+    %a{:href => experiment_path(@data_dictionary.experiment)}
+      #{@data_dictionary.experiment.name} workspace
+  %i.right.angle.icon.divider
+  .active.section
+    Edit data dictionary for #{@data_dictionary.experiment.name}
+.ui.divider
+%h3.ui.top.attached.header
+  Edit data dictionary for #{@data_dictionary.experiment.name}
+.ui.attached.segment
+  = render partial: 'shared/forms/data_dictionary'

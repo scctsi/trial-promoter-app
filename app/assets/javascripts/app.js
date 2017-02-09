@@ -244,7 +244,7 @@ $(document).ready(function() {
   }
 
   function setUpExperimentRealTime() {
-    $('.ui.new_experiment_form').change(function(e){
+    $('.ui.experiment_form').change(function(e){
       changeExperimentDetails();
     });
   }
@@ -440,7 +440,7 @@ $(document).ready(function() {
   });
   $('.table').tablesort();
 
-  //lazyload for images
+  // Lazyload for images
   $("img").lazyload({
     threshold : 500,
     effect : "fadeIn"

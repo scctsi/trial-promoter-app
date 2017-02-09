@@ -1,0 +1,14 @@
+%tr
+  %td.collapsing.center.aligned= f.input :include_in_report, label: false
+  - if f.object.new_record?
+    %td= f.input :source, label: false, :selected => 'experiment', disabled: true
+  - else
+    %td= f.input :source, label: false
+  - if f.object.new_record?
+    %td= f.input :variable_name, label: false
+  - else
+    %td= f.object.variable_name
+  %td= f.input :report_label, label: false
+  %td= f.input :allowed_values, as: :string, label: false
+  %td= f.input :value_mapping, as: :string, label: false
+  %td= f.input :note, as: :string, label: false

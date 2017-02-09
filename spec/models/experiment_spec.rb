@@ -26,6 +26,7 @@ RSpec.describe Experiment, type: :model do
 
   it { is_expected.to have_one(:message_generation_parameter_set) }
   it { is_expected.to accept_nested_attributes_for(:message_generation_parameter_set) }
+  it { is_expected.to have_one(:data_dictionary) }
   it { is_expected.to have_many(:messages) }
   it { is_expected.to have_many(:analytics_files) }
   it { is_expected.to have_and_belong_to_many :social_media_profiles }

@@ -1,4 +1,3 @@
-
 # == Schema Information
 #
 # Table name: experiments
@@ -13,8 +12,6 @@
 #  posting_times                   :text
 #
 
-
-
 class Experiment < ActiveRecord::Base
   include ActionView::Helpers::DateHelper
   include ActiveModel::Validations
@@ -28,6 +25,7 @@ class Experiment < ActiveRecord::Base
 
   # TODO: Small
   has_one :message_generation_parameter_set, as: :message_generating
+  has_one :data_dictionary
   has_many :messages, as: :message_generating
   has_many :analytics_files, as: :message_generating
   has_and_belongs_to_many :social_media_profiles
