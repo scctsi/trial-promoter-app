@@ -435,8 +435,8 @@ $(document).ready(function() {
   // Set up Semantic UI
   $('.menu .item').tab({
     history: true,
-    historyType: 'himeh',
-    conTimet: 'parent'
+    historyType: 'hash',
+    context: 'parent'
   });
   $('.table').tablesort();
 
