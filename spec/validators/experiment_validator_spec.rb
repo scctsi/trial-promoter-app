@@ -105,9 +105,9 @@ RSpec.describe ExperimentValidator, type: :validator do
     end
 
     it 'rejects posting times if it is less than the number of messages per social network per day' do
-
       #make sure numbers match - count of posting_times per day matches the number of MGPS.number_of_messages_per_social_network
-      posting_times = [Time.new(2017, 01, 01, 0, 0, 0, "+00:00"), Time.new(2017, 01, 01, 0, 0, 0, "+00:00")]
+      # posting_times = [Time.new(2017, 01, 01, 0, 0, 0, "+00:00"), Time.new(2017, 01, 01, 0, 0, 0, "+00:00")]
+      posting_times = "12:52 AM,1:03 AM"
       @experiment.posting_times = posting_times
 
       @experiment.save
@@ -119,19 +119,10 @@ RSpec.describe ExperimentValidator, type: :validator do
     it 'rejects posting times if it is more than the number of messages per social network per day' do
 
       #make sure numbers match - count of posting_times per day matches the number of MGPS.number_of_messages_per_social_network
-      posting_times = [Time.new(2017, 01, 01, 0, 0, 0, "+00:00"), Time.new(2017, 01, 01, 0, 0, 0, "+00:00"), Time.new(2017, 01, 01, 0, 0, 0, "+00:00"), Time.new(2017, 01, 01, 0, 0, 0, "+00:00")]
+      posting_times = "12:52 AM,1:03 AM,12:30 PM,5:12 PM"
       @experiment.posting_times = posting_times
 
       @experiment.save
-
-      expect(@experiment).not_to be_valid
-    end
-
-    it 'rejects posting times if there are no posting times selected' do
-      @experiment.posting_times = []
-
-      @experiment.save
-
       expect(@experiment).not_to be_valid
     end
   end

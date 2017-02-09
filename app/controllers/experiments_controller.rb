@@ -23,7 +23,6 @@ class ExperimentsController < ApplicationController
 
   def new
     @experiment = Experiment.new
-    @allowed_times = Experiment.allowed_times
     authorize @experiment
     @experiment.build_message_generation_parameter_set
   end
@@ -42,7 +41,6 @@ class ExperimentsController < ApplicationController
   end
 
   def edit
-    @allowed_times = Experiment.allowed_times
   end
 
   def update

@@ -298,7 +298,6 @@ $(document).ready(function() {
   function setUpImageTagging() {
     var $imageSelectors = $('.image-selector');
     var allowedTags = $('#image-tags').data('allowed-tags');
-    console.log(allowedTags);
 
     // Selectize requires options to be of the form [{'value': 'val', 'item', 'val'}]
     if (typeof allowedTags === "undefined") {
@@ -365,32 +364,29 @@ $(document).ready(function() {
   }
 
   function setUpPostingTimeInputs() {
-    var allowedTimes = $('#allowed-times').data('allowed-times');
+    var allowedTimes = $('#experiment_posting_times').data('allowed-times');
     var maxTimes = $("#experiment_message_generation_parameter_set_attributes_number_of_messages_per_social_network").val();
 
     // Selectize requires options to be of the form [{'value': 'val', 'item', 'val'}]
+    if (typeof allowedTimes === "undefined") {
+      allowedTimes = [];
+    }
     allowedTimes = allowedTimes.map(function(x) { return { item: x } });
 
     // Setup the posting times input
-    var $select = $('#allowed-times').selectize({
+    var $select_time = $('#experiment_posting_times').selectize({
       plugins: ['restore_on_backspace', 'remove_button'],
       maxItems: maxTimes,
       valueField: 'item',
       labelField: 'item',
+      searchField: 'item',
       delimiter: ',',
       options: allowedTimes,
-      create: false,
+      create: true,
       persist: false
-      });
-
-    var control = $select[0].selectize;
-
-    $('#add-posting-times-button').on('click', function() {
-      debugger
-
-      var selectedTimes = [];
-      selectedTimes.push($(this).data('allowed-times'));
     });
+
+    console.log(allowedTimes);
   }
 
   function showSocialMediaProfiles(){
@@ -425,13 +421,13 @@ $(document).ready(function() {
   }
 
   // Initialize
+  setUpPostingTimeInputs();
   showSocialMediaProfiles();
   setUpExperimentRealTime();
   setUpPopupInfo();
   setUpDatePickers();
   setUpChosenDropdowns();
   setUpTagListInputs();
-  setUpPostingTimeInputs();
   setUpFilepicker();
   setUpMessageTemplateImports();
   setUpImageImports();

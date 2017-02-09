@@ -39,10 +39,8 @@ class ExperimentValidator < ActiveModel::Validator
       return
     end
 
-    if record.posting_times.nil?
-      record.errors[:message_generation_parameter_set] << "requires that you select at least one posting time"
-      return
-    elsif record.posting_times.count != record.message_generation_parameter_set.number_of_messages_per_social_network
+    posting_times = record.posting_times.split(',')
+    if posting_times.count != record.message_generation_parameter_set.number_of_messages_per_social_network
       record.errors[:message_generation_parameter_set] << "requires that the number of selected posting times matches the number of messages per social network per day"
       return
     end
