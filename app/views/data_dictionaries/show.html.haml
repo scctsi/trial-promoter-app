@@ -16,8 +16,8 @@
   %thead 
     %tr
       %th Include?
-      %th Variable name
       %th Source
+      %th Variable name
       %th Report label
       %th Allowed values
       %th Value mapping
@@ -26,9 +26,10 @@
     - @data_dictionary.data_dictionary_entries.each do |data_dictionary_entry|
       %tr
         %td= data_dictionary_entry.include_in_report
-        %td= data_dictionary_entry.variable_name
         %td= data_dictionary_entry.source.to_s.titleize
+        %td= data_dictionary_entry.variable_name
         %td= data_dictionary_entry.report_label
         %td= render partial: 'shared/array_of_strings', locals: { array_of_strings: data_dictionary_entry.allowed_values }
         %td= data_dictionary_entry.value_mapping
         %td= data_dictionary_entry.note
+  
