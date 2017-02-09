@@ -4,7 +4,7 @@
     %td= f.input :source, label: false, :selected => 'experiment', disabled: true
   - else
     %td= f.input :source, label: false
-  - if f.object.source == :experiment
+  - if f.object.new_record?
     %td= f.input :variable_name, label: false
   - else
     %td= f.object.variable_name

@@ -12,8 +12,9 @@
     %tbody
       = f.simple_fields_for :data_dictionary_entries do |dde|
         = render 'shared/forms/data_dictionary_entry_fields', f: dde
-      = f.submit
     %tfoot
       %tr
         %th{ :colspan => 7 }
           = link_to_add_association "Add variable", f, :data_dictionary_entries, data: {'association-insertion-node' => 'tbody', 'association-insertion-method' => 'append'}, partial: 'shared/forms/data_dictionary_entry_fields'
+  = f.button :submit
+          
