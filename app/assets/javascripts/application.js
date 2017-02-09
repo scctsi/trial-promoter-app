@@ -21,4 +21,5 @@
 //= require pusher-2.2.min
 //= require jquery.address-1.6.min
 //= require tablesort
+//= require cocoon
 //= require_tree .

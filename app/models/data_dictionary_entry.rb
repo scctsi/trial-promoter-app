@@ -19,7 +19,7 @@
 class DataDictionaryEntry < ActiveRecord::Base
   extend Enumerize
 
-  validates :trial_promoter_label, presence: true
+  validates :variable_name, presence: true
   validates :source, presence: true
   enumerize :source, in: [:buffer, :twitter, :facebook, :instagram, :google_analytics, :trial_promoter]
   

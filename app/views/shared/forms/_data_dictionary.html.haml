@@ -1,9 +1,9 @@
 .ui.form
-  %table.ui.celled.striped.table
+  %table.ui.celled.table
     %thead 
       %tr
         %th.collapsing.center.aligned Include?
-        %th Trial Promoter label
+        %th Variable name
         %th Source
         %th Report label
         %th Allowed values
@@ -12,12 +12,5 @@
     %tbody
       = simple_form_for @data_dictionary do |f|
         = f.simple_fields_for :data_dictionary_entries do |dde|
-          %tr
-            %td.collapsing.center.aligned= dde.input :include_in_report, label: false
-            %td= dde.object.trial_promoter_label
-            %td= dde.object.source.to_s.titleize
-            %td= dde.input :report_label, label: false
-            %td= render partial: 'shared/array_of_strings', locals: { array_of_strings: dde.object.allowed_values }
-            %td= dde.input :value_mapping, as: :string, label: false
-            %td= dde.input :note, as: :string, label: false
+          = render 'shared/forms/data_dictionary_entry_fields', f: dde
         = f.submit

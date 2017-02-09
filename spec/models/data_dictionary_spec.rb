@@ -47,19 +47,19 @@ RSpec.describe DataDictionary do
     number_of_pre_defined_data_elements = DataDictionary::DATA_ELEMENTS.values.inject(0) { |total, elements| total + elements.length }
     # Is there one data dictionary entry for each pre-defined data element?
     expect(@experiment.data_dictionary.data_dictionary_entries.length).to eq(number_of_pre_defined_data_elements)
-    # Are all the trial promoter labels and sources correctly set?
-    trial_promoter_labels = @experiment.data_dictionary.data_dictionary_entries.map(&:trial_promoter_label)
+    # Are all the variable names and sources correctly set?
+    variable_names = @experiment.data_dictionary.data_dictionary_entries.map(&:variable_name)
     DataDictionary::DATA_ELEMENTS.keys.each do |source|
-      DataDictionary::DATA_ELEMENTS[source].each do |data_element_name|
-        expect(trial_promoter_labels).to include("#{source}_#{data_element_name}")
-        entry_with_correct_label = @experiment.data_dictionary.data_dictionary_entries.select{ |data_dictionary_entry| data_dictionary_entry.trial_promoter_label == "#{source}_#{data_element_name}" }[0]
-        expect(entry_with_correct_label.source).to eq(source)
+      DataDictionary::DATA_ELEMENTS[source].each do |variable_name|
+        expect(variable_names).to include("#{source}_#{variable_name}")
+        entry_with_matching_variable_name = @experiment.data_dictionary.data_dictionary_entries.select{ |data_dictionary_entry| data_dictionary_entry.variable_name == "#{source}_#{variable_name}" }[0]
+        expect(entry_with_matching_variable_name.source).to eq(source)
       end
     end
     # Are all the pre-defined allowed values correctly set?
-    DataDictionary::ALLOWED_VALUES.keys.map(&:to_s).each do |trial_promoter_label|
-      entry_with_correct_label = @experiment.data_dictionary.data_dictionary_entries.select{ |data_dictionary_entry| data_dictionary_entry.trial_promoter_label == trial_promoter_label }[0]
-      expect(entry_with_correct_label.allowed_values).to eq(DataDictionary::ALLOWED_VALUES[trial_promoter_label.to_sym])
+    DataDictionary::ALLOWED_VALUES.keys.map(&:to_s).each do |variable_name|
+      entry_with_correct_variable_name = @experiment.data_dictionary.data_dictionary_entries.select{ |data_dictionary_entry| data_dictionary_entry.variable_name == variable_name }[0]
+      expect(entry_with_correct_variable_name.allowed_values).to eq(DataDictionary::ALLOWED_VALUES[variable_name.to_sym])
     end
   end
   

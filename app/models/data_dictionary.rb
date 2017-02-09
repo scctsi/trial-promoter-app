@@ -34,15 +34,15 @@ class DataDictionary < ActiveRecord::Base
     experiment.create_data_dictionary if experiment.data_dictionary.nil?
 
     DataDictionary::DATA_ELEMENTS.keys.each do |source|
-      DataDictionary::DATA_ELEMENTS[source].each do |data_element_name|
-        experiment.data_dictionary.data_dictionary_entries << DataDictionaryEntry.new(:trial_promoter_label => "#{source}_#{data_element_name}", :source => source)
+      DataDictionary::DATA_ELEMENTS[source].each do |variable_name|
+        experiment.data_dictionary.data_dictionary_entries << DataDictionaryEntry.new(:variable_name => "#{source}_#{variable_name}", :source => source)
       end
     end
 
-    DataDictionary::ALLOWED_VALUES.keys.each do |trial_promoter_label|
-      entry_with_correct_label = experiment.data_dictionary.data_dictionary_entries.select{ |data_dictionary_entry| data_dictionary_entry.trial_promoter_label == trial_promoter_label.to_s }[0]
-      entry_with_correct_label.allowed_values = DataDictionary::ALLOWED_VALUES[trial_promoter_label]
-      entry_with_correct_label.save
+    DataDictionary::ALLOWED_VALUES.keys.each do |variable_name|
+      entry_with_correct_variable_name = experiment.data_dictionary.data_dictionary_entries.select{ |data_dictionary_entry| data_dictionary_entry.variable_name == variable_name.to_s }[0]
+      entry_with_correct_variable_name.allowed_values = DataDictionary::ALLOWED_VALUES[variable_name]
+      entry_with_correct_variable_name.save
     end
 
     experiment.save
