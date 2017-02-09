@@ -2,6 +2,8 @@
 /*global filepicker*/
 /*global Pusher*/
 $(document).ready(function() {
+  var $select_time;
+
   function setUpDatePickers() {
     $("[id$='_date']").daterangepicker({
       singleDatePicker: true,
@@ -192,7 +194,7 @@ $(document).ready(function() {
     if (socialNetworkChoices.length === 1) {
       listHtml += '<li>All messages will be generated for distribution on ' + socialNetworkChoices[0];
     } else {
-      listHtml += '<li>Equal number of messages will be generated per platform: ' + socialNetworkChoices.join(", ");
+      listHtml += '<li>Equal number of messages will be generated per social media platform: ' + socialNetworkChoices.join(", ");
     }
 
     if ((mediumChoices).includes('Ad, Organic')) {
@@ -251,9 +253,6 @@ $(document).ready(function() {
     var pusher = new Pusher('645d88fef1ee61febc2d'); // uses your APP KEY
     var channel = pusher.subscribe('progress');
     channel.bind('progress', function(data) {
-      console.log(data.value);
-      console.log(data.total);
-      console.log(data.event);
       $('.ui.progress').progress('increment');
 
       if(data.value === data.total) {
@@ -294,6 +293,7 @@ $(document).ready(function() {
       return false;
     });
   }
+
 
   function setUpImageTagging() {
     var $imageSelectors = $('.image-selector');
@@ -365,7 +365,6 @@ $(document).ready(function() {
 
   function setUpPostingTimeInputs() {
     var allowedTimes = $('#experiment_posting_times').data('allowed-times');
-    var maxTimes = $("#experiment_message_generation_parameter_set_attributes_number_of_messages_per_social_network").val();
 
     // Selectize requires options to be of the form [{'value': 'val', 'item', 'val'}]
     if (typeof allowedTimes === "undefined") {
@@ -374,9 +373,8 @@ $(document).ready(function() {
     allowedTimes = allowedTimes.map(function(x) { return { item: x } });
 
     // Setup the posting times input
-    var $select_time = $('#experiment_posting_times').selectize({
+    $select_time = $('#experiment_posting_times').selectize({
       plugins: ['restore_on_backspace', 'remove_button'],
-      maxItems: maxTimes,
       valueField: 'item',
       labelField: 'item',
       searchField: 'item',
@@ -385,8 +383,6 @@ $(document).ready(function() {
       create: true,
       persist: false
     });
-
-    console.log(allowedTimes);
   }
 
   function showSocialMediaProfiles(){
