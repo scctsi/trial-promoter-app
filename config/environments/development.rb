@@ -50,6 +50,7 @@ Rails.application.configure do
 
   #Allow better_errors gem to show on vagrant
   BetterErrors::Middleware.allow_ip! ENV['TRUSTED_IP'] if ENV['TRUSTED_IP']
+BetterErrors::Middleware.allow_ip! "10.0.2.2" if defined? BetterErrors && Rails.env == :development
 
 
   # Default URL options for the Devise mailer

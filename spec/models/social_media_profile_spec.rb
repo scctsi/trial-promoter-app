@@ -13,6 +13,7 @@
 #  allowed_mediums  :string
 #
 
+
 require 'rails_helper'
 
 RSpec.describe SocialMediaProfile, type: :model do

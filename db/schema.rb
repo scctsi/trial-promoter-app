@@ -100,6 +100,7 @@ ActiveRecord::Schema.define(version: 20170209211148) do
     t.datetime "created_at",                                   null: false
     t.datetime "updated_at",                                   null: false
     t.boolean  "analytics_file_todos_created"
+    t.text     "posting_times"
   end
 
   create_table "experiments_social_media_profiles", force: :cascade do |t|
