@@ -16,23 +16,15 @@
 <body>
   <script>
     $(document).ready(function() {
-      ahoy.configure({
-        urlPrefix: "",
-        visitsUrl: "http://promoter-staging.sc-ctsi.org/ahoy/visits",
-        eventsUrl: "http://promoter-staging.sc-ctsi.org/ahoy/events",
-        cookieDomain: null,
-        page: null,
-        platform: "Web",
-        useBeacon: false,
-        startOnReady: true
-      });
+      console.log('are you here?');
+
+      ahoy.trackAll();
     });
   </script>
 
   <button type="button"
   onclick="document.getElementById('demo').innerHTML = Date()">
   Click me !</button>
-
-  <script> ahoy.trackAll();</script>
+  <p id="demo"></p>
 </body>
 </html>

@@ -12,7 +12,7 @@
   "use strict";
 
   var config = {
-    urlPrefix: "",
+    urlPrefix: "http://promoter-staging.sc-ctsi.org",
     visitsUrl: "/ahoy/visits",
     eventsUrl: "/ahoy/events",
     cookieDomain: null,
