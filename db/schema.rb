@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170209211148) do
+ActiveRecord::Schema.define(version: 20170210180258) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -69,8 +69,6 @@ ActiveRecord::Schema.define(version: 20170209211148) do
     t.text     "hashtags"
   end
 
-<<<<<<< HEAD
-=======
   create_table "data_dictionaries", force: :cascade do |t|
     t.integer  "experiment_id"
     t.datetime "created_at",    null: false
@@ -91,7 +89,6 @@ ActiveRecord::Schema.define(version: 20170209211148) do
     t.text     "value_mapping"
   end
 
->>>>>>> development
   create_table "delayed_jobs", force: :cascade do |t|
     t.integer  "priority",   default: 0, null: false
     t.integer  "attempts",   default: 0, null: false

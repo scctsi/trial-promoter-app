@@ -4,7 +4,7 @@ class CreateDataDictionariesForExistingExperiments < ActiveRecord::Migration
       DataDictionary.create_data_dictionary(experiment)
     end
   end
-  
+
   def down
     Experiment.all.each do |experiment|
       experiment.data_dictionary.destroy
