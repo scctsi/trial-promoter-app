@@ -12,12 +12,12 @@
 
 class Metric < ActiveRecord::Base
   extend Enumerize
-  
+
   serialize :data
 
   validates :data, presence: true
   validates :source, presence: true
   enumerize :source, in: [:buffer, :twitter, :facebook, :instagram, :google_analytics], predicates: true
-  
+
   belongs_to :message
 end

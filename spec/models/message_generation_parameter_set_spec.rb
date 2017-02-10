@@ -17,6 +17,7 @@
 #  image_present_choices                 :text
 #
 
+
 require 'rails_helper'
 
 describe MessageGenerationParameterSet do
