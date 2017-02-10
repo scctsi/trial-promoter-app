@@ -18,6 +18,7 @@
 #  role                   :string           default("user"), not null
 #
 
+
 class User < ActiveRecord::Base
   extend Enumerize
   enumerize :role, in: [:user, :administrator, :statistician, :read_only], default: :user

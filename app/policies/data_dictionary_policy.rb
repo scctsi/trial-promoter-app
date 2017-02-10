@@ -1,0 +1,2 @@
+class DataDictionaryPolicy < ApplicationPolicy
+end

@@ -13,6 +13,7 @@
 #  message_generating_type :string
 #
 
+
 require 'rails_helper'
 
 RSpec.describe AnalyticsFile do

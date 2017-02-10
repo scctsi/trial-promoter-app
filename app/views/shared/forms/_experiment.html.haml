@@ -1,4 +1,4 @@
-.ui.new_experiment_form
+.ui.experiment_form
   = simple_form_for @experiment do |f|
     - if @experiment.errors.any?
       .ui.message.error.visible
@@ -29,15 +29,5 @@
     = f.association :social_media_profiles, required: true, as: :check_boxes, label_method: :description, value_method: :id, wrapper_class: 'grouped fields', item_wrapper_class: 'ui field checkbox', label: 'What social media profile(s) do you want to use?'
     .ui.header
       Schedule
-    %table.ui.celled.striped.table
-      %thead
-        %tr
-          %th
-          %th
-          %th
-      %tbody
-        %tr
-          %td some value
-          %td
-          %td
+    = f.input :posting_times, :input_html => { :data => { 'allowed-times' => allowed_times }}, label: false
     = f.button :submit

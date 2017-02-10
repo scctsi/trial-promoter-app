@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170203003425) do
+ActiveRecord::Schema.define(version: 20170209211148) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -57,6 +57,42 @@ ActiveRecord::Schema.define(version: 20170203003425) do
     t.text     "hashtags"
   end
 
+  create_table "data_dictionaries", force: :cascade do |t|
+    t.integer  "experiment_id"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  create_table "data_dictionary_entries", force: :cascade do |t|
+    t.boolean  "include_in_report"
+    t.string   "variable_name"
+    t.string   "report_label"
+    t.string   "integrity_check"
+    t.string   "source"
+    t.text     "note"
+    t.integer  "data_dictionary_id"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+    t.text     "allowed_values"
+    t.text     "value_mapping"
+  end
+
+  create_table "delayed_jobs", force: :cascade do |t|
+    t.integer  "priority",   default: 0, null: false
+    t.integer  "attempts",   default: 0, null: false
+    t.text     "handler",                null: false
+    t.text     "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string   "locked_by"
+    t.string   "queue"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
+
   create_table "experiments", force: :cascade do |t|
     t.string   "name",                            limit: 1000
     t.datetime "end_date"
@@ -64,6 +100,7 @@ ActiveRecord::Schema.define(version: 20170203003425) do
     t.datetime "created_at",                                   null: false
     t.datetime "updated_at",                                   null: false
     t.boolean  "analytics_file_todos_created"
+    t.text     "posting_times"
   end
 
   create_table "experiments_social_media_profiles", force: :cascade do |t|

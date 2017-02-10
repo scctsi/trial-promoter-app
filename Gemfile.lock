@@ -64,6 +64,7 @@ GEM
       oauth2 (>= 0.5.0, < 2.0)
     builder (3.2.3)
     byebug (9.0.6)
+    cocoon (1.2.9)
     codeclimate-test-reporter (1.0.5)
       simplecov
     coderay (1.1.1)
@@ -360,6 +361,7 @@ DEPENDENCIES
   binding_of_caller
   bitly
   byebug
+  cocoon
   codeclimate-test-reporter (~> 1.0.0)
   database_cleaner
   delayed_job_active_record
@@ -399,4 +401,4 @@ RUBY VERSION
    ruby 2.3.3p222
 
 BUNDLED WITH
-   1.13.7
+   1.14.3
