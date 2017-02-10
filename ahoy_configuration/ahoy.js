@@ -13,8 +13,8 @@
 
   var config = {
     urlPrefix: "",
-    visitsUrl: "http://promoter-staging.sc-ctsi.org/ahoy/visits",
-    eventsUrl: "http://promoter-staging.sc-ctsi.org/ahoy/events",
+    visitsUrl: "/ahoy/visits",
+    eventsUrl: "/ahoy/events",
     cookieDomain: null,
     page: null,
     platform: "Web",

@@ -9,12 +9,25 @@
   <meta name="author" content="SitePoint">
 
   <link rel="stylesheet" href="css/styles.css?v=1.0">
-
-  <script src="jquery.js"></script>
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
   <script src="ahoy.js"></script>
 </head>
 
 <body>
+  <script>
+    $(document).ready(function() {
+      ahoy.configure({
+        urlPrefix: "",
+        visitsUrl: "http://promoter-staging.sc-ctsi.org/ahoy/visits",
+        eventsUrl: "http://promoter-staging.sc-ctsi.org/ahoy/events",
+        cookieDomain: null,
+        page: null,
+        platform: "Web",
+        useBeacon: false,
+        startOnReady: true
+      });
+    });
+  </script>
 
   <button type="button"
   onclick="document.getElementById('demo').innerHTML = Date()">
