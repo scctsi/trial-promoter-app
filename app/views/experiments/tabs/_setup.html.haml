@@ -2,3 +2,4 @@
   %i.industry.icon
   Change experiment setup
 = render partial: 'shared/message_generation_parameter_set', locals: { message_generation_parameter_set: @experiment.message_generation_parameter_set }
+= render partial: 'shared/experiment_timeline', locals: { experiment: @experiment }
