@@ -47,6 +47,17 @@ GEM
       activerecord (>= 4.0)
     addressable (2.5.0)
       public_suffix (~> 2.0, >= 2.0.2)
+    ahoy_matey (1.5.4)
+      addressable
+      browser (~> 2.0)
+      geocoder
+      rack-attack (< 6)
+      railties
+      referer-parser (>= 0.3.0)
+      request_store
+      safely_block (>= 0.1.1)
+      user_agent_parser
+      uuidtools
     annotate (2.7.1)
       activerecord (>= 3.2, < 6.0)
       rake (>= 10.4, < 12.0)
@@ -62,6 +73,7 @@ GEM
       httparty (>= 0.7.6)
       multi_json (~> 1.3)
       oauth2 (>= 0.5.0, < 2.0)
+    browser (2.3.0)
     builder (3.2.3)
     byebug (9.0.6)
     cocoon (1.2.9)
@@ -88,6 +100,7 @@ GEM
     docile (1.1.5)
     enumerize (2.0.1)
       activesupport (>= 3.2)
+    errbase (0.0.3)
     erubis (2.7.0)
     execjs (2.7.0)
     factory_girl (4.8.0)
@@ -95,7 +108,7 @@ GEM
     factory_girl_rails (4.8.0)
       factory_girl (~> 4.8.0)
       railties (>= 3.0.0)
-    faker (1.7.2)
+    faker (1.7.3)
       i18n (~> 0.5)
     faraday (0.10.1)
       multipart-post (>= 1.2, < 3)
@@ -103,9 +116,10 @@ GEM
     fit-commit (3.7.0)
       swearjar (~> 1.0)
     formatador (0.2.5)
+    geocoder (1.4.3)
     globalid (0.3.7)
       activesupport (>= 4.1.0)
-    google-api-client (0.9.26)
+    google-api-client (0.9.28)
       addressable (~> 2.3)
       googleauth (~> 0.5)
       httpclient (~> 2.7)
@@ -226,6 +240,8 @@ GEM
       pusher-signature (~> 0.1.8)
     pusher-signature (0.1.8)
     rack (1.6.5)
+    rack-attack (5.0.1)
+      rack
     rack-test (0.6.3)
       rack (>= 1.0)
     rails (4.2.6)
@@ -263,8 +279,10 @@ GEM
     rb-fsevent (0.9.8)
     rb-inotify (0.9.8)
       ffi (>= 0.5.0)
+    referer-parser (0.3.0)
     representable (2.3.0)
       uber (~> 0.0.7)
+    request_store (1.3.2)
     responders (2.3.0)
       railties (>= 4.2.0, < 5.1)
     retriable (2.1.0)
@@ -293,6 +311,8 @@ GEM
     ruby_parser (3.8.4)
       sexp_processor (~> 4.1)
     safe_yaml (1.0.4)
+    safely_block (0.1.1)
+      errbase
     sass (3.4.23)
     sass-rails (5.0.6)
       railties (>= 4.0.0, < 6)
@@ -338,6 +358,8 @@ GEM
     uber (0.0.15)
     uglifier (3.0.4)
       execjs (>= 0.3.0, < 3)
+    user_agent_parser (2.3.0)
+    uuidtools (2.1.5)
     vcr (3.0.3)
     warden (1.2.7)
       rack (>= 1.0)
@@ -356,6 +378,7 @@ PLATFORMS
 
 DEPENDENCIES
   acts-as-taggable-on (~> 4.0)
+  ahoy_matey
   annotate
   better_errors
   binding_of_caller
