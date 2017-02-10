@@ -20,7 +20,7 @@ ActiveRecord::Schema.define(version: 20170210180258) do
     t.integer  "visit_id"
     t.integer  "user_id"
     t.string   "name"
-    t.json    "properties"
+    t.jsonb    "properties"
     t.datetime "time"
   end
 
