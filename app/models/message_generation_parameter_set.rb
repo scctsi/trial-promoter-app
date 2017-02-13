@@ -17,7 +17,6 @@
 #  image_present_choices                 :text
 #
 
-
 class MessageGenerationParameterSet < ActiveRecord::Base
   extend Enumerize
   serialize :social_network_choices
