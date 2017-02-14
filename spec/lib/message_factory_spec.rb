@@ -39,6 +39,8 @@ RSpec.describe MessageFactory do
   end
   
   it 'creates a set of messages for one website, five message templates, 1 social network (equal distribution), 1 medium (equal distribution), with images (equal distribution), for 10 days and 1 message per network per day' do
+    @experiment.posting_times = "12:30 PM"
+    @experiment.save
     message_generation_parameter_set = MessageGenerationParameterSet.new do |m|
       m.social_network_choices = [:facebook]
       m.social_network_distribution = :equal
@@ -58,17 +60,19 @@ RSpec.describe MessageFactory do
     expect((messages.select { |message| message.message_template.platform != :facebook }).count).to eq(0)
     # Have the pusher events been triggered?
     expect(@pusher_channel).to have_received(:trigger).exactly(message_generation_parameter_set.expected_generated_message_count).times.with('progress', {:value => an_instance_of(Fixnum), :total => message_generation_parameter_set.expected_generated_message_count, :event => 'Message generated'})
-    
-    # Has social_network_publish_date been set correctly?
-    publish_date = @experiment.message_distribution_start_date
-    
+
+    # Has the scheduled date and time been set correctly?
+    publish_date_time = @experiment.message_distribution_start_date
+    publish_date_time = publish_date_time.change({ hour: 12, min: 30, sec: 0 })
     messages.all.each do |message|
-      expect(message.social_network_publish_date).to eq(publish_date)
-      publish_date += 1.day
+      expect(message.scheduled_date_time).to eq(publish_date_time)
+      publish_date_time += 1.day
     end
   end
 
   it 'creates a set of messages for one website, five message templates, 3 social networks (equal distribution), 2 mediums (equal distribution), with and without images (equal distribution), for 3 days and 3 messages per network per day' do
+    @experiment.posting_times = "12:30 PM,5:30 PM,6:32 PM"
+    @experiment.save
     message_generation_parameter_set = MessageGenerationParameterSet.new do |m|
       m.social_network_choices = [:facebook, :twitter, :instagram]
       m.social_network_distribution = :equal
@@ -109,9 +113,14 @@ RSpec.describe MessageFactory do
     messages.all.each do |message|
       expect(message.social_media_profile).to eq(@suitable_social_media_profiles[1])
     end
+    
+    # Has the scheduled date and time been set correctly?
+    # TODO: How do I test this efficiently?
   end
 
   it 'recreates the messages each time' do
+    @experiment.posting_times = "12:30 PM,5:30 PM,6:32 PM"
+    @experiment.save
     message_generation_parameter_set = MessageGenerationParameterSet.new do |m|
       m.social_network_choices = ['facebook']
       m.social_network_distribution = :equal
@@ -119,7 +128,7 @@ RSpec.describe MessageFactory do
       m.medium_distribution = :equal
       m.image_present_choices = ['with']
       m.image_present_distribution = :equal
-      m.period_in_days = 10
+      m.period_in_days = 1
       m.number_of_messages_per_social_network = 3
     end
     @experiment.message_generation_parameter_set = message_generation_parameter_set

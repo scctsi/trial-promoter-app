@@ -31,22 +31,11 @@ RSpec.describe Experiment, type: :model do
   it { is_expected.to have_many(:analytics_files) }
   it { is_expected.to have_and_belong_to_many :social_media_profiles }
 
-  it 'stores posting times as an array' do
-    posting_times = [Time.now, Time.now, Time.now]
-    experiment = build(:experiment)
-    experiment.posting_times = posting_times
-
-    experiment.save
-    experiment.reload
-
-    expect(experiment.posting_times).to eq(posting_times)
-  end
-
   it 'returns an array of all possible times in a day' do
     expect(Experiment.allowed_times.count).to be(12 * 60 * 2)
   end
 
-  it 'includes various times of the day' do
+  it 'includes various times of the day in the array of all possible times' do
     expect(Experiment.allowed_times).to include('12:30 AM', '3:04 AM', '1:30 PM')
   end
 
@@ -150,5 +139,38 @@ RSpec.describe Experiment, type: :model do
       expect(analytics_files[3].required_upload_date).to eq(experiment.end_date)
       expect(experiment.analytics_file_todos_created).to be true
     end
+  end
+  
+  it 'returns the posting times as an array of DateTime instances' do
+    experiment = build(:experiment)
+    experiment.posting_times = '12:30 AM,12:30 PM,05:10 AM' 
+    
+    posting_times_as_datetimes = experiment.posting_times_as_datetimes
+    
+    expect(posting_times_as_datetimes.count).to eq(3)
+    expect(posting_times_as_datetimes[0].hour).to eq(0)
+    expect(posting_times_as_datetimes[0].minute).to eq(30)
+    expect(posting_times_as_datetimes[1].hour).to eq(12)
+    expect(posting_times_as_datetimes[1].minute).to eq(30)
+    expect(posting_times_as_datetimes[2].hour).to eq(5)
+    expect(posting_times_as_datetimes[2].minute).to eq(10)
+  end
+
+  it 'returns an empty array if the posting times are blank' do
+    experiment = build(:experiment)
+    experiment.posting_times = ''
+    
+    posting_times_as_datetimes = experiment.posting_times_as_datetimes
+    
+    expect(posting_times_as_datetimes.count).to eq(0)
+  end
+
+  it 'returns an empty array is the posting times is nil' do
+    experiment = build(:experiment)
+    experiment.posting_times = nil
+    
+    posting_times_as_datetimes = experiment.posting_times_as_datetimes
+    
+    expect(posting_times_as_datetimes.count).to eq(0)
   end
 end

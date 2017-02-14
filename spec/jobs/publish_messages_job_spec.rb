@@ -12,12 +12,12 @@ RSpec.describe PublishMessagesJob, type: :job do
     @messages = create_list(:message, 10, message_generating: experiment, promotable: website)
     (0..4).each do |index|
       @messages[index].publish_status = :pending
-      @messages[index].social_network_publish_date = Time.now + 1.day
+      @messages[index].scheduled_date_time = Time.now + 1.day
       @messages[index].save
     end
     (5..9).each do |index|
       @messages[index].publish_status = :published_to_buffer
-      @messages[index].social_network_publish_date = Time.now + 30.days
+      @messages[index].scheduled_date_time = Time.now + 30.days
       @messages[index].save
     end
   end
@@ -39,11 +39,11 @@ RSpec.describe PublishMessagesJob, type: :job do
   end
 
   it 'executes perform and publishes pending messages that need to be published to social networks in the next 7 days' do
-    @messages[0].social_network_publish_date = Time.new(2010, 1, 1, 0, 0, 0)
-    @messages[1].social_network_publish_date = Time.new(2010, 1, 6, 0, 0, 0)
-    @messages[2].social_network_publish_date = Time.new(2010, 1, 8, 0, 0, 0)
-    @messages[3].social_network_publish_date = Time.new(2010, 1, 9, 0, 0, 0)
-    @messages[4].social_network_publish_date = Time.new(2010, 1, 10, 0, 0, 0)
+    @messages[0].scheduled_date_time = Time.new(2010, 1, 1, 0, 0, 0)
+    @messages[1].scheduled_date_time = Time.new(2010, 1, 6, 0, 0, 0)
+    @messages[2].scheduled_date_time = Time.new(2010, 1, 8, 0, 0, 0)
+    @messages[3].scheduled_date_time = Time.new(2010, 1, 9, 0, 0, 0)
+    @messages[4].scheduled_date_time = Time.new(2010, 1, 10, 0, 0, 0)
     (0..4).each { |index| @messages[index].save }
 
     # Only publish pending messages to Buffer up to a week in advance (social_network_publish_date <= 7 days from today)

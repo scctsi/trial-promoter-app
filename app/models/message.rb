@@ -23,7 +23,6 @@
 #  social_media_profile_id     :integer
 #
 
-
 class Message < ActiveRecord::Base
   extend Enumerize
   acts_as_ordered_taggable_on :experiments
