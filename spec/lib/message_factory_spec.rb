@@ -50,6 +50,7 @@ RSpec.describe MessageFactory do
       m.number_of_messages_per_social_network = 1
     end
     @experiment.message_generation_parameter_set = message_generation_parameter_set
+    @experiment.posting_times = ["12:30 AM"]
 
     @message_factory.create(@experiment)
     
@@ -63,7 +64,7 @@ RSpec.describe MessageFactory do
     publish_date = @experiment.message_distribution_start_date
     
     messages.all.each do |message|
-      expect(message.social_network_publish_date).to eq(publish_date)
+      expect(message.scheduled_date).to eq(publish_date)
       publish_date += 1.day
     end
   end
@@ -119,7 +120,7 @@ RSpec.describe MessageFactory do
       m.medium_distribution = :equal
       m.image_present_choices = ['with']
       m.image_present_distribution = :equal
-      m.period_in_days = 10
+      m.period_in_days = 1
       m.number_of_messages_per_social_network = 3
     end
     @experiment.message_generation_parameter_set = message_generation_parameter_set
