@@ -176,10 +176,9 @@ ActiveRecord::Schema.define(version: 20170214002354) do
     t.integer  "image_id"
     t.string   "publish_status"
     t.datetime "buffer_publish_date"
-    t.datetime "scheduled_date"
+    t.datetime "scheduled_date_time"
     t.string   "social_network_id"
     t.integer  "social_media_profile_id"
-    t.datetime "scheduled_time"
   end
 
   add_index "messages", ["message_generating_type", "message_generating_id"], name: "index_on_message_generating_for_analytics_files", using: :btree
