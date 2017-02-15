@@ -9,7 +9,7 @@ class Timeline
     events << OpenStruct.new(:date => date, :summary => summary, :description => description)
   end
   
-  def self.create_default_timeline(experiment)
+  def self.build_default_timeline(experiment)
     timeline = Timeline.new
 
     timeline.add_event(experiment.message_distribution_start_date - 3.days, 'Finish experiment setup; Message generation will be locked', 'Trial Promoter will no longer allow messages to be generated. Trial Promoter will send messages to Buffer (upto a week in advance) for distribution to social networks.')

@@ -22,8 +22,8 @@ RSpec.describe Timeline do
     expect(timeline.events[0].description).to eq('Description')
   end
   
-  it 'creates a default timeline for an experiment' do
-    timeline = Timeline.create_default_timeline(@experiment)
+  it 'builds a default timeline for an experiment' do
+    timeline = Timeline.build_default_timeline(@experiment)
     
     expect(timeline.events.count).to eq(4)
     expect(timeline.events[0].date).to eq(@experiment.message_distribution_start_date - 3.days)

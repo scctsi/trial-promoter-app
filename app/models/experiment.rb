@@ -98,4 +98,8 @@ class Experiment < ActiveRecord::Base
     
     array_of_posting_times
   end
+  
+  def timeline
+    Timeline.build_default_timeline(self)
+  end
 end

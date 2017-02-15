@@ -141,36 +141,45 @@ RSpec.describe Experiment, type: :model do
     end
   end
   
-  it 'returns the posting times as an array of DateTime instances' do
-    experiment = build(:experiment)
-    experiment.posting_times = '12:30 AM,12:30 PM,05:10 AM' 
+  describe 'when returning posting times as an array of DateTime instances' do
+    before do
+      @experiment = build(:experiment)
+    end
     
-    posting_times_as_datetimes = experiment.posting_times_as_datetimes
-    
-    expect(posting_times_as_datetimes.count).to eq(3)
-    expect(posting_times_as_datetimes[0].hour).to eq(0)
-    expect(posting_times_as_datetimes[0].minute).to eq(30)
-    expect(posting_times_as_datetimes[1].hour).to eq(12)
-    expect(posting_times_as_datetimes[1].minute).to eq(30)
-    expect(posting_times_as_datetimes[2].hour).to eq(5)
-    expect(posting_times_as_datetimes[2].minute).to eq(10)
+    it 'is successful' do
+      @experiment.posting_times = '12:30 AM,12:30 PM,05:10 AM' 
+      
+      posting_times_as_datetimes = @experiment.posting_times_as_datetimes
+      
+      expect(posting_times_as_datetimes.count).to eq(3)
+      expect(posting_times_as_datetimes[0].hour).to eq(0)
+      expect(posting_times_as_datetimes[0].minute).to eq(30)
+      expect(posting_times_as_datetimes[1].hour).to eq(12)
+      expect(posting_times_as_datetimes[1].minute).to eq(30)
+      expect(posting_times_as_datetimes[2].hour).to eq(5)
+      expect(posting_times_as_datetimes[2].minute).to eq(10)
+    end
+  
+    it 'returns an empty array posting_times is blank' do
+      @experiment.posting_times = ''
+      
+      posting_times_as_datetimes = @experiment.posting_times_as_datetimes
+      
+      expect(posting_times_as_datetimes.count).to eq(0)
+    end
+  
+    it 'returns an empty array if posting_times is nil' do
+      @experiment.posting_times = nil
+      
+      posting_times_as_datetimes = @experiment.posting_times_as_datetimes
+      
+      expect(posting_times_as_datetimes.count).to eq(0)
+    end
   end
-
-  it 'returns an empty array if the posting times are blank' do
+  
+  it 'returns a default timeline' do
     experiment = build(:experiment)
-    experiment.posting_times = ''
     
-    posting_times_as_datetimes = experiment.posting_times_as_datetimes
-    
-    expect(posting_times_as_datetimes.count).to eq(0)
-  end
-
-  it 'returns an empty array is the posting times is nil' do
-    experiment = build(:experiment)
-    experiment.posting_times = nil
-    
-    posting_times_as_datetimes = experiment.posting_times_as_datetimes
-    
-    expect(posting_times_as_datetimes.count).to eq(0)
+    expect(experiment.timeline.events).to eq(Timeline.build_default_timeline(experiment).events)
   end
 end
