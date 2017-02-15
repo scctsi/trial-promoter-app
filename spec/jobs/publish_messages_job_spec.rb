@@ -38,6 +38,21 @@ RSpec.describe PublishMessagesJob, type: :job do
     perform_enqueued_jobs { PublishMessagesJob.perform_later }
   end
 
+  it 'executes perform and publishes pending messages except organic Instagram messages' do
+    # There is currently no way to track organic Instagram messages, so these messages are currently never published to Buffer.
+    @messages[0].medium = :organic
+    @messages[0].message_template.platform = :instagram
+    @messages[0].message_template.save
+    @messages[0].save
+
+    expect(BufferClient).not_to receive(:create_update).with(@messages[0])
+    (1..4).each do |index|
+      expect(BufferClient).to receive(:create_update).with(@messages[index])
+    end
+
+    perform_enqueued_jobs { PublishMessagesJob.perform_later }
+  end
+
   it 'executes perform and publishes pending messages that need to be published to social networks in the next 7 days' do
     @messages[0].scheduled_date_time = Time.new(2010, 1, 1, 0, 0, 0)
     @messages[1].scheduled_date_time = Time.new(2010, 1, 6, 0, 0, 0)
