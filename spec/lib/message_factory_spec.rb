@@ -113,7 +113,7 @@ RSpec.describe MessageFactory do
     messages.all.each do |message|
       expect(message.social_media_profile).to eq(@suitable_social_media_profiles[1])
     end
-    
+
     # Has the scheduled date and time been set correctly?
     # TODO: How do I test this efficiently?
   end
