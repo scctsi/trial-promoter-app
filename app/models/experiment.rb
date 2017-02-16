@@ -17,14 +17,11 @@ class Experiment < ActiveRecord::Base
   include ActionView::Helpers::DateHelper
   include ActiveModel::Validations
 
-  serialize :posting_times
-
   validates_with ExperimentValidator
   validates :name, presence: true
   validates :end_date, presence: true
   validates :message_distribution_start_date, presence: true
 
-  # TODO: Small
   has_one :message_generation_parameter_set, as: :message_generating
   has_one :data_dictionary
   has_many :messages, as: :message_generating
@@ -38,8 +35,8 @@ class Experiment < ActiveRecord::Base
   end
 
   def disable_message_generation?
-    return false if self.message_distribution_start_date.nil?
-    (self.message_distribution_start_date - Time.now ) < 1.day
+    return false if message_distribution_start_date.nil?
+    (self.message_distribution_start_date - Time.now ) < 3.days
   end
 
   def create_messages
@@ -79,9 +76,9 @@ class Experiment < ActiveRecord::Base
   def self.allowed_times
     allowed_times = []
 
-    (1..12).to_a.each do |hour|
-      (0..5).to_a.each do |tens_digit_minute|
-        (0..9).to_a.each do |ones_digit_minute|
+    (1..12).each do |hour|
+      (0..5).each do |tens_digit_minute|
+        (0..9).each do |ones_digit_minute|
           allowed_times << "#{hour}:#{tens_digit_minute}#{ones_digit_minute} AM"
           allowed_times << "#{hour}:#{tens_digit_minute}#{ones_digit_minute} PM"
         end
@@ -89,5 +86,20 @@ class Experiment < ActiveRecord::Base
     end
 
     allowed_times
+  end
+  
+  def posting_times_as_datetimes
+    return [] if posting_times.nil?
+
+    array_of_posting_times = []
+
+    array_of_posting_times = posting_times.split(',')
+    array_of_posting_times.map! { |posting_time| DateTime.parse(posting_time, DateTime.new(2000, 1, 1)) }
+    
+    array_of_posting_times
+  end
+  
+  def timeline
+    Timeline.build_default_timeline(self)
   end
 end

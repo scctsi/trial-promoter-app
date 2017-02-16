@@ -32,33 +32,22 @@ RSpec.describe Experiment, type: :model do
   it { is_expected.to have_many(:analytics_files) }
   it { is_expected.to have_and_belong_to_many :social_media_profiles }
 
-  it 'stores posting times as an array' do
-    posting_times = [Time.now, Time.now, Time.now]
-    experiment = build(:experiment)
-    experiment.posting_times = posting_times
-
-    experiment.save
-    experiment.reload
-
-    expect(experiment.posting_times).to eq(posting_times)
-  end
-
   it 'returns an array of all possible times in a day' do
     expect(Experiment.allowed_times.count).to be(12 * 60 * 2)
   end
 
-  it 'includes various times of the day' do
+  it 'includes various times of the day in the array of all possible times' do
     expect(Experiment.allowed_times).to include('12:30 AM', '3:04 AM', '1:30 PM')
   end
 
-  it 'disables message generation when distribution start date is less than 24 hours from current time' do
-    experiment = create(:experiment, message_distribution_start_date: Time.new(2017, 01, 01, 23, 59, 0,  "+00:00") )
+  it 'disables message generation when distribution start date is less than 3 days (72 hours) from current time' do
+    experiment = create(:experiment, message_distribution_start_date: Time.new(2017, 01, 03, 23, 59, 0,  "+00:00") )
 
     expect(experiment.disable_message_generation?).to be true
   end
 
   it 'does not disable message generation when distribution start date is more than 24 hours from current time' do
-    experiment = create(:experiment, message_distribution_start_date: Time.new(2017, 01, 03, 0, 0, 0, "+00:00") )
+    experiment = create(:experiment, message_distribution_start_date: Time.new(2017, 01, 04, 0, 0, 0, "+00:00") )
 
     expect(experiment.disable_message_generation?).to be false
   end
@@ -151,5 +140,47 @@ RSpec.describe Experiment, type: :model do
       expect(analytics_files[3].required_upload_date).to eq(experiment.end_date)
       expect(experiment.analytics_file_todos_created).to be true
     end
+  end
+  
+  describe 'when returning posting times as an array of DateTime instances' do
+    before do
+      @experiment = build(:experiment)
+    end
+    
+    it 'is successful' do
+      @experiment.posting_times = '12:30 AM,12:30 PM,05:10 AM' 
+      
+      posting_times_as_datetimes = @experiment.posting_times_as_datetimes
+      
+      expect(posting_times_as_datetimes.count).to eq(3)
+      expect(posting_times_as_datetimes[0].hour).to eq(0)
+      expect(posting_times_as_datetimes[0].minute).to eq(30)
+      expect(posting_times_as_datetimes[1].hour).to eq(12)
+      expect(posting_times_as_datetimes[1].minute).to eq(30)
+      expect(posting_times_as_datetimes[2].hour).to eq(5)
+      expect(posting_times_as_datetimes[2].minute).to eq(10)
+    end
+  
+    it 'returns an empty array posting_times is blank' do
+      @experiment.posting_times = ''
+      
+      posting_times_as_datetimes = @experiment.posting_times_as_datetimes
+      
+      expect(posting_times_as_datetimes.count).to eq(0)
+    end
+  
+    it 'returns an empty array if posting_times is nil' do
+      @experiment.posting_times = nil
+      
+      posting_times_as_datetimes = @experiment.posting_times_as_datetimes
+      
+      expect(posting_times_as_datetimes.count).to eq(0)
+    end
+  end
+  
+  it 'returns a default timeline' do
+    experiment = build(:experiment)
+    
+    expect(experiment.timeline.events).to eq(Timeline.build_default_timeline(experiment).events)
   end
 end
