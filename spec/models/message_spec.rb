@@ -66,13 +66,13 @@ describe Message do
     before do
       @messages = create_list(:message, 3)
 
-      Ahoy::Event.create(id: 7, visit_id: 10, user_id: nil, name: "Converted", properties: { utm_source: "twitter", utm_campaign: "smoking cessation", utm_medium: "ad", utm_term: "cessation123", utm_content: @messages[2].to_param, conversionTracked: true, time: 1487207159071}, time: "2017-02-16 01:05:59")
+      Ahoy::Event.create(id: 7, visit_id: 10, user_id: nil, name: "Converted", properties: { "utm_source": "twitter", "utm_campaign": "smoking cessation", "utm_medium": "ad", "utm_term": "cessation123", "utm_content": @messages[2].to_param, "conversionTracked": true, "time": 1487207159071}, time: "2017-02-16 01:05:59")
     end
 
     it "correctly ties in visits to each message by checking the equality of utm_content to the to_param values" do
 
       expect(@messages[2].events.count).to eq(1)
-      expect(@messages[2].events[0].properties['utm_content']).to eq(@messages[2].to_param)
+      expect(@messages[2].events[0].properties["utm_content"]).to eq(@messages[2].to_param)
     end
   end
 
