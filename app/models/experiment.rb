@@ -34,7 +34,7 @@ class Experiment < ActiveRecord::Base
   end
 
   def disable_message_generation?
-    return false if self.message_distribution_start_date.nil?
+    return false if message_distribution_start_date.nil?
     (self.message_distribution_start_date - Time.now ) < 3.days
   end
 
