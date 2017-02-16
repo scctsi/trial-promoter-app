@@ -22,6 +22,14 @@ RSpec.describe BufferClient do
       expect(post_request_body[:access_token]).to eq(Setting[:buffer_access_token])
     end
 
+    it 'adds a scheduled_at key in the body of the POST request for a message that has a specifc scheduled date time' do
+      @message.scheduled_date_time = DateTime.new(2000, 1, 1, 6, 30, 0)
+      
+      post_request_body = BufferClient.post_request_body_for_create(@message)
+
+      expect(post_request_body[:scheduled_at]).to eq(@message.scheduled_date_time.to_s)
+    end
+
     describe 'synchronizing the list of social profiles' do
       it 'uses the Buffer API to get an initial of social media profiles' do
         VCR.use_cassette 'buffer/get_social_media_profiles' do

@@ -87,7 +87,7 @@ RSpec.describe ExperimentValidator, type: :validator do
     experiment = build(:experiment)
     experiment.message_generation_parameter_set = build(:message_generation_parameter_set, message_generating: experiment, :social_network_choices => [:instagram],
     :medium_choices => ['organic'])
-    posting_times = [Time.new(2017, 01, 01, 0, 0, 0, "+00:00")]
+    posting_times = '12:30AM'
     experiment.posting_times = posting_times
     social_media_profile = build(:social_media_profile)
     social_media_profile.platform = 'instagram'
