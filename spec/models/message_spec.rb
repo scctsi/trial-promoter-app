@@ -78,7 +78,7 @@ describe Message do
 
   describe "adding metrics" do
     it 'always updates existing metrics from a particular source' do
-      message = create(:message)
+      message = build(:message)
 
       message.metrics << Metric.new(source: :twitter, data: {"likes": 1})
       message.metrics << Metric.new(source: :twitter, data: {"likes": 2})
