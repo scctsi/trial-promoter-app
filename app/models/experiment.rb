@@ -21,7 +21,6 @@ class Experiment < ActiveRecord::Base
   validates :end_date, presence: true
   validates :message_distribution_start_date, presence: true
 
-  # TODO: Small
   has_one :message_generation_parameter_set, as: :message_generating
   has_one :data_dictionary
   has_many :messages, as: :message_generating
@@ -35,8 +34,8 @@ class Experiment < ActiveRecord::Base
   end
 
   def disable_message_generation?
-    return false if self.message_distribution_start_date.nil?
-    (self.message_distribution_start_date - Time.now ) < 1.day
+    return false if message_distribution_start_date.nil?
+    (self.message_distribution_start_date - Time.now ) < 3.days
   end
 
   def create_messages
@@ -97,5 +96,9 @@ class Experiment < ActiveRecord::Base
     array_of_posting_times.map! { |posting_time| DateTime.parse(posting_time, DateTime.new(2000, 1, 1)) }
     
     array_of_posting_times
+  end
+  
+  def timeline
+    Timeline.build_default_timeline(self)
   end
 end
