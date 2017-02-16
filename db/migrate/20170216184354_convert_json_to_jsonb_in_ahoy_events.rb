@@ -1,9 +1,11 @@
 class ConvertJsonToJsonbInAhoyEvents < ActiveRecord::Migration
   def up
-    change_column :ahoy_events, :properties, :jsonb
+    remove_column :ahoy_events, :properties, :json
+    add_column :ahoy_events, :properties, :jsonb
   end
 
   def down
-    change_column :ahoy_events, :properties, :json
+    remove_column :ahoy_events, :properties, :jsonb
+    add_column :ahoy_events, :properties, :json
   end
 end
