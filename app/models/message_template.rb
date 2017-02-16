@@ -21,6 +21,7 @@ class MessageTemplate < ActiveRecord::Base
   enumerize :platform, in: [:twitter, :facebook, :instagram], predicates: true
 
   serialize :hashtags
+  serialize :experiment_variables
   
   has_many :messages
 
