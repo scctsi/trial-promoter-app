@@ -18,6 +18,7 @@
 #
 
 
+
 require 'rails_helper'
 
 describe MessageGenerationParameterSet do

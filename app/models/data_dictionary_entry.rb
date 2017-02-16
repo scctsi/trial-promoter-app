@@ -16,6 +16,7 @@
 #  value_mapping      :text
 #
 
+
 class DataDictionaryEntry < ActiveRecord::Base
   extend Enumerize
 
