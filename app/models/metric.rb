@@ -10,6 +10,7 @@
 #  updated_at :datetime         not null
 #
 
+
 class Metric < ActiveRecord::Base
   extend Enumerize
 

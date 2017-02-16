@@ -1,3 +1,4 @@
+/*global $*/
 <!doctype html>
 
 <html lang="en">
@@ -11,20 +12,74 @@
   <link rel="stylesheet" href="css/styles.css?v=1.0">
   <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
   <script src="ahoy.js"></script>
+  <script src="js-cookie.js"></script>
 </head>
 
 <body>
+  <button type="button" id = "demo">
+  Click me @!</button>
+
   <script>
     $(document).ready(function() {
-      console.log('are you here?');
+      var utmParameters = getURLParameters();
+      var in30Minutes = 1/48;
 
-      ahoy.trackAll();
+      if (Cookies.get('utmParameters')) {
+        //do nothing
+      } else {
+        utmParameters["conversionTracked"] = false;
+        Cookies.set('utmParameters', utmParameters, {
+            expires: in30Minutes
+        });
+      }
+
+      function getURLParameters(){
+        var urlPairs = window.location.search.substring(1).split('&');
+        var parameterNames = queryStringToJSON(urlPairs);
+
+        return parameterNames;
+      }
+
+      function queryStringToJSON(pairs) {
+        var result = {};
+
+        pairs.forEach(function(pair) {
+          pair = pair.split('=');
+          result[pair[0]] = decodeURIComponent(pair[1] || '');
+        });
+        return result;
+      }
+
+      $("#demo").click(function() {
+        var timestamp = Math.floor(Date.now());
+        setConversionTracked(timestamp);
+      });
+
+      function setConversionTracked(timeClicked){
+        utmParameters = Cookies.getJSON('utmParameters');
+        if (utmParameters["conversionTracked"] === false) {
+          utmParameters["conversionTracked"] = true;
+          Cookies.set('utmParameters', utmParameters);
+
+          utmParameters["time"] = timeClicked;
+          ahoy.properties = utmParameters;
+          ahoy.track("Converted", utmParameters);
+
+        } else {
+          //do nothing
+        };
+      };
     });
   </script>
 
-  <button type="button"
-  onclick="document.getElementById('demo').innerHTML = Date()">
-  Click me !</button>
-  <p id="demo"></p>
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-26525218-5', 'auto');
+    ga('send', 'pageview');
+  </script>
 </body>
 </html>

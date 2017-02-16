@@ -14,6 +14,7 @@
 #
 
 
+
 class AnalyticsFile < ActiveRecord::Base
   validates :social_media_profile, presence: true
   validates :required_upload_date, presence: true

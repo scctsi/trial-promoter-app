@@ -65,13 +65,22 @@ class Message < ActiveRecord::Base
     return self[:medium].to_sym if !self[:medium].nil?
     nil
   end
-  
+
   def to_param
     "#{message_generating.to_param}-message-#{id}"
   end
-  
+
   def self.find_by_param(param)
     id = param[(param.rindex('-') + 1)..-1]
     Message.find(id)
+  end
+
+  def visits
+    Visit.where(utm_content: self.to_param)
+  end
+
+  def events
+    #REF https://github.com/ankane/ahoy/blob/081d97500f51f20eb2b2ba237ff6f215bbce115c/README.md#querying-properties
+    Ahoy::Event.where(name: "Converted").where_properties(utm_content: self.to_param)
   end
 end
