@@ -12,6 +12,7 @@
 #  posting_times                   :text
 #
 
+
 class Experiment < ActiveRecord::Base
   include ActionView::Helpers::DateHelper
   include ActiveModel::Validations

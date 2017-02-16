@@ -416,50 +416,7 @@ $(document).ready(function() {
     });
   }
 
-
-
-
-  function page() {
-    return window.location.pathname;
-  }
-
-
-  function eventProperties(e) {
-    var $target = $(e.currentTarget);
-    return {
-      tag: $target.get(0).tagName.toLowerCase(),
-      id: $target.attr("id"),
-      "class": $target.attr("class"),
-      page: page(),
-      section: $target.closest("*[data-section]").data("section")
-    };
-  }
-
-
-
-  ahoy.trackClicks = function () {
-    $(document).on("click", ".button.test-button", function (e) {
-
-      var $target = $(e.currentTarget);
-      var properties = eventProperties(e);
-      properties.whatever = window;
-      properties.text = properties.tag == "input" ? $target.val() : $.trim($target.text().replace(/[\s\r\n]+/g, " "));
-      properties.href = $target.attr("href");
-      console.log(e);
-      console.log(properties);
-      debugger;
-      ahoy.track("$click", properties);
-    });
-  };
-
-
-
-
-
-
-
   // Initialize
-  ahoy.trackClicks();
   setUpPostingTimeInputs();
   showSocialMediaProfiles();
   setUpExperimentRealTime();

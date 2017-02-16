@@ -2,19 +2,20 @@
 #
 # Table name: data_dictionary_entries
 #
-#  id                   :integer          not null, primary key
-#  include_in_report    :boolean
-#  trial_promoter_label :string
-#  report_label         :string
-#  integrity_check      :string
-#  source               :string
-#  note                 :text
-#  data_dictionary_id   :integer
-#  created_at           :datetime         not null
-#  updated_at           :datetime         not null
-#  allowed_values       :text
-#  value_mapping        :text
+#  id                 :integer          not null, primary key
+#  include_in_report  :boolean
+#  variable_name      :string
+#  report_label       :string
+#  integrity_check    :string
+#  source             :string
+#  note               :text
+#  data_dictionary_id :integer
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  allowed_values     :text
+#  value_mapping      :text
 #
+
 
 require 'rails_helper'
 

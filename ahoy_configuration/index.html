@@ -22,23 +22,18 @@
   </script>
 
   <button type="button" id = "demo">
-  <!-- onclick="document.getElementById('demo').innerHTML = Date()" -->
   Click me @!</button>
-  <!-- <p id="demo"></p> -->
 
   <script>
     $(document).ready(function() {
       var utmParameters = getURLParameters();
-      var trackingParameters = ["utm_source","utm_campaign", "utm_medium", "utm_term", "utm_content"]
+      // var trackingParameters = ["utm_source","utm_campaign", "utm_medium", "utm_term", "utm_content"]
       var in30Minutes = 1/48;
 
-      console.log(Cookies.get());
 
       if (Cookies.get('utmParameters')) {
-        console.log('Doing nothing');
         //do nothing
       } else {
-        console.log('Creating cookie');
 
         utmParameters["conversionTracked"] = false;
         Cookies.set('utmParameters', utmParameters, {
@@ -46,7 +41,7 @@
         });
       }
 
-      function getURLParameters(params){
+      function getURLParameters(){
         var urlPairs = window.location.search.substring(1).split('&');
         var parameterNames = queryStringToJSON(urlPairs);
 
@@ -60,27 +55,24 @@
           pair = pair.split('=');
           result[pair[0]] = decodeURIComponent(pair[1] || '');
         });
-console.log(result);
         return result;
       }
 
       $("#demo").click(function() {
         var timestamp = Math.floor(Date.now());
         setConversionTracked(timestamp);
-        console.log('Converted!');
       });
 
       function setConversionTracked(timeClicked){
         utmParameters = Cookies.getJSON('utmParameters');
-          debugger
         if (utmParameters["conversionTracked"] === false) {
           utmParameters["conversionTracked"] = true;
           Cookies.set('utmParameters', utmParameters);
 
           utmParameters["time"] = timeClicked;
           ahoy.properties = utmParameters;
-          console.log(Cookies.get('utmParameters'));
-          console.log(ahoy.properties);
+          console.log(utmParameters);
+          ahoy.track("Converted", utmParameters);
 
         } else {
           //do nothing
