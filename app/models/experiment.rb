@@ -21,7 +21,6 @@ class Experiment < ActiveRecord::Base
   validates :end_date, presence: true
   validates :message_distribution_start_date, presence: true
 
-  # TODO: Small
   has_one :message_generation_parameter_set, as: :message_generating
   has_one :data_dictionary
   has_many :messages, as: :message_generating
@@ -36,7 +35,7 @@ class Experiment < ActiveRecord::Base
 
   def disable_message_generation?
     return false if self.message_distribution_start_date.nil?
-    (self.message_distribution_start_date - Time.now ) < 1.day
+    (self.message_distribution_start_date - Time.now ) < 3.days
   end
 
   def create_messages
