@@ -81,4 +81,9 @@ class Message < ActiveRecord::Base
   def visits
     Visit.where(utm_content: self.to_param)
   end
+
+  def events
+    #REF https://github.com/ankane/ahoy/blob/081d97500f51f20eb2b2ba237ff6f215bbce115c/README.md#querying-properties
+    Ahoy::Event.where(name: "Converted").where_properties(utm_content: self.to_param)
+  end
 end
