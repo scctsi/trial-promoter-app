@@ -2,26 +2,27 @@
 #
 # Table name: messages
 #
-#  id                          :integer          not null, primary key
-#  message_template_id         :integer
-#  content                     :text
-#  tracking_url                :string(2000)
-#  created_at                  :datetime         not null
-#  updated_at                  :datetime         not null
-#  website_id                  :integer
-#  message_generating_id       :integer
-#  message_generating_type     :string
-#  promotable_id               :integer
-#  promotable_type             :string
-#  medium                      :string
-#  image_present               :string
-#  image_id                    :integer
-#  publish_status              :string
-#  buffer_publish_date         :datetime
-#  social_network_publish_date :datetime
-#  social_network_id           :string
-#  social_media_profile_id     :integer
+#  id                      :integer          not null, primary key
+#  message_template_id     :integer
+#  content                 :text
+#  tracking_url            :string(2000)
+#  created_at              :datetime         not null
+#  updated_at              :datetime         not null
+#  website_id              :integer
+#  message_generating_id   :integer
+#  message_generating_type :string
+#  promotable_id           :integer
+#  promotable_type         :string
+#  medium                  :string
+#  image_present           :string.created
+#  image_id                :integer
+#  publish_status          :string
+#  buffer_publish_date     :datetime
+#  scheduled_date_time     :datetime
+#  social_network_id       :string
+#  social_media_profile_id :integer
 #
+
 
 class Message < ActiveRecord::Base
   extend Enumerize
@@ -65,11 +66,11 @@ class Message < ActiveRecord::Base
     return self[:medium].to_sym if !self[:medium].nil?
     nil
   end
-  
+
   def to_param
     "#{message_generating.to_param}-message-#{id}"
   end
-  
+
   def self.find_by_param(param)
     id = param[(param.rindex('-') + 1)..-1]
     Message.find(id)

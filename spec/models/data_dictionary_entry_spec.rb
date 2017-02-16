@@ -16,6 +16,7 @@
 #  value_mapping      :text
 #
 
+
 require 'rails_helper'
 
 RSpec.describe DataDictionaryEntry do

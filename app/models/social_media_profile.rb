@@ -14,6 +14,7 @@
 #
 
 
+
 class SocialMediaProfile < ActiveRecord::Base
   extend Enumerize
 

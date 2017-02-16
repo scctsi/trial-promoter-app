@@ -1,13 +1,16 @@
 %table.ui.celled.striped.table
-  %thead 
+  %thead
     %tr
       = paginate messages
     %tr
       %th Content
+      %th Image
       %th Platform
       %th Medium
-      %th Image
-      %th
+      %th Sent to Buffer
+      %th Scheduled Date
+      %th Scheduled Time
+      %th Sent from Buffer
   %tfoot
     %tr
       = paginate messages
@@ -15,9 +18,11 @@
     - messages.each do |message|
       %tr
         %td= message.content
+        %td= message.image_id
         %td= message.message_template.platform.to_s.titleize
         %td= message.medium
-        %td= message.image_present
-        %td
-          %a{:href => edit_message_path(message)}
-            Edit
+        %td= message.buffer_publish_date
+        %td= message.scheduled_date_time.strftime("%b %d, %Y")
+        %td= message.scheduled_date_time.strftime("%I:%M %P")
+        %td= message.buffer_publish_date
+

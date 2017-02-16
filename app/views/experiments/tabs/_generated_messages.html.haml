@@ -22,6 +22,5 @@
       Regarding message generation
     %ul.list
       %li All messages for a experiment are deleted each time messages are generated.
-      %li A day before the experiment is scheduled to start message distribution, message generation will be locked.
+      %li Three days before the experiment is scheduled to start message distribution, message generation will be locked.
   = render partial: 'shared/messages', locals: { messages: @messages }
-  

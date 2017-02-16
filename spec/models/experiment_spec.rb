@@ -12,6 +12,7 @@
 #  posting_times                   :text
 #
 
+
 require 'rails_helper'
 
 RSpec.describe Experiment, type: :model do
