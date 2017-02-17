@@ -25,6 +25,7 @@
 
 
 
+
 require 'rails_helper'
 
 describe Message do
@@ -41,89 +42,89 @@ describe Message do
   it { is_expected.to belong_to :image }
   it { is_expected.to belong_to :social_media_profile }
 
-  it 'returns the medium as a sumbol' do
+  it 'returns the medium as a symbol' do
     message = build(:message)
     message.medium = :ad
-    
+
     expect(message.medium).to be :ad
   end
 
   describe "adding metrics" do
     it 'always updates existing metrics from a particular source' do
       message = build(:message)
-  
+
       message.metrics << Metric.new(source: :twitter, data: {"likes": 1})
       message.metrics << Metric.new(source: :twitter, data: {"likes": 2})
-  
+
       expect(message.metrics.length).to eq(1)
       expect(message.metrics[0].data[:likes]).to eq(2)
     end
 
     it "allows metrics from buffer, google_analytics and the message's platform" do
       message = build(:message)
-  
+
       message.metrics << Metric.new(source: :twitter, data: {"likes": 1})
       message.metrics << Metric.new(source: :google_analytics, data: {"users": 1})
       message.metrics << Metric.new(source: :buffer, data: {"likes": 1})
-  
+
       expect(message.metrics.length).to eq(3)
     end
 
     it "raises an exception if metrics are being added from a platform other than the message's platform" do
       skip "Cannot get this test to work!"
       message = build(:message)
-  
+
       expect { message.metrics << Metric.new(source: :facebook, data: {"likes": 1}) }.to raise_error(InvalidMetricSourceError, "Message platform is twitter, but metric source was facebook")
     end
   end
-  
+
   it "parameterizes id and the experiments's param together" do
     experiment = create(:experiment, name: 'TCORS 2')
     message = create(:message, message_generating: experiment)
     expect(message.to_param).to eq("#{experiment.to_param}-message-#{message.id.to_s}")
   end
-  
+
   it 'finds a message by the param' do
     create(:message)
-    
+
     message = Message.find_by_param(Message.first.to_param)
-    
+
     expect(message).to eq(Message.first)
   end
-  
+
   it 'raises an exception if a message cannot be found with a certain param' do
     expect { Message.find_by_param('unknown-param') }.to raise_error(ActiveRecord::RecordNotFound)
   end
-  
+
   describe 'pagination' do
     before do
       create_list(:message, 30)
       @messages = Message.order('created_at ASC')
     end
-    
+
     it 'has a default of 25 messages per page' do
       page_of_messages = Message.page(1)
-      
+
       expect(page_of_messages.count).to eq(25)
     end
-    
+
     it 'returns the first page of messages given a per page value' do
       page_of_messages = Message.order('created_at ASC').page(1).per(5)
-      
+
       expect(page_of_messages.count).to eq(5)
       expect(page_of_messages[0]).to eq(@messages[0])
     end
 
     it 'returns the second page of messages given a per page value' do
       page_of_messages = Message.order('created_at ASC').page(2).per(5)
-      
+
       expect(page_of_messages.count).to eq(5)
       expect(page_of_messages[0]).to eq(@messages[5])
     end
-    
+
     it 'returns a page of messages given a condition' do
       page_of_messages = Message.where(content: 'Content').order('created_at ASC').page(2).per(5)
-      
+
       expect(page_of_messages.count).to eq(5)
       expect(page_of_messages[0]).to eq(@messages[5])
     end

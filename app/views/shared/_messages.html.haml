@@ -21,7 +21,11 @@
         %td= message.image_id
         %td= message.message_template.platform.to_s.titleize
         %td= message.medium
-        %td= message.buffer_publish_date
+        -if message.buffer_publish_date
+          -if message.scheduled_date_time <= message.buffer_publish_date
+            %td.ui.negative.message= message.buffer_publish_date
+          -else
+            %td.ui.positive.message= message.buffer_publish_date
         %td= message.scheduled_date_time.strftime("%b %d, %Y")
         %td= message.scheduled_date_time.strftime("%I:%M %P")
         %td= message.buffer_publish_date

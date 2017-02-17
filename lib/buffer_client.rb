@@ -32,6 +32,8 @@ class BufferClient
   def self.get_update(message)
     response = get("https://api.bufferapp.com/1/updates/#{message.buffer_update.buffer_id}.json?access_token=#{Setting[:buffer_access_token]}")
     message.buffer_update.status = response.parsed_response["status"]
+    sent_time = Time.at(response.parsed_response["sent_at"])
+    message.buffer_update.sent_from_date_time = sent_time if message.buffer_update.status == 'sent'
     message.buffer_update.service_update_id = response.parsed_response["service_update_id"]
     # It's usually a bad idea to do what we do in the next line, namely copy the service_update_id to the message (the service_update_id is no longer DRY, it is repeated in two models).
     # However it makes sense in this case, because 1) it's convenient to access the social_network_id from the message and 2) the social_network_id should remain unchanged for ever.
@@ -43,7 +45,6 @@ class BufferClient
   def self.create_update(message)
     response = post('https://api.bufferapp.com/1/updates/create.json', {:body => BufferClient.post_request_body_for_create(message)})
     buffer_update = BufferUpdate.new(:buffer_id => response.parsed_response["updates"][0]["id"])
-    #implement sent_from_date_time and add tests
     message.buffer_update = buffer_update
     message.save
   end

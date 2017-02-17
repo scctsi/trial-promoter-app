@@ -14,7 +14,7 @@
 #  promotable_id           :integer
 #  promotable_type         :string
 #  medium                  :string
-#  image_present           :string.created
+#  image_present           :string
 #  image_id                :integer
 #  publish_status          :string
 #  buffer_publish_date     :datetime
@@ -22,6 +22,7 @@
 #  social_network_id       :string
 #  social_media_profile_id :integer
 #
+
 
 
 class Message < ActiveRecord::Base
