@@ -59,12 +59,18 @@ describe Message do
 
       expect(@messages[1].visits.count).to eq(1)
       expect(@messages[1].visits[0].utm_content).to eq(@messages[1].to_param)
+
+    end
+
+    it "shows zero if no visits have occurred" do
+
+      expect(@messages[2].visits.count).to eq(0)
     end
   end
 
   describe "#events" do
     before do
-      @messages = create_list(:message, 3)
+      @messages = create_list(:message, 4)
 
       Ahoy::Event.create(id: 7, visit_id: 10, user_id: nil, name: "Converted", properties: { "utm_source": "twitter", "utm_campaign": "smoking cessation", "utm_medium": "ad", "utm_term": "cessation123", "utm_content": @messages[2].to_param, "conversionTracked": true, "time": 1487207159071}, time: "2017-02-16 01:05:59")
     end
@@ -73,6 +79,11 @@ describe Message do
 
       expect(@messages[2].events.count).to eq(1)
       expect(@messages[2].events[0].properties["utm_content"]).to eq(@messages[2].to_param)
+    end
+
+    it "shows zero if no events have occurred" do
+
+      expect(@messages[3].events.count).to eq(0)
     end
   end
 
