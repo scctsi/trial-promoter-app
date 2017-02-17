@@ -1,4 +1,4 @@
-content,platform,hashtags,tags,website_url,website_name
-This is a message template.,facebook,"#BreastCancerAwareness,#BRCA2","theme-1,spring2017","http://www.brca.org","brca"
-This is another message template.,instagram,"#Melanoma,#SkinCancer","theme-skin,stem-1","http://www.melanoma.org","melanoma"
-This is a tweet template.,twitter,"#StopSmoking,#LoveYourLungs","theme-cessation,stop-smoking","http://www.lungsareawesome.org","lungsareawesome"
+content,platform,hashtags,tags,website_url,website_name,theme,fda_campaign
+This is a message template.,facebook,"#BreastCancerAwareness,#BRCA2","theme-1,spring2017","http://www.brca.org","brca",1,3
+This is another message template.,instagram,"#Melanoma,#SkinCancer","theme-skin,stem-1","http://www.melanoma.org","melanoma",2,3
+This is a tweet template.,twitter,"#StopSmoking,#LoveYourLungs","theme-cessation,stop-smoking","http://www.lungsareawesome.org","lungsareawesome",3,3
