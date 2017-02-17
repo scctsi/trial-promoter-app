@@ -17,7 +17,7 @@ RSpec.describe ImageImporter do
     prepared_csv_content = @image_importer.pre_import_prepare(@image_urls)
     
     expect(prepared_csv_content).not_to eq(@image_urls)
-    expect(prepared_csv_content).not_to eq([])
+    expect(prepared_csv_content).to eq([[nil, "N/A"], ["http://www.images.com/image1.png", "N/A"], ["http://www.images.com/image2.png", "N/A"]])
   end
 
   it 'successfully imports images' do

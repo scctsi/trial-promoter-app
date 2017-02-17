@@ -26,9 +26,9 @@ RSpec.describe MessageTemplate do
   end
   
   it 'stores the experiment variables as a hash' do
-    message_template = build(:message_template, platform: 'twitter', experiment_variables: { 'fda_campaign': '1', 'theme': '2', 'lin_meth_factor': '1', 'lin_meth_level': '3' })
+    message_template = build(:message_template, platform: 'twitter', experiment_variables: { 'fda_campaign' => '1', 'theme' => '2', 'lin_meth_factor' => '1', 'lin_meth_level' => '3' })
 
-    expect(message_template.experiment_variables).to eq({ 'fda_campaign': '1', 'theme': '2', 'lin_meth_factor': '1', 'lin_meth_level': '3' })
+    expect(message_template.experiment_variables).to eq({ 'fda_campaign' => '1', 'theme' => '2', 'lin_meth_factor' => '1', 'lin_meth_level' => '3' })
   end
 
   describe 'standardizing variables' do
