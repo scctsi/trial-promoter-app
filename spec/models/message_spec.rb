@@ -56,14 +56,11 @@ describe Message do
     end
 
     it "correctly ties in visits to each message by checking the equality of utm_content to the to_param values" do
-
       expect(@messages[1].visits.count).to eq(1)
       expect(@messages[1].visits[0].utm_content).to eq(@messages[1].to_param)
-
     end
 
-    it "shows zero if no visits have occurred" do
-
+    it "returns an empty array is no visits have occurred" do
       expect(@messages[2].visits.count).to eq(0)
     end
   end
@@ -76,13 +73,11 @@ describe Message do
     end
 
     it "correctly ties in visits to each message by checking the equality of utm_content to the to_param values" do
-
       expect(@messages[2].events.count).to eq(1)
       expect(@messages[2].events[0].properties["utm_content"]).to eq(@messages[2].to_param)
     end
 
-    it "shows zero if no events have occurred" do
-
+    it "returns an empty array is no events have occurred" do
       expect(@messages[3].events.count).to eq(0)
     end
   end
