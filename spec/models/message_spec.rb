@@ -23,9 +23,6 @@
 #  social_media_profile_id :integer
 #
 
-
-
-
 require 'rails_helper'
 
 describe Message do
@@ -47,6 +44,32 @@ describe Message do
     message.medium = :ad
 
     expect(message.medium).to be :ad
+  end
+
+  describe "#visits" do
+    before do
+      @messages = create_list(:message, 3)
+
+      Visit.create(id: 67, visit_token: "f07cdbd3-6df5-4aae-bf3b-9e23f2cf15b0", visitor_token: "4ff38d8e-5a4f-4af5-baee-2f068ae5b66d", ip: "128.125.77.139", user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWeb...", referrer: nil, landing_page: "http://promoter-staging.sc-ctsi.org/users/sign_in", user_id: nil, referring_domain: nil, search_keyword: nil, browser: "Chrome", os: "Windows 10", device_type: "Desktop", screen_height: 1200, screen_width: 1920, country: "United States", region: "California", city: "Los Angeles", postal_code: "90089", latitude: "#<BigDecimal:7f162d8729a0,'0.337866E2',18(18)>", longitude: "#<BigDecimal:7f162d8728b0,'-0.1182987E3',18(18)>", utm_source: nil, utm_medium: nil, utm_term: nil, utm_content: @messages[1].to_param, utm_campaign: nil, started_at: "2017-02-15 19:46:14")
+    end
+
+    it "correctly ties in visits to each message via the utm_content on the visit" do
+      expect(@messages[1].visits.count).to eq(1)
+      expect(@messages[1].visits[0].utm_content).to eq(@messages[1].to_param)
+    end
+  end
+
+  describe "#events" do
+    before do
+      @messages = create_list(:message, 3)
+
+      Ahoy::Event.create(id: 7, visit_id: 10, user_id: nil, name: "Converted", properties: { "utm_source": "twitter", "utm_campaign": "smoking cessation", "utm_medium": "ad", "utm_term": "cessation123", "utm_content": @messages[2].to_param, "conversionTracked": true, "time": 1487207159071}, time: "2017-02-16 01:05:59")
+    end
+
+    it "correctly ties in events to each message via the utm_content on the properties for each event" do
+      expect(@messages[2].events.count).to eq(1)
+      expect(@messages[2].events[0].properties["utm_content"]).to eq(@messages[2].to_param)
+    end
   end
 
   describe "adding metrics" do

@@ -5,6 +5,7 @@
       %th Platform
       %th Tags
       %th Hashtags
+      %th Experiment variables
   %tbody
     - message_templates.each do |message_template|
       %tr
@@ -12,4 +13,7 @@
         %td= message_template.platform
         %td 
           = render partial: 'shared/tag_list', locals: { tags: message_template.tag_list }
-        %td= message_template.hashtags
+        %td
+          = render partial: 'shared/tag_list', locals: { tags: message_template.hashtags, hashtags: true }
+        %td
+          = render partial: 'shared/hash', locals: { hash: message_template.experiment_variables }
