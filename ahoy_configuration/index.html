@@ -1,3 +1,4 @@
+/*global $*/
 <!doctype html>
 
 <html lang="en">
@@ -11,7 +12,7 @@
   <link rel="stylesheet" href="css/styles.css?v=1.0">
   <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
   <script src="ahoy.js"></script>
-  <script src="js.cookie.js"></script>
+  <script src="js-cookie.js"></script>
 </head>
 
 <body>
@@ -23,11 +24,9 @@
       var utmParameters = getURLParameters();
       var in30Minutes = 1/48;
 
-
       if (Cookies.get('utmParameters')) {
         //do nothing
       } else {
-
         utmParameters["conversionTracked"] = false;
         Cookies.set('utmParameters', utmParameters, {
             expires: in30Minutes

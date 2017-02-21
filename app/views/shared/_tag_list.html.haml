@@ -1,3 +1,8 @@
+- hashtags = false if hashtags.nil?
 - tags.each do |tag|
-  %a.ui.small.tag.label
-    = tag
+  - if hashtags
+    %a.ui.small.basic.label
+      = tag
+  - else
+    %a.ui.small.tag.label
+      = tag
