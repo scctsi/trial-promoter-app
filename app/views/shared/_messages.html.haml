@@ -1,16 +1,19 @@
 %table.ui.celled.striped.table
   %thead
-    = paginate messages
-    %th Content
-    %th Image
-    %th Platform
-    %th Medium
-    %th Sent to Buffer
-    %th Scheduled Date
-    %th Scheduled Time
-    %th Sent from Buffer
+    %tr
+      = paginate messages
+    %tr
+      %th Content
+      %th Image
+      %th Platform
+      %th Medium
+      %th Sent to Buffer
+      %th Scheduled Date
+      %th Scheduled Time
+      %th Sent from Buffer
   %tfoot
-    = paginate messages
+    %tr
+      = paginate messages
   %tbody
     - messages.each do |message|
       %tr
