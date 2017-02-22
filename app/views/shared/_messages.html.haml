@@ -29,7 +29,7 @@
         -else
           %td= message.image_present
         %td= message.content
-        %td= message.social_media_profile.icon_platform
+        %td= message.social_media_profile.platform_icon
         %td= message.medium
         -if message.buffer_publish_date
           -if message.scheduled_date_time <= message.buffer_publish_date + 2.days
