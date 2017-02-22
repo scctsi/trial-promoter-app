@@ -165,7 +165,9 @@ describe Message do
     end
 
     it 'checks if message sent from Buffer was on-time' do
-      expect(@message.delayed?).to be(true)
+      @message.scheduled_date_time = "2017-10-10 13:09:00"
+
+      expect(@message.delayed?).to be(false)
     end
   end
 end
