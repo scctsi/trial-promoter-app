@@ -299,7 +299,6 @@ $(document).ready(function() {
     var $imageSelectors = $('.image-selector');
     var allowedTags = $('#image-tags').data('allowed-tags');
 
-debugger
     // Selectize requires options to be of the form [{'value': 'val', 'item', 'val'}]
     if (typeof allowedTags === "undefined") {
       allowedTags = [];
