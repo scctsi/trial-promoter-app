@@ -17,3 +17,8 @@
           = render partial: 'shared/tag_list', locals: { tags: message_template.hashtags, hashtags: true }
         %td
           = render partial: 'shared/hash', locals: { hash: message_template.experiment_variables }
+      - if message_template.warnings.count > 0
+        %tr.negative
+          %td{ :colspan => 5 }
+            = message_template.warnings.join('; ')
+        
