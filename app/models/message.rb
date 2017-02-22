@@ -85,4 +85,8 @@ class Message < ActiveRecord::Base
     #REF https://github.com/ankane/ahoy/blob/081d97500f51f20eb2b2ba237ff6f215bbce115c/README.md#querying-properties
     Ahoy::Event.where(name: "Converted").where_properties(utm_content: self.to_param)
   end
+
+  def delayed?
+    return scheduled_date_time + 5.minutes < buffer_update.sent_from_date_time
+  end
 end
