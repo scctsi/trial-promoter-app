@@ -2,13 +2,14 @@
 #
 # Table name: buffer_updates
 #
-#  id                :integer          not null, primary key
-#  buffer_id         :string
-#  service_update_id :string
-#  status            :string
-#  message_id        :integer
-#  created_at        :datetime         not null
-#  updated_at        :datetime         not null
+#  id                  :integer          not null, primary key
+#  buffer_id           :string
+#  service_update_id   :string
+#  status              :string
+#  message_id          :integer
+#  created_at          :datetime         not null
+#  updated_at          :datetime         not null
+#  sent_from_date_time :datetime
 #
 
 require 'rails_helper'

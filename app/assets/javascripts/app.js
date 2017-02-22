@@ -380,7 +380,7 @@ $(document).ready(function() {
       searchField: 'item',
       delimiter: ',',
       options: allowedTimes,
-      create: true,
+      create: false,
       persist: false
     });
   }

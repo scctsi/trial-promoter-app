@@ -24,7 +24,7 @@ RSpec.describe BufferClient do
 
     it 'adds a scheduled_at key in the body of the POST request for a message that has a specifc scheduled date time' do
       @message.scheduled_date_time = DateTime.new(2000, 1, 1, 6, 30, 0)
-      
+
       post_request_body = BufferClient.post_request_body_for_create(@message)
 
       expect(post_request_body[:scheduled_at]).to eq(@message.scheduled_date_time.to_s)
@@ -85,6 +85,8 @@ RSpec.describe BufferClient do
 
       expect(BufferClient).to have_received(:get).with("https://api.bufferapp.com/1/updates/#{buffer_id}.json?access_token=#{Setting[:buffer_access_token]}")
       expect(@message.buffer_update.status).to eq(:sent)
+      # The sent_from_date_time should be equal to the update if the status is 'sent'
+      expect(@message.buffer_update.sent_from_date_time).to eq('2015-09-17 14:35:22 +0000')
       # When Buffer sends out a message on a social media platform, it stores an ID supplied by the social media platform
       expect(@message.buffer_update.service_update_id).to eq('644520020861681664')
       # Did the message copy over the service_update_id from Buffer?
