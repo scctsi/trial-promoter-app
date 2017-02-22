@@ -1,23 +1,47 @@
 %table.ui.celled.striped.table
-  %thead 
+  %thead
     %tr
       = paginate messages
     %tr
+      %th Image
       %th Content
       %th Platform
       %th Medium
-      %th Image
-      %th
+      %th Sent to Buffer
+      %th Scheduled Date
+      %th Scheduled Time
+      %th Sent from Buffer
   %tfoot
     %tr
       = paginate messages
   %tbody
     - messages.each do |message|
-      %tr
+      - row_class = ""
+      - if !message.buffer_update.nil?
+        - if message.delayed?
+          - row_class = "negative"
+        - else
+          - row_class = "positive"
+      %tr{ class: "#{row_class}" }
+        -if message.image
+          %td
+            = image_tag "#{message.image.url}", width: '50', height: '50', lazy: true
+        -else
+          %td= message.image_present
         %td= message.content
-        %td= message.message_template.platform.to_s.titleize
+        %td= message.social_media_profile.platform_icon
         %td= message.medium
-        %td= message.image_present
-        %td
-          %a{:href => edit_message_path(message)}
-            Edit
+        -if message.buffer_publish_date
+          -if message.scheduled_date_time <= message.buffer_publish_date + 2.days
+            %td.negative= message.buffer_publish_date.strftime("%b %d, %Y")
+          -else
+            %td= message.buffer_publish_date.strftime("%b %d, %Y")
+        -else
+          %td
+        %td= message.scheduled_date_time.strftime("%b %d, %Y")
+        %td= message.scheduled_date_time.strftime("%I:%M %P")
+        -if message.buffer_update.nil?
+          %td
+        -else
+          %td= message.buffer_update.sent_from_date_time.strftime("%I:%M %P, %b %d, %Y")
+
