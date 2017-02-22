@@ -78,15 +78,15 @@ class MessageTemplate < ActiveRecord::Base
     warnings = []
     return [] if content.nil?
     
-    warnings << 'Too long for use in Twitter.' if content.length > 140
-    warnings << 'Too long for use in Twitter (URL takes up 23 characters).' if content.include?('{url}') and content.length > 117 + '{url}'.length
+    warnings << 'Too long for use in Twitter' if content.length > 140
+    warnings << 'Too long for use in Twitter (URL takes up 23 characters)' if content.include?('{url}') and content.length > 117 + '{url}'.length
     
     # Hashtag inclusion checks
     if !hashtags.nil?
       if content.length + hashtags.map(&:length).min > 140
-        warnings << 'Too long for use in Twitter (None of the hashtags will ever be included).' 
+        warnings << 'Too long for use in Twitter (None of the hashtags will ever be included)'
       elsif content.length + hashtags.map(&:length).max > 140
-        warnings << 'Too long for use in Twitter (At least one of the hashtags will never be included).'
+        warnings << 'Too long for use in Twitter (At least one of the hashtags will never be included)'
       end
     end
     
