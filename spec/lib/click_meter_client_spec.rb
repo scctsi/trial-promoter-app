@@ -27,10 +27,10 @@ RSpec.describe ClickMeterClient do
       VCR.use_cassette 'click_meter/create_tracking_link' do
         url = ClickMeterClient.create_tracking_link(@experiment, @message)
       end
+      
+      puts url
 
       expect(ClickMeterClient).to have_received(:post).with('http://apiv2.clickmeter.com/datapoints', :body => ClickMeterClient.post_request_body_for_create_tracking_link(@experiment, @message), :headers => { 'Content-Type' => 'application/json; charset=UTF-8', 'X-Clickmeter-Authkey' => Setting[:click_meter_api_key] })
-  
-      puts ClickMeterClient.post_request_body_for_create_tracking_link(@experiment, @message).to_json
     end
   end
 end

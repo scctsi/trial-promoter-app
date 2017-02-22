@@ -7,6 +7,6 @@ RSpec.describe BijectiveFunction do
   end
   
   it 'decodes a string' do
-    expect(BijectiveFunction.decode('bwK2gu')).to eq(1250000001)
+    expect(BijectiveFunction.decode('bwK2gu')).to eq(1250000000)
   end
 end

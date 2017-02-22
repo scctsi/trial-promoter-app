@@ -16,8 +16,6 @@ class ClickMeterClient
   end
   
   def self.create_tracking_link(experiment, message)
-    response = post('http://apiv2.clickmeter.com/datapoints', :body => ClickMeterClient.post_request_body_for_create_tracking_link(experiment, message), :headers => { 'Content-Type' => 'application/json; charset=UTF-8', 'X-Clickmeter-Authkey' => Setting[:click_meter_api_key]} )
-
-    puts response
+    response = get('http://apiv2.clickmeter.com:80/datapoints', :headers => { 'Content-Type' => 'application/json; charset=UTF-8', 'X-Clickmeter-Authkey' => Setting[:click_meter_api_key]} )
   end
 end
