@@ -309,7 +309,7 @@ $(document).ready(function() {
     $('#image-tags').selectize({
       delimiter: ',',
       persist: false,
-      create: true,
+      create: false,
       valueField: 'item',
       labelField: 'item',
       options: allowedTags
@@ -380,7 +380,7 @@ $(document).ready(function() {
       searchField: 'item',
       delimiter: ',',
       options: allowedTimes,
-      create: true,
+      create: false,
       persist: false
     });
   }
