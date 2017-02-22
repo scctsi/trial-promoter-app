@@ -23,10 +23,6 @@
 #  social_media_profile_id     :integer
 #
 
-
-
-require 'rails_helper'
-
 describe Message do
   it { is_expected.to validate_presence_of :content }
   it { is_expected.to belong_to :message_template }
