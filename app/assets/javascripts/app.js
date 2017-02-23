@@ -78,16 +78,6 @@ $(document).ready(function() {
     return 'https://s3-us-west-1.amazonaws.com/' + bucket + '/' + key;
   }
 
-  function createS3BucketUrls(Blobs) {
-    var namedUrls = [];
-    var bucketName = '';
-    for (var i = 0; i < Blobs.length; i++) {
-      bucketName = Blobs[0].container;
-      namedUrls.push(createS3Url(bucketName, Blobs[i].key));
-    }
-    return namedUrls;
-  }
-
   function setUpImageImports() {
     $('#images-upload-button').click(function() {
       var experimentId = $(this).data('experiment-id');
@@ -106,8 +96,12 @@ $(document).ready(function() {
           access: 'public'
         },
         function(Blobs) {
-          var imageUrls = createS3BucketUrls(Blobs);
-
+          var imageUrls = [];
+          var bucketName = '';
+          for (var i = 0; i < Blobs.length; i++) {
+            bucketName = Blobs[0].container;
+            imageUrls.push(createS3Url(bucketName, Blobs[i].key));
+          }
           $.ajax({
             url : '/images/import',
             type: 'POST',
@@ -147,23 +141,22 @@ $(document).ready(function() {
           access: 'public'
         },
         function(Blobs) {
-          var analyticsFileUrls = createS3BucketUrls(Blobs);
-
+          var analyticsFilesUrls = [];
+          var bucketName = '';
+          for (var i = 0; i < Blobs.length; i++) {
+            bucketName = Blobs[0].container;
+            analyticsFilesUrls.push(createS3Url(bucketName, Blobs[i].key));
+          }
           $.ajax({
             url : '/analytics_files/' + analyticsFileId.toString() + '/update',
             type: 'POST',
-            data: {analytics_file_urls: analyticsFileUrls, experiment_id: experimentId.toString()},
+            data: {url: Blob.url, experiment_id: experimentId.toString()},
             dataType: 'json',
             success: function(retdata) {
               $('.ui.success.message.hidden.ask-refresh-page').removeClass('hidden');
             }
           });
-        },
-        function(error){
-        },
-        function(progress){
-        }
-      );
+        })
     })
   }
 
