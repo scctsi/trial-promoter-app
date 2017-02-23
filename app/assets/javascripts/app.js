@@ -78,6 +78,16 @@ $(document).ready(function() {
     return 'https://s3-us-west-1.amazonaws.com/' + bucket + '/' + key;
   }
 
+  function createS3BucketUrls(Blobs) {
+    var namedUrls = [];
+    var bucketName = '';
+    for (var i = 0; i < Blobs.length; i++) {
+      bucketName = Blobs[0].container;
+      namedUrls.push(createS3Url(bucketName, Blobs[i].key));
+    }
+    return namedUrls;
+  }
+
   function setUpImageImports() {
     $('#images-upload-button').click(function() {
       var experimentId = $(this).data('experiment-id');
@@ -96,12 +106,8 @@ $(document).ready(function() {
           access: 'public'
         },
         function(Blobs) {
-          var imageUrls = [];
-          var bucketName = '';
-          for (var i = 0; i < Blobs.length; i++) {
-            bucketName = Blobs[0].container;
-            imageUrls.push(createS3Url(bucketName, Blobs[i].key));
-          }
+          var imageUrls = createS3BucketUrls(Blobs);
+
           $.ajax({
             url : '/images/import',
             type: 'POST',
@@ -125,21 +131,37 @@ $(document).ready(function() {
       $(this).addClass('loading');
       $(this).removeClass('primary');
       var analyticsFileId = $(this).data('analytics-file-id');
+      var experimentId = $(this).data('experiment-id');
+      var experimentParam = $(this).data('experiment-param');
 
-      filepicker.pick({
+      filepicker.pickAndStore({
           mimetypes: ['text/csv', 'application/vnd.ms-excel'],
+          multiple: true,
           container: 'modal',
           services: ['COMPUTER', 'GOOGLE_DRIVE', 'DROPBOX']
         },
-        function(Blob) {
+        {
+          location: 'S3',
+          path: '/' + experimentParam + '/analytics_files/',
+          container: s3BucketContainer(),
+          access: 'public'
+        },
+        function(Blobs) {
+          var analyticsFileUrls = createS3BucketUrls(Blobs);
+
           $.ajax({
             url : '/analytics_files/' + analyticsFileId.toString() + '/update',
-            type: 'PATCH',
-            data: {url: Blob.url},
+            type: 'POST',
+            data: {analytics_file_urls: analyticsFileUrls, experiment_id: experimentId.toString()},
             dataType: 'json',
             success: function(retdata) {
+              $('.ui.success.message.hidden.ask-refresh-page').removeClass('hidden');
             }
           });
+        },
+        function(error){
+        },
+        function(progress){
         }
       );
     })
