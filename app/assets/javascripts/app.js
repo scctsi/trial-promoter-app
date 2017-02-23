@@ -125,23 +125,38 @@ $(document).ready(function() {
       $(this).addClass('loading');
       $(this).removeClass('primary');
       var analyticsFileId = $(this).data('analytics-file-id');
+      var experimentId = $(this).data('experiment-id');
+      var experimentParam = $(this).data('experiment-param');
 
-      filepicker.pick({
+      filepicker.pickAndStore({
           mimetypes: ['text/csv', 'application/vnd.ms-excel'],
+          multiple: true,
           container: 'modal',
           services: ['COMPUTER', 'GOOGLE_DRIVE', 'DROPBOX']
         },
-        function(Blob) {
+        {
+          location: 'S3',
+          path: '/' + experimentParam + '/analytics_files/',
+          container: s3BucketContainer(),
+          access: 'public'
+        },
+        function(Blobs) {
+          var analyticsFilesUrls = [];
+          var bucketName = '';
+          for (var i = 0; i < Blobs.length; i++) {
+            bucketName = Blobs[0].container;
+            analyticsFilesUrls.push(createS3Url(bucketName, Blobs[i].key));
+          }
           $.ajax({
             url : '/analytics_files/' + analyticsFileId.toString() + '/update',
-            type: 'PATCH',
-            data: {url: Blob.url},
+            type: 'POST',
+            data: {url: Blob.url, experiment_id: experimentId.toString()},
             dataType: 'json',
             success: function(retdata) {
+              $('.ui.success.message.hidden.ask-refresh-page').removeClass('hidden');
             }
           });
-        }
-      );
+        })
     })
   }
 
