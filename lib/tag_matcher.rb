@@ -3,13 +3,17 @@ class TagMatcher
     class_with_tags.send(:tagged_with, tag_list)
   end
 
-  def match(class_with_tags, tag_list)
+  def match(tagged_objects, tag_list)
     matches = []
+    tagged_objects.each do |t_o|
+      p t_o.tag_list
+    end
 
     (1..tag_list.length).each do |combination_length|
       tag_list.combination(combination_length).to_a.each do |tag_combination|
-        found_instances = class_with_tags.send(:tagged_with, tag_combination, :match_all => true)
-        matches.concat(found_instances.to_a) if found_instances.length > 0
+        found_objects = tagged_objects[0].class.send(:tagged_with, tag_combination, :match_all => true)
+        found_objects = found_objects.select{ |found_object| tagged_objects.include?(found_object) }
+        matches.concat(found_objects.to_a) if found_objects.length > 0
       end
     end
 
