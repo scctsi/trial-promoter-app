@@ -7,9 +7,9 @@
       %th Content
       %th Platform
       %th Medium
-      %th Sent to Buffer
       %th Scheduled Date
       %th Scheduled Time
+      %th Sent to Buffer
       %th Sent from Buffer
   %tfoot
     %tr
@@ -29,8 +29,13 @@
         -else
           %td= message.image_present
         %td= message.content
-        %td= message.social_media_profile.platform_icon
+        - if message.social_media_profile
+          %td= message.social_media_profile.platform_icon_and_name
+        - else
+          %td
         %td= message.medium
+        %td= message.scheduled_date_time.strftime("%b %d, %Y")
+        %td= message.scheduled_date_time.strftime("%I:%M %P")
         -if message.buffer_publish_date
           -if message.scheduled_date_time <= message.buffer_publish_date + 2.days
             %td.negative= message.buffer_publish_date.strftime("%b %d, %Y")
@@ -38,8 +43,6 @@
             %td= message.buffer_publish_date.strftime("%b %d, %Y")
         -else
           %td
-        %td= message.scheduled_date_time.strftime("%b %d, %Y")
-        %td= message.scheduled_date_time.strftime("%I:%M %P")
         -if message.buffer_update.nil?
           %td
         -else
