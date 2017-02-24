@@ -19,6 +19,12 @@ class ExperimentsController < ApplicationController
     @messages = Message.where(:message_generating_id => @experiment.id).page(params[:page]).order('created_at ASC')
     tag_matcher = TagMatcher.new
     @distinct_tag_list = tag_matcher.distinct_tag_list(@message_templates)
+
+    # ---- Temp data
+
+    @messages_with_metrics = []
+    @messages_with_metrics[0] = Message.new(content: 'Stop smoking!', medium: :organic)
+    @messages_with_metrics[0].metrics << Metric.new(data: {likes: 2, reach: 2460, clicks: 56, retweets: 20, mentions: 1}, source: :twitter)
   end
 
   def new
