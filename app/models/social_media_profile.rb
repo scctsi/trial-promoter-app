@@ -41,4 +41,8 @@ class SocialMediaProfile < ActiveRecord::Base
     return ("<i class = '#{platform} icon'></i> #{platform.to_s.titleize} [] #{service_username}").html_safe if allowed_mediums.nil?
     return ("<i class = '#{platform} icon'></i> #{platform.to_s.titleize} [#{allowed_mediums.join(', ').titleize}] #{service_username}").html_safe
   end
+
+  def platform_icon_and_name
+    return ("<i class = '#{platform} icon'></i> #{platform.to_s.titleize}").html_safe
+  end
 end

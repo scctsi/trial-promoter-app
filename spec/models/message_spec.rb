@@ -2,27 +2,32 @@
 #
 # Table name: messages
 #
-#  id                          :integer          not null, primary key
-#  message_template_id         :integer
-#  content                     :text
-#  tracking_url                :string(2000)
-#  created_at                  :datetime         not null
-#  updated_at                  :datetime         not null
-#  website_id                  :integer
-#  message_generating_id       :integer
-#  message_generating_type     :string
-#  promotable_id               :integer
-#  promotable_type             :string
-#  medium                      :string
-#  image_present               :string
-#  image_id                    :integer
-#  publish_status              :string
-#  buffer_publish_date         :datetime
-#  social_network_publish_date :datetime
-#  social_network_id           :string
-#  social_media_profile_id     :integer
+#  id                      :integer          not null, primary key
+#  message_template_id     :integer
+#  content                 :text
+#  tracking_url            :string(2000)
+#  created_at              :datetime         not null
+#  updated_at              :datetime         not null
+#  website_id              :integer
+#  message_generating_id   :integer
+#  message_generating_type :string
+#  promotable_id           :integer
+#  promotable_type         :string
+#  medium                  :string
+#  image_present           :string
+#  image_id                :integer
+#  publish_status          :string
+#  buffer_publish_date     :datetime
+#  scheduled_date_time     :datetime
+#  social_network_id       :string
+#  social_media_profile_id :integer
 #
 
+<<<<<<< HEAD
+=======
+require 'rails_helper'
+
+>>>>>>> development
 describe Message do
   it { is_expected.to validate_presence_of :content }
   it { is_expected.to belong_to :message_template }
@@ -156,6 +161,24 @@ describe Message do
 
       expect(page_of_messages.count).to eq(5)
       expect(page_of_messages[0]).to eq(@messages[5])
+    end
+  end
+
+  describe "#delayed?" do
+    before do
+      @message = create(:message)
+      @message.scheduled_date_time = "2017-10-10 13:04:00"
+      @message.buffer_update = BufferUpdate.new(id: 2, buffer_id: "23423244", service_update_id: "2343225435247", status: "pending", message_id: 1128, created_at: "2017-02-17 19:55:02", updated_at: "2017-02-21 23:19:04", sent_from_date_time: "2017-10-10 13:09:22")
+    end
+
+    it 'checks if message sent from Buffer has been delayed' do
+      expect(@message.delayed?).to be(true)
+    end
+
+    it 'checks if message sent from Buffer was on-time' do
+      @message.scheduled_date_time = "2017-10-10 13:09:00"
+
+      expect(@message.delayed?).to be(false)
     end
   end
 end

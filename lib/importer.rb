@@ -1,3 +1,4 @@
+# TODO: This class is only unit tested via its subclasses.
 class Importer
   attr_accessor :import_class, :parsed_csv_content, :column_index_attribute_mapping, :experiment_tag
   
@@ -13,6 +14,9 @@ class Importer
     self.column_index_attribute_mapping = {}
   end
 
+  def pre_import
+  end
+  
   def pre_import_prepare(parsed_csv_content)
     # Always return a duplicate of the parsed_csv_content so that we can modify that content as needed without affecting the original.
     return parsed_csv_content.dup
@@ -21,8 +25,8 @@ class Importer
   def post_import(prepared_csv_content)
   end
 
-  # TODO: This class is only unit tested via its subclasses.
   def import
+    pre_import()
     prepared_csv_content = pre_import_prepare(parsed_csv_content)
 
     # Remove the heading row for the parsed_csv_content

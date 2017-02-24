@@ -3,31 +3,56 @@ class MessageTemplateImporter < Importer
     self.import_class = MessageTemplate
     self.column_index_attribute_mapping = { 0 => 'content', 1 => 'platform', 2 => 'hashtags', 3 => 'tag_list', 6 => 'experiment_variables' }
   end
+
+  def pre_import
+    # Delete any previously associated message templates
+    MessageTemplate.tagged_with(@experiment_tag, on: :experiments).each{ |message_template| message_template.destroy }
+  end
   
   def pre_import_prepare(parsed_csv_content)
+    prepared_csv_content = []
+    
     # Any column after the 6th column contains variables related to the experiment itself.
     # These are collapsed into a single column called experiment_variables with a hash of the values.
     if parsed_csv_content[0].length > 6
-      parsed_csv_content_with_experiment_variables = []
       heading_row = [parsed_csv_content[0][0..5], 'experiment_variables'].flatten
       experiment_variable_names = parsed_csv_content[0][6..parsed_csv_content[0].length]
 
       parsed_csv_content.each.with_index do |csv_row, index|
         if index == 0
-          parsed_csv_content_with_experiment_variables << heading_row
+          prepared_csv_content << heading_row
         else
           experiment_variables_hash = {}
           experiment_variable_names.each.with_index do |experiment_variable_name, column_index|
             experiment_variables_hash[experiment_variable_name] = csv_row[column_index + 6]
           end
-          parsed_csv_content_with_experiment_variables << [csv_row[0..5], experiment_variables_hash].flatten
+          prepared_csv_content << [csv_row[0..5], experiment_variables_hash].flatten
         end
       end
-      
-      return parsed_csv_content_with_experiment_variables
     else
-      return parsed_csv_content
+      # Just make a copy of the parsed_csv_content
+      parsed_csv_content.each.with_index do |csv_row, index|
+        prepared_csv_content << csv_row
+      end
     end
+
+    # If the platform column has a comma separated list of platform names, convert this row to multiple rows with a single value for platform for each row
+    intermediate_prepared_csv_content = prepared_csv_content.dup
+    prepared_csv_content = []
+    intermediate_prepared_csv_content.each.with_index do |csv_row, index|
+      if index == 0
+        prepared_csv_content << csv_row
+      else
+        platforms = csv_row[1].to_s.split(',')
+        platforms.each do |platform|
+          csv_row_with_single_platform = csv_row.dup  
+          csv_row_with_single_platform[1] = platform.strip
+          prepared_csv_content << csv_row_with_single_platform
+        end
+      end
+    end
+    
+    prepared_csv_content
   end
 
   def post_import(parsed_csv_content)
