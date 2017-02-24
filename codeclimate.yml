@@ -1,5 +1,0 @@
-languages:
-  Ruby: true
-exclude_paths:
-- "ahoy_configuration/ahoy.js"
-- "ahoy_configuration/js-cookie.js"
