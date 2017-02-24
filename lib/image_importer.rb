@@ -1,4 +1,9 @@
 class ImageImporter < Importer
+  def pre_import
+    # Delete any previously associated images
+    Image.tagged_with(@experiment_tag, on: :experiments).each{ |image| image.destroy }
+  end
+
   def pre_import_prepare(image_urls)
     # When importing images the initialize method receives an array of hosted image URLs.
     # The base method expects an array of rows with data for each column, along with a first row that is nil for the heading.

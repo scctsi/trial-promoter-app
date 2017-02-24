@@ -3,6 +3,11 @@ class MessageTemplateImporter < Importer
     self.import_class = MessageTemplate
     self.column_index_attribute_mapping = { 0 => 'content', 1 => 'platform', 2 => 'hashtags', 3 => 'tag_list', 6 => 'experiment_variables' }
   end
+
+  def pre_import
+    # Delete any previously associated message templates
+    MessageTemplate.tagged_with(@experiment_tag, on: :experiments).each{ |message_template| message_template.destroy }
+  end
   
   def pre_import_prepare(parsed_csv_content)
     # Any column after the 6th column contains variables related to the experiment itself.

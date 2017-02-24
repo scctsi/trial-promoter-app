@@ -3,12 +3,14 @@ require 'rails_helper'
 RSpec.describe MessageTemplateImporter do
   before do
     @parsed_csv_content = [['content', 'platform', 'hashtags', 'tags', 'website_url', 'website_name'], ['This is a message template.', 'twitter', '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation']]
-    @experiment_tag = '1-tcors'
+    @experiment = create(:experiment)
+    @experiment_tag = @experiment.to_param
     @message_template_importer = MessageTemplateImporter.new(@parsed_csv_content, @experiment_tag)
   end
 
   it 'defines a post_initialize method which sets the import_class and column_index_attribute_mapping attributes' do
     @message_template_importer.post_initialize
+    
     expect(@message_template_importer.import_class).to eq(MessageTemplate)
     expect(@message_template_importer.column_index_attribute_mapping).to eq({ 0 => 'content', 1 => 'platform', 2 => 'hashtags', 3 => 'tag_list', 6 => 'experiment_variables' })
   end
@@ -18,6 +20,14 @@ RSpec.describe MessageTemplateImporter do
     prepared_csv_content = @message_template_importer.pre_import_prepare(@parsed_csv_content)
     
     expect(prepared_csv_content).to eq([['content', 'platform', 'hashtags', 'tags', 'website_url', 'website_name', 'experiment_variables'], ['This is a message template.', 'twitter', '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation', { 'theme' => '1', 'fda_campaign' => '2'}]])
+  end
+  
+  it 'defines a pre_import method which deletes all the message templates associated with the experiment' do
+    message_templates = create_list(:message_template, 2, experiment_list: [@experiment.to_param])
+
+    @message_template_importer.pre_import
+    
+    expect(MessageTemplate.belonging_to(@experiment).count).to eq(0)
   end
 
   it 'successfully imports message templates' do
