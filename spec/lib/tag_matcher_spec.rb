@@ -55,6 +55,18 @@ RSpec.describe TagMatcher do
   end
 
   describe 'matching' do
+    it 'acts_as_taggable_on correctly matches when match_all is true' do
+      @websites[0].tag_list = ['tag-1']
+      @websites[1].tag_list = ['tag-2', 'tag-3']
+      @websites[2].tag_list = ['tag-1', 'tag-2', 'tag-3', 'tag-4', 'tag-5']
+      @websites.each { |website| website.save }
+      
+      found_websites = Website.tagged_with(['tag-1'], :match_all => true)
+      
+      p found_websites
+      expect(found_websites.length).to eq(1)
+    end
+
     it 'matches all objects whose tags are a subset of a given set of tags' do
       @websites[0].tag_list = ['tag-1']
       @websites[1].tag_list = ['tag-2', 'tag-3']

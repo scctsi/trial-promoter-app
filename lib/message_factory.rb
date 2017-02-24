@@ -45,10 +45,11 @@ class MessageFactory
     end
 
     # If we need to add images
-    # include_images = true if experiment.message_generation_parameter_set.image_present_choices.include?(:with)
-    # if include_images
-    #   attach_images(experiment, experiment.messages, experiment.message_generation_parameter_set.image_present_distribution)
-    # end
+    p experiment.message_generation_parameter_set.image_present_choices
+    include_images = true if experiment.message_generation_parameter_set.image_present_choices.include?(:with)
+    if include_images
+      attach_images(experiment, experiment.messages, experiment.message_generation_parameter_set.image_present_distribution)
+    end
   end
 
   def attach_images(experiment, messages, distribution=:equal)

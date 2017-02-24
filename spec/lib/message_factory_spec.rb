@@ -6,7 +6,8 @@ RSpec.describe MessageFactory do
     @suitable_social_media_profiles = create_list(:social_media_profile, 3)
     @suitable_social_media_profiles.each { |social_media_profile| @experiment.social_media_profiles << social_media_profile }
     @experiment.save
-    tag_lists = [['tag-1'], ['tag-4', 'tag-5', 'tag-6'], ['tag-2', 'tag-3', 'tag-4']]
+    #tag_lists = [['tag-1'], ['tag-4', 'tag-5', 'tag-6'], ['tag-2', 'tag-3', 'tag-4']]
+    tag_lists = [['tag-1']]
     TrialPromoter::SUPPORTED_NETWORKS.each do |social_network|
       # Randomly tag each message template with a set of tags taken from tag_lists
       tag_list = tag_lists.sample
@@ -27,7 +28,7 @@ RSpec.describe MessageFactory do
     allow(@pusher_channel).to receive(:trigger)
   end
 
-  xit 'can be initialized with a tag matcher and a social media profile picker' do
+  it 'can be initialized with a tag matcher and a social media profile picker' do
     @message_factory = MessageFactory.new(@tag_matcher, @social_media_profile_picker)
     
     expect(@message_factory.tag_matcher).to eq(@tag_matcher)
@@ -76,7 +77,7 @@ RSpec.describe MessageFactory do
     end
   end
 
-  xit 'creates a set of messages for one website, five message templates, 3 social networks (equal distribution), 2 mediums (equal distribution), with and without images (equal distribution), for 3 days and 3 messages per network per day' do
+  it 'creates a set of messages for one website, five message templates, 3 social networks (equal distribution), 2 mediums (equal distribution), with and without images (equal distribution), for 3 days and 3 messages per network per day' do
     @experiment.posting_times = "12:30 PM,5:30 PM,6:32 PM"
     @experiment.save
     message_generation_parameter_set = MessageGenerationParameterSet.new do |m|
@@ -84,7 +85,7 @@ RSpec.describe MessageFactory do
       m.social_network_distribution = :equal
       m.medium_choices = [:ad, :organic]
       m.medium_distribution = :equal
-      m.image_present_choices = [:with, :without]
+      m.image_present_choices = [:with]
       m.image_present_distribution = :equal
       m.period_in_days = 3
       m.number_of_messages_per_social_network = 3
@@ -108,10 +109,12 @@ RSpec.describe MessageFactory do
     # Tag matching
     # Do the websites selected for each message belong to the set of images matched to the message template?
     messages.all.each do |message|
+      expect(message.promotable).not_to be_nil
       expect(@tag_matcher.match(Website.belonging_to(@experiment), message.message_template.tag_list)).to include(message.promotable)
     end
     # Do the images selected for each message belong to the set of images matched to the message template?
     messages.all.each do |message|
+      expect(message.image).not_to be_nil if message.image_present == :with
       expect(@tag_matcher.match(Image.belonging_to(@experiment), message.message_template.tag_list)).to include(message.image) if message.image_present == :with
     end
     
@@ -124,7 +127,7 @@ RSpec.describe MessageFactory do
     # TODO: How do I test this efficiently?
   end
 
-  xit 'recreates the messages each time' do
+  it 'recreates the messages each time' do
     @experiment.posting_times = "12:30 PM,5:30 PM,6:32 PM"
     @experiment.save
     message_generation_parameter_set = MessageGenerationParameterSet.new do |m|

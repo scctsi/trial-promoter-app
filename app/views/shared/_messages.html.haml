@@ -33,9 +33,9 @@
           %td= message.social_media_profile.platform_icon_and_name
         - else
           %td
+        %td= message.medium
         %td= message.scheduled_date_time.strftime("%b %d, %Y")
         %td= message.scheduled_date_time.strftime("%I:%M %P")
-        %td= message.medium
         -if message.buffer_publish_date
           -if message.scheduled_date_time <= message.buffer_publish_date + 2.days
             %td.negative= message.buffer_publish_date.strftime("%b %d, %Y")

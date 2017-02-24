@@ -24,7 +24,17 @@ RSpec.describe SocialMediaProfilePicker do
       
       expect(picked_profile).to eq(@social_media_profiles[0])
     end
-    
+
+    it 'returns nil when asked to pick a social profile for an organic Instagram message (since we do not support organic Instagram messages)' do
+      message = build(:message)
+      message.message_template.platform = :instagram
+      message.medium = :organic
+      
+      picked_profile = @social_media_profile_picker.pick(@social_media_profiles, message)
+      
+      expect(picked_profile).to eq(nil)
+    end
+
     it 'raises an error if it cannot find any suitable social media profiles for a messsage' do
       message = build(:message)
       message.message_template.platform = :instagram
