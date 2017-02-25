@@ -1,11 +1,12 @@
 .ui.divided.items
   = paginate messages
+  %br
   %header
   - messages.each do |message|
-    - item_class = "ui.bottom.left.red.attached.label.visible"
+    - show_label = true
     - if !message.buffer_update.nil?
-      - if message.delayed?
-        - item_class = "ui.bottom.left.red.attached.label"
+      - if !message.delayed?
+        - show_label = false
     .item
       .ui.tiny.image
         -if message.image
@@ -13,23 +14,31 @@
         -else
           %img{ :src => "/assets/no-image.png" }
       .content
-        .header= message.social_media_profile.platform_icon_and_name
-        .header= message.medium
-        .meta
-          %span Scheduled to be published at: #{message.scheduled_date_time.strftime("%I:%M %P")}
-          on #{message.scheduled_date_time.strftime("%b %d, %Y")}
-        .extra
+        .header
+          = message.social_media_profile.platform_icon_and_name
+          = message.medium
+          - if show_label
+            .ui.left.pointing.red.basic.label
+              The message is pending or has been delayed
+        .description
           %span= message.content
-        .description{ class: item_class, text: "The message is pending" }
+        - if !message.buffer_publish_date
+          .meta
+            %span Scheduled to be published at: #{message.scheduled_date_time.strftime("%I:%M %P")}
+            on #{message.scheduled_date_time.strftime("%b %d, %Y")}
+        - else
+        .description
           -if message.buffer_publish_date
             %span Sent to Buffer on:
             -if message.scheduled_date_time <= message.buffer_publish_date + 2.days
-              %span= message.buffer_publish_date.strftime("%b %d, %Y")
+              .ui.left.pointing.orange.basic.label
+                %span= message.buffer_publish_date.strftime("%b %d, %Y")
             -else
               %span= message.buffer_publish_date.strftime("%b %d, %Y")
           -if !message.buffer_update.nil?
             %span Message was published on #{message.social_media_profile.platform_icon_and_name} at:
-            %span= message.buffer_update.sent_from_date_time.strftime("%I:%M %P, %b %d, %Y")
+            .ui.left.pointing.green.basic.label
+              %span= message.buffer_update.sent_from_date_time.strftime("%I:%M %P, %b %d, %Y")
   .item
   = paginate messages
   %header
