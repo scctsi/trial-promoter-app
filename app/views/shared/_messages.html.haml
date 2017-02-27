@@ -1,12 +1,12 @@
 .ui.divided.items
-  = paginate messages
-  %br
-  %header
+  .ui.header
+    .content
+      = paginate messages
   - messages.each do |message|
-    - show_label = true
+    - show_label = false
     - if !message.buffer_update.nil?
-      - if !message.delayed?
-        - show_label = false
+      - if message.delayed?
+        - show_label = true
     .item
       .ui.tiny.image
         -if message.image
@@ -15,30 +15,30 @@
           %img{ :src => "/assets/no-image.png" }
       .content
         .header
+          = message.social_media_profile.service_username
           = message.social_media_profile.platform_icon_and_name
           = message.medium
           - if show_label
             .ui.left.pointing.red.basic.label
-              The message is pending or has been delayed
+              The message has been delayed
         .description
           %span= message.content
-        - if !message.buffer_publish_date
-          .meta
-            %span Scheduled to be published at: #{message.scheduled_date_time.strftime("%I:%M %P")}
-            on #{message.scheduled_date_time.strftime("%b %d, %Y")}
-        - else
-        .description
-          -if message.buffer_publish_date
-            %span Sent to Buffer on:
-            -if message.scheduled_date_time <= message.buffer_publish_date + 2.days
-              .ui.left.pointing.orange.basic.label
-                %span= message.buffer_publish_date.strftime("%b %d, %Y")
-            -else
-              %span= message.buffer_publish_date.strftime("%b %d, %Y")
-          -if !message.buffer_update.nil?
-            %span Message was published on #{message.social_media_profile.platform_icon_and_name} at:
-            .ui.left.pointing.green.basic.label
-              %span= message.buffer_update.sent_from_date_time.strftime("%I:%M %P, %b %d, %Y")
-  .item
-  = paginate messages
-  %header
+        .extra
+          - if !message.buffer_publish_date
+            %span Scheduled to be published: #{message.scheduled_date_time.strftime("%b %d, %Y")} at #{message.scheduled_date_time.strftime("%I:%M %P")}
+          - else
+            - if !message.buffer_update.nil?
+              %span Message was published on #{message.social_media_profile.platform_icon_and_name} at
+              .ui.left.green.basic.label
+                %span= message.buffer_update.sent_from_date_time.strftime("%I:%M %P, %b %d, %Y")
+            - else
+              - if message.buffer_publish_date
+                %span Sent to Buffer on
+                - if message.scheduled_date_time <= message.buffer_publish_date + 2.days
+                  .ui.left.red.basic.label
+                    %span= message.buffer_publish_date.strftime("%b %d, %Y")
+                - else
+                  %span= message.buffer_publish_date.strftime("%b %d, %Y")
+  .ui.header
+    .content
+      = paginate messages
