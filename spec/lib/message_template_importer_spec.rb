@@ -30,7 +30,7 @@ RSpec.describe MessageTemplateImporter do
   end
   
   it 'defines a pre_import method which deletes all the message templates associated with the experiment' do
-    message_templates = create_list(:message_template, 2, experiment_list: [@experiment.to_param])
+    create_list(:message_template, 2, experiment_list: [@experiment.to_param])
 
     @message_template_importer.pre_import
     
@@ -97,5 +97,14 @@ RSpec.describe MessageTemplateImporter do
     parsed_tag_list = @parsed_csv_content[1][3].split(",").map { |tag| tag.strip }
     expect(website.tag_list).to eq(parsed_tag_list)
     expect(website.experiment_list).to eq([@experiment_tag])
+  end
+  
+  describe 'specific broken import files' do
+    it 'successfully imports a broken import file' do
+      parsed_csv_content = CSV.read('spec/fixtures/message_templates_invalid_byte_sequence_in_utf_8.csv')
+      
+      expect(parsed_csv_content.count).to be > 0
+      p parsed_csv_content
+    end
   end
 end
