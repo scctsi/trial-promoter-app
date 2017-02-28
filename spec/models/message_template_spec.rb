@@ -158,6 +158,20 @@ RSpec.describe MessageTemplate do
       @message_template = create(:message_template)
     end
 
+    it 'returns an empty array if hashtags is blank or nil' do
+      @message_template.hashtags = nil
+      @message_template.save
+      @message_template.reload
+
+      expect(@message_template.hashtags).to eq([])
+
+      @message_template.hashtags = ''
+      @message_template.save
+      @message_template.reload
+
+      expect(@message_template.hashtags).to eq([])
+    end
+    
     it 'stores an array of hashtags' do
       @message_template.hashtags = ["#bcsm", "#cancer"]
       @message_template.save
@@ -191,7 +205,7 @@ RSpec.describe MessageTemplate do
     end
   end
   
-  describe 'determining warning messages' do
+  describe 'warning messages' do
     before do
       @message_template = build(:message_template)
     end
@@ -220,6 +234,15 @@ RSpec.describe MessageTemplate do
 
     it 'returns a warning if the content is too long for Twitter (including a URL)' do
       @message_template.platform = :twitter
+      @message_template.content = "#{'A' * 118}{url}"
+
+      expect(@message_template.warnings.count).to eq(1)
+      expect(@message_template.warnings[0]).to eq('Too long for use in Twitter (URL takes up 23 characters)')
+    end
+
+    it 'does not raise an error if the hashtags are an empty array' do
+      @message_template.platform = :twitter
+      @message_template.hashtags = []
       @message_template.content = "#{'A' * 118}{url}"
 
       expect(@message_template.warnings.count).to eq(1)
