@@ -55,6 +55,11 @@ class MessageTemplate < ActiveRecord::Base
   end
   
   def hashtags=(hashtags)
+    if hashtags.nil?
+      self[:hashtags] = []
+      return
+    end
+    
     cleaned_hashtags = hashtags
     
     # Convert comma separated string to an array of strings
@@ -82,7 +87,7 @@ class MessageTemplate < ActiveRecord::Base
     warnings << 'Too long for use in Twitter (URL takes up 23 characters)' if content.include?('{url}') and content.length > 117 + '{url}'.length
     
     # Hashtag inclusion checks
-    if !hashtags.nil?
+    if !hashtags.nil? && !(hashtags.length == 0)
       if content.length + hashtags.map(&:length).min > 140
         warnings << 'Too long for use in Twitter (None of the hashtags will ever be included)'
       elsif content.length + hashtags.map(&:length).max > 140
