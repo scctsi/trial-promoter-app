@@ -479,6 +479,6 @@ $(document).ready(function() {
     })
 
     $('#lightbox .image-list').html(html);
-    $('#lightbox').modal('show');
+    $('#lightbox').modal('setting', 'transition', 'Vertical Flip').modal({ blurring: true }).modal('show');
   });
 });
