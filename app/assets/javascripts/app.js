@@ -474,9 +474,10 @@ $(document).ready(function() {
     var imageUrls = imagePoolUrls.split(',');
     var html = '';
 
-    for( var i = 0; i < imageUrls.length; i++) {
-      html += '<img width="100px" height="100px" src="' + imageUrls[i] + '"></img>';
-    }
+    imageUrls.forEach( function (imageUrl) {
+      html += '<img width="100px" height="100px" src="' + imageUrl + '"></img>';
+    })
+
     $('#lightbox .image-list').html(html);
     $('#lightbox').modal('show');
   });
