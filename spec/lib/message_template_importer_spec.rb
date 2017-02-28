@@ -36,6 +36,13 @@ RSpec.describe MessageTemplateImporter do
       
       expect(prepared_csv_content).to eq([['content', 'platform', 'hashtags', 'tags', 'website_url', 'website_name'], ['This is a message template.{url}', 'twitter', '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation'], ['This is a message template. {url}', 'twitter', '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation']])
     end
+
+    it 'copies the experiment variables to the tags if tags are missing' do
+      @parsed_csv_content = [['content', 'platform', 'hashtags', 'tags', 'website_url', 'website_name', 'theme', 'fda_campaign'], ['This is a message template. {url}', 'twitter', '#hashtag1, #hashtag2', '', 'http://www.url.com', 'Smoking cessation', '1', '2']]
+      prepared_csv_content = @message_template_importer.pre_import_prepare(@parsed_csv_content)
+      
+      expect(prepared_csv_content).to eq([['content', 'platform', 'hashtags', 'tags', 'website_url', 'website_name', 'experiment_variables'], ['This is a message template. {url}', 'twitter', '#hashtag1, #hashtag2', 'theme-1,fda_campaign-2', 'http://www.url.com', 'Smoking cessation', { 'theme' => '1', 'fda_campaign' => '2'}]])
+    end
     
     it 'deletes all the message templates associated with the experiment' do
       create_list(:message_template, 2, experiment_list: [@experiment.to_param])

@@ -22,10 +22,15 @@ class MessageTemplateImporter < Importer
         if index == 0
           prepared_csv_content << heading_row
         else
+          experiment_variables_as_tags = ''
           experiment_variables_hash = {}
           experiment_variable_names.each.with_index do |experiment_variable_name, column_index|
             experiment_variables_hash[experiment_variable_name] = csv_row[column_index + 6]
           end
+          experiment_variables_hash.each do |experiment_variable_name, experiment_variable_value|
+            experiment_variables_as_tags += "#{experiment_variable_name}-#{experiment_variable_value},"
+          end
+          csv_row[3] = experiment_variables_as_tags.chomp(',') if csv_row[3].blank?
           prepared_csv_content << [csv_row[0..5], experiment_variables_hash].flatten
         end
       end
@@ -35,7 +40,7 @@ class MessageTemplateImporter < Importer
         prepared_csv_content << csv_row
       end
     end
-
+    
     # Step 2: If the platform column has a comma separated list of platform names, convert this row to multiple rows with a single value for platform for each row
     intermediate_prepared_csv_content = prepared_csv_content.dup
     prepared_csv_content = []

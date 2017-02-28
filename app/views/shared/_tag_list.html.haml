@@ -1,8 +1,11 @@
 - hashtags = false if hashtags.nil?
-- tags.each do |tag|
-  - if hashtags
-    %a.ui.small.basic.label
-      = tag
-  - else
-    %a.ui.small.tag.label
-      = tag
+.ul.list
+  - tags.each do |tag|
+    - if hashtags
+      .item
+        .ui.small.basic.label
+          = tag
+    - else
+      .item
+        .ui.small.tag.label
+          = tag
