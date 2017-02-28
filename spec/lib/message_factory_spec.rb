@@ -93,10 +93,10 @@ RSpec.describe MessageFactory do
     @experiment.message_generation_parameter_set = message_generation_parameter_set
 
     @message_factory.create(@experiment) 
-    messages = @experiment.messages
+    messages = @experiment.messages.all
 
     expect(messages.count).to eq(message_generation_parameter_set.expected_generated_message_count)
-    messages.all.each do |message|
+    messages.each do |message|
       expect(message.message_generating).to eq(@experiment)
     end
     # Are the messages equally distributed across social networks?
@@ -106,20 +106,26 @@ RSpec.describe MessageFactory do
     # Are the messages equally distributed across image present choices?
     expect_equal_distribution(messages.group_by { |message| message.image_present })
     
+    # Do all the instagram messages have an associated image?
+    messages.each do |message|
+      expect(message.image_present).to eq(:with) if message.message_template.platform == :instagram
+      expect(message.image).not_to be_nil if message.message_template.platform == :instagram
+    end
+    
     # Tag matching
     # Do the websites selected for each message belong to the set of images matched to the message template?
-    messages.all.each do |message|
+    messages.each do |message|
       expect(message.promotable).not_to be_nil
       expect(@tag_matcher.match(Website.belonging_to(@experiment), message.message_template.tag_list)).to include(message.promotable)
     end
     # Do the images selected for each message belong to the set of images matched to the message template?
-    messages.all.each do |message|
+    messages.each do |message|
       expect(message.image).not_to be_nil if message.image_present == :with
       expect(@tag_matcher.match(Image.belonging_to(@experiment), message.message_template.tag_list)).to include(message.image) if message.image_present == :with
     end
     
     # Social media profile picking
-    messages.all.each do |message|
+    messages.each do |message|
       expect(message.social_media_profile).to eq(@suitable_social_media_profiles[1])
     end
 
