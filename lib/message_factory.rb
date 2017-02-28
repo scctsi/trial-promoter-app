@@ -56,7 +56,7 @@ class MessageFactory
     include_image = false
 
     messages.all.each do |message|
-      if include_image
+      if include_image || message.message_template.platform == :instagram
         image = tag_matcher.match(images_belonging_to_experiment, message.message_template.tag_list).sample
         message.image_present = :with
         message.image = image
