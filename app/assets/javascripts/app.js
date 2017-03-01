@@ -316,7 +316,6 @@ $(document).ready(function() {
     });
   }
 
-
   function setUpImageTagging() {
     var $imageSelectors = $('.image-selector');
     var allowedTags = $('#image-tags').data('allowed-tags');
@@ -334,6 +333,7 @@ $(document).ready(function() {
       create: false,
       valueField: 'item',
       labelField: 'item',
+      searchField: 'item',
       options: allowedTags
     });
 
@@ -439,6 +439,7 @@ $(document).ready(function() {
   }
 
   // Initialize
+
   setUpPostingTimeInputs();
   showSocialMediaProfiles();
   setUpExperimentRealTime();
@@ -466,5 +467,19 @@ $(document).ready(function() {
   $("img").lazyload({
     threshold : 500,
     effect : "fadeIn"
+  });
+
+  // Modal for image labeling
+  $('.choose-images-button').click(function(){
+    var imagePoolUrls = $('.modal-urls').data('image-urls');
+    var imageUrls = imagePoolUrls.split(',');
+    var html = '';
+
+    imageUrls.forEach( function (imageUrl) {
+      html += '<img width="100px" height="100px" src="' + imageUrl + '"></img>';
+    })
+
+    $('#lightbox .image-list').html(html);
+    $('#lightbox').modal('setting', 'transition', 'Vertical Flip').modal({ blurring: true }).modal('show');
   });
 });
