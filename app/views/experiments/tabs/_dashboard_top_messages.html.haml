@@ -30,7 +30,9 @@
       .extra.content
         = @messages_with_metrics[0].metrics[0].data[:click_rate].to_s + "%"
         %span  Click rate
-        %span Clicks
-        %span Impressions
-
-        2.28% (5 clicks/1000 impressions)
+        .content
+          %span (
+          %span= @messages_with_metrics[0].metrics[0].data[:clicks]
+          %span clicks/
+          %span= @messages_with_metrics[0].metrics[0].data[:impressions]
+          %span impressions )

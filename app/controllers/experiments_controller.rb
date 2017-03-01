@@ -31,7 +31,7 @@ class ExperimentsController < ApplicationController
 
     @messages_with_metrics[1] = Message.new(content: 'Stop getting cancer', medium: :ad)
     @messages_with_metrics[1].metrics << Metric.new(data: {likes: 99, impressions: 8763, clicks: 89, shares: 64, comments: 19}, source: :facebook)
-    click_rate = (@messages_with_metrics[0].metrics[0].data[:clicks].to_f/ @messages_with_metrics[0].metrics[0].data[:impressions].to_f * 100).round(2)
+    click_rate = (@messages_with_metrics[1].metrics[0].data[:clicks].to_f/ @messages_with_metrics[1].metrics[0].data[:impressions].to_f * 100).round(2)
     @messages_with_metrics[1].metrics[0].data[:click_rate] = click_rate
     # end of temp data
   end

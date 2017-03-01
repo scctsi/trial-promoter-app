@@ -1,22 +1,33 @@
-%table.ui.sortable.celled.table
-  %thead
-    %th Message
-
-    %th Likes (Favorites)
-    %th Retweets
-    %th Replies
-    %th Clicks
-    %th Impressions
-    %th Click rate
-  %tbody
-    - @facebook_message_templates = @message_templates.each{ |message_template| message_template.platform == "twitter"}
-    - @message_templates.each do |message_template|
-      %tr
-        %td= message_template.content
-        %td= @messages_with_metrics[0].metrics[0].data[:likes]
-        %td= @messages_with_metrics[0].metrics[0].data[:shares]
-        %td= @messages_with_metrics[0].metrics[0].data[:comments]
-        %td= @messages_with_metrics[0].metrics[0].data[:clicks]
-        %td= @messages_with_metrics[0].metrics[0].data[:impressions]
-        %td= @messages_with_metrics[0].metrics[0].data[:click_rate].to_s + "%"
-
+.ui.items
+  - @twitter_messages = @messages.select{ |message| message.social_media_profile.platform == :twitter}
+  - @twitter_messages.each do |message|
+    .item
+      .ui.small.image
+        -if message.image
+          = image_tag "#{message.image.url}"
+        -else
+          %img{ :src => "/assets/no-image.png" }
+      .content
+        / .header
+        /   /
+        /   = message.social_media_profile.service_username
+        .description
+          .ui.left.basic.label
+            = message.medium
+          = message.content
+        .extra
+          %table.ui.very.basic.compact.table
+            %thead
+              %th Likes
+              %th Retweets
+              %th Replies
+              %th Clicks
+              %th Impressions
+              %th Click rate
+            %tbody
+              %td= @messages_with_metrics[0].metrics[0].data[:likes]
+              %td= @messages_with_metrics[0].metrics[0].data[:shares]
+              %td= @messages_with_metrics[0].metrics[0].data[:comments]
+              %td= @messages_with_metrics[0].metrics[0].data[:clicks]
+              %td= @messages_with_metrics[0].metrics[0].data[:impressions]
+              %td= @messages_with_metrics[0].metrics[0].data[:click_rate].to_s + "%"

@@ -10,7 +10,7 @@
     .item
       .ui.tiny.image
         -if message.image
-          = image_tag "#{message.image.url}", lazy: true
+          = image_tag "#{message.image.url}"
         -else
           %img{ :src => "/assets/no-image.png" }
       .content
