@@ -30,6 +30,7 @@ describe Message do
   it { is_expected.to belong_to :message_template }
   it { is_expected.to enumerize(:publish_status).in(:pending, :published_to_buffer, :published_to_social_network).with_default(:pending).with_predicates(true) }
   it { is_expected.to have_one :buffer_update }
+  it { is_expected.to have_one :click_meter_tracking_link }
   it { is_expected.to have_many :metrics }
   it { is_expected.to validate_presence_of :message_generating }
   it { is_expected.to belong_to(:message_generating) }
