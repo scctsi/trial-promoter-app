@@ -333,6 +333,7 @@ $(document).ready(function() {
       create: false,
       valueField: 'item',
       labelField: 'item',
+      searchField: 'item',
       options: allowedTags
     });
 
