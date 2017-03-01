@@ -1,5 +1,7 @@
-- hash.each do |key, value|
-  .ui.label
-    = key
-    .detail
-      = value
+.ui.mini.list
+  - hash.each do |key, value|
+    .item
+      .ui.label
+        = key
+        .detail
+          = value

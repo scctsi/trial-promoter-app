@@ -3,7 +3,6 @@
     %tr
       %th Content
       %th Platform
-      %th Tags
       %th Hashtags
       %th Experiment variables
   %tbody
@@ -11,8 +10,6 @@
       %tr
         %td= message_template.content
         %td= message_template.platform
-        %td 
-          = render partial: 'shared/tag_list', locals: { tags: message_template.tag_list }
         %td
           = render partial: 'shared/tag_list', locals: { tags: message_template.hashtags, hashtags: true }
         %td

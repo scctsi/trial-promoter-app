@@ -16,4 +16,16 @@ RSpec.describe CsvFileReader do
 
     expect(csv_content).to eq(sample_csv_content)
   end
+
+  it 'successfully reads a CSV file with an invalid UTF-8 byte sequence from a URL' do
+    csv_url = 'http://sc-ctsi.org/trial-promoter/message_templates_invalid_byte_sequence_in_utf_8.csv'
+    csv_content = ''
+    
+    VCR.use_cassette 'csv_file_reader/read_invalid_utf_8_byte_sequence' do
+      csv_content = @csv_file_reader.read(csv_url)
+    end
+
+    expect(csv_content.count).to be > 0
+    expect(csv_content[1]).to eq(["#Smoking damages your DNA, which can lead to cancer almost anywhere in your body.", "facebook, instagram, twitter", nil, nil, "sc-ctsi.org", "CTSI [temp]", "health", "FE", "FE53", "1", "1"])
+  end
 end

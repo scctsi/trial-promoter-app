@@ -12,7 +12,7 @@ class MessageTemplateImporter < Importer
   def pre_import_prepare(parsed_csv_content)
     prepared_csv_content = []
     
-    # Any column after the 6th column contains variables related to the experiment itself.
+    # Step 1: Any column after the 6th column contains variables related to the experiment itself.
     # These are collapsed into a single column called experiment_variables with a hash of the values.
     if parsed_csv_content[0].length > 6
       heading_row = [parsed_csv_content[0][0..5], 'experiment_variables'].flatten
@@ -22,21 +22,26 @@ class MessageTemplateImporter < Importer
         if index == 0
           prepared_csv_content << heading_row
         else
+          experiment_variables_as_tags = ''
           experiment_variables_hash = {}
           experiment_variable_names.each.with_index do |experiment_variable_name, column_index|
             experiment_variables_hash[experiment_variable_name] = csv_row[column_index + 6]
           end
+          experiment_variables_hash.each do |experiment_variable_name, experiment_variable_value|
+            experiment_variables_as_tags += "#{experiment_variable_name}-#{experiment_variable_value},"
+          end
+          csv_row[3] = experiment_variables_as_tags.chomp(',') if csv_row[3].blank?
           prepared_csv_content << [csv_row[0..5], experiment_variables_hash].flatten
         end
       end
     else
       # Just make a copy of the parsed_csv_content
-      parsed_csv_content.each.with_index do |csv_row, index|
+      parsed_csv_content.each do |csv_row|
         prepared_csv_content << csv_row
       end
     end
-
-    # If the platform column has a comma separated list of platform names, convert this row to multiple rows with a single value for platform for each row
+    
+    # Step 2: If the platform column has a comma separated list of platform names, convert this row to multiple rows with a single value for platform for each row
     intermediate_prepared_csv_content = prepared_csv_content.dup
     prepared_csv_content = []
     intermediate_prepared_csv_content.each.with_index do |csv_row, index|
@@ -50,6 +55,12 @@ class MessageTemplateImporter < Importer
           prepared_csv_content << csv_row_with_single_platform
         end
       end
+    end
+    
+    # Step 3: Add {url} if missing to the content of the message templates
+    prepared_csv_content.each.with_index do |csv_row, index|
+      # If this is not the header row and the {url} message template variable is missing, add it.
+      csv_row[0] += '{url}' if csv_row[0].index('{url}').nil? and index > 0
     end
     
     prepared_csv_content
