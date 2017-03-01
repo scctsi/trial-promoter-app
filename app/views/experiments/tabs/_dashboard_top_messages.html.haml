@@ -1,40 +1,30 @@
 .ui.link.cards
-  .card
-    .content
-      .header
-        .right.floated.meta 23 Sep, 2017 10:15 PM
+  - @messages.each do |message|
+    .card
+      .content
+        .ui.medium.image
+          -if message.image
+            = image_tag "#{message.image.url}"
+          -else
+            %img{ :src => "/assets/no-image.png" }
+        .header
+          = message.content
+        .right.floated.meta
+          = @messages.first.buffer_update.sent_from_date_time.strftime("%I:%M %P, %b %d, %Y")
         %i.facebook.icon
-    .content
-      Never underestimate the power of people. We're looking for participants @KeckMedUSC #LiverDisease #ClinicalTrial http://bit.ly/1KvZHqF
-    .image
-      = image_tag("no-image.png", alt: "No image")
-    .content
-      %i.heart.icon
-      1 like(s)
-      %i.refresh.icon
-      3 retweets
-      %i.comment.icon
-      4 comments
-    .extra.content
-      10% Engagement rate
-      10% Click rate
-  .card
-    .content
-      .header
-        .right.floated.meta 27 Sep, 2017 10:15 PM
-        %i.twitter.icon
-    .content
-      We're looking for volunteers. We're looking for participants @KeckMedUSC #LiverDisease #ClinicalTrial http://bit.ly/1KvZHqF
-    .image
-      = image_tag("image.png", alt: "Image")
-    .content
-      %i.heart.icon
-      1 like(s)
-      %i.refresh.icon
-      2 retweets
-      %i.comment.icon
-      2 comments
-    .extra.content
-      10% Engagement rate
-      10% Click rate
-  
+      .content
+        .header
+      .image
+        = image_tag("no-image.png", alt: "No image")
+      .content
+        %i.heart.icon
+          = @messages_with_metrics[0].metrics[0].data[:likes]
+        %i.refresh.icon
+          = @messages_with_metrics[0].metrics[0].data[:shares]
+        %i.comment.icon
+          = @messages_with_metrics[0].metrics[0].data[:comments]
+      .extra.content
+        = @messages_with_metrics[0].metrics[0].data[:click_rate].to_s + "%"
+        %span  Click rate
+      .content
+        .header

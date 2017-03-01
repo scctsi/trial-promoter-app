@@ -1,0 +1,22 @@
+%table.ui.sortable.celled.table
+  %thead
+    %th Message
+    %th Ad/Organic
+    %th Likes (Favorites)
+    %th Shares
+    %th Comments
+    %th Clicks
+    %th Impressions
+    %th Click rate
+  %tbody
+    - @facebook_message_templates = @message_templates.each{ |message_template| message_template.platform == "instagram"}
+    - @message_templates.each do |message_template|
+      %tr
+        %td= message_template.content
+        %td= @messages_with_metrics[0].medium
+        %td= @messages_with_metrics[0].metrics[0].data[:likes]
+        %td= @messages_with_metrics[0].metrics[0].data[:shares]
+        %td= @messages_with_metrics[0].metrics[0].data[:comments]
+        %td= @messages_with_metrics[0].metrics[0].data[:clicks]
+        %td= @messages_with_metrics[0].metrics[0].data[:impressions]
+        %td= @messages_with_metrics[0].metrics[0].data[:click_rate].to_s + "%"
