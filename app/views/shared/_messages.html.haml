@@ -15,13 +15,14 @@
           %img{ :src => "/assets/no-image.png" }
       .content
         .header
-          = message.social_media_profile.service_username
           = message.social_media_profile.platform_icon_and_name
-          = message.medium
+          = message.social_media_profile.service_username
           - if show_label
             .ui.left.pointing.red.basic.label
               The message has been delayed
         .description
+          .ui.left.basic.label
+            %span= message.medium
           %span= message.content
         .extra
           - if !message.buffer_publish_date

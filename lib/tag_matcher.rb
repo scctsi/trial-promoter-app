@@ -5,7 +5,7 @@ class TagMatcher
 
   def match(tagged_objects, tag_list)
     matches = []
-    
+
     (1..tag_list.length).each do |combination_length|
       tag_list.combination(combination_length).to_a.each do |tag_combination|
         found_objects = tagged_objects.select{ |tagged_object| tagged_object.tag_list == tag_combination }
