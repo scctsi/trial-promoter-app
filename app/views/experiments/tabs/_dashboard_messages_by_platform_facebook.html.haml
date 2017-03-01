@@ -1,7 +1,6 @@
 %table.ui.sortable.celled.table
   %thead
     %th Message
-    %th Ad/Organic
     %th Likes (Favorites)
     %th Shares
     %th Comments
@@ -13,7 +12,6 @@
     - @facebook_message_templates.each do |fb_message_template|
       %tr
         %td= fb_message_template.content
-        %td= @messages_with_metrics[1].medium
         %td= @messages_with_metrics[1].metrics[0].data[:likes]
         %td= @messages_with_metrics[1].metrics[0].data[:shares]
         %td= @messages_with_metrics[1].metrics[0].data[:comments]

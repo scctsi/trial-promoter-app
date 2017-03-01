@@ -2,29 +2,35 @@
   - @messages.each do |message|
     .card
       .content
-        .ui.medium.image
-          -if message.image
-            = image_tag "#{message.image.url}"
-          -else
-            %img{ :src => "/assets/no-image.png" }
         .header
-          = message.content
-        .right.floated.meta
-          = @messages.first.buffer_update.sent_from_date_time.strftime("%I:%M %P, %b %d, %Y")
-        %i.facebook.icon
+          .left.floated
+            = message.social_media_profile.platform_icon
+          .right.floated.meta
+            - if !message.buffer_update.nil?
+              = message.buffer_update.sent_from_date_time.strftime("%I:%M %P, %b %d, %Y")
+            - else
+              02:35 pm, Sep 17, 2015
       .content
-        .header
-      .image
-        = image_tag("no-image.png", alt: "No image")
+        = message.content
+      .ui.medium.image
+        -if message.image
+          = image_tag "#{message.image.url}"
+        -else
+          %img{ :src => "/assets/no-image.png" }
       .content
         %i.heart.icon
-          = @messages_with_metrics[0].metrics[0].data[:likes]
+        %span= @messages_with_metrics[0].metrics[0].data[:likes]
+        %span like(s)
         %i.refresh.icon
-          = @messages_with_metrics[0].metrics[0].data[:shares]
+        %span= @messages_with_metrics[0].metrics[0].data[:shares]
+        %span shares
         %i.comment.icon
-          = @messages_with_metrics[0].metrics[0].data[:comments]
+        %span= @messages_with_metrics[0].metrics[0].data[:comments]
+        %span comments
       .extra.content
         = @messages_with_metrics[0].metrics[0].data[:click_rate].to_s + "%"
         %span  Click rate
-      .content
-        .header
+        %span Clicks
+        %span Impressions
+
+        2.28% (5 clicks/1000 impressions)
