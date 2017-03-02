@@ -438,8 +438,33 @@ $(document).ready(function() {
     });
   }
 
-  // Initialize
+  function setUpImagePoolViewing() {
+    // Modal for image labeling
+    $('.choose-images-button').click(function(){
+      var messageTemplateId = $(this).data('message-template-id');
+      var imageUrls = []
 
+      $.ajax({
+        url : '/message_templates/' + messageTemplateId + '/get_image_pool_urls',
+        type: 'POST',
+        data: {id: messageTemplateId},
+        dataType: 'json',
+        success: function(retdata) {
+          var html = '';
+          imageUrls = retdata.image_pool_urls;
+
+          imageUrls.forEach(function (imageUrl) {
+            html += '<img width="100px" height="100px" src="' + imageUrl + '"></img>';
+          })
+          
+          $('#lightbox .image-list').html(html);
+          $('#lightbox').modal('setting', 'transition', 'Vertical Flip').modal({ blurring: true }).modal('show');
+        }
+      });
+    });
+  }
+  
+  // Initialize
   setUpPostingTimeInputs();
   showSocialMediaProfiles();
   setUpExperimentRealTime();
@@ -454,6 +479,7 @@ $(document).ready(function() {
   setUpPusherChannels();
   setUpAsyncMessageGeneration();
   setUpImageTagging();
+  setUpImagePoolViewing();
 
   // Set up Semantic UI
   $('.menu .item').tab({
@@ -467,19 +493,5 @@ $(document).ready(function() {
   $("img").lazyload({
     threshold : 500,
     effect : "fadeIn"
-  });
-
-  // Modal for image labeling
-  $('.choose-images-button').click(function(){
-    var imagePoolUrls = $('.modal-urls').data('image-urls');
-    var imageUrls = imagePoolUrls.split(',');
-    var html = '';
-
-    imageUrls.forEach( function (imageUrl) {
-      html += '<img width="100px" height="100px" src="' + imageUrl + '"></img>';
-    })
-
-    $('#lightbox .image-list').html(html);
-    $('#lightbox').modal('setting', 'transition', 'Vertical Flip').modal({ blurring: true }).modal('show');
   });
 });

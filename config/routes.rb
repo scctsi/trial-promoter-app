@@ -27,6 +27,9 @@ Rails.application.routes.draw do
 
   # Message templates
   resources :message_templates do
+    member do
+      post 'get_image_pool_urls', to: 'message_templates#get_image_pool_urls', constraints: lambda { |req| req.format == :json }
+    end
     collection do
       get :import
     end
