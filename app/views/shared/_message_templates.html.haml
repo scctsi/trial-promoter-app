@@ -7,12 +7,12 @@
       %th Experiment variables
       %th
   %tbody
-    / - all_images = Image.belonging_to(@experiment)
-    / - message_templates.each do |message_template|
-    /   - tag_matcher = TagMatcher.new
-    /   - image_pool = tag_matcher.match(all_images, message_template.tag_list)
-    /   - image_pool_urls = image_pool.map(&:url).join(",")
-      %tr.modal-urls{ 'data-image-urls' => ""}
+    - all_images = Image.belonging_to(@experiment)
+    - message_templates.each do |message_template|
+      - tag_matcher = TagMatcher.new
+      - image_pool = tag_matcher.match(all_images, message_template.tag_list)
+      - image_pool_urls = image_pool.map(&:url).join(",")
+      %tr.modal-urls{ 'data-image-urls' => 'data_image_urls'}
         %td= message_template.content
         %td= message_template.platform
         %td
