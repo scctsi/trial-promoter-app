@@ -60,9 +60,9 @@ RSpec.describe TagMatcher do
       @websites[1].tag_list = ['tag-2', 'tag-3']
       @websites[2].tag_list = ['tag-1', 'tag-2', 'tag-3', 'tag-4', 'tag-5']
       @websites.each { |website| website.save }
-      
+
       found_websites = Website.tagged_with(['tag-1'], :match_all => true)
-      
+
       expect(found_websites.length).to eq(1)
     end
 
@@ -79,9 +79,9 @@ RSpec.describe TagMatcher do
       images[4].tag_list = ['tag-5', 'tag-6']
       images[5].tag_list = ['tag-7', 'tag-8']
       images.each { |image| image.save }
-  
+
       matched_images = @tag_matcher.match(images, @websites[2].tag_list)
-  
+
       expect(matched_images.length).to eq(4)
     end
 
@@ -98,9 +98,9 @@ RSpec.describe TagMatcher do
       images[4].tag_list = ['tag-5', 'tag-6']
       images[5].tag_list = ['tag-1', 'tag-2', 'tag-3', 'tag-4', 'tag-5']
       images.each { |image| image.save }
-  
+
       matched_images = @tag_matcher.match(images, @websites[2].tag_list)
-  
+
       expect(matched_images.length).to eq(5)
     end
 
@@ -111,12 +111,12 @@ RSpec.describe TagMatcher do
       @websites[1].tag_list = ['tag-1', 'tag-2', 'tag-3']
       @websites[2].tag_list = ['tag-1', 'tag-2', 'tag-3']
       @websites.each { |website| website.save }
-  
+
       matched_websites = @tag_matcher.match(@websites, @message_templates[0].tag_list)
-  
+
       expect(matched_websites.length).to eq(3)
     end
-    
+
     it 'restricts the matching only to the passed in tagged objects' do
       @websites[0].tag_list = ['tag-1']
       @websites[1].tag_list = ['tag-2', 'tag-3']
@@ -130,9 +130,9 @@ RSpec.describe TagMatcher do
       images[4].tag_list = ['tag-5', 'tag-6']
       images[5].tag_list = ['tag-7', 'tag-8']
       images.each { |image| image.save }
-  
+
       matched_images = @tag_matcher.match(images[0..2], @websites[2].tag_list)
-  
+
       expect(matched_images.length).to eq(3)
     end
   end
