@@ -1,6 +1,6 @@
 .ui.items
-  - @twitter_messages = @messages.select{ |message| message.social_media_profile.platform == :facebook}
-  - @twitter_messages.each do |message|
+  - @facebook_messages = @messages.select{ |message| message.social_media_profile.platform == :facebook}
+  - @facebook_messages.each do |message|
     .item
       .ui.small.image
         -if message.image
