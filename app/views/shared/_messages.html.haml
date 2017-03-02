@@ -10,9 +10,9 @@
     .item
       .ui.tiny.image
         -if message.image
-          = image_tag "#{message.image.url}", lazy: true
+          = image_tag "#{message.image.url}"
         -else
-          %img{ :src => "/assets/no-image.png" }
+          %img{ :src => "/assets/image.png" }
       .content
         .header
           = message.social_media_profile.platform_icon_and_name
@@ -22,24 +22,24 @@
               The message has been delayed
         .description
           .ui.left.basic.label
-            %span= message.medium
-          %span= message.content
+            = message.medium
+          = message.content
         .extra
           - if !message.buffer_publish_date
-            %span Scheduled to be published: #{message.scheduled_date_time.strftime("%b %d, %Y")} at #{message.scheduled_date_time.strftime("%I:%M %P")}
+            Scheduled to be published: #{message.scheduled_date_time.strftime("%b %d, %Y")} at #{message.scheduled_date_time.strftime("%I:%M %P")}
           - else
             - if !message.buffer_update.nil?
-              %span Message was published on #{message.social_media_profile.platform_icon_and_name} at
+              Message was published on #{message.social_media_profile.platform_icon_and_name} at
               .ui.left.green.basic.label
-                %span= message.buffer_update.sent_from_date_time.strftime("%I:%M %P, %b %d, %Y")
+                = message.buffer_update.sent_from_date_time.strftime("%I:%M %P, %b %d, %Y")
             - else
               - if message.buffer_publish_date
-                %span Sent to Buffer on
+                Sent to Buffer on
                 - if message.scheduled_date_time <= message.buffer_publish_date + 2.days
                   .ui.left.red.basic.label
-                    %span= message.buffer_publish_date.strftime("%b %d, %Y")
+                    message.buffer_publish_date.strftime("%b %d, %Y")
                 - else
-                  %span= message.buffer_publish_date.strftime("%b %d, %Y")
+                  = message.buffer_publish_date.strftime("%b %d, %Y")
   .ui.header
     .content
       = paginate messages
