@@ -6,11 +6,8 @@
         -if message.image
           = image_tag "#{message.image.url}"
         -else
-          %img{ :src => "/assets/no-image.png" }
+          %img{ :src => "/assets/image.png" }
       .content
-        / .header
-        /   /
-        /   = message.social_media_profile.service_username
         .description
           .ui.left.basic.label
             = message.medium
@@ -18,16 +15,16 @@
         .extra
           %table.ui.very.basic.compact.table
             %thead
+              %th Clicks
+              %th Impressions
+              %th Primary outcome measure (click rate)
               %th Likes
               %th Retweets
               %th Replies
-              %th Clicks
-              %th Impressions
-              %th Click rate
             %tbody
-              %td= @messages_with_metrics[0].metrics[0].data[:likes]
-              %td= @messages_with_metrics[0].metrics[0].data[:shares]
-              %td= @messages_with_metrics[0].metrics[0].data[:comments]
               %td= @messages_with_metrics[0].metrics[0].data[:clicks]
               %td= @messages_with_metrics[0].metrics[0].data[:impressions]
               %td= @messages_with_metrics[0].metrics[0].data[:click_rate].to_s + "%"
+              %td= @messages_with_metrics[0].metrics[0].data[:likes]
+              %td= @messages_with_metrics[0].metrics[0].data[:shares]
+              %td= @messages_with_metrics[0].metrics[0].data[:comments]

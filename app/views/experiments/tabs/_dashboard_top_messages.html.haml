@@ -16,23 +16,21 @@
         -if message.image
           = image_tag "#{message.image.url}"
         -else
-          %img{ :src => "/assets/no-image.png" }
+          %img{ :src => "/assets/image.png" }
       .content
         %i.heart.icon
-        %span= @messages_with_metrics[0].metrics[0].data[:likes]
-        %span like(s)
+        = @messages_with_metrics[0].metrics[0].data[:likes]
+        like(s)
         %i.refresh.icon
-        %span= @messages_with_metrics[0].metrics[0].data[:shares]
-        %span shares
+        = @messages_with_metrics[0].metrics[0].data[:shares]
+        shares
         %i.comment.icon
-        %span= @messages_with_metrics[0].metrics[0].data[:comments]
-        %span comments
+        = @messages_with_metrics[0].metrics[0].data[:comments]
+        comments
       .extra.content
-        = @messages_with_metrics[0].metrics[0].data[:click_rate].to_s + "%"
-        %span  Click rate
-        .content
-          %span (
-          %span= @messages_with_metrics[0].metrics[0].data[:clicks]
-          %span clicks/
-          %span= @messages_with_metrics[0].metrics[0].data[:impressions]
-          %span impressions )
+        .ui.label.basic.teal
+          %i.checkmark.icon
+          = @messages_with_metrics[0].metrics[0].data[:click_rate].to_s + "%"
+          Click rate
+        %br/
+        (#{@messages_with_metrics[0].metrics[0].data[:clicks]} clicks / #{@messages_with_metrics[0].metrics[0].data[:impressions]} impressions)

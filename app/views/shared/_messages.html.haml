@@ -12,7 +12,7 @@
         -if message.image
           = image_tag "#{message.image.url}"
         -else
-          %img{ :src => "/assets/no-image.png" }
+          %img{ :src => "/assets/image.png" }
       .content
         .header
           = message.social_media_profile.platform_icon_and_name
