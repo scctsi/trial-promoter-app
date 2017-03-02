@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170217002439) do
+ActiveRecord::Schema.define(version: 20170301191104) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -55,6 +55,16 @@ ActiveRecord::Schema.define(version: 20170217002439) do
     t.datetime "end_date"
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
+  end
+
+  create_table "click_meter_tracking_links", force: :cascade do |t|
+    t.string   "click_meter_id"
+    t.string   "click_meter_uri", limit: 2000
+    t.string   "tracking_url",    limit: 2000
+    t.string   "destination_url", limit: 2000
+    t.integer  "message_id"
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
   end
 
   create_table "clinical_trials", force: :cascade do |t|

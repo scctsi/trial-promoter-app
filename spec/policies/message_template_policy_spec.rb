@@ -15,6 +15,7 @@ RSpec.describe MessageTemplatePolicy, type: :policy do
     it { should_not be_permitted_to(:update) }
     it { should_not be_permitted_to(:import) }
     it { should_not be_permitted_to(:set_message_template) }
+    it { should_not be_permitted_to(:get_image_pool_urls) }
   end
 
   context "for a administrator" do
@@ -27,6 +28,7 @@ RSpec.describe MessageTemplatePolicy, type: :policy do
     it { should be_permitted_to(:update) }
     it { should be_permitted_to(:import) }
     it { should be_permitted_to(:set_message_template) }
+    it { should be_permitted_to(:get_image_pool_urls) }
   end
 
   context "for a statistician" do
@@ -39,6 +41,7 @@ RSpec.describe MessageTemplatePolicy, type: :policy do
     it { should_not be_permitted_to(:update) }
     it { should_not be_permitted_to(:import) }
     it { should_not be_permitted_to(:set_message_template) }
+    it { should_not be_permitted_to(:get_image_pool_urls) }
   end
 
   context "for a read_only" do
@@ -51,5 +54,6 @@ RSpec.describe MessageTemplatePolicy, type: :policy do
     it { should_not be_permitted_to(:update) }
     it { should_not be_permitted_to(:import) }
     it { should_not be_permitted_to(:set_message_template) }
+    it { should_not be_permitted_to(:get_image_pool_urls) }
   end
 end

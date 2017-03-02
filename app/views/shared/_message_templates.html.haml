@@ -7,12 +7,8 @@
       %th Experiment labels
       %th
   %tbody
-    - all_images = Image.belonging_to(@experiment)
     - message_templates.each do |message_template|
-      - tag_matcher = TagMatcher.new
-      - image_pool = tag_matcher.match(all_images, message_template.tag_list)
-      - image_pool_urls = image_pool.map(&:url).join(",")
-      %tr.modal-urls{ 'data-image-urls' => "#{image_pool_urls}"}
+      %tr
         %td= message_template.content
         %td= message_template.platform.to_s.titleize
         %td
@@ -20,7 +16,7 @@
         %td
           = render partial: 'shared/hash', locals: { hash: message_template.experiment_variables }
         %td.collapsing
-          %a.choose-images-button.ui.labeled.icon.button
+          %a.choose-images-button.ui.labeled.icon.button{ 'data-message-template-id': "#{message_template.id}" }
             %i.image.icon
             View images
       - if message_template.warnings.count > 0

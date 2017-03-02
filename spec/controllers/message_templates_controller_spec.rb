@@ -171,4 +171,32 @@ RSpec.describe MessageTemplatesController, type: :controller do
       expect(response).to redirect_to :new_user_session
     end
   end
+  
+  describe 'POST #get_image_pool_urls' do
+    before do
+      @images = create_list(:image, 5)
+      @message_templates = create_list(:message_template, 3)
+    end
+    
+    it 'returns a list of all the image URLs that can be used for this message template' do
+      tag_matcher = double('tag_matcher')
+      allow(TagMatcher).to receive(:new).and_return(tag_matcher)
+      allow(Image).to receive(:tagged_with).and_return(@images)
+      allow(tag_matcher).to receive(:match).with(@images, []).and_return(@images[0..1])
+
+      post :get_image_pool_urls, id: @message_templates[0].id
+      
+      expected_json = { success: true, image_pool_count: 2, image_pool_urls: [@images[0].url, @images[1].url]}.to_json
+      expect(response.header['Content-Type']).to match(/json/)
+      expect(response.body).to eq(expected_json)
+    end
+
+    it 'redirects unauthenticated user to sign-in page' do
+      sign_out(:user)
+
+      post :get_image_pool_urls, id: @message_templates[0].id
+
+      expect(response).to redirect_to :new_user_session
+    end
+  end
 end

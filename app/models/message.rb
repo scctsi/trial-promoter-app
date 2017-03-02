@@ -41,6 +41,7 @@ class Message < ActiveRecord::Base
   belongs_to :image
   belongs_to :social_media_profile
   has_one :buffer_update
+  has_one :click_meter_tracking_link
   has_many :metrics do
     def << (value)
       source_metrics_exists = false
