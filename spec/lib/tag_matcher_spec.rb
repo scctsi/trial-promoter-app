@@ -63,7 +63,6 @@ RSpec.describe TagMatcher do
 
       found_websites = Website.tagged_with(['tag-1'], :match_all => true)
 
-      p found_websites
       expect(found_websites.length).to eq(1)
     end
 
