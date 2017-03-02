@@ -17,23 +17,33 @@
 #  image_present_choices                 :text
 #
 
-
-
 require 'rails_helper'
 
 describe MessageGenerationParameterSet do
-  it { is_expected.to validate_presence_of :period_in_days }
+  it { is_expected.to validate_presence_of :number_of_cycles }
   it { is_expected.to validate_presence_of :number_of_messages_per_social_network }
   it { is_expected.to validate_presence_of :message_generating }
   it { is_expected.to belong_to(:message_generating) }
 
-  it 'validates period_in days as an integer' do
+  it 'validates number_of_cycles as an integer' do
+    message_generation_parameter_set = build(:message_generation_parameter_set, :number_of_cycles => 5.3)
+
+    expect(message_generation_parameter_set.valid?).to be false
+  end
+
+  it 'validates number_of_cycles as greater than 0' do
+    message_generation_parameter_set = build(:message_generation_parameter_set, :number_of_cycles => 0)
+
+    expect(message_generation_parameter_set.valid?).to be false
+  end
+
+  it 'validates period_in_days as an integer' do
     message_generation_parameter_set = build(:message_generation_parameter_set, :period_in_days => 5.3)
 
     expect(message_generation_parameter_set.valid?).to be false
   end
 
-  it 'validates period_in days as greater than 0' do
+  it 'validates period_in_days as greater than 0' do
     message_generation_parameter_set = build(:message_generation_parameter_set, :period_in_days => 0)
 
     expect(message_generation_parameter_set.valid?).to be false
