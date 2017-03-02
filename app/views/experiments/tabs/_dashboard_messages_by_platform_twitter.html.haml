@@ -2,29 +2,44 @@
   - @twitter_messages = @messages.select{ |message| message.social_media_profile.platform == :twitter}
   - @twitter_messages.each do |message|
     .item
-      .ui.small.image
+      .ui.tiny.image
         -if message.image
           = image_tag "#{message.image.url}"
         -else
           %img{ :src => "/assets/image.png" }
       .content
-        .description
-          .ui.left.basic.label
-            = message.medium
-          = message.content
-        .extra
-          %table.ui.very.basic.compact.table
-            %thead
-              %th Clicks
-              %th Impressions
-              %th Primary outcome measure (click rate)
-              %th Likes
-              %th Retweets
-              %th Replies
-            %tbody
-              %td= @messages_with_metrics[0].metrics[0].data[:clicks]
-              %td= @messages_with_metrics[0].metrics[0].data[:impressions]
-              %td= @messages_with_metrics[0].metrics[0].data[:click_rate].to_s + "%"
-              %td= @messages_with_metrics[0].metrics[0].data[:likes]
-              %td= @messages_with_metrics[0].metrics[0].data[:shares]
-              %td= @messages_with_metrics[0].metrics[0].data[:comments]
+        .ui.mini.statistics
+          .statistic
+            .value
+              = @messages_with_metrics[0].metrics[0].data[:clicks]
+            .label
+              Clicks
+          .statistic
+            .value
+              = @messages_with_metrics[0].metrics[0].data[:impressions]
+            .label
+              Signups
+          .statistic.teal
+            .value
+              = @messages_with_metrics[0].metrics[0].data[:click_rate].to_s + "%"
+            .label
+              Primary outcome measure
+          .statistic
+            .value
+              %i.heart.icon
+              = @messages_with_metrics[0].metrics[0].data[:likes]
+            .label
+              Likes
+          .statistic
+            .value
+              %i.refresh.icon
+              = @messages_with_metrics[0].metrics[0].data[:shares]
+            .label
+              Retweets
+          .statistic
+            .value
+              %i.comment.icon
+              = @messages_with_metrics[0].metrics[0].data[:comments]
+            .label
+              Replies
+
