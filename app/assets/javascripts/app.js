@@ -443,7 +443,9 @@ $(document).ready(function() {
     $('.choose-images-button').click(function(){
       var messageTemplateId = $(this).data('message-template-id');
       var imageUrls = []
+      var $loadingButton = $(this);
 
+      $loadingButton.addClass('loading');
       $.ajax({
         url : '/message_templates/' + messageTemplateId + '/get_image_pool_urls',
         type: 'POST',
@@ -456,7 +458,8 @@ $(document).ready(function() {
           imageUrls.forEach(function (imageUrl) {
             html += '<img width="100px" height="100px" src="' + imageUrl + '"></img>';
           })
-          
+
+          $loadingButton.removeClass('loading');
           $('#lightbox .image-list').html(html);
           $('#lightbox').modal('setting', 'transition', 'Vertical Flip').modal({ blurring: true }).modal('show');
         }
