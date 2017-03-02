@@ -22,9 +22,6 @@
 require 'rails_helper'
 
 describe MessageGenerationParameterSet do
-  it { is_expected.to enumerize(:social_network_distribution).in(:equal, :random).with_default(:equal) }
-  it { is_expected.to enumerize(:medium_distribution).in(:equal, :random).with_default(:equal) }
-  it { is_expected.to enumerize(:image_present_distribution).in(:equal, :random).with_default(:equal) }
   it { is_expected.to validate_presence_of :period_in_days }
   it { is_expected.to validate_presence_of :number_of_messages_per_social_network }
   it { is_expected.to validate_presence_of :message_generating }

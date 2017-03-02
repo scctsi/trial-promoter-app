@@ -17,8 +17,6 @@
 #  image_present_choices                 :text
 #
 
-
-
 class MessageGenerationParameterSet < ActiveRecord::Base
   extend Enumerize
   serialize :social_network_choices
@@ -33,10 +31,6 @@ class MessageGenerationParameterSet < ActiveRecord::Base
   validates :medium_choices, presence: true
   validates :image_present_choices, presence: true
   validates :message_generating, presence: true
-
-  enumerize :social_network_distribution, in: [:equal, :random], default: :equal
-  enumerize :medium_distribution, in: [:equal, :random], default: :equal
-  enumerize :image_present_distribution, in: [:equal, :random], default: :equal
 
   belongs_to :message_generating, polymorphic: true
 
