@@ -40,11 +40,8 @@ RSpec.describe MessageFactory do
     @experiment.save
     message_generation_parameter_set = MessageGenerationParameterSet.new do |m|
       m.social_network_choices = [:facebook]
-      m.social_network_distribution = :equal
       m.medium_choices = ['ad']
-      m.medium_distribution = :equal
       m.image_present_choices = ['without']
-      m.image_present_distribution = :equal
       m.period_in_days = 1
       m.number_of_messages_per_social_network = 1
     end
@@ -82,11 +79,8 @@ RSpec.describe MessageFactory do
     @experiment.save
     message_generation_parameter_set = MessageGenerationParameterSet.new do |m|
       m.social_network_choices = [:facebook, :twitter, :instagram]
-      m.social_network_distribution = :equal
       m.medium_choices = [:ad, :organic]
-      m.medium_distribution = :equal
       m.image_present_choices = [:with]
-      m.image_present_distribution = :equal
       m.period_in_days = 3
       m.number_of_messages_per_social_network = 3
     end
@@ -138,11 +132,8 @@ RSpec.describe MessageFactory do
     @experiment.save
     message_generation_parameter_set = MessageGenerationParameterSet.new do |m|
       m.social_network_choices = ['facebook']
-      m.social_network_distribution = :equal
       m.medium_choices = ['ad']
-      m.medium_distribution = :equal
       m.image_present_choices = ['with']
-      m.image_present_distribution = :equal
       m.period_in_days = 1
       m.number_of_messages_per_social_network = 3
     end
