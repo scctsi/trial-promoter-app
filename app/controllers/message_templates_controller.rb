@@ -1,5 +1,5 @@
 class MessageTemplatesController < ApplicationController
-  before_action :set_message_template, only: [:edit, :update]
+  before_action :set_message_template, only: [:edit, :update, :get_image_pool_urls]
 
   def index
     authorize MessageTemplate
@@ -18,7 +18,7 @@ class MessageTemplatesController < ApplicationController
 
   def create
     @message_template = MessageTemplate.new(message_template_params)
-    authorize MessageTemplate
+    authorize @message_template
 
     if @message_template.save
       redirect_to message_templates_url
@@ -26,9 +26,17 @@ class MessageTemplatesController < ApplicationController
       render :new
     end
   end
+  
+  def get_image_pool_urls
+    authorize @message_template
+    images = Image.tagged_with(@message_template.experiment_list, on: :experiments)
+    image_pool = TagMatcher.new.match(images, @message_template.tag_list)
+
+    render json: { success: true, image_pool_count: image_pool.length, image_pool_urls: image_pool.map(&:url) }
+  end
 
   def update
-    authorize MessageTemplate
+    authorize @message_template
     if @message_template.update(message_template_params)
       redirect_to message_templates_url
     else
