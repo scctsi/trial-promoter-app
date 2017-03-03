@@ -7,7 +7,15 @@ class MessageTemplatePolicy < ApplicationPolicy
     user.role.administrator?
   end
   
-  def get_image_pool_urls?
+  def get_image_selections?
+    user.role.administrator?
+  end
+  
+  def add_image_to_image_pool?
+    user.role.administrator?
+  end
+
+  def remove_image_from_image_pool?
     user.role.administrator?
   end
 end

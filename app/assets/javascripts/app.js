@@ -445,6 +445,25 @@ $(document).ready(function() {
     });
   }
 
+  function getImagePoolInterfaceHtml(imageUrls) {
+    var html = '<div class="ui cards">';
+
+    imageUrls.forEach(function (imageUrl) {
+      html += '<div class="card">';
+      html += '<div class="content">';
+      html += '<div class="ui image">'
+      html += '<img src="' + imageUrl + '"></img>';
+      html += '</div>';
+      html += '</div>';
+      html += '<div class="extra content"><div class="ui mini button">Add</div></div>';
+      html += '</div>';
+    })
+    
+    html += '</div>';
+    
+    return html;
+  }
+  
   function setUpImagePoolViewing() {
     // Modal for image labeling
     $('.choose-images-button').click(function(){
@@ -462,9 +481,10 @@ $(document).ready(function() {
           var html = '';
           imageUrls = retdata.image_pool_urls;
 
-          imageUrls.forEach(function (imageUrl) {
-            html += '<img width="100px" height="100px" src="' + imageUrl + '"></img>';
-          })
+          html = getImagePoolInterfaceHtml(imageUrls);
+          // imageUrls.forEach(function (imageUrl) {
+          //   html += '<img width="100px" height="100px" src="' + imageUrl + '"></img>';
+          // })
 
           $loadingButton.removeClass('loading');
           $('#lightbox .image-list').html(html);
