@@ -3,6 +3,7 @@
 /*global Pusher*/
 $(document).ready(function() {
   var $select_time;
+  var client;
 
   function setUpDatePickers() {
     $("[id$='_date']").daterangepicker({
@@ -43,7 +44,9 @@ $(document).ready(function() {
   }
 
   function setUpFilepicker() {
-    filepicker.setKey("At8mEYziyTc6axVbB4njtz");
+    client = filestack.init("At8mEYziyTc6axVbB4njtz");
+    // filepicker.setKey("At8mEYziyTc6axVbB4njtz");
+    // client.upload(file, uploadOptions, storeOptions);
   }
 
   function s3BucketContainer() {
@@ -54,7 +57,7 @@ $(document).ready(function() {
     $('#message-templates-file-upload-button').click(function() {
       var experimentId = $(this).data('experiment-id');
 
-      filepicker.pick({
+      client.pick({
           mimetypes: ['text/csv', 'application/vnd.ms-excel'],
           container: 'modal',
           services: ['COMPUTER', 'GOOGLE_DRIVE', 'DROPBOX']
@@ -81,12 +84,12 @@ $(document).ready(function() {
   function createS3BucketUrls(Blobs) {
     var namedUrls = [];
     var bucketName = '';
-    
+
     for (var i = 0; i < Blobs.length; i++) {
       bucketName = Blobs[0].container;
       namedUrls.push(createS3Url(bucketName, Blobs[i].key));
     }
-    
+
     return namedUrls;
   }
 
@@ -94,43 +97,49 @@ $(document).ready(function() {
     $('#images-upload-button').click(function() {
       var experimentId = $(this).data('experiment-id');
       var experimentParam = $(this).data('experiment-param');
+      console.log(s3BucketContainer());
 
-      filepicker.pickAndStore({
-          mimetype: 'image/*',
-          multiple: true,
-          container: 'modal',
-          services: ['COMPUTER', 'GOOGLE_DRIVE', 'DROPBOX']
-        },
-        {
-          location: 'S3',
-          path: '/' + experimentParam + '/images/',
-          container: s3BucketContainer(),
-          access: 'public'
-        },
-        function(Blobs) {
-          console.log(Blobs);
-          var imageUrls = createS3BucketUrls(Blobs);
-          var filenames = [];
-          for (var i = 0; i < Blobs.length; i++) {
-            filenames.push(Blobs[i].filename);
+      client.pick({
+          accept: 'image/*',
+          storeTo: {
+            location: 's3',
+            path: '/' + experimentParam + '/images/',
+            container: 'scctsi-tp-development',
+            access: 'public',
+            region: 'us-west-2'
           }
+          // storeTo: {
+          //   location: 'S3',
+          //   path: '/' + experimentParam + '/images/',
 
-          $.ajax({
-            url : '/images/import',
-            type: 'POST',
-            data: {image_urls: imageUrls, original_filenames: filenames, experiment_id: experimentId.toString()},
-            dataType: 'json',
-            success: function(retdata) {
-              $('.ui.success.message.hidden.ask-refresh-page').removeClass('hidden');
-            }
-          });
-        },
-        function(error){
-        },
-        function(progress){
-        }
-      );
-    });
+
+          // },
+        // function(Blobs) {
+        //   console.log(Blobs);
+        //   var imageUrls = createS3BucketUrls(Blobs);
+        //   var filenames = [];
+        //   for (var i = 0; i < Blobs.length; i++) {
+        //     filenames.push(Blobs[i].filename);
+        //   }
+
+        //   $.ajax({
+        //     url : '/images/import',
+        //     type: 'POST',
+        //     data: {image_urls: imageUrls, original_filenames: filenames, experiment_id: experimentId.toString()},
+        //     dataType: 'json',
+        //     success: function(retdata) {
+        //       $('.ui.success.message.hidden.ask-refresh-page').removeClass('hidden');
+        //     }
+          // });
+        // },
+        // function(error){
+        // },
+        // function(progress){
+        // }
+      }).then((result => {
+console.log(JSON.stringify(result.filesUploaded))
+}))
+    })
   }
 
   function setUpAnalyticsFileImports() {
@@ -473,7 +482,7 @@ $(document).ready(function() {
       });
     });
   }
-  
+
   // Initialize
   setUpPostingTimeInputs();
   showSocialMediaProfiles();
