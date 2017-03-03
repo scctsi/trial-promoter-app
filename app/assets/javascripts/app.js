@@ -81,10 +81,12 @@ $(document).ready(function() {
   function createS3BucketUrls(Blobs) {
     var namedUrls = [];
     var bucketName = '';
+    
     for (var i = 0; i < Blobs.length; i++) {
       bucketName = Blobs[0].container;
       namedUrls.push(createS3Url(bucketName, Blobs[i].key));
     }
+    
     return namedUrls;
   }
 
@@ -106,12 +108,17 @@ $(document).ready(function() {
           access: 'public'
         },
         function(Blobs) {
+          console.log(Blobs);
           var imageUrls = createS3BucketUrls(Blobs);
+          var filenames = [];
+          for (var i = 0; i < Blobs.length; i++) {
+            filenames.push(Blobs[i].filename);
+          }
 
           $.ajax({
             url : '/images/import',
             type: 'POST',
-            data: {image_urls: imageUrls, experiment_id: experimentId.toString()},
+            data: {image_urls: imageUrls, original_filenames: filenames, experiment_id: experimentId.toString()},
             dataType: 'json',
             success: function(retdata) {
               $('.ui.success.message.hidden.ask-refresh-page').removeClass('hidden');
@@ -123,7 +130,7 @@ $(document).ready(function() {
         function(progress){
         }
       );
-    })
+    });
   }
 
   function setUpAnalyticsFileImports() {

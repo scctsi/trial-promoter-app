@@ -12,6 +12,7 @@
             %i.square.outline.icon
             Deselect all
         %th.center.aligned Image
+        %th.center.aligned Filename
         %th
           Tags
           .ui.form
@@ -29,5 +30,6 @@
               %label{ :for => "image-#{image.id}-selected" }
           %td
             = image_tag "#{image.url}", width: '150', height: '150', lazy: true
+          %td= image.original_filename
           %td.image-tag
             = render partial: 'shared/tag_list', locals: { tags: image.tag_list }
