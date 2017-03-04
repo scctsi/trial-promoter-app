@@ -104,7 +104,7 @@ $(document).ready(function() {
           storeTo: {
             location: 's3',
             path: '/' + experimentParam + '/images/',
-            container: 'scctsi-tp-development',
+            container: 'scctsi-tp-development-filestack-v3',
             access: 'public',
             region: 'us-west-2'
           }
