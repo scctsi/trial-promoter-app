@@ -445,20 +445,34 @@ $(document).ready(function() {
     });
   }
 
-  function getImagePoolInterfaceHtml(imageUrls) {
-    var html = '<div class="ui cards">';
+  function getImagePoolInterfaceHtml(selectedImages, unselectedImages) {
+    var html = '<h3 class="ui block header">Selected images</h3>';
 
-    imageUrls.forEach(function (imageUrl) {
+    html += '<div class="ui cards">';
+    selectedImages.forEach(function (selectedImage) {
       html += '<div class="card">';
       html += '<div class="content">';
-      html += '<div class="ui image">'
-      html += '<img src="' + imageUrl + '"></img>';
+      html += '<div class="ui image">';
+      html += '<img src="' + selectedImage.url + '"></img>';
       html += '</div>';
       html += '</div>';
-      html += '<div class="extra content"><div class="ui mini button">Add</div></div>';
+      html += '<div class="extra content"><div class="ui labeled icon fluid tiny button remove-image-from-image-pool-button" data-image-id="' + selectedImage.id + '"><i class="remove icon"></i>Remove</div></div>';
       html += '</div>';
-    })
-    
+    });
+    html += '</div>';
+
+    html += '<h3 class="ui block header">Unselected images</h3>';
+    html += '<div class="ui cards">';
+    unselectedImages.forEach(function (unselectedImage) {
+      html += '<div class="card">';
+      html += '<div class="content">';
+      html += '<div class="ui image">';
+      html += '<img src="' + unselectedImage.url + '"></img>';
+      html += '</div>';
+      html += '</div>';
+      html += '<div class="extra content"><div class="ui labeled icon fluid tiny button add-image-to-image-pool-button" data-image-id="' + selectedImage.id + '"><i class="plus icon"></i>Add</div></div>';
+      html += '</div>';
+    });
     html += '</div>';
     
     return html;
@@ -467,24 +481,24 @@ $(document).ready(function() {
   function setUpImagePoolViewing() {
     // Modal for image labeling
     $('.choose-images-button').click(function(){
+      var experimentId = $(this).data('experiment-id');
       var messageTemplateId = $(this).data('message-template-id');
-      var imageUrls = []
       var $loadingButton = $(this);
 
       $loadingButton.addClass('loading');
       $.ajax({
-        url : '/message_templates/' + messageTemplateId + '/get_image_pool_urls',
+        url : '/message_templates/' + messageTemplateId + '/get_image_selections',
         type: 'POST',
-        data: {id: messageTemplateId},
+        data: {experiment_id: experimentId},
         dataType: 'json',
         success: function(retdata) {
           var html = '';
-          imageUrls = retdata.image_pool_urls;
-
-          html = getImagePoolInterfaceHtml(imageUrls);
-          // imageUrls.forEach(function (imageUrl) {
-          //   html += '<img width="100px" height="100px" src="' + imageUrl + '"></img>';
-          // })
+          var selectedImages = retdata.selected_images;
+          var unselectedImages = retdata.unselected_images;
+          console.log(selectedImages);
+          console.log(unselectedImages);
+          
+          html = getImagePoolInterfaceHtml(selectedImages, unselectedImages);
 
           $loadingButton.removeClass('loading');
           $('#lightbox .image-list').html(html);
