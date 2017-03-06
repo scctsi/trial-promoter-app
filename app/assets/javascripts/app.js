@@ -494,19 +494,21 @@ $(document).ready(function() {
     return html;
   }
   
-  function addEventForButton(messageTemplateId, imageId, $button, buttonType) {
-    $button.addClass('loading');
-    $('.filenames-list').html('Selected images have been changed. Please close and reopen this window to see correct list of filenames.');
+  function addEventForButton(messageTemplateId, imageId, $button) {
     var action = '';
     var confirmationText = '';
-    if (buttonType == 'add') {
+
+    if ($button.hasClass('add-image-to-image-pool-button')) {
       action = 'add_image_to_image_pool';
       confirmationText = 'Added';
     }
-    if (buttonType == 'remove') {
+    if ($button.hasClass('remove-image-from-image-pool-button')) {
       action = 'remove_image_from_image_pool';
       confirmationText = 'Removed';
     }
+     
+    $button.addClass('loading');
+    $('.filenames-list').html('Selected images have been changed. Please close and reopen this window to see correct list of filenames.');
 
     $.ajax({
       url : '/message_templates/' + messageTemplateId + '/' + action,
@@ -523,15 +525,11 @@ $(document).ready(function() {
   
   function addEventsForAddRemoveButtons(messageTemplateId) {
     $('#lightbox .add-image-to-image-pool-button').on('click', function() {
-      var imageId = $(this).data('image-id');
-      var $addImageButton = $(this);
-      addEventForButton(messageTemplateId, imageId, $addImageButton, 'add');
+      addEventForButton(messageTemplateId, $(this).data('image-id'), $(this));
     });
 
     $('#lightbox .remove-image-from-image-pool-button').on('click', function() {
-      var imageId = $(this).data('image-id');
-      var $removeImageButton = $(this);
-      addEventForButton(messageTemplateId, imageId, $removeImageButton, 'remove');
+      addEventForButton(messageTemplateId, $(this).data('image-id'), $(this));
     });
   }
   
