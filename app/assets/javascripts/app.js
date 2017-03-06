@@ -523,16 +523,6 @@ $(document).ready(function() {
     });
   }
   
-  function addEventsForAddRemoveButtons(messageTemplateId) {
-    $('#lightbox .add-image-to-image-pool-button').on('click', function() {
-      addEventForButton(messageTemplateId, $(this).data('image-id'), $(this));
-    });
-
-    $('#lightbox .remove-image-from-image-pool-button').on('click', function() {
-      addEventForButton(messageTemplateId, $(this).data('image-id'), $(this));
-    });
-  }
-  
   function setUpImagePoolViewing() {
     // Modal for image labeling
     $('.choose-images-button').click(function(){
@@ -558,7 +548,9 @@ $(document).ready(function() {
           $loadingButton.removeClass('loading');
           $('#lightbox .image-list').html(html);
           $('#lightbox').modal('setting', 'transition', 'Vertical Flip').modal({ blurring: true }).modal('show');
-          addEventsForAddRemoveButtons(messageTemplateId);
+          $('#lightbox .add-image-to-image-pool-button, #lightbox .remove-image-from-image-pool-button').on('click', function() {
+            addEventForButton(messageTemplateId, $(this).data('image-id'), $(this));
+          });
         }
       });
     });
