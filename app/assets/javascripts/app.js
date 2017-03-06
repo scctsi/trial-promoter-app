@@ -494,43 +494,44 @@ $(document).ready(function() {
     return html;
   }
   
+  function addEventForButton(messageTemplateId, imageId, $button, buttonType) {
+    $button.addClass('loading');
+    $('.filenames-list').html('Selected images have been changed. Please close and reopen this window to see correct list of filenames.');
+    var action = '';
+    var confirmationText = '';
+    if (buttonType == 'add') {
+      action = 'add_image_to_image_pool';
+      confirmationText = 'Added';
+    }
+    if (buttonType == 'remove') {
+      action = 'remove_image_from_image_pool';
+      confirmationText = 'Removed';
+    }
+
+    $.ajax({
+      url : '/message_templates/' + messageTemplateId + '/' + action,
+      type: 'POST',
+      data: {image_id: imageId},
+      dataType: 'json',
+      success: function(retdata) {
+        $button.removeClass('loading');
+        $button.addClass('positive');
+        $button.html('<i class="checkmark icon"></i>' + confirmationText);
+      }
+    });
+  }
+  
   function addEventsForAddRemoveButtons(messageTemplateId) {
     $('#lightbox .add-image-to-image-pool-button').on('click', function() {
       var imageId = $(this).data('image-id');
       var $addImageButton = $(this);
-      $addImageButton.addClass('loading');
-      $('.filenames-list').html('Selected images have been changed. Please close and reopen this window to see correct list of filenames.');
-
-      $.ajax({
-        url : '/message_templates/' + messageTemplateId + '/add_image_to_image_pool',
-        type: 'POST',
-        data: {image_id: imageId},
-        dataType: 'json',
-        success: function(retdata) {
-          $addImageButton.removeClass('loading');
-          $addImageButton.addClass('positive');
-          $addImageButton.html('<i class="checkmark icon"></i>Added');
-        }
-      });
+      addEventForButton(messageTemplateId, imageId, $addImageButton, 'add');
     });
 
     $('#lightbox .remove-image-from-image-pool-button').on('click', function() {
       var imageId = $(this).data('image-id');
       var $removeImageButton = $(this);
-      $removeImageButton.addClass('loading');
-      $('.filenames-list').html('Selected images have been changed. Please close and reopen this window to see correct list of filenames.');
-      
-      $.ajax({
-        url : '/message_templates/' + messageTemplateId + '/remove_image_from_image_pool',
-        type: 'POST',
-        data: {image_id: imageId},
-        dataType: 'json',
-        success: function(retdata) {
-          $removeImageButton.removeClass('loading');
-          $removeImageButton.addClass('positive');
-          $removeImageButton.html('<i class="checkmark icon"></i>Removed');
-        }
-      });
+      addEventForButton(messageTemplateId, imageId, $removeImageButton, 'remove');
     });
   }
   
