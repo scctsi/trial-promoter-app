@@ -6,8 +6,15 @@ RSpec.describe ImagePoolManager do
     @message_templates = create_list(:message_template, 3)
     @images = create_list(:image, 5)
     @experiments = create_list(:experiment, 2)
-    @images[0..2].each do |image| 
+    @images[0..2].each.with_index do |image, index|
       image.experiment_list = @experiments[0].to_param
+      image.original_filename = "filename_#{index}.png"
+      image.save 
+    end
+    # Give two other images belonging to another experiment duplicate filenames 
+    @images[3..4].each.with_index do |image, index|
+      image.experiment_list = @experiments[1].to_param
+      image.original_filename = "filename_#{index}.png"
       image.save 
     end
   end
@@ -95,5 +102,12 @@ RSpec.describe ImagePoolManager do
     selected_and_unselected_images[:unselected_images].each do |image|
       expect(@message_templates[1].image_pool).not_to include(image.id)
     end
+  end
+  
+  it 'adds images to a image pool given a comma-separated list of image filenames' do
+    @image_pool_manager.add_images_by_filename(@experiments[0], [@images[0].original_filename, @images[1].original_filename], @message_templates[1])
+
+    @message_templates[1].reload
+    expect(@message_templates[1].image_pool).to eq([@images[0].id, @images[1].id])
   end
 end
