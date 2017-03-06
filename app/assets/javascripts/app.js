@@ -455,41 +455,42 @@ $(document).ready(function() {
     return filenames.join(',');
   }
   
+  function getImageCardsHtml(images, buttonType) {
+    var html = '';
+  
+    html += '<div class="ui cards">';
+    images.forEach(function (image) {
+      html += '<div class="card">';
+      html += '<div class="content">';
+      html += '<div class="ui image">';
+      html += '<img src="' + image.url + '"></img>';
+      html += '<div class="description">' + image.original_filename + '</div>';
+      html += '</div>';
+      html += '</div>';
+      if (buttonType == 'add') {
+        html += '<div class="extra content"><div class="ui labeled icon fluid tiny button add-image-to-image-pool-button" data-image-id="' + image.id + '"><i class="checkmark icon"></i>Add</div></div>';
+      }
+      if (buttonType == 'remove') {
+        html += '<div class="extra content"><div class="ui labeled icon fluid tiny button remove-image-from-image-pool-button" data-image-id="' + image.id + '"><i class="remove icon"></i>Remove</div></div>';
+      }
+      html += '</div>';
+    });
+    html += '</div>';
+
+    return html;
+  }
+  
   function getImagePoolInterfaceHtml(selectedImages, unselectedImages, messageContent) {
     var html = '<div class="ui segment">' + messageContent + '</div>';
     html += '<div class="ui segment filenames-list">Filenames: ';
     html += getFilenames(selectedImages) + '</div>';
-    html += '<h3 class="ui block header">Selected images</h3>';
 
-    html += '<div class="ui cards">';
-    selectedImages.forEach(function (selectedImage) {
-      html += '<div class="card">';
-      html += '<div class="content">';
-      html += '<div class="ui image">';
-      html += '<img src="' + selectedImage.url + '"></img>';
-      html += '<div class="description">' + selectedImage.original_filename + '</div>';
-      html += '</div>';
-      html += '</div>';
-      html += '<div class="extra content"><div class="ui labeled icon fluid tiny button remove-image-from-image-pool-button" data-image-id="' + selectedImage.id + '"><i class="remove icon"></i>Remove</div></div>';
-      html += '</div>';
-    });
-    html += '</div>';
+    html += '<h3 class="ui block header">Selected images</h3>';
+    html += getImageCardsHtml(selectedImages, 'remove');
 
     html += '<h3 class="ui block header">Unselected images</h3>';
-    html += '<div class="ui cards">';
-    unselectedImages.forEach(function (unselectedImage) {
-      html += '<div class="card">';
-      html += '<div class="content">';
-      html += '<div class="ui image">';
-      html += '<img src="' + unselectedImage.url + '"></img>';
-      html += '<div class="description">' + unselectedImage.original_filename + '</div>';
-      html += '</div>';
-      html += '</div>';
-      html += '<div class="extra content"><div class="ui labeled icon fluid tiny button add-image-to-image-pool-button" data-image-id="' + unselectedImage.id + '"><i class="plus icon"></i>Add</div></div>';
-      html += '</div>';
-    });
-    html += '</div>';
-    
+    html += getImageCardsHtml(unselectedImages, 'add');
+
     return html;
   }
   
