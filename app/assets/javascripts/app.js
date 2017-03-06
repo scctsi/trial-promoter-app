@@ -445,30 +445,112 @@ $(document).ready(function() {
     });
   }
 
+  function getFilenames(selectedImages) {
+    var filenames = [];
+
+    selectedImages.forEach(function(selectedImage) {
+      filenames.push(selectedImage.original_filename);
+    });
+    
+    return filenames.join(',');
+  }
+  
+  function getImageCardsHtml(images, buttonType) {
+    var html = '';
+  
+    html += '<div class="ui cards">';
+    images.forEach(function (image) {
+      html += '<div class="card">';
+      html += '<div class="content">';
+      html += '<div class="ui image">';
+      html += '<img src="' + image.url + '"></img>';
+      html += '<div class="description">' + image.original_filename + '</div>';
+      html += '</div>';
+      html += '</div>';
+      if (buttonType == 'add') {
+        html += '<div class="extra content"><div class="ui labeled icon fluid tiny button add-image-to-image-pool-button" data-image-id="' + image.id + '"><i class="checkmark icon"></i>Add</div></div>';
+      }
+      if (buttonType == 'remove') {
+        html += '<div class="extra content"><div class="ui labeled icon fluid tiny button remove-image-from-image-pool-button" data-image-id="' + image.id + '"><i class="remove icon"></i>Remove</div></div>';
+      }
+      html += '</div>';
+    });
+    html += '</div>';
+
+    return html;
+  }
+  
+  function getImagePoolInterfaceHtml(selectedImages, unselectedImages, messageContent) {
+    var html = '<div class="ui segment">' + messageContent + '</div>';
+    html += '<div class="ui segment filenames-list">Filenames: ';
+    html += getFilenames(selectedImages) + '</div>';
+
+    html += '<h3 class="ui block header">Selected images</h3>';
+    html += getImageCardsHtml(selectedImages, 'remove');
+
+    html += '<h3 class="ui block header">Unselected images</h3>';
+    html += getImageCardsHtml(unselectedImages, 'add');
+
+    return html;
+  }
+  
+  function addEventForButton(messageTemplateId, imageId, $button) {
+    var action = '';
+    var confirmationText = '';
+
+    if ($button.hasClass('add-image-to-image-pool-button')) {
+      action = 'add_image_to_image_pool';
+      confirmationText = 'Added';
+    }
+    if ($button.hasClass('remove-image-from-image-pool-button')) {
+      action = 'remove_image_from_image_pool';
+      confirmationText = 'Removed';
+    }
+     
+    $button.addClass('loading');
+    $('.filenames-list').html('Selected images have been changed. Please close and reopen this window to see correct list of filenames.');
+
+    $.ajax({
+      url : '/message_templates/' + messageTemplateId + '/' + action,
+      type: 'POST',
+      data: {image_id: imageId},
+      dataType: 'json',
+      success: function(retdata) {
+        $button.removeClass('loading');
+        $button.addClass('positive');
+        $button.html('<i class="checkmark icon"></i>' + confirmationText);
+      }
+    });
+  }
+  
   function setUpImagePoolViewing() {
     // Modal for image labeling
     $('.choose-images-button').click(function(){
+      var experimentId = $(this).data('experiment-id');
       var messageTemplateId = $(this).data('message-template-id');
-      var imageUrls = []
+      var messageContent = $(this).parent().siblings(':first').text();
+      console.log(messageContent);
       var $loadingButton = $(this);
 
       $loadingButton.addClass('loading');
       $.ajax({
-        url : '/message_templates/' + messageTemplateId + '/get_image_pool_urls',
+        url : '/message_templates/' + messageTemplateId + '/get_image_selections',
         type: 'POST',
-        data: {id: messageTemplateId},
+        data: {experiment_id: experimentId},
         dataType: 'json',
         success: function(retdata) {
           var html = '';
-          imageUrls = retdata.image_pool_urls;
+          var selectedImages = retdata.selected_images;
+          var unselectedImages = retdata.unselected_images;
 
-          imageUrls.forEach(function (imageUrl) {
-            html += '<img width="100px" height="100px" src="' + imageUrl + '"></img>';
-          })
+          html = getImagePoolInterfaceHtml(selectedImages, unselectedImages, messageContent);
 
           $loadingButton.removeClass('loading');
           $('#lightbox .image-list').html(html);
           $('#lightbox').modal('setting', 'transition', 'Vertical Flip').modal({ blurring: true }).modal('show');
+          $('#lightbox .add-image-to-image-pool-button, #lightbox .remove-image-from-image-pool-button').on('click', function() {
+            addEventForButton(messageTemplateId, $(this).data('image-id'), $(this));
+          });
         }
       });
     });

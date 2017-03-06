@@ -28,7 +28,9 @@ Rails.application.routes.draw do
   # Message templates
   resources :message_templates do
     member do
-      post 'get_image_pool_urls', to: 'message_templates#get_image_pool_urls', constraints: lambda { |req| req.format == :json }
+      post 'get_image_selections', to: 'message_templates#get_image_selections', constraints: lambda { |req| req.format == :json }
+      post 'add_image_to_image_pool', to: 'message_templates#add_image_to_image_pool', constraints: lambda { |req| req.format == :json }
+      post 'remove_image_from_image_pool', to: 'message_templates#remove_image_from_image_pool', constraints: lambda { |req| req.format == :json }
     end
     collection do
       get :import
