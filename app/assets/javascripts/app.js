@@ -445,8 +445,21 @@ $(document).ready(function() {
     });
   }
 
-  function getImagePoolInterfaceHtml(selectedImages, unselectedImages) {
-    var html = '<h3 class="ui block header">Selected images</h3>';
+  function getFilenames(selectedImages) {
+    var filenames = [];
+
+    selectedImages.forEach(function(selectedImage) {
+      filenames.push(selectedImage.original_filename);
+    });
+    
+    return filenames.join(',');
+  }
+  
+  function getImagePoolInterfaceHtml(selectedImages, unselectedImages, messageContent) {
+    var html = '<div class="ui segment">' + messageContent + '</div>';
+    html += '<div class="ui segment filenames-list">Filenames: ';
+    html += getFilenames(selectedImages) + '</div>';
+    html += '<h3 class="ui block header">Selected images</h3>';
 
     html += '<div class="ui cards">';
     selectedImages.forEach(function (selectedImage) {
@@ -454,6 +467,7 @@ $(document).ready(function() {
       html += '<div class="content">';
       html += '<div class="ui image">';
       html += '<img src="' + selectedImage.url + '"></img>';
+      html += '<div class="description">' + selectedImage.original_filename + '</div>';
       html += '</div>';
       html += '</div>';
       html += '<div class="extra content"><div class="ui labeled icon fluid tiny button remove-image-from-image-pool-button" data-image-id="' + selectedImage.id + '"><i class="remove icon"></i>Remove</div></div>';
@@ -468,9 +482,10 @@ $(document).ready(function() {
       html += '<div class="content">';
       html += '<div class="ui image">';
       html += '<img src="' + unselectedImage.url + '"></img>';
+      html += '<div class="description">' + unselectedImage.original_filename + '</div>';
       html += '</div>';
       html += '</div>';
-      html += '<div class="extra content"><div class="ui labeled icon fluid tiny button add-image-to-image-pool-button" data-image-id="' + selectedImage.id + '"><i class="plus icon"></i>Add</div></div>';
+      html += '<div class="extra content"><div class="ui labeled icon fluid tiny button add-image-to-image-pool-button" data-image-id="' + unselectedImage.id + '"><i class="plus icon"></i>Add</div></div>';
       html += '</div>';
     });
     html += '</div>';
@@ -478,11 +493,53 @@ $(document).ready(function() {
     return html;
   }
   
+  function addEventsForAddRemoveButtons(messageTemplateId) {
+    $('#lightbox .add-image-to-image-pool-button').on('click', function() {
+      var imageId = $(this).data('image-id');
+      var $addImageButton = $(this);
+      $addImageButton.addClass('loading');
+      $('.filenames-list').html('Selected images have been changed. Please close and reopen this window to see correct list of filenames.');
+
+      $.ajax({
+        url : '/message_templates/' + messageTemplateId + '/add_image_to_image_pool',
+        type: 'POST',
+        data: {image_id: imageId},
+        dataType: 'json',
+        success: function(retdata) {
+          $addImageButton.removeClass('loading');
+          $addImageButton.addClass('positive');
+          $addImageButton.html('<i class="checkmark icon"></i>Added');
+        }
+      });
+    });
+
+    $('#lightbox .remove-image-from-image-pool-button').on('click', function() {
+      var imageId = $(this).data('image-id');
+      var $removeImageButton = $(this);
+      $removeImageButton.addClass('loading');
+      $('.filenames-list').html('Selected images have been changed. Please close and reopen this window to see correct list of filenames.');
+      
+      $.ajax({
+        url : '/message_templates/' + messageTemplateId + '/remove_image_from_image_pool',
+        type: 'POST',
+        data: {image_id: imageId},
+        dataType: 'json',
+        success: function(retdata) {
+          $removeImageButton.removeClass('loading');
+          $removeImageButton.addClass('positive');
+          $removeImageButton.html('<i class="checkmark icon"></i>Removed');
+        }
+      });
+    });
+  }
+  
   function setUpImagePoolViewing() {
     // Modal for image labeling
     $('.choose-images-button').click(function(){
       var experimentId = $(this).data('experiment-id');
       var messageTemplateId = $(this).data('message-template-id');
+      var messageContent = $(this).parent().siblings(':first').text();
+      console.log(messageContent);
       var $loadingButton = $(this);
 
       $loadingButton.addClass('loading');
@@ -495,14 +552,13 @@ $(document).ready(function() {
           var html = '';
           var selectedImages = retdata.selected_images;
           var unselectedImages = retdata.unselected_images;
-          console.log(selectedImages);
-          console.log(unselectedImages);
-          
-          html = getImagePoolInterfaceHtml(selectedImages, unselectedImages);
+
+          html = getImagePoolInterfaceHtml(selectedImages, unselectedImages, messageContent);
 
           $loadingButton.removeClass('loading');
           $('#lightbox .image-list').html(html);
           $('#lightbox').modal('setting', 'transition', 'Vertical Flip').modal({ blurring: true }).modal('show');
+          addEventsForAddRemoveButtons(messageTemplateId);
         }
       });
     });
