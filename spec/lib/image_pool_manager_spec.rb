@@ -105,7 +105,7 @@ RSpec.describe ImagePoolManager do
   end
   
   it 'adds images to a image pool given a comma-separated list of image filenames' do
-    @image_pool_manager.add_images_by_filename(@experiments[0], [@images[0].original_filename, @images[1].original_filename], @message_templates[1])
+    @image_pool_manager.add_images_by_filename(@experiments[0].to_param, [@images[0].original_filename, @images[1].original_filename], @message_templates[1])
 
     @message_templates[1].reload
     expect(@message_templates[1].image_pool).to eq([@images[0].id, @images[1].id])
