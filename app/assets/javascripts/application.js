@@ -11,7 +11,6 @@
 // about supported directives.
 //
 //= require jquery
-//= require ahoy
 //= require jquery_ujs
 //= require jquery.lazyload.min
 //= require semantic-ui

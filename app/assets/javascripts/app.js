@@ -3,6 +3,7 @@
 /*global Pusher*/
 $(document).ready(function() {
   var $select_time;
+  filepicker.setKey("At8mEYziyTc6axVbB4njtz");
 
   function setUpDatePickers() {
     $("[id$='_date']").daterangepicker({
@@ -40,10 +41,6 @@ $(document).ready(function() {
         };
       }
     });
-  }
-
-  function setUpFilepicker() {
-    filepicker.setKey("At8mEYziyTc6axVbB4njtz");
   }
 
   function s3BucketContainer() {
@@ -495,7 +492,6 @@ $(document).ready(function() {
   setUpDatePickers();
   setUpChosenDropdowns();
   setUpTagListInputs();
-  setUpFilepicker();
   setUpMessageTemplateImports();
   setUpImageImports();
   setUpAnalyticsFileImports();
