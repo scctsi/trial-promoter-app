@@ -42,14 +42,19 @@ class MessageGenerationParameterSet < ActiveRecord::Base
     return symbolize_array_items(self[:medium_choices])
   end
 
-  def expected_generated_message_count
-    social_network_choices_count = social_network_choices.select { |network| !network.blank? }.count
-    medium_choices_count = medium_choices.select { |medium| !medium.blank? }.count
+  def expected_generated_message_count(number_of_message_templates)
+    # Number of social networks (1) * Number of mediums (1) * (Number of message templates (9) / Number of messages per social network (3)) * Number of cycles
+    calculation_parameters = {}
+    
+    calculation_parameters[:social_network_choices_count] = social_network_choices.select { |network| !network.blank? }.count
+    calculation_parameters[:medium_choices_count] = medium_choices.select { |medium| !medium.blank? }.count
+    calculation_parameters[:number_of_message_templates] = number_of_message_templates
+    calculation_parameters[:number_of_cycles] = number_of_cycles
 
-    MessageGenerationParameterSet.calculate_message_count(social_network_choices_count, medium_choices_count, period_in_days, number_of_messages_per_social_network)
+    MessageGenerationParameterSet.calculate_message_count(calculation_parameters)
   end
 
-  def self.calculate_message_count(social_network_choices_count, medium_choices_count, period_in_days, number_of_messages_per_social_network)
-    social_network_choices_count * medium_choices_count * period_in_days * number_of_messages_per_social_network
+  def self.calculate_message_count(calculation_parameters)
+    calculation_parameters[:social_network_choices_count] * calculation_parameters[:medium_choices_count] * calculation_parameters[:number_of_message_templates] * calculation_parameters[:number_of_cycles]
   end
 end
