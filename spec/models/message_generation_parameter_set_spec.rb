@@ -20,11 +20,7 @@
 require 'rails_helper'
 
 describe MessageGenerationParameterSet do
-<<<<<<< HEAD
   it { is_expected.to validate_presence_of :number_of_cycles }
-=======
-  it { is_expected.to validate_presence_of :period_in_days }
->>>>>>> development
   it { is_expected.to validate_presence_of :number_of_messages_per_social_network }
   it { is_expected.to validate_presence_of :message_generating }
   it { is_expected.to belong_to(:message_generating) }
