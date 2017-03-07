@@ -23,8 +23,10 @@ class MessageTemplate < ActiveRecord::Base
   validates :platform, presence: true
   enumerize :platform, in: [:twitter, :facebook, :instagram], predicates: true
 
-  serialize :hashtags
-  serialize :experiment_variables
+  serialize :hashtags, Array
+  serialize :image_pool, Array
+  serialize :experiment_variables, Hash
+  serialize :original_image_filenames, Array
   
   has_many :messages
 

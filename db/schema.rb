@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170302191700) do
+ActiveRecord::Schema.define(version: 20170307000714) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -164,10 +164,12 @@ ActiveRecord::Schema.define(version: 20170302191700) do
   create_table "message_templates", force: :cascade do |t|
     t.text     "content"
     t.string   "platform"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
     t.text     "hashtags"
     t.text     "experiment_variables"
+    t.text     "image_pool"
+    t.text     "original_image_filenames"
   end
 
   create_table "messages", force: :cascade do |t|

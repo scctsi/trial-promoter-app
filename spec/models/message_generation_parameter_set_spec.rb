@@ -20,7 +20,11 @@
 require 'rails_helper'
 
 describe MessageGenerationParameterSet do
+<<<<<<< HEAD
   it { is_expected.to validate_presence_of :number_of_cycles }
+=======
+  it { is_expected.to validate_presence_of :period_in_days }
+>>>>>>> development
   it { is_expected.to validate_presence_of :number_of_messages_per_social_network }
   it { is_expected.to validate_presence_of :message_generating }
   it { is_expected.to belong_to(:message_generating) }
@@ -169,11 +173,8 @@ describe MessageGenerationParameterSet do
     it 'is calculated correctly when the parameters include one website, five message templates, 1 social network (equal distribution), 1 medium (equal distribution), with images (equal distribution), for 10 days and 3 messages per network per day' do
       message_generation_parameter_set = MessageGenerationParameterSet.new do |m|
         m.social_network_choices = ['facebook']
-        m.social_network_distribution = :equal
         m.medium_choices = ['ad']
-        m.medium_distribution = :equal
         m.image_present_choices = ['with']
-        m.image_present_distribution = :equal
         m.period_in_days = 10
         m.number_of_messages_per_social_network = 3
       end
@@ -185,11 +186,8 @@ describe MessageGenerationParameterSet do
     it 'is calculated correctly when the parameters include one website, five message templates, 3 social networks (equal distribution), 2 mediums (equal distribution), with and without images (equal distribution), for 10 days and 3 messages per network per day' do
       message_generation_parameter_set = MessageGenerationParameterSet.new(
         social_network_choices: ['facebook', 'twitter', 'instagram'],
-        social_network_distribution: :equal,
         medium_choices: ['ad', 'organic'],
-        medium_distribution: :equal,
         image_present_choices: ['with', 'without'],
-        image_present_distribution: :equal,
         period_in_days: 10,
         number_of_messages_per_social_network: 3
       )
