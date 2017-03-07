@@ -22,7 +22,7 @@ class Image < ActiveRecord::Base
 
   has_many :messages
 
-  def self.delete_image_from_s3
+  def delete_image_from_s3
 
   end
 end

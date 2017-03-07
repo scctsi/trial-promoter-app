@@ -87,10 +87,11 @@ RSpec.describe Image do
 
   it 'asks S3client to delete the object when the image is deleted' do
     image = create(:image)
-
+    s3_client = S3Client.new
+    s3_client.upload_object_to_s3
     image.destroy
 
-    expect(S3client).to have_received(:delete).with(image.url)
+    expect(s3_client).to have_received(:delete).with(image.url)
 
     # # Write code to add an image to S3
     # S3.put('spec/test-image.png')
