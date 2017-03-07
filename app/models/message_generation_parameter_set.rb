@@ -19,9 +19,8 @@
 
 class MessageGenerationParameterSet < ActiveRecord::Base
   extend Enumerize
-  serialize :social_network_choices
-  serialize :medium_choices
-  serialize :image_present_choices
+  serialize :social_network_choices, Array
+  serialize :medium_choices, Array
 
   validates :number_of_cycles, presence: true
   validates :number_of_cycles, numericality: { only_integer: true, greater_than: 0 }
@@ -31,6 +30,7 @@ class MessageGenerationParameterSet < ActiveRecord::Base
   validates :medium_choices, presence: true
   validates :image_present_choices, presence: true
   validates :message_generating, presence: true
+  enumerize :image_present_choices, in: [:all_messages, :half_of_the_messages, :no_messages], default: :no_messages
 
   belongs_to :message_generating, polymorphic: true
 
@@ -40,10 +40,6 @@ class MessageGenerationParameterSet < ActiveRecord::Base
 
   def medium_choices
     return symbolize_array_items(self[:medium_choices])
-  end
-
-  def image_present_choices
-    return symbolize_array_items(self[:image_present_choices])
   end
 
   def expected_generated_message_count
