@@ -23,8 +23,8 @@ class MessageGenerationParameterSet < ActiveRecord::Base
   serialize :medium_choices
   serialize :image_present_choices
 
-  validates :period_in_days, presence: true
-  validates :period_in_days, numericality: { only_integer: true, greater_than: 0 }
+  validates :number_of_cycles, presence: true
+  validates :number_of_cycles, numericality: { only_integer: true, greater_than: 0 }
   validates :number_of_messages_per_social_network, presence: true
   validates :number_of_messages_per_social_network, numericality: { only_integer: true, greater_than: 0 }
   validates :social_network_choices, presence: true

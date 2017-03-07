@@ -4,7 +4,7 @@ FactoryGirl.define do
     social_network_choices ['facebook']
     medium_choices ['ad']
     image_present_choices ['without']
-    period_in_days 5
+    number_of_cycles 5
     number_of_messages_per_social_network 1
   end
 

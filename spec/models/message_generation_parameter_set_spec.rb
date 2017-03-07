@@ -37,18 +37,6 @@ describe MessageGenerationParameterSet do
     expect(message_generation_parameter_set.valid?).to be false
   end
 
-  it 'validates period_in_days as an integer' do
-    message_generation_parameter_set = build(:message_generation_parameter_set, :period_in_days => 5.3)
-
-    expect(message_generation_parameter_set.valid?).to be false
-  end
-
-  it 'validates period_in_days as greater than 0' do
-    message_generation_parameter_set = build(:message_generation_parameter_set, :period_in_days => 0)
-
-    expect(message_generation_parameter_set.valid?).to be false
-  end
-
   it 'validates number_of_messages_per_social_network as an integer' do
     message_generation_parameter_set = build(:message_generation_parameter_set, :number_of_messages_per_social_network => 4.3)
 
@@ -158,14 +146,6 @@ describe MessageGenerationParameterSet do
   end
 
   describe 'number of generated messages' do
-    before do
-      experiment = create(:experiment)
-      create(:website, experiment_list: experiment.to_param)
-      TrialPromoter::SUPPORTED_NETWORKS.each do |social_network|
-        create_list(:message_template, 5, platform: social_network, experiment_list: experiment.to_param)
-      end
-    end
-
     it 'is calculated correctly when the parameters include one website, five message templates, 1 social network (equal distribution), 1 medium (equal distribution), with images (equal distribution), for 10 days and 3 messages per network per day' do
       message_generation_parameter_set = MessageGenerationParameterSet.new do |m|
         m.social_network_choices = ['facebook']
