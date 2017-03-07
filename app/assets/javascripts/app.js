@@ -323,75 +323,6 @@ $(document).ready(function() {
     });
   }
 
-  function setUpImageTagging() {
-    var $imageSelectors = $('.image-selector');
-    var allowedTags = $('#image-tags').data('allowed-tags');
-
-    // Selectize requires options to be of the form [{'value': 'val', 'item', 'val'}]
-    if (typeof allowedTags === "undefined") {
-      allowedTags = [];
-    }
-    allowedTags = allowedTags.map(function(x) { return { item: x } });
-
-    // Set up tag editor
-    $('#image-tags').selectize({
-      delimiter: ',',
-      persist: false,
-      create: false,
-      valueField: 'item',
-      labelField: 'item',
-      searchField: 'item',
-      options: allowedTags
-    });
-
-    // Set up all checkboxes
-    $imageSelectors.checkbox();
-    $imageSelectors.checkbox('attach events', '#select-all-images-button', 'check');
-    $imageSelectors.checkbox('attach events', '#deselect-all-images-button', 'uncheck');
-
-    // Set up AJAX call to replace tags on selected images with contents of tag editor
-    var selectedImageIds = [];
-    var tags = '';
-    $("#add-image-tags-button").on('click', function() {
-      selectedImageIds = [];
-
-      $imageSelectors.each(function() {
-        if ($(this).find('input').is(':checked')) {
-          selectedImageIds.push($(this).data('image-id'));
-          tags = $('#image-tags').val();
-        };
-      })
-
-      $.ajax({
-        url : '/images/tag_images',
-        type: 'POST',
-        data: {image_ids: selectedImageIds, tags: tags},
-        dataType: 'json',
-        success: function(retdata) {
-          var imageTagCells = [];
-
-          $imageSelectors.each(function() {
-            if ($(this).find('input').is(':checked')) {
-              imageTagCells.push($(this).parent().parent().find('td.image-tag'));
-            };
-          })
-
-          imageTagCells.forEach(function(imageTagCell) {
-            var tagHtml = '';
-            var splitTags = tags.split(',');
-
-            splitTags.forEach(function(tag) {
-              tagHtml += '<a class="ui small tag label">' + tag + '</a>';
-            });
-            imageTagCell.html(tagHtml);
-          })
-        }
-      });
-
-      return false;
-    });
-  }
-
   function setUpPostingTimeInputs() {
     var allowedTimes = $('#experiment_posting_times').data('allowed-times');
 
@@ -570,7 +501,6 @@ $(document).ready(function() {
   setUpAnalyticsFileImports();
   setUpPusherChannels();
   setUpAsyncMessageGeneration();
-  setUpImageTagging();
   setUpImagePoolViewing();
 
   // Set up Semantic UI

@@ -12,6 +12,12 @@ class ImagePoolManager
     message_template.save
   end
   
+  def add_images_by_filename(experiment, original_filenames, message_template)
+    image_ids = Image.belonging_to(experiment).where('original_filename in (?)', original_filenames).map(&:id).to_a
+    
+    add_images(image_ids, message_template)
+  end
+  
   def get_selected_and_unselected_images(experiment, message_template)
     selected_and_unselected_images = {}
     all_images = Image.belonging_to(experiment)

@@ -55,12 +55,8 @@ Rails.application.routes.draw do
 
   # Images
   resources :images do
-    member do
-      post 'create', to: 'images#create', constraints: lambda { |req| req.format == :json }
-    end
     collection do
       post :import
-      post 'tag_images', to: 'images#tag_images', constraints: lambda { |req| req.format == :json }
     end
   end
 

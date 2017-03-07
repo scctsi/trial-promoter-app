@@ -2,34 +2,11 @@
   %form#image-tagging-form
     %thead
       %tr
-        %th.collapsing
-          #select-all-images-button.ui.tiny.labeled.icon.fluid.button
-            %i.checkmark.box.icon
-            Select all
-          .ui.horizontal.divider
-            Or
-          #deselect-all-images-button.ui.tiny.labeled.icon.fluid.button
-            %i.square.outline.icon
-            Deselect all
         %th.center.aligned Image
         %th.center.aligned Filename
-        %th
-          Tags
-          .ui.form
-            .field
-              .ui.action.input
-                %input#image-tags.ui.input{ :type => 'text', 'data-allowed-tags' => allowed_tags }
-                %button#add-image-tags-button.ui.icon.button
-                  %i.plus.icon
     %tbody
       - images.each do |image|
         %tr.center.aligned
           %td
-            .ui.fitted.checkbox.image-selector{ 'data-image-id' => "#{image.id}" }
-              %input{ :type => 'checkbox', :id => "image-#{image.id}-selector" }
-              %label{ :for => "image-#{image.id}-selected" }
-          %td
             = image_tag "#{image.url}", width: '150', height: '150', lazy: true
           %td= image.original_filename
-          %td.image-tag
-            = render partial: 'shared/tag_list', locals: { tags: image.tag_list }

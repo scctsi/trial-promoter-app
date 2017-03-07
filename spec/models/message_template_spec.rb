@@ -19,6 +19,7 @@ RSpec.describe MessageTemplate do
   it { is_expected.to have_many :messages }
   it { is_expected.to serialize(:hashtags).as(Array) }
   it { is_expected.to serialize(:experiment_variables).as(Hash) }
+  it { is_expected.to serialize(:original_image_filenames).as(Array) }
   it { is_expected.to serialize(:image_pool).as(Array) }
 
   it 'returns the platform as a symbol' do
