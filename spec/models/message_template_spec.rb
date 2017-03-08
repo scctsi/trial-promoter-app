@@ -23,13 +23,6 @@ RSpec.describe MessageTemplate do
   it { is_expected.to serialize(:original_image_filenames).as(Array) }
   it { is_expected.to serialize(:image_pool).as(Array) }
 
-  it 'returns the platform as a symbol' do
-    message_template = create(:message_template, platform: 'twitter')
-    message_template.reload
-
-    expect(message_template.platform).to be(:twitter)
-  end
-
   it 'stores the experiment variables as a hash' do
     message_template = build(:message_template, platform: 'twitter', experiment_variables: { 'fda_campaign' => '1', 'theme' => '2', 'lin_meth_factor' => '1', 'lin_meth_level' => '3' })
 
