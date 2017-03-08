@@ -2,12 +2,13 @@
 #
 # Table name: message_templates
 #
-#  id         :integer          not null, primary key
-#  content    :text
-#  platform   :string
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  hashtags   :text
+#  id                   :integer          not null, primary key
+#  content              :text
+#  platform             :string
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
+#  hashtags             :text
+#  experiment_variables :text
 #
 
 class MessageTemplate < ActiveRecord::Base

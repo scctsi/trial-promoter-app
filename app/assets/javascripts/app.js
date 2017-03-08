@@ -3,7 +3,9 @@
 /*global Pusher*/
 $(document).ready(function() {
   var $select_time;
-  filepicker.setKey("At8mEYziyTc6axVbB4njtz");
+  if (typeof filepicker != 'undefined') {
+    filepicker.setKey("At8mEYziyTc6axVbB4njtz");
+  }
 
   function setUpDatePickers() {
     $("[id$='_date']").daterangepicker({

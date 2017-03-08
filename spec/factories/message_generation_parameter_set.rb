@@ -3,7 +3,7 @@ FactoryGirl.define do
     association :message_generating, factory: :experiment
     social_network_choices ['facebook']
     medium_choices ['ad']
-    image_present_choices ['without']
+    image_present_choices :no_messages
     number_of_cycles 5
     number_of_messages_per_social_network 1
   end

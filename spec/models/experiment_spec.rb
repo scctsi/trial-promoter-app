@@ -23,7 +23,6 @@ RSpec.describe Experiment, type: :model do
 
   it { is_expected.to validate_presence_of :name }
   it { is_expected.to validate_presence_of :message_distribution_start_date }
-  it { is_expected.to validate_presence_of :end_date }
 
   it { is_expected.to have_one(:message_generation_parameter_set) }
   it { is_expected.to accept_nested_attributes_for(:message_generation_parameter_set) }
