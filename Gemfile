@@ -2,8 +2,9 @@ source 'https://rubygems.org'
 
 ruby '2.3.3'
 
-gem 'ahoy_matey'
 gem 'acts-as-taggable-on', '~> 4.0'
+gem 'addressable'
+gem 'ahoy_matey'
 gem 'annotate'
 gem 'bitly'
 gem 'cocoon'

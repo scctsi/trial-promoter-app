@@ -80,6 +80,22 @@ RSpec.describe MessageTemplateImporter do
     expect(message_template.hashtags).to eq(['#hashtag1', '#hashtag2'])
   end
 
+  it 'successfully imports message templates (when multiple websites need to be created)' do
+    @parsed_csv_content = [['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name'], ['This is the first message template.', 'twitter', '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url1.com', 'Smoking cessation'], ['This is the second message template.', 'twitter', '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url2.com', 'Smoking cessation']]
+    @message_template_importer = MessageTemplateImporter.new(@parsed_csv_content, @experiment_tag)
+
+    @message_template_importer.import
+    
+    expect(MessageTemplate.count).to eq(2)
+    message_template = MessageTemplate.first
+    expect(message_template.content).to eq(@parsed_csv_content[1][0])
+    expect(message_template.platforms).to eq(@parsed_csv_content[1][1])
+    parsed_tag_list = @parsed_csv_content[1][3].split(",").map { |tag| tag.strip }
+    expect(message_template.tag_list).to eq(parsed_tag_list)
+    expect(message_template.experiment_list).to eq([@experiment_tag])
+    expect(message_template.hashtags).to eq(['#hashtag1', '#hashtag2'])
+  end
+  
   it 'successfully imports extra columns in the parsed CSV content into the experiment variables' do
     @parsed_csv_content = [['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'theme', 'fda_campaign'], ['This is a message template. {url}', 'twitter', '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation', '1', '2']]
     @message_template_importer = MessageTemplateImporter.new(@parsed_csv_content, @experiment_tag)
@@ -156,8 +172,8 @@ RSpec.describe MessageTemplateImporter do
     
     expect(Website.count).to eq(1)
     website = Website.first
-    expect(website.name).to eq(@parsed_csv_content[1][4])
-    expect(website.url).to eq(@parsed_csv_content[1][5])
+    expect(website.name).to eq(@parsed_csv_content[1][5])
+    expect(website.url).to eq('http://url.com')
     parsed_tag_list = @parsed_csv_content[1][3].split(",").map { |tag| tag.strip }
     expect(website.tag_list).to eq(parsed_tag_list)
     expect(website.experiment_list).to eq([@experiment_tag])

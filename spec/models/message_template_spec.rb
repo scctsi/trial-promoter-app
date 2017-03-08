@@ -2,13 +2,15 @@
 #
 # Table name: message_templates
 #
-#  id                   :integer          not null, primary key
-#  content              :text
-#  platform             :string
-#  created_at           :datetime         not null
-#  updated_at           :datetime         not null
-#  hashtags             :text
-#  experiment_variables :text
+#  id                       :integer          not null, primary key
+#  content                  :text
+#  created_at               :datetime         not null
+#  updated_at               :datetime         not null
+#  hashtags                 :text
+#  experiment_variables     :text
+#  image_pool               :text
+#  original_image_filenames :text
+#  platforms                :text
 #
 
 require 'rails_helper'

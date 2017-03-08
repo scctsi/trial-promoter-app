@@ -75,4 +75,27 @@ describe Website do
     expect(websites_for_first_experiment.count).to eq(1)
     expect(websites_for_first_experiment[0].experiment_list).to eq([experiments[0].to_param])
   end
+  
+  describe 'canonical format for URLs' do
+    it 'adds a scheme to the URL if scheme is missing' do
+      website = create(:website, url: 'example.com')
+      website.reload
+      
+      expect(website.url).to eq('http://example.com')
+    end
+
+    it 'lowercases the URL' do
+      website = create(:website, url: 'EXAMPLE.com')
+      website.reload
+      
+      expect(website.url).to eq('http://example.com')
+    end
+
+    it 'removes the www host' do
+      website = create(:website, url: 'www.EXAMPLE.com')
+      website.reload
+      
+      expect(website.url).to eq('http://example.com')
+    end
+  end
 end

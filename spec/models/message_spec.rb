@@ -21,6 +21,7 @@
 #  scheduled_date_time     :datetime
 #  social_network_id       :string
 #  social_media_profile_id :integer
+#  platform                :string
 #
 
 require 'rails_helper'

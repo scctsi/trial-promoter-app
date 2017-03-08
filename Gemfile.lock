@@ -384,6 +384,7 @@ PLATFORMS
 
 DEPENDENCIES
   acts-as-taggable-on (~> 4.0)
+  addressable
   ahoy_matey
   annotate
   better_errors

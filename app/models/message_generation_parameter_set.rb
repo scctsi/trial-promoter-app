@@ -3,9 +3,6 @@
 # Table name: message_generation_parameter_sets
 #
 #  id                                    :integer          not null, primary key
-#  medium_distribution                   :string
-#  social_network_distribution           :string
-#  image_present_distribution            :string
 #  period_in_days                        :integer
 #  number_of_messages_per_social_network :integer
 #  created_at                            :datetime         not null
@@ -15,6 +12,7 @@
 #  social_network_choices                :text
 #  medium_choices                        :text
 #  image_present_choices                 :text
+#  number_of_cycles                      :integer
 #
 
 class MessageGenerationParameterSet < ActiveRecord::Base

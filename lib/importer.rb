@@ -43,8 +43,12 @@ class Importer
         # Imported instances are tied to the parent message generating instance by adding a tag to the experiments context that is equal to the parameterized slug for the message generating instance.
         attributes['experiment_list'] = experiment_tag if !experiment_tag.blank?
       end
-      
-      import_class.create!(attributes)
+
+      # Ignore any RecordNotUnique errors; Websites for instance are not inserted if the URL is not unique    
+      begin
+        import_class.create!(attributes)
+      rescue ActiveRecord::RecordNotUnique
+      end
     end
     
     post_import(prepared_csv_content)
