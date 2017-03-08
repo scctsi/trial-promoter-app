@@ -80,34 +80,15 @@ describe Message do
       expect(@messages[3].events.count).to eq(0)
     end
   end
+  
+  it 'always updates existing metrics from a particular source' do
+    message = build(:message)
 
-  describe "adding metrics" do
-    it 'always updates existing metrics from a particular source' do
-      message = build(:message)
+    message.metrics << Metric.new(source: :twitter, data: {"likes": 1})
+    message.metrics << Metric.new(source: :twitter, data: {"likes": 2})
 
-      message.metrics << Metric.new(source: :twitter, data: {"likes": 1})
-      message.metrics << Metric.new(source: :twitter, data: {"likes": 2})
-
-      expect(message.metrics.length).to eq(1)
-      expect(message.metrics[0].data[:likes]).to eq(2)
-    end
-
-    it "allows metrics from buffer, google_analytics and the message's platform" do
-      message = build(:message)
-
-      message.metrics << Metric.new(source: :twitter, data: {"likes": 1})
-      message.metrics << Metric.new(source: :google_analytics, data: {"users": 1})
-      message.metrics << Metric.new(source: :buffer, data: {"likes": 1})
-
-      expect(message.metrics.length).to eq(3)
-    end
-
-    it "raises an exception if metrics are being added from a platform other than the message's platform" do
-      skip "Cannot get this test to work!"
-      message = build(:message)
-
-      expect { message.metrics << Metric.new(source: :facebook, data: {"likes": 1}) }.to raise_error(InvalidMetricSourceError, "Message platform is twitter, but metric source was facebook")
-    end
+    expect(message.metrics.length).to eq(1)
+    expect(message.metrics[0].data[:likes]).to eq(2)
   end
 
   it "parameterizes id and the experiments's param together" do

@@ -15,9 +15,6 @@ Rails.application.routes.draw do
       get 'create_messages(.:format)', to: 'experiments#create_messages'
       get 'create_analytics_file_todos', to: 'experiments#create_analytics_file_todos'
     end
-    collection do
-      get 'calculate_message_count', to: 'experiments#calculate_message_count', constraints: lambda { |req| req.format == :json }
-    end
     resources :message_generation_parameter_sets
   end
 
