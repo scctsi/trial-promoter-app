@@ -85,25 +85,48 @@ RSpec.describe Image do
     expect(image).to have_received(:delete_image_from_s3)
   end
 
-  it 'asks S3client to delete the object when the image is deleted' do
-    image = create(:image)
-    s3_client = S3Client.new
-    s3_client.upload_object_to_s3
-    image.destroy
+  it 'correctly calculates the S3 bucket name for an image' do
+    image = create(:image, url: 'https://s3-us-west-1.amazonaws.com/scctsi-tp-development/13-tcors/images/ywCyYa4LSXKtahc4Flgc_3-1-000.jpg')
 
-    expect(s3_client).to have_received(:delete).with(image.url)
-
-    # # Write code to add an image to S3
-    # S3.put('spec/test-image.png')
-    # S3client.put('1-tcors/test-image.png', 'spec/test-image.png')
-    # # Check to see if object exists on S3
-    # S3client.exists?('1-tcors/test-image.png')
-
-    # # Write code to delete the same image in S3
-    # S3client.delete('1-tcors/test-image.png')
-    # Image.delete_image_from_s3
-
-    # # Check to see if object exists on S3
-    # S3client.exists?('1-tcors/test-image.png')
+    expect(image.s3_bucket).to eq('scctsi-tp-development')
   end
+
+  it 'correctly calculates the S3 key for an image' do
+    image = create(:image, url: 'https://s3-us-west-1.amazonaws.com/scctsi-tp-development/13-tcors/images/ywCyYa4LSXKtahc4Flgc_3-1-000.jpg')
+
+    expect(image.s3_key).to eq('13-tcors/images/ywCyYa4LSXKtahc4Flgc_3-1-000.jpg')
+  end
+
+  it 'determines if an asset currently exists in S3' do
+    image = create(:image, url: 'https://s3-us-west-1.amazonaws.com/scctsi-tp-development/13-tcors/images/ywCyYa4LSXKtahc4Flgc_3-1-000.jpg')
+    s3_client = S3Client.new
+
+    WebMock.allow_net_connect!
+    VCR.turn_off!
+    asset_exists = s3_client.asset_exists_in_s3?(image)
+    VCR.turn_on!
+    WebMock.disable_net_connect!
+
+    expect(asset_exists).to be true
+  end
+
+  # it 'asks S3client to delete the object when the image is deleted' do
+  #   image = create(:image)
+  #   # image.destroy
+
+  #   # expect(s3_client).to have_received(:delete).with(image.url)
+
+  #   # # Write code to add an image to S3
+  #   # S3.put('spec/test-image.png')
+  #   # S3client.put('1-tcors/test-image.png', 'spec/test-image.png')
+  #   # # Check to see if object exists on S3
+  #   # S3client.exists?('1-tcors/test-image.png')
+
+  #   # # Write code to delete the same image in S3
+  #   # S3client.delete('1-tcors/test-image.png')
+  #   # Image.delete_image_from_s3
+
+  #   # # Check to see if object exists on S3
+  #   # S3client.exists?('1-tcors/test-image.png')
+  # end
 end
