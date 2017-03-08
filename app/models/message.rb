@@ -47,11 +47,6 @@ class Message < ActiveRecord::Base
       source_metrics_exists = false
 
       proxy_association.owner.metrics.each do |metric|
-        # Only allow a metric to be added if the source is same as the message platform (excluding buffer and google_analytics)
-        if TrialPromoter.supports?(value.source) && value.source != proxy_association.owner.message_template.platform
-          raise InvalidMetricSourceError.new(value.source, proxy_association.owner.message_template.platform)
-        end
-
         # There should always be only one set of metrics from a single source.
         # Always overwrite any existing data for the same source.
         if metric.source == value.source
