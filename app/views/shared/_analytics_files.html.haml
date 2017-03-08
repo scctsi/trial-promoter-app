@@ -3,8 +3,8 @@
     %tr
       %th
       %th Required upload date
-      %th Social network
-      %th Type
+      %th Social media type
+      %th Medium
       %th
   %tbody
     - analytics_files.to_a.sort!{ |x, y| x.required_upload_date <=> y.required_upload_date }.each do |analytics_file|
@@ -16,8 +16,8 @@
           %td
             %i.checkmark.box.icon
         %td= analytics_file.required_upload_date.strftime('%B %d, %Y')
-        %td= analytics_file.social_media_profile.platform
-        %td= analytics_file.social_media_profile.allowed_mediums[0]
+        %td= analytics_file.social_media_profile.platform.to_s.titleize
+        %td= analytics_file.social_media_profile.allowed_mediums[0].to_s.titleize
         - if analytics_file.url.nil?
           %td.collapsing
             %a.analytics-file-upload-button.ui.primary.labeled.icon.button{'data-analytics-file-id': analytics_file.id, 'data-experiment-id': @experiment.id, 'data-experiment-param': @experiment.to_param}

@@ -1,16 +1,16 @@
 %table.ui.sortable.celled.striped.table
   %thead
     %tr
-      %th Content
-      %th Platform
+      %th Message content
+      %th Social media type
       %th Hashtags
-      %th Experiment variables
+      %th Experiment labels
       %th
   %tbody
     - message_templates.each do |message_template|
       %tr
         %td= message_template.content
-        %td= message_template.platform
+        %td= message_template.platform.to_s.titleize
         %td
           = render partial: 'shared/tag_list', locals: { tags: message_template.hashtags, hashtags: true }
         %td

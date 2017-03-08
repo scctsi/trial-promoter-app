@@ -18,7 +18,6 @@
     = f.simple_fields_for :message_generation_parameter_set do |m|
       = m.input :social_network_choices, as: :check_boxes, wrapper_class: 'inline fields', item_wrapper_class: 'ui field checkbox', collection: { 'Facebook' => :facebook, 'Instagram' => :instagram, 'Twitter' => :twitter }, label: 'Which social media social media type(s) do you want to use?', required: false
       = m.input :medium_choices, as: :check_boxes, wrapper_class: 'inline fields', item_wrapper_class: 'ui field checkbox', collection: { 'Ad' => :ad, 'Organic/Unpaid' => :organic }, label: 'What type(s) of message do you want to use?', required: false
-      = m.input :image_present_choices, as: :check_boxes, wrapper_class: 'inline fields', item_wrapper_class: 'ui field checkbox', collection: { 'Yes' => :with, 'No' => :without }, label: 'Do you want to use images in the messages?', required: false
       =m.input :period_in_days, label: 'Length of experiment in days'
       =m.input :number_of_messages_per_social_network, label: 'Number of messages per day per social network'
     .ui.header

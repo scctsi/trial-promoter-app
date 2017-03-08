@@ -45,4 +45,8 @@ class SocialMediaProfile < ActiveRecord::Base
   def platform_icon_and_name
     return ("<i class = '#{platform} icon'></i> #{platform.to_s.titleize}").html_safe
   end
+
+  def platform_icon
+    return ("<i class = '#{platform} icon'></i>").html_safe
+  end
 end

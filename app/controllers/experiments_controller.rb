@@ -19,6 +19,21 @@ class ExperimentsController < ApplicationController
     @messages = Message.where(:message_generating_id => @experiment.id).page(params[:page]).order('created_at ASC')
     tag_matcher = TagMatcher.new
     @distinct_tag_list = tag_matcher.distinct_tag_list(@message_templates)
+
+
+    # temp data
+    @messages_with_metrics = []
+    @messages_with_metrics[0] = Message.new(content: 'Stop smoking!', medium: :organic)
+    @messages_with_metrics[0].metrics << Metric.new(data: {likes: 2, impressions: 2460, clicks: 56, shares: 20, comments: 10}, source: :twitter)
+    click_rate = (@messages_with_metrics[0].metrics[0].data[:clicks].to_f/ @messages_with_metrics[0].metrics[0].data[:impressions].to_f * 100).round(2)
+    @messages_with_metrics[0].metrics[0].data[:click_rate] = click_rate
+
+
+    @messages_with_metrics[1] = Message.new(content: 'Stop getting cancer', medium: :ad)
+    @messages_with_metrics[1].metrics << Metric.new(data: {likes: 99, impressions: 8763, clicks: 89, shares: 64, comments: 19}, source: :facebook)
+    click_rate = (@messages_with_metrics[1].metrics[0].data[:clicks].to_f/ @messages_with_metrics[1].metrics[0].data[:impressions].to_f * 100).round(2)
+    @messages_with_metrics[1].metrics[0].data[:click_rate] = click_rate
+    # end of temp data
   end
 
   def new
