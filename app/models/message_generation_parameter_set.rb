@@ -42,7 +42,9 @@ class MessageGenerationParameterSet < ActiveRecord::Base
     return symbolize_array_items(self[:medium_choices])
   end
 
-  def expected_generated_message_count(number_of_message_templates)
+  def expected_generated_message_count(number_of_message_templates = nil)
+    return 'Noncalculable' if number_of_message_templates.nil?
+    
     # Number of social networks (1) * Number of mediums (1) * (Number of message templates (9) / Number of messages per social network (3)) * Number of cycles
     calculation_parameters = {}
     

@@ -125,7 +125,7 @@ describe MessageGenerationParameterSet do
       expect(message_generation_parameter_set.expected_generated_message_count(9)).to eq(3 * 2 * 9 * 3)
     end
 
-    it 'calculates the number of messages given a set of calculation parameters' do
+    it 'is calculated correctly given a set of calculation parameters' do
       calculation_parameters = {}
       calculation_parameters[:social_network_choices_count] = 2
       calculation_parameters[:medium_choices_count] = 3
@@ -133,6 +133,12 @@ describe MessageGenerationParameterSet do
       calculation_parameters[:number_of_cycles] = 5
 
       expect(MessageGenerationParameterSet.calculate_message_count(calculation_parameters)).to eq(calculation_parameters[:social_network_choices_count] * calculation_parameters[:medium_choices_count] * calculation_parameters[:number_of_message_templates] * calculation_parameters[:number_of_cycles])
+    end
+    
+    it 'returns noncalculable when the number of message templates is not passed in' do
+      message_generation_parameter_set = MessageGenerationParameterSet.new
+
+      expect(message_generation_parameter_set.expected_generated_message_count).to eq('Noncalculable')
     end
   end
 end

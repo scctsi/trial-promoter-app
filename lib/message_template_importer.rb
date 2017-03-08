@@ -50,7 +50,11 @@ class MessageTemplateImporter < Importer
     if !original_image_filenames_index.nil?
       prepared_csv_content.each.with_index do |prepared_csv_content_row, index|
         prepared_csv_content_row << original_image_filenames[index] if index == 0
-        prepared_csv_content_row << original_image_filenames[index].split(',').map{ |original_image_filename| original_image_filename.strip } if index != 0
+        if original_image_filenames[index].nil?
+          prepared_csv_content_row << []
+        else
+          prepared_csv_content_row << original_image_filenames[index].split(',').map{ |original_image_filename| original_image_filename.strip } if index != 0
+        end
       end
     end
 
