@@ -19,9 +19,10 @@ class MessageTemplate < ActiveRecord::Base
   extend Enumerize
 
   validates :content, presence: true
-  validates :platform, presence: true
-  enumerize :platform, in: [:twitter, :facebook, :instagram], predicates: true
+  validates :platforms, presence: true
+  enumerize :platforms, in: [:twitter, :facebook, :instagram], multiple: true
 
+  serialize :platforms, Array
   serialize :hashtags, Array
   serialize :image_pool, Array
   serialize :experiment_variables, Hash

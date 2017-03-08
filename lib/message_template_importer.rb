@@ -1,7 +1,7 @@
 class MessageTemplateImporter < Importer
   def post_initialize
     self.import_class = MessageTemplate
-    self.column_index_attribute_mapping = { 0 => 'content', 1 => 'platform', 2 => 'hashtags', 3 => 'tag_list', 6 => 'experiment_variables', 7 => 'original_image_filenames' }
+    self.column_index_attribute_mapping = { 0 => 'content', 1 => 'platforms', 2 => 'hashtags', 3 => 'tag_list', 6 => 'experiment_variables', 7 => 'original_image_filenames' }
   end
 
   def pre_import
@@ -54,23 +54,15 @@ class MessageTemplateImporter < Importer
       end
     end
 
-    # Step 4: If the platform column has a comma separated list of platform names, convert this row to multiple rows with a single value for platform for each row
-    intermediate_prepared_csv_content = prepared_csv_content.dup
-    prepared_csv_content = []
-    intermediate_prepared_csv_content.each.with_index do |csv_row, index|
-      if index == 0
-        prepared_csv_content << csv_row
-      else
+    # Step 4: Change comma-separated list of platforms to an array of symbols
+    prepared_csv_content.each.with_index do |csv_row, index|
+      if index != 0
         platforms = csv_row[1].to_s.split(',')
-        platforms.each do |platform|
-          csv_row_with_single_platform = csv_row.dup  
-          csv_row_with_single_platform[1] = platform.strip
-          prepared_csv_content << csv_row_with_single_platform
-        end
+        csv_row[1] = platforms.map{ |platform| platform.strip.to_sym }
       end
     end
-    
-    # Step 4: Add {url} if missing to the content of the message templates
+
+    # Step 5: Add {url} if missing to the content of the message templates
     prepared_csv_content.each.with_index do |csv_row, index|
       # If this is not the header row and the {url} message template variable is missing, add it.
       csv_row[0] += '{url}' if csv_row[0].index('{url}').nil? and index > 0
