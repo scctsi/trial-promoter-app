@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170301191104) do
+ActiveRecord::Schema.define(version: 20170307000714) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,8 +20,8 @@ ActiveRecord::Schema.define(version: 20170301191104) do
     t.integer  "visit_id"
     t.integer  "user_id"
     t.string   "name"
-    t.jsonb    "properties"
     t.datetime "time"
+    t.jsonb    "properties"
   end
 
   add_index "ahoy_events", ["name", "time"], name: "index_ahoy_events_on_name_and_time", using: :btree
@@ -147,9 +147,6 @@ ActiveRecord::Schema.define(version: 20170301191104) do
   end
 
   create_table "message_generation_parameter_sets", force: :cascade do |t|
-    t.string   "medium_distribution"
-    t.string   "social_network_distribution"
-    t.string   "image_present_distribution"
     t.integer  "period_in_days"
     t.integer  "number_of_messages_per_social_network"
     t.datetime "created_at",                            null: false
@@ -159,6 +156,7 @@ ActiveRecord::Schema.define(version: 20170301191104) do
     t.text     "social_network_choices"
     t.text     "medium_choices"
     t.text     "image_present_choices"
+    t.integer  "number_of_cycles"
   end
 
   add_index "message_generation_parameter_sets", ["message_generating_type", "message_generating_id"], name: "index_on_message_generating_type_and_message_generating_id", using: :btree
@@ -166,10 +164,12 @@ ActiveRecord::Schema.define(version: 20170301191104) do
   create_table "message_templates", force: :cascade do |t|
     t.text     "content"
     t.string   "platform"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
     t.text     "hashtags"
     t.text     "experiment_variables"
+    t.text     "image_pool"
+    t.text     "original_image_filenames"
   end
 
   create_table "messages", force: :cascade do |t|

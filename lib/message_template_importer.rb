@@ -1,7 +1,7 @@
 class MessageTemplateImporter < Importer
   def post_initialize
     self.import_class = MessageTemplate
-    self.column_index_attribute_mapping = { 0 => 'content', 1 => 'platform', 2 => 'hashtags', 3 => 'tag_list', 6 => 'experiment_variables' }
+    self.column_index_attribute_mapping = { 0 => 'content', 1 => 'platform', 2 => 'hashtags', 3 => 'tag_list', 6 => 'experiment_variables', 7 => 'original_image_filenames' }
   end
 
   def pre_import
@@ -11,8 +11,18 @@ class MessageTemplateImporter < Importer
   
   def pre_import_prepare(parsed_csv_content)
     prepared_csv_content = []
-    
-    # Step 1: Any column after the 6th column contains variables related to the experiment itself.
+
+    # Step 1: Is there a header with the name 'original_image_filenames'? 
+    # If so, store the index of this column and remove this date out of the parsed_csv_content, storing it for later.
+    original_image_filenames_index = parsed_csv_content[0].index('original_image_filenames')
+    original_image_filenames = []
+    if !original_image_filenames_index.nil?
+      parsed_csv_content.each.with_index do |csv_row, index|
+        original_image_filenames << csv_row.delete_at(original_image_filenames_index)
+      end
+    end
+
+    # Step 2: Any column after the 6th column contains variables related to the experiment itself.
     # These are collapsed into a single column called experiment_variables with a hash of the values.
     if parsed_csv_content[0].length > 6
       heading_row = [parsed_csv_content[0][0..5], 'experiment_variables'].flatten
@@ -22,15 +32,10 @@ class MessageTemplateImporter < Importer
         if index == 0
           prepared_csv_content << heading_row
         else
-          experiment_variables_as_tags = ''
           experiment_variables_hash = {}
           experiment_variable_names.each.with_index do |experiment_variable_name, column_index|
             experiment_variables_hash[experiment_variable_name] = csv_row[column_index + 6]
           end
-          experiment_variables_hash.each do |experiment_variable_name, experiment_variable_value|
-            experiment_variables_as_tags += "#{experiment_variable_name}-#{experiment_variable_value},"
-          end
-          csv_row[3] = experiment_variables_as_tags.chomp(',') if csv_row[3].blank?
           prepared_csv_content << [csv_row[0..5], experiment_variables_hash].flatten
         end
       end
@@ -40,8 +45,16 @@ class MessageTemplateImporter < Importer
         prepared_csv_content << csv_row
       end
     end
-    
-    # Step 2: If the platform column has a comma separated list of platform names, convert this row to multiple rows with a single value for platform for each row
+
+    # Step 3: Add back the original_image_filenames column if it was removed for Step 2
+    if !original_image_filenames_index.nil?
+      prepared_csv_content.each.with_index do |prepared_csv_content_row, index|
+        prepared_csv_content_row << original_image_filenames[index] if index == 0
+        prepared_csv_content_row << original_image_filenames[index].split(',').map{ |original_image_filename| original_image_filename.strip } if index != 0
+      end
+    end
+
+    # Step 4: If the platform column has a comma separated list of platform names, convert this row to multiple rows with a single value for platform for each row
     intermediate_prepared_csv_content = prepared_csv_content.dup
     prepared_csv_content = []
     intermediate_prepared_csv_content.each.with_index do |csv_row, index|
@@ -57,7 +70,7 @@ class MessageTemplateImporter < Importer
       end
     end
     
-    # Step 3: Add {url} if missing to the content of the message templates
+    # Step 4: Add {url} if missing to the content of the message templates
     prepared_csv_content.each.with_index do |csv_row, index|
       # If this is not the header row and the {url} message template variable is missing, add it.
       csv_row[0] += '{url}' if csv_row[0].index('{url}').nil? and index > 0
@@ -77,5 +90,12 @@ class MessageTemplateImporter < Importer
     end
     website_importer = WebsiteImporter.new(websites_parsed_csv_content, experiment_tag)
     website_importer.import
+    
+    # For every message template belonging to the experiment, set up the image pool
+    image_pool_manager = ImagePoolManager.new
+    message_templates = MessageTemplate.belonging_to(@experiment_tag)
+    message_templates.each do |message_template|
+      image_pool_manager.add_images_by_filename(@experiment_tag, message_template.original_image_filenames, message_template)
+    end
   end
 end

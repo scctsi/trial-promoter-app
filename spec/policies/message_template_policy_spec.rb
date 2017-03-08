@@ -15,7 +15,9 @@ RSpec.describe MessageTemplatePolicy, type: :policy do
     it { should_not be_permitted_to(:update) }
     it { should_not be_permitted_to(:import) }
     it { should_not be_permitted_to(:set_message_template) }
-    it { should_not be_permitted_to(:get_image_pool_urls) }
+    it { should_not be_permitted_to(:get_image_selections) }
+    it { should_not be_permitted_to(:add_image_to_image_pool) }
+    it { should_not be_permitted_to(:remove_image_from_image_pool) }
   end
 
   context "for a administrator" do
@@ -28,7 +30,9 @@ RSpec.describe MessageTemplatePolicy, type: :policy do
     it { should be_permitted_to(:update) }
     it { should be_permitted_to(:import) }
     it { should be_permitted_to(:set_message_template) }
-    it { should be_permitted_to(:get_image_pool_urls) }
+    it { should be_permitted_to(:get_image_selections) }
+    it { should be_permitted_to(:add_image_to_image_pool) }
+    it { should be_permitted_to(:remove_image_from_image_pool) }
   end
 
   context "for a statistician" do
@@ -41,7 +45,9 @@ RSpec.describe MessageTemplatePolicy, type: :policy do
     it { should_not be_permitted_to(:update) }
     it { should_not be_permitted_to(:import) }
     it { should_not be_permitted_to(:set_message_template) }
-    it { should_not be_permitted_to(:get_image_pool_urls) }
+    it { should_not be_permitted_to(:get_image_selections) }
+    it { should_not be_permitted_to(:add_image_to_image_pool) }
+    it { should_not be_permitted_to(:remove_image_from_image_pool) }
   end
 
   context "for a read_only" do
@@ -54,6 +60,8 @@ RSpec.describe MessageTemplatePolicy, type: :policy do
     it { should_not be_permitted_to(:update) }
     it { should_not be_permitted_to(:import) }
     it { should_not be_permitted_to(:set_message_template) }
-    it { should_not be_permitted_to(:get_image_pool_urls) }
+    it { should_not be_permitted_to(:get_image_selections) }
+    it { should_not be_permitted_to(:add_image_to_image_pool) }
+    it { should_not be_permitted_to(:remove_image_from_image_pool) }
   end
 end

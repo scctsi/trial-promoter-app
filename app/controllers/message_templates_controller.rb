@@ -1,5 +1,5 @@
 class MessageTemplatesController < ApplicationController
-  before_action :set_message_template, only: [:edit, :update, :get_image_pool_urls]
+  before_action :set_message_template, only: [:edit, :update, :get_image_selections, :add_image_to_image_pool, :remove_image_from_image_pool]
 
   def index
     authorize MessageTemplate
@@ -27,12 +27,29 @@ class MessageTemplatesController < ApplicationController
     end
   end
   
-  def get_image_pool_urls
+  def get_image_selections
     authorize @message_template
-    images = Image.tagged_with(@message_template.experiment_list, on: :experiments)
-    image_pool = TagMatcher.new.match(images, @message_template.tag_list)
+    image_pool_manager = ImagePoolManager.new
+    experiment = Experiment.find(params[:experiment_id])
+    selected_and_unselected_images = image_pool_manager.get_selected_and_unselected_images(experiment, @message_template)
 
-    render json: { success: true, image_pool_count: image_pool.length, image_pool_urls: image_pool.map(&:url) }
+    render json: { success: true, selected_images: selected_and_unselected_images[:selected_images], unselected_images: selected_and_unselected_images[:unselected_images] }
+  end
+  
+  def add_image_to_image_pool
+    authorize @message_template
+    image_pool_manager = ImagePoolManager.new
+    image_pool_manager.add_images(params[:image_id], @message_template)
+
+    render json: { success: true }
+  end
+
+  def remove_image_from_image_pool
+    authorize @message_template
+    image_pool_manager = ImagePoolManager.new
+    image_pool_manager.remove_image(params[:image_id], @message_template)
+
+    render json: { success: true }
   end
 
   def update

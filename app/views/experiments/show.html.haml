@@ -1,4 +1,3 @@
-%script{:src => "//api.filestackapi.com/filestack.js", :type => "text/javascript"}
 .ui.breadcrumb
   %a{:href => root_path}
     Home
@@ -26,10 +25,10 @@
       Analytics file uploads
   .ui.bottom.attached.tab.segment{ 'data-tab': 'setup' }
     = render partial: 'experiments/tabs/setup'
-  .ui.bottom.attached.tab.segment{ 'data-tab': 'message-templates' }
-    = render partial: 'experiments/tabs/message_templates'
   .ui.bottom.attached.tab.segment{ 'data-tab': 'images' }
     = render partial: 'experiments/tabs/images'
+  .ui.bottom.attached.tab.segment{ 'data-tab': 'message-templates' }
+    = render partial: 'experiments/tabs/message_templates'
   .ui.bottom.attached.tab.segment{ 'data-tab': 'generated-messages' }
     = render partial: 'experiments/tabs/generated_messages'
   .ui.bottom.attached.tab.segment{ 'data-tab': 'dashboard' }

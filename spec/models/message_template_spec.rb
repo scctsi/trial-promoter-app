@@ -17,6 +17,10 @@ RSpec.describe MessageTemplate do
   it { is_expected.to validate_presence_of :platform }
   it { is_expected.to enumerize(:platform).in(:twitter, :facebook, :instagram) }
   it { is_expected.to have_many :messages }
+  it { is_expected.to serialize(:hashtags).as(Array) }
+  it { is_expected.to serialize(:experiment_variables).as(Hash) }
+  it { is_expected.to serialize(:original_image_filenames).as(Array) }
+  it { is_expected.to serialize(:image_pool).as(Array) }
 
   it 'returns the platform as a symbol' do
     message_template = create(:message_template, platform: 'twitter')
@@ -172,14 +176,6 @@ RSpec.describe MessageTemplate do
       expect(@message_template.hashtags).to eq([])
     end
     
-    it 'stores an array of hashtags' do
-      @message_template.hashtags = ["#bcsm", "#cancer"]
-      @message_template.save
-      @message_template.reload
-
-      expect(@message_template.hashtags).to eq(["#bcsm", "#cancer"])
-    end
-
     it 'stores comma separated strings as an array of hashtags' do
       @message_template.hashtags = "#bcsm, #cancer"
       @message_template.save
