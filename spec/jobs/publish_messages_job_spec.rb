@@ -41,7 +41,7 @@ RSpec.describe PublishMessagesJob, type: :job do
   it 'executes perform and publishes pending messages except organic Instagram messages' do
     # There is currently no way to track organic Instagram messages, so these messages are currently never published to Buffer.
     @messages[0].medium = :organic
-    @messages[0].message_template.platform = :instagram
+    @messages[0].platform = :instagram
     @messages[0].message_template.save
     @messages[0].save
 

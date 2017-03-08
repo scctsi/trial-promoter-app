@@ -17,7 +17,7 @@ RSpec.describe SocialMediaProfilePicker do
   describe 'picking social media profiles for a message' do
     it 'picks a single profile given a message and a collection of social media profiles' do
       message = build(:message)
-      message.message_template.platform = :twitter
+      message.platform = :twitter
       message.medium = :ad
       
       picked_profile = @social_media_profile_picker.pick(@social_media_profiles, message)
@@ -27,7 +27,7 @@ RSpec.describe SocialMediaProfilePicker do
 
     it 'returns nil when asked to pick a social profile for an organic Instagram message (since we do not support organic Instagram messages)' do
       message = build(:message)
-      message.message_template.platform = :instagram
+      message.platform = :instagram
       message.medium = :organic
       
       picked_profile = @social_media_profile_picker.pick(@social_media_profiles, message)
@@ -37,7 +37,7 @@ RSpec.describe SocialMediaProfilePicker do
 
     it 'raises an error if it cannot find any suitable social media profiles for a messsage' do
       message = build(:message)
-      message.message_template.platform = :instagram
+      message.platform = :instagram
       message.medium = :ad
       
       expect{ @social_media_profile_picker.pick(@social_media_profiles, message) }.to raise_error NoSuitableSocialMediaProfileError

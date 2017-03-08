@@ -30,8 +30,10 @@ class Message < ActiveRecord::Base
   acts_as_ordered_taggable_on :experiments
 
   validates :content, presence: true
+  validates :platform, presence: true
   enumerize :publish_status, in: [:pending, :published_to_buffer, :published_to_social_network], default: :pending, predicates: true
   enumerize :medium, in: [:ad, :organic], default: :organic
+  enumerize :platform, in: [:twitter, :facebook, :instagram]
   enumerize :image_present, in: [:with, :without], default: :without
 
   validates :message_generating, presence: true
@@ -61,6 +63,11 @@ class Message < ActiveRecord::Base
 
   def medium
     return self[:medium].to_sym if !self[:medium].nil?
+    nil
+  end
+
+  def platform
+    return self[:platform].to_sym if !self[:platform].nil?
     nil
   end
 

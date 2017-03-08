@@ -7,7 +7,7 @@ RSpec.describe MessageFactory do
     @suitable_social_media_profiles.each { |social_media_profile| @experiment.social_media_profiles << social_media_profile }
     @experiment.save
     TrialPromoter::SUPPORTED_NETWORKS.each do |social_network|
-      create_list(:message_template, 5, platform: social_network, experiment_list: @experiment.to_param)
+      create_list(:message_template, 5, platforms: [social_network], experiment_list: @experiment.to_param)
     end
     # Create 2 images for each message template's image pool
     MessageTemplate.all.each do |message_template|

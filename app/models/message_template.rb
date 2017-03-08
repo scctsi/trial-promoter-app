@@ -86,6 +86,7 @@ class MessageTemplate < ActiveRecord::Base
   def warnings
     warnings = []
     return [] if content.nil?
+    return [] if !platforms.include?(:twitter)
     
     warnings << 'Too long for use in Twitter' if content.length > 140
     warnings << 'Too long for use in Twitter (URL takes up 23 characters)' if content.include?('{url}') and content.length > 117 + '{url}'.length
