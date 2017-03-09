@@ -2,26 +2,26 @@ require 'rails_helper'
 require 'yaml'
 
 RSpec.describe S3Client do
-  before do
-    secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
-    allow(Setting).to receive(:[]).with(:aws_access_key_id).and_return(secrets['aws_access_key_id'])
-    allow(Setting).to receive(:[]).with(:aws_secret_access_key).and_return(secrets['aws_secret_access_key'])
-    @s3_client = S3Client.new
-  end
-
-  it 'correctly calculates the bucket name for a URL' do
-    expect(@s3_client.bucket('https://s3-us-west-1.amazonaws.com/scctsi-tp-development/13-tcors/images/ywCyYa4LSXKtahc4Flgc_3-1-000.jpg')).to eq('scctsi-tp-development')
-  end
-
-  it 'correctly calculates the S3 key for a URL' do
-    expect(@s3_client.key('https://s3-us-west-1.amazonaws.com/scctsi-tp-development/13-tcors/images/ywCyYa4LSXKtahc4Flgc_3-1-000.jpg')).to eq('13-tcors/images/ywCyYa4LSXKtahc4Flgc_3-1-000.jpg')
-  end
-
-  it 'correctly calculates the S3 region for a URL' do
-    expect(@s3_client.region('https://s3-us-west-1.amazonaws.com/scctsi-tp-development/13-tcors/images/ywCyYa4LSXKtahc4Flgc_3-1-000.jpg')).to eq('us-west-1')
-  end
-
   describe "(development only tests)", :development_only_tests => true do
+    before do
+      secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
+      allow(Setting).to receive(:[]).with(:aws_access_key_id).and_return(secrets['aws_access_key_id'])
+      allow(Setting).to receive(:[]).with(:aws_secret_access_key).and_return(secrets['aws_secret_access_key'])
+      @s3_client = S3Client.new
+    end
+
+    it 'correctly calculates the bucket name for a URL' do
+      expect(@s3_client.bucket('https://s3-us-west-1.amazonaws.com/scctsi-tp-development/13-tcors/images/ywCyYa4LSXKtahc4Flgc_3-1-000.jpg')).to eq('scctsi-tp-development')
+    end
+
+    it 'correctly calculates the S3 key for a URL' do
+      expect(@s3_client.key('https://s3-us-west-1.amazonaws.com/scctsi-tp-development/13-tcors/images/ywCyYa4LSXKtahc4Flgc_3-1-000.jpg')).to eq('13-tcors/images/ywCyYa4LSXKtahc4Flgc_3-1-000.jpg')
+    end
+
+    it 'correctly calculates the S3 region for a URL' do
+      expect(@s3_client.region('https://s3-us-west-1.amazonaws.com/scctsi-tp-development/13-tcors/images/ywCyYa4LSXKtahc4Flgc_3-1-000.jpg')).to eq('us-west-1')
+    end
+
     it 'determines if an asset currently exists in S3' do
       asset_exists = false
 
