@@ -2,7 +2,6 @@
 /*global filepicker*/
 /*global Pusher*/
 $(document).ready(function() {
-  var $select_time;
   if (typeof filepicker != 'undefined') {
     filepicker.setKey("At8mEYziyTc6axVbB4njtz");
   }
@@ -323,7 +322,7 @@ $(document).ready(function() {
   }
 
   function setUpPostingTimeInputs() {
-    var allowedTimes = $('#experiment_posting_times').data('allowed-times');
+    var allowedTimes = $('#experiment_twitter_posting_times').data('allowed-times');
 
     // Selectize requires options to be of the form [{'value': 'val', 'item', 'val'}]
     if (typeof allowedTimes === "undefined") {
@@ -332,7 +331,7 @@ $(document).ready(function() {
     allowedTimes = allowedTimes.map(function(x) { return { item: x } });
 
     // Setup the posting times input
-    $select_time = $('#experiment_posting_times').selectize({
+    $('#experiment_twitter_posting_times, #experiment_facebook_posting_times, #experiment_instagram_posting_times').selectize({
       plugins: ['restore_on_backspace', 'remove_button'],
       valueField: 'item',
       labelField: 'item',
