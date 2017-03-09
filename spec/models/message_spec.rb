@@ -35,8 +35,8 @@ describe Message do
   it { is_expected.to have_many :metrics }
   it { is_expected.to validate_presence_of :message_generating }
   it { is_expected.to validate_presence_of :platform }
+  it { is_expected.to validate_presence_of :promoted_website_url }
   it { is_expected.to belong_to(:message_generating) }
-  it { is_expected.to belong_to(:promotable) }
   it { is_expected.to enumerize(:platform).in(:twitter, :facebook, :instagram) }
   it { is_expected.to enumerize(:medium).in(:ad, :organic).with_default(:organic) }
   it { is_expected.to enumerize(:image_present).in(:with, :without).with_default(:without) }

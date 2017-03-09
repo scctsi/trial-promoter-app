@@ -1,8 +1,7 @@
 class MessageFactory
-  attr_reader :tag_matcher, :social_media_profile_picker
+  attr_reader :social_media_profile_picker
 
-  def initialize(tag_matcher, social_media_profile_picker)
-    @tag_matcher = tag_matcher
+  def initialize(social_media_profile_picker)
     @social_media_profile_picker = social_media_profile_picker
   end
 

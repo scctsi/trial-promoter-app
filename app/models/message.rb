@@ -30,6 +30,7 @@ class Message < ActiveRecord::Base
 
   validates :content, presence: true
   validates :platform, presence: true
+  validates :promoted_website_url, presence: true
   enumerize :publish_status, in: [:pending, :published_to_buffer, :published_to_social_network], default: :pending, predicates: true
   enumerize :medium, in: [:ad, :organic], default: :organic
   enumerize :platform, in: [:twitter, :facebook, :instagram]
@@ -37,7 +38,6 @@ class Message < ActiveRecord::Base
 
   validates :message_generating, presence: true
   belongs_to :message_generating, polymorphic: true
-  belongs_to :promotable, polymorphic: true
   belongs_to :message_template
   belongs_to :image
   belongs_to :social_media_profile

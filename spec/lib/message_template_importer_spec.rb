@@ -12,7 +12,7 @@ RSpec.describe MessageTemplateImporter do
     @message_template_importer.post_initialize
     
     expect(@message_template_importer.import_class).to eq(MessageTemplate)
-    expect(@message_template_importer.column_index_attribute_mapping).to eq({ 0 => 'content', 1 => 'platforms', 2 => 'hashtags', 3 => 'tag_list', 6 => 'experiment_variables', 7 => 'original_image_filenames' })
+    expect(@message_template_importer.column_index_attribute_mapping).to eq({ 0 => 'content', 1 => 'platforms', 2 => 'hashtags', 3 => 'tag_list', 4 => 'promoted_website_url', 6 => 'experiment_variables', 7 => 'original_image_filenames' })
   end
 
   describe 'pre import prepare method' do
@@ -20,42 +20,49 @@ RSpec.describe MessageTemplateImporter do
       @parsed_csv_content = [['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'theme', 'fda_campaign'], ['This is a message template. {url}', 'twitter', '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation', '1', '2']]
       prepared_csv_content = @message_template_importer.pre_import_prepare(@parsed_csv_content)
       
-      expect(prepared_csv_content).to eq([['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'experiment_variables'], ['This is a message template. {url}', [:twitter], '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation', { 'theme' => '1', 'fda_campaign' => '2'}]])
+      expect(prepared_csv_content).to eq([['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'experiment_variables'], ['This is a message template. {url}', [:twitter], '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://url.com', 'Smoking cessation', { 'theme' => '1', 'fda_campaign' => '2'}]])
     end
 
     it 'does not use the content of a column with a header of original_image_filenames in the experiment_variables hash' do
       @parsed_csv_content = [['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'theme', 'fda_campaign', 'original_image_filenames'], ['This is a message template. {url}', 'twitter', '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation', '1', '2', 'filename1.png, filename2.png']]
       prepared_csv_content = @message_template_importer.pre_import_prepare(@parsed_csv_content)
       
-      expect(prepared_csv_content).to eq([['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'experiment_variables', 'original_image_filenames'], ['This is a message template. {url}', [:twitter], '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation', { 'theme' => '1', 'fda_campaign' => '2'}, ['filename1.png', 'filename2.png']]])
+      expect(prepared_csv_content).to eq([['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'experiment_variables', 'original_image_filenames'], ['This is a message template. {url}', [:twitter], '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://url.com', 'Smoking cessation', { 'theme' => '1', 'fda_campaign' => '2'}, ['filename1.png', 'filename2.png']]])
     end
   
     it 'converts multiple platforms (comma separated list of platform names) into an array of platform symbols' do
-      @parsed_csv_content = [['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'theme', 'fda_campaign'], ['This is a message template. {url}', 'twitter, facebook, instagram', '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation', '1', '2']]
+      @parsed_csv_content = [['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'theme', 'fda_campaign'], ['This is a message template. {url}', 'twitter, facebook, instagram', '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://url.com', 'Smoking cessation', '1', '2']]
       prepared_csv_content = @message_template_importer.pre_import_prepare(@parsed_csv_content)
       
-      expect(prepared_csv_content).to eq([['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'experiment_variables'], ['This is a message template. {url}', [:twitter, :facebook, :instagram], '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation', { 'theme' => '1', 'fda_campaign' => '2'}]])
+      expect(prepared_csv_content).to eq([['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'experiment_variables'], ['This is a message template. {url}', [:twitter, :facebook, :instagram], '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://url.com', 'Smoking cessation', { 'theme' => '1', 'fda_campaign' => '2'}]])
     end
   
     it 'adds {url} message template variable to the content if it is missing' do
       @parsed_csv_content = [['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name'], ['This is a message template.', 'twitter', '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation'], ['This is a message template. {url}', 'twitter', '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation']]
       prepared_csv_content = @message_template_importer.pre_import_prepare(@parsed_csv_content)
       
-      expect(prepared_csv_content).to eq([['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name'], ['This is a message template.{url}', [:twitter], '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation'], ['This is a message template. {url}', [:twitter], '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation']])
+      expect(prepared_csv_content).to eq([['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name'], ['This is a message template.{url}', [:twitter], '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://url.com', 'Smoking cessation'], ['This is a message template. {url}', [:twitter], '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://url.com', 'Smoking cessation']])
     end
 
     it 'converts a nil value for original image filenames to an empty array' do
       @parsed_csv_content = [['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'theme', 'fda_campaign', 'original_image_filenames'], ['This is a message template. {url}', 'twitter', '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation', '1', '2', nil]]
       prepared_csv_content = @message_template_importer.pre_import_prepare(@parsed_csv_content)
       
-      expect(prepared_csv_content).to eq([['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'experiment_variables', 'original_image_filenames'], ['This is a message template. {url}', [:twitter], '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation', { 'theme' => '1', 'fda_campaign' => '2'}, []]])
+      expect(prepared_csv_content).to eq([['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'experiment_variables', 'original_image_filenames'], ['This is a message template. {url}', [:twitter], '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://url.com', 'Smoking cessation', { 'theme' => '1', 'fda_campaign' => '2'}, []]])
     end
 
     it 'converts a blank value for original image filenames to an empty array' do
       @parsed_csv_content = [['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'theme', 'fda_campaign', 'original_image_filenames'], ['This is a message template. {url}', 'twitter', '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation', '1', '2', '']]
       prepared_csv_content = @message_template_importer.pre_import_prepare(@parsed_csv_content)
       
-      expect(prepared_csv_content).to eq([['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'experiment_variables', 'original_image_filenames'], ['This is a message template. {url}', [:twitter], '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation', { 'theme' => '1', 'fda_campaign' => '2'}, []]])
+      expect(prepared_csv_content).to eq([['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'experiment_variables', 'original_image_filenames'], ['This is a message template. {url}', [:twitter], '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://url.com', 'Smoking cessation', { 'theme' => '1', 'fda_campaign' => '2'}, []]])
+    end
+
+    it 'converts any website URLs to a canonical form' do
+      @parsed_csv_content = [['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'theme', 'fda_campaign', 'original_image_filenames'], ['This is a message template. {url}', 'twitter', '#hashtag1, #hashtag2', 'theme-1, stem-1', 'www.URL.com', 'Smoking cessation', '1', '2', '']]
+      prepared_csv_content = @message_template_importer.pre_import_prepare(@parsed_csv_content)
+      
+      expect(prepared_csv_content).to eq([['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'experiment_variables', 'original_image_filenames'], ['This is a message template. {url}', [:twitter], '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://url.com', 'Smoking cessation', { 'theme' => '1', 'fda_campaign' => '2'}, []]])
     end
 
     it 'deletes all the message templates associated with the experiment' do
@@ -78,24 +85,9 @@ RSpec.describe MessageTemplateImporter do
     expect(message_template.tag_list).to eq(parsed_tag_list)
     expect(message_template.experiment_list).to eq([@experiment_tag])
     expect(message_template.hashtags).to eq(['#hashtag1', '#hashtag2'])
+    expect(message_template.promoted_website_url).to eq('http://url.com')
   end
 
-  it 'successfully imports message templates (when multiple websites need to be created)' do
-    @parsed_csv_content = [['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name'], ['This is the first message template.', 'twitter', '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url1.com', 'Smoking cessation'], ['This is the second message template.', 'twitter', '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url2.com', 'Smoking cessation']]
-    @message_template_importer = MessageTemplateImporter.new(@parsed_csv_content, @experiment_tag)
-
-    @message_template_importer.import
-    
-    expect(MessageTemplate.count).to eq(2)
-    message_template = MessageTemplate.first
-    expect(message_template.content).to eq(@parsed_csv_content[1][0])
-    expect(message_template.platforms).to eq(@parsed_csv_content[1][1])
-    parsed_tag_list = @parsed_csv_content[1][3].split(",").map { |tag| tag.strip }
-    expect(message_template.tag_list).to eq(parsed_tag_list)
-    expect(message_template.experiment_list).to eq([@experiment_tag])
-    expect(message_template.hashtags).to eq(['#hashtag1', '#hashtag2'])
-  end
-  
   it 'successfully imports extra columns in the parsed CSV content into the experiment variables' do
     @parsed_csv_content = [['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'theme', 'fda_campaign'], ['This is a message template. {url}', 'twitter', '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation', '1', '2']]
     @message_template_importer = MessageTemplateImporter.new(@parsed_csv_content, @experiment_tag)
@@ -111,6 +103,7 @@ RSpec.describe MessageTemplateImporter do
     expect(message_template.experiment_list).to eq([@experiment_tag])
     expect(message_template.hashtags).to eq(['#hashtag1', '#hashtag2'])
     expect(message_template.experiment_variables).to eq( {'theme' => '1', 'fda_campaign' => '2'} )
+    expect(message_template.promoted_website_url).to eq('http://url.com')
   end
 
   it 'successfully imports original image filenames in the parsed CSV content' do
@@ -129,6 +122,7 @@ RSpec.describe MessageTemplateImporter do
     expect(message_template.hashtags).to eq(['#hashtag1', '#hashtag2'])
     expect(message_template.experiment_variables).to eq( {'theme' => '1', 'fda_campaign' => '2'} )
     expect(message_template.original_image_filenames).to eq( ['filename1.png', 'filename2.png'] )
+    expect(message_template.promoted_website_url).to eq('http://url.com')
   end
 
   it 'successfully imports blank values for original image filenames in the parsed CSV content' do
@@ -147,6 +141,7 @@ RSpec.describe MessageTemplateImporter do
     expect(message_template.hashtags).to eq(['#hashtag1', '#hashtag2'])
     expect(message_template.experiment_variables).to eq( {'theme' => '1', 'fda_campaign' => '2'} )
     expect(message_template.original_image_filenames).to eq( [] )
+    expect(message_template.promoted_website_url).to eq('http://url.com')
   end
 
   it 'successfully imports message templates where the platform is a comma separated list of platform names' do
@@ -163,22 +158,11 @@ RSpec.describe MessageTemplateImporter do
       expect(message_template.experiment_list).to eq([@experiment_tag])
       expect(message_template.hashtags).to eq(['#hashtag1', '#hashtag2'])
       expect(message_template.experiment_variables).to eq( {'theme' => '1', 'fda_campaign' => '2'} )
+      expect(message_template.promoted_website_url).to eq('http://url.com')
     end
     expect(MessageTemplate.first.platforms).to eq([:facebook, :twitter, :instagram])
   end
 
-  it 'successfully imports websites (in a post_import step)' do
-    @message_template_importer.post_import(@parsed_csv_content)
-    
-    expect(Website.count).to eq(1)
-    website = Website.first
-    expect(website.name).to eq(@parsed_csv_content[1][5])
-    expect(website.url).to eq('http://url.com')
-    parsed_tag_list = @parsed_csv_content[1][3].split(",").map { |tag| tag.strip }
-    expect(website.tag_list).to eq(parsed_tag_list)
-    expect(website.experiment_list).to eq([@experiment_tag])
-  end
-  
   it 'successfully fills out the image pool for imported message templates' do
     images = create_list(:image, 4)
     images[0].original_filename = 'filename1.png'

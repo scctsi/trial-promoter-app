@@ -30,7 +30,7 @@ class MessageTemplate < ActiveRecord::Base
   serialize :image_pool, Array
   serialize :experiment_variables, Hash
   serialize :original_image_filenames, Array
-  
+
   has_many :messages
 
   scope :belonging_to, ->(experiment) { tagged_with(experiment.to_param, on: :experiments) }

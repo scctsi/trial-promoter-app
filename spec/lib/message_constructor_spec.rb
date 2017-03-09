@@ -6,33 +6,15 @@ RSpec.describe MessageConstructor do
     @experiment = create(:experiment)
   end
   
-  it 'replaces the variables in the message template with the value of the attributes of the supplied clinical trial' do
-    clinical_trial = ClinicalTrial.new(pi_first_name: 'First', pi_last_name: 'Last', disease: 'Disease', url: 'http://www.url.com')
-    message_template = MessageTemplate.new(content: 'This is a message template containing {pi_first_name}, {pi_last_name}, { Disease}, {URL} variables')
-
-    message = @message_constructor.construct(@experiment, message_template, clinical_trial, :twitter)
-
-    expect(message.valid?).to be true
-    expect(message.content).to eq("This is a message template containing #{clinical_trial.pi_first_name}, #{clinical_trial.pi_last_name}, #{clinical_trial.disease}, #{clinical_trial.url} variables")
-    expect(message.message_template).to eq(message_template)
-    expect(message.promotable).to eq(clinical_trial)
-    expect(message.message_generating).to eq(@experiment)
-    expect(message.platform).to eq :twitter
-    expect(message.medium).to eq :organic
-    expect(message.image_present).to eq(:without)
-    expect(message.image).to be_nil
-  end
-  
   it 'replaces the variables in the message template with the value of the attributes of the supplied website' do
-    website = Website.new(name: 'Name', url: 'http://www.url.com')
-    message_template = MessageTemplate.new(content: 'This is a message template containing {name} and {url} variables')
+    message_template = MessageTemplate.new(content: 'This is a message template containing {url} variables')
 
-    message = @message_constructor.construct(@experiment, message_template, website, :facebook)
+    message = @message_constructor.construct(@experiment, message_template, 'http://url.com', :facebook)
 
     expect(message.valid?).to be true
-    expect(message.content).to eq("This is a message template containing #{website.name} and #{website.url} variables")
+    expect(message.content).to eq("This is a message template containing http://url.com variables")
     expect(message.message_template).to eq(message_template)
-    expect(message.promotable).to eq(website)
+    expect(message.promoted_website_url).to eq('http://url.com')
     expect(message.message_generating).to eq(@experiment)
     expect(message.platform).to eq :facebook
     expect(message.medium).to be :organic
@@ -41,10 +23,9 @@ RSpec.describe MessageConstructor do
   end
   
   it 'constructs a message with a medium' do
-    website = Website.new(name: 'Name', url: 'http://www.url.com')
     message_template = MessageTemplate.new(content: 'This is a message template containing {name} and {url} variables')
 
-    message = @message_constructor.construct(@experiment, message_template, website, :twitter, :ad)
+    message = @message_constructor.construct(@experiment, message_template, 'http://url.com', :twitter, :ad)
 
     expect(message.platform).to be :twitter
     expect(message.medium).to be :ad

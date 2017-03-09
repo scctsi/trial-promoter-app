@@ -15,21 +15,19 @@ RSpec.describe MessageFactory do
       message_template.image_pool = images.map(&:id)
       message_template.save
     end
-    create_list(:website, 3, experiment_list: @experiment.to_param)
     # Set up social media profile picking
     @social_media_profile_picker = SocialMediaProfilePicker.new
     allow(@social_media_profile_picker).to receive(:pick).with(@suitable_social_media_profiles, Message).and_return(@suitable_social_media_profiles[1])
-    @message_factory = MessageFactory.new(@tag_matcher, @social_media_profile_picker)
+    @message_factory = MessageFactory.new(@social_media_profile_picker)
     # Set up Pusher mocks
     @pusher_channel = double()
     allow(Pusher).to receive(:[]).with('progress').and_return(@pusher_channel)
     allow(@pusher_channel).to receive(:trigger)
   end
 
-  it 'can be initialized with a tag matcher and a social media profile picker' do
-    @message_factory = MessageFactory.new(@tag_matcher, @social_media_profile_picker)
+  it 'can be initialized with a social media profile picker' do
+    @message_factory = MessageFactory.new(@social_media_profile_picker)
     
-    expect(@message_factory.tag_matcher).to eq(@tag_matcher)
     expect(@message_factory.social_media_profile_picker).to eq(@social_media_profile_picker)
   end
   

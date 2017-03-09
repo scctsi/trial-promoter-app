@@ -39,9 +39,8 @@ class Experiment < ActiveRecord::Base
   end
 
   def create_messages
-    tag_matcher = TagMatcher.new
     social_media_profile_picker = SocialMediaProfilePicker.new
-    message_factory = MessageFactory.new(tag_matcher, social_media_profile_picker)
+    message_factory = MessageFactory.new(social_media_profile_picker)
     message_factory.create(self)
   end
 

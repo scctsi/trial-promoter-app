@@ -15,10 +15,7 @@ class ExperimentsController < ApplicationController
     authorize @experiment
     @message_templates = MessageTemplate.belonging_to(@experiment)
     @images = Image.belonging_to(@experiment)
-    @websites = Website.belonging_to(@experiment)
     @messages = Message.where(:message_generating_id => @experiment.id).page(params[:page]).order('created_at ASC')
-    tag_matcher = TagMatcher.new
-    @distinct_tag_list = tag_matcher.distinct_tag_list(@message_templates)
   end
 
   def new

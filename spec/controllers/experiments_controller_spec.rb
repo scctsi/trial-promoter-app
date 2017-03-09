@@ -39,8 +39,6 @@ RSpec.describe ExperimentsController, type: :controller do
       allow(MessageTemplate).to receive(:belonging_to).with(@experiment).and_return(@message_templates)
       @images = []
       allow(Image).to receive(:belonging_to).with(@experiment).and_return(@images)
-      @websites = []
-      allow(Website).to receive(:belonging_to).with(@experiment).and_return(@websites)
       @experiment_messages = double('experiment_messages')
       @ordered_messages = []
       @paged_messages = double('paged_messages')
@@ -49,8 +47,6 @@ RSpec.describe ExperimentsController, type: :controller do
       allow(@paged_messages).to receive(:order).and_return(@ordered_messages)
       @tag_list = ['tag-1', 'tag-2']
       @tag_matcher = double('tag_matcher')
-      allow(TagMatcher).to receive(:new).and_return(@tag_matcher)
-      allow(@tag_matcher).to receive(:distinct_tag_list).with(@message_templates).and_return(@tag_list)
       get :show, id: @experiment, page: '2'
     end
 
@@ -68,23 +64,11 @@ RSpec.describe ExperimentsController, type: :controller do
       expect(assigns(:images)).to eq(@images)
     end
 
-    it 'assigns all websites tagged with the experiments parameterized slug (on the experiments context) to @websites' do
-      expect(Website).to have_received(:belonging_to).with(@experiment)
-      expect(assigns(:websites)).to eq(@websites)
-    end
-
     it 'assigns all messages to @messages' do
       expect(Message).to have_received(:where).with(:message_generating_id => @experiment.id)
       expect(@experiment_messages).to have_received(:page).with('2')
       expect(@paged_messages).to have_received(:order).with('created_at ASC')
       expect(assigns(:messages)).to eq(@ordered_messages)
-    end
-
-
-    it 'assigns all distinct tags to @distinct_tag_list' do
-      expect(@tag_matcher).to have_received(:distinct_tag_list).with(@message_templates)
-      # TODO: VERY ODD, I cannot get the next line to pass!
-      # expect(assigns(:@distinct_tag_list)).to eq(@tag_list)
     end
 
     it 'uses the workspace layout' do
