@@ -1,32 +1,11 @@
 class MessageTemplatesController < ApplicationController
-  before_action :set_message_template, only: [:edit, :update, :get_image_selections, :add_image_to_image_pool, :remove_image_from_image_pool]
+  before_action :set_message_template, only: [:get_image_selections, :add_image_to_image_pool, :remove_image_from_image_pool]
 
   def index
     authorize MessageTemplate
     @message_templates = MessageTemplate.all
   end
 
-  def new
-    authorize MessageTemplate
-    @message_template = MessageTemplate.new
-  end
-
-  def edit
-    authorize MessageTemplate
-    @message_template = MessageTemplate.find(params[:id])
-  end
-
-  def create
-    @message_template = MessageTemplate.new(message_template_params)
-    authorize @message_template
-
-    if @message_template.save
-      redirect_to message_templates_url
-    else
-      render :new
-    end
-  end
-  
   def get_image_selections
     authorize @message_template
     image_pool_manager = ImagePoolManager.new
@@ -52,15 +31,6 @@ class MessageTemplatesController < ApplicationController
     render json: { success: true }
   end
 
-  def update
-    authorize @message_template
-    if @message_template.update(message_template_params)
-      redirect_to message_templates_url
-    else
-      render :edit
-    end
-  end
-
   def import
     authorize MessageTemplate
     experiment = Experiment.find(params[:experiment_id])
@@ -80,10 +50,5 @@ class MessageTemplatesController < ApplicationController
 
   def set_message_template
     @message_template = MessageTemplate.find(params[:id])
-  end
-
-  def message_template_params
-    # TODO: Unit test this
-    params[:message_template].permit(:content, :platform, :tag_list)
   end
 end

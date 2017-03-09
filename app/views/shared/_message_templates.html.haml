@@ -10,7 +10,7 @@
     - message_templates.each do |message_template|
       %tr
         %td= message_template.content
-        %td= message_template.platform
+        %td= message_template.platforms.map{ |platform| platform.titleize }.join(', ')
         %td
           = render partial: 'shared/tag_list', locals: { tags: message_template.hashtags, hashtags: true }
         %td

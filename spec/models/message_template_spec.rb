@@ -2,32 +2,27 @@
 #
 # Table name: message_templates
 #
-#  id         :integer          not null, primary key
-#  content    :text
-#  platform   :string
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  hashtags   :text
+#  id                   :integer          not null, primary key
+#  content              :text
+#  platform             :string
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
+#  hashtags             :text
+#  experiment_variables :text
 #
 
 require 'rails_helper'
 
 RSpec.describe MessageTemplate do
   it { is_expected.to validate_presence_of :content }
-  it { is_expected.to validate_presence_of :platform }
-  it { is_expected.to enumerize(:platform).in(:twitter, :facebook, :instagram) }
+  it { is_expected.to validate_presence_of :platforms }
+  it { is_expected.to enumerize(:platforms).in(:twitter, :facebook, :instagram).with_multiple(true) }
   it { is_expected.to have_many :messages }
+  it { is_expected.to serialize(:platforms).as(Array) }
   it { is_expected.to serialize(:hashtags).as(Array) }
   it { is_expected.to serialize(:experiment_variables).as(Hash) }
   it { is_expected.to serialize(:original_image_filenames).as(Array) }
   it { is_expected.to serialize(:image_pool).as(Array) }
-
-  it 'returns the platform as a symbol' do
-    message_template = create(:message_template, platform: 'twitter')
-    message_template.reload
-
-    expect(message_template.platform).to be(:twitter)
-  end
 
   it 'stores the experiment variables as a hash' do
     message_template = build(:message_template, platform: 'twitter', experiment_variables: { 'fda_campaign' => '1', 'theme' => '2', 'lin_meth_factor' => '1', 'lin_meth_level' => '3' })

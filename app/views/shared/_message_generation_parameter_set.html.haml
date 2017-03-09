@@ -12,13 +12,13 @@
       %td= message_generation_parameter_set.medium_choices.join(',').chomp(',')
     %tr
       %td.collapsing Images
-      %td= message_generation_parameter_set.image_present_choices.join(',').chomp(',')
-    %tr
-      %td.collapsing Length of experiment (in days)
-      %td= message_generation_parameter_set.period_in_days
+      %td= message_generation_parameter_set.image_present_choices.titleize
     %tr
       %td.collapsing Number of messages per day per social media type
       %td= message_generation_parameter_set.number_of_messages_per_social_network
+    %tr
+      %td.collapsing Number of cycles
+      %td= message_generation_parameter_set.number_of_cycles
     %tr
       %td.collapsing Social media profiles
       %td= message_generation_parameter_set.message_generating.social_media_profiles.map{ |social_media_profile| social_media_profile.service_username }.join(', ').chomp(',')
