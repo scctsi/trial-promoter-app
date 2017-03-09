@@ -23,6 +23,7 @@ class MessageTemplate < ActiveRecord::Base
 
   validates :content, presence: true
   validates :platforms, presence: true
+  validates :promoted_website_url, presence: true
   enumerize :platforms, in: [:twitter, :facebook, :instagram], multiple: true
 
   serialize :platforms, Array

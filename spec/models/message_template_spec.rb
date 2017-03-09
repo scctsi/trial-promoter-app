@@ -18,6 +18,7 @@ require 'rails_helper'
 RSpec.describe MessageTemplate do
   it { is_expected.to validate_presence_of :content }
   it { is_expected.to validate_presence_of :platforms }
+  it { is_expected.to validate_presence_of :promoted_website_url }
   it { is_expected.to enumerize(:platforms).in(:twitter, :facebook, :instagram).with_multiple(true) }
   it { is_expected.to have_many :messages }
   it { is_expected.to serialize(:platforms).as(Array) }
