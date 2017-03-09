@@ -7,18 +7,18 @@ class MessageFactory
 
   def create(experiment)
     # Initial setup
+    message_constructor = MessageConstructor.new
     number_of_cycles = experiment.message_generation_parameter_set.number_of_cycles
     platforms = experiment.message_generation_parameter_set.social_network_choices
     mediums = experiment.message_generation_parameter_set.medium_choices
     message_templates = MessageTemplate.belonging_to(experiment)
+    posting_times = experiment.posting_times_as_datetimes
+    total_count = experiment.message_generation_parameter_set.expected_generated_message_count(message_templates.count)
+    message_index = 1
+    publish_date = experiment.message_distribution_start_date
     
     # experiment.reload
     # experiment.messages.destroy_all
-
-    message_constructor = MessageConstructor.new
-    total_count = experiment.message_generation_parameter_set.expected_generated_message_count(message_templates.count)
-    generated_message_index = 1
-    # generated_message_publish_date = experiment.message_distribution_start_date
 
     number_of_cycles.times do |cycle_index|
       platforms.each do |platform|
@@ -26,8 +26,8 @@ class MessageFactory
           message_templates.each do |message_template|
             message = message_constructor.construct(experiment, message_template, platform, medium)
             message.save
-            Pusher['progress'].trigger('progress', {:value => generated_message_index, :total => total_count, :event => 'Message generated'})
-            generated_message_index += 1            
+            Pusher['progress'].trigger('progress', {:value => message_index, :total => total_count, :event => 'Message generated'})
+            message_index += 1            
           end
         end
       end
@@ -42,8 +42,6 @@ class MessageFactory
     #         message_template = message_templates_for_social_network.sample
     #         website = tag_matcher.match(websites_belonging_to_experiment, message_template.tag_list).sample
     #         message = message_constructor.construct(experiment, message_template, website, medium)
-    #         message.scheduled_date_time = generated_message_publish_date
-    #         message.scheduled_date_time = message.scheduled_date_time.change({ hour: posting_times[index].hour, min: posting_times[index].min })
     #         message.save
     #         generated_message_index += 1
     #       end

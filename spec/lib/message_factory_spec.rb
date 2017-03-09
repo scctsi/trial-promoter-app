@@ -30,7 +30,7 @@ RSpec.describe MessageFactory do
   end
   
   it 'creates a set of messages given five message templates, 1 social network, 1 medium, no images, 1 cycle, 1 message per network per day and no hashtags' do
-    @experiment.posting_times = "12:30 PM"
+    @experiment.facebook_posting_times = "12:30 PM"
     @experiment.save
     message_generation_parameter_set = MessageGenerationParameterSet.new do |m|
       m.social_network_choices = [:facebook]
@@ -54,13 +54,13 @@ RSpec.describe MessageFactory do
     # Were the pusher events triggered?
     expect(@pusher_channel).to have_received(:trigger).exactly(expected_generated_message_count).times.with('progress', {:value => an_instance_of(Fixnum), :total => expected_generated_message_count, :event => 'Message generated'})
 
-    # # Has the scheduled date and time been set correctly?
-    # publish_date_time = @experiment.message_distribution_start_date
-    # publish_date_time = publish_date_time.change({ hour: 12, min: 30, sec: 0 })
-    # messages.all.each do |message|
-    #   expect(message.scheduled_date_time).to eq(publish_date_time)
-    #   publish_date_time += 1.day
-    # end
+    # Has the scheduled date and time been set correctly?
+    publish_date_time = @experiment.message_distribution_start_date
+    publish_date_time = publish_date_time.change({ hour: 12, min: 30, sec: 0 })
+    messages.all.each do |message|
+      expect(message.scheduled_date_time).to eq(publish_date_time)
+      publish_date_time += 1.day
+    end
 
     # # Is the image selected for each message taken from the image pool for the corresponding message template?
     # messages.all.each do |message|

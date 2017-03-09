@@ -87,14 +87,20 @@ class Experiment < ActiveRecord::Base
   end
   
   def posting_times_as_datetimes
-    return [] if posting_times.nil?
-
-    array_of_posting_times = []
-
-    array_of_posting_times = posting_times.split(',')
-    array_of_posting_times.map! { |posting_time| DateTime.parse(posting_time, DateTime.new(2000, 1, 1)) }
+    hash_of_posting_times = {}
     
-    array_of_posting_times
+    {:facebook => facebook_posting_times, :instagram => instagram_posting_times, :twitter => twitter_posting_times}.each do |platform, platform_posting_times|
+      array_of_posting_times = []
+      
+      if !platform_posting_times.blank?
+        array_of_posting_times = platform_posting_times.split(',')
+        array_of_posting_times.map! { |posting_time| DateTime.parse(posting_time, DateTime.new(2000, 1, 1)) }
+      end
+      
+      hash_of_posting_times[platform] = array_of_posting_times
+    end
+
+    hash_of_posting_times
   end
   
   def timeline
