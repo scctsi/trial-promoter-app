@@ -41,10 +41,6 @@ Rails.application.routes.draw do
     end
   end
 
-  # Websites
-  resources :websites do
-  end
-
   # App settings
   namespace :admin do
     resources :settings

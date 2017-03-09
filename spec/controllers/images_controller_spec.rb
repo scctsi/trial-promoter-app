@@ -6,7 +6,7 @@ RSpec.describe ImagesController, type: :controller do
   end
   
   describe 'POST #import' do
-    it 'imports multiple images uploaded to cloud storate' do
+    it 'imports multiple images uploaded to cloud storage' do
       experiment = create(:experiment)
       image_urls = ['http://www.images.com/image1.png', 'http://www.images.com/image2.png']
       original_filenames = ['filename1.ext', 'filename2.ext']

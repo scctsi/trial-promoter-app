@@ -44,11 +44,7 @@ class Importer
         attributes['experiment_list'] = experiment_tag if !experiment_tag.blank?
       end
 
-      # Ignore any RecordNotUnique errors; Websites for instance are not inserted if the URL is not unique    
-      begin
-        import_class.create!(attributes)
-      rescue ActiveRecord::RecordNotUnique
-      end
+      import_class.create!(attributes)
     end
     
     post_import(prepared_csv_content)
