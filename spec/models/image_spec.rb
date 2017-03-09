@@ -84,4 +84,26 @@ RSpec.describe Image do
 
     expect(image).to have_received(:delete_image_from_s3)
   end
+
+  it 'calls a post delete callback when the image is destroyed' do
+    image = create(:image)
+    allow(image).to receive(:delete_image_from_s3)
+
+    image.destroy
+
+    expect(image).to have_received(:delete_image_from_s3)
+  end
+
+  it 'calls a post delete callback when the image is destroyed' do
+    image = create(:image)
+    s3_client_double = double('s3_client')
+    allow(s3_client_double).to receive(:delete)
+    allow(s3_client_double).to receive(:bucket).and_return('bucket')
+    allow(s3_client_double).to receive(:key).and_return('key')
+    allow(S3Client).to receive(:new).and_return(s3_client_double)
+
+    image.delete_image_from_s3
+
+    expect(s3_client_double).to have_received(:delete).with('bucket', 'key')
+  end
 end

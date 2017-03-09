@@ -25,8 +25,8 @@ RSpec.describe S3Client do
     it 'determines if an asset currently exists in S3' do
       asset_exists = false
 
-      VCR.use_cassette 's3_client/asset_exists_in_s3?' do
-        asset_exists = @s3_client.asset_exists_in_s3?('scctsi-tp-development','13-tcors/images/ywCyYa4LSXKtahc4Flgc_3-1-000.jpg')
+      VCR.use_cassette 's3_client/object_exists_in_s3?' do
+        asset_exists = @s3_client.object_exists_in_s3?('scctsi-tp-development','13-tcors/images/ywCyYa4LSXKtahc4Flgc_3-1-000.jpg')
       end
 
       expect(asset_exists).to be true
@@ -40,17 +40,12 @@ RSpec.describe S3Client do
       File.open('spec/fixtures/logo.png', 'rb') do |file|
         @s3_client.put('scctsi-tp-development', 'object-key', file)
       end
+      expect(@s3_client.object_exists_in_s3?('scctsi-tp-development','object-key')).to be true
 
-      # Expect asset to exist (to see if above code was successful and no longer have to use console)
-      expect(@s3_client.asset_exists_in_s3?('scctsi-tp-development','object-key')).to be true
-
-      # # Run delete
+      # Run delete
       @s3_client.delete('scctsi-tp-development', 'object-key')
+      expect(@s3_client.object_exists_in_s3?('scctsi-tp-development','object-key')).to be false
 
-      # Expect asset to no longer exist
-      expect(@s3_client.asset_exists_in_s3?('scctsi-tp-development','object-key')).to be false
-
-      # Put VCR cassette (USE new cassette name otherwise you will get strange error; remove turn_off code etc.)
       VCR.turn_on!
       WebMock.disable_net_connect!
     end
