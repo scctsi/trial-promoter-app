@@ -5,8 +5,6 @@ defaults: &defaults
   bitly_access_token: ""
   google_auth_json_file: ""
   click_meter_api_key: ""
-  aws_access_key_id: ""
-  secret_access_key: ""
   enable_data_sharing: true
 
 development:

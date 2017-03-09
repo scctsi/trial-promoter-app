@@ -1,24 +1,39 @@
 require 'aws-sdk'
 
 class S3Client
-  attr_accessor :s3_client
-
   def initialize
-    credentials = Aws::Credentials.new(Setting[:aws_access_key_id], Setting[:secret_access_key])
+    credentials = Aws::Credentials.new(Setting[:aws_access_key_id], Setting[:aws_secret_access_key])
 
     Aws.config.update({
       region: 'us-west-1',
-      credentials: credentials,
-      endpoint:'http://localhost:3000'
+      credentials: credentials
     })
-    s3_client = Aws::S3::Client.new(credentials: credentials, region: 'us-west-1', endpoint: 'http://localhost:3000')
   end
 
-  def asset_exists_in_s3?(image)
-    p image.s3_key
-    p image.s3_bucket
-    credentials = Aws::Credentials.new(Setting[:aws_access_key_id], Setting[:secret_access_key])
-    object = Aws::S3::Object.new('scctsi-tp-development', '13-tcors/images/ywCyYa4LSXKtahc4Flgc_3-1-000.jpg', region: 'us-west-1', credentials: credentials)
+  def bucket(url)
+    url.split('/')[3]
+  end
+
+  def key(url)
+    url.split('/')[4..6].join("/")
+  end
+
+  def region(url)
+    url.split('/')[2].split('-')[1..3].join('-').split('.')[0]
+  end
+
+  def asset_exists_in_s3?(bucket, key)
+    object = Aws::S3::Object.new(bucket, key)
     return object.exists?
+  end
+
+  def put(bucket, key, body)
+    object = Aws::S3::Object.new(bucket, key)
+    object.put(body: body)
+  end
+
+  def delete(bucket, key)
+    object = Aws::S3::Object.new(bucket, key)
+    object.delete
   end
 end
