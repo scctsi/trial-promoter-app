@@ -118,19 +118,6 @@ RSpec.describe ExperimentsController, type: :controller do
     end
   end
 
-  describe 'GET #calculate_message_count' do
-    before do
-      @experiment = create(:experiment)
-      get :calculate_message_count, id: @experiment, :social_network_choices_count => '2', :medium_choices_count => '3', :period_in_days => '4', :number_of_messages_per_social_network => '5'
-    end
-
-    it 'returns the number of total calculated messages' do
-      expected_json = { :message_count => 120 }.to_json
-
-      expect(response.body).to eq(expected_json)
-    end
-  end
-
   describe 'GET #create_messages' do
     before do
       @experiment = create(:experiment)
@@ -326,7 +313,7 @@ RSpec.describe ExperimentsController, type: :controller do
       @social_media_profiles[2].platform = :facebook
       @social_media_profiles[2].allowed_mediums = [:organic]
       @social_media_profiles[2].save
-      patch :update, id: @experiment, experiment: attributes_for(:experiment, name: 'New name', end_date: Time.local(2000, 2, 1, 9, 0, 0), message_distribution_start_date: Time.local(2000, 3, 1, 9, 0, 0), posting_times: '4:09 PM,6:22 PM,9:34 AM,10:02 PM,2:12 AM', social_media_profile_ids: [@social_media_profiles[1].id, @social_media_profiles[2].id], message_generation_parameter_set_attributes: {period_in_days: 10, number_of_messages_per_social_network: 5, social_network_choices: ['facebook', 'twitter'], medium_choices: ['organic'], image_present_choices: ['with', 'without']})
+      patch :update, id: @experiment, experiment: attributes_for(:experiment, name: 'New name', end_date: Time.local(2000, 2, 1, 9, 0, 0), message_distribution_start_date: Time.local(2000, 3, 1, 9, 0, 0), posting_times: '4:09 PM,6:22 PM,9:34 AM,10:02 PM,2:12 AM', social_media_profile_ids: [@social_media_profiles[1].id, @social_media_profiles[2].id], message_generation_parameter_set_attributes: {number_of_cycles: 4, number_of_messages_per_social_network: 5, social_network_choices: ['facebook', 'twitter'], medium_choices: ['organic'], image_present_choices: :no_messages})
     end
 
     context 'with valid attributes' do
@@ -347,8 +334,8 @@ RSpec.describe ExperimentsController, type: :controller do
         @experiment.reload
         expect(@experiment.message_generation_parameter_set.social_network_choices).to eq([:facebook, :twitter])
         expect(@experiment.message_generation_parameter_set.medium_choices).to eq([:organic])
-        expect(@experiment.message_generation_parameter_set.image_present_choices).to eq([:with, :without])
-        expect(@experiment.message_generation_parameter_set.period_in_days).to eq(10)
+        expect(@experiment.message_generation_parameter_set.image_present_choices).to eq(:no_messages)
+        expect(@experiment.message_generation_parameter_set.number_of_cycles).to eq(4)
         expect(@experiment.message_generation_parameter_set.number_of_messages_per_social_network).to eq(5)
       end
 

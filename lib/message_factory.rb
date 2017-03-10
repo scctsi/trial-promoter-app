@@ -9,10 +9,10 @@ class MessageFactory
   def create(experiment)
     experiment.reload
     experiment.messages.destroy_all
-    total_count = experiment.message_generation_parameter_set.expected_generated_message_count
 
     message_constructor = MessageConstructor.new
     message_templates = MessageTemplate.belonging_to(experiment)
+    total_count = experiment.message_generation_parameter_set.expected_generated_message_count(message_templates.count)
     generated_message_index = 1
     generated_message_publish_date = experiment.message_distribution_start_date
     websites_belonging_to_experiment = Website.belonging_to(experiment).to_a
@@ -47,11 +47,11 @@ class MessageFactory
     # If we need to add images
     include_images = true if experiment.message_generation_parameter_set.image_present_choices.include?(:with)
     if include_images
-      attach_images(experiment, experiment.messages, experiment.message_generation_parameter_set.image_present_distribution)
+      attach_images(experiment, experiment.messages)
     end
   end
 
-  def attach_images(experiment, messages, distribution=:equal)
+  def attach_images(experiment, messages)
     images_belonging_to_experiment = Image.belonging_to(experiment).to_a
     include_image = false
 

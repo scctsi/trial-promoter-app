@@ -2,12 +2,13 @@
 #
 # Table name: message_templates
 #
-#  id         :integer          not null, primary key
-#  content    :text
-#  platform   :string
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  hashtags   :text
+#  id                   :integer          not null, primary key
+#  content              :text
+#  platform             :string
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
+#  hashtags             :text
+#  experiment_variables :text
 #
 
 class MessageTemplate < ActiveRecord::Base
@@ -19,9 +20,10 @@ class MessageTemplate < ActiveRecord::Base
   extend Enumerize
 
   validates :content, presence: true
-  validates :platform, presence: true
-  enumerize :platform, in: [:twitter, :facebook, :instagram], predicates: true
+  validates :platforms, presence: true
+  enumerize :platforms, in: [:twitter, :facebook, :instagram], multiple: true
 
+  serialize :platforms, Array
   serialize :hashtags, Array
   serialize :image_pool, Array
   serialize :experiment_variables, Hash

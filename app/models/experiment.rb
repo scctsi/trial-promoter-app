@@ -19,7 +19,6 @@ class Experiment < ActiveRecord::Base
 
   validates_with ExperimentValidator
   validates :name, presence: true
-  validates :end_date, presence: true
   validates :message_distribution_start_date, presence: true
 
   has_one :message_generation_parameter_set, as: :message_generating

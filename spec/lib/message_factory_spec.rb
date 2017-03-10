@@ -6,18 +6,16 @@ RSpec.describe MessageFactory do
     @suitable_social_media_profiles = create_list(:social_media_profile, 3)
     @suitable_social_media_profiles.each { |social_media_profile| @experiment.social_media_profiles << social_media_profile }
     @experiment.save
-    #tag_lists = [['tag-1'], ['tag-4', 'tag-5', 'tag-6'], ['tag-2', 'tag-3', 'tag-4']]
-    tag_lists = [['tag-1']]
     TrialPromoter::SUPPORTED_NETWORKS.each do |social_network|
-      # Randomly tag each message template with a set of tags taken from tag_lists
-      tag_list = tag_lists.sample
-      create_list(:message_template, 5, platform: social_network, experiment_list: @experiment.to_param, tag_list: tag_list)
-      # Create websites and images that can be matched up with the help of a Tag Matcher
-      create_list(:image, 3, experiment_list: @experiment.to_param, tag_list: tag_list)
-      create_list(:website, 3, experiment_list: @experiment.to_param, tag_list: tag_list)
+      create_list(:message_template, 5, platform: social_network, experiment_list: @experiment.to_param)
     end
-    # Set up tag matching
-    @tag_matcher = TagMatcher.new
+    # Create 2 images for each message template's image pool
+    MessageTemplate.all.each do |message_template|
+      images = create_list(:image, 2, experiment_list: @experiment.to_param)
+      message_template.image_pool = images.map(&:id)
+      message_template.save
+    end
+    create_list(:website, 3, experiment_list: @experiment.to_param)
     # Set up social media profile picking
     @social_media_profile_picker = SocialMediaProfilePicker.new
     allow(@social_media_profile_picker).to receive(:pick).with(@suitable_social_media_profiles, Message).and_return(@suitable_social_media_profiles[1])
@@ -35,116 +33,117 @@ RSpec.describe MessageFactory do
     expect(@message_factory.social_media_profile_picker).to eq(@social_media_profile_picker)
   end
   
-  it 'creates a set of messages for one website, five message templates, 1 social network (equal distribution), 1 medium (equal distribution), with no images, for 1 day and 1 message per network per day' do
-    @experiment.posting_times = "12:30 PM"
-    @experiment.save
-    message_generation_parameter_set = MessageGenerationParameterSet.new do |m|
-      m.social_network_choices = [:facebook]
-      m.medium_choices = ['ad']
-      m.image_present_choices = ['without']
-      m.period_in_days = 1
-      m.number_of_messages_per_social_network = 1
-    end
-    @experiment.message_generation_parameter_set = message_generation_parameter_set
+  # it 'creates a set of messages for one website, five message templates, 1 social network, 1 medium, with no images, for 1 cycle and 1 message per network per day' do
+  #   @experiment.posting_times = "12:30 PM"
+  #   @experiment.save
+  #   message_generation_parameter_set = MessageGenerationParameterSet.new do |m|
+  #     m.social_network_choices = [:facebook]
+  #     m.medium_choices = ['ad']
+  #     m.image_present_choices = :no_messages
+  #     m.number_of_messages_per_social_network = 1
+  #     m.number_of_cycles = 1
+  #   end
+  #   @experiment.message_generation_parameter_set = message_generation_parameter_set
 
-    @message_factory.create(@experiment)
+  #   @message_factory.create(@experiment)
     
-    messages = Message.all.order('created_at ASC')
-    expect(messages.count).to eq(message_generation_parameter_set.expected_generated_message_count)
-    expect((messages.select { |message| message.message_template.platform != :facebook }).count).to eq(0)
-    # Have the pusher events been triggered?
-    expect(@pusher_channel).to have_received(:trigger).exactly(message_generation_parameter_set.expected_generated_message_count).times.with('progress', {:value => an_instance_of(Fixnum), :total => message_generation_parameter_set.expected_generated_message_count, :event => 'Message generated'})
+  #   messages = Message.all.order('created_at ASC')
+  #   expect(messages.count).to eq(message_generation_parameter_set.expected_generated_message_count(MessageTemplate.count))
+  #   expect((messages.select { |message| message.message_template.platform != :facebook }).count).to eq(0)
+  #   expect((messages.select { |message| message.medium != :ad }).count).to eq(0)
+  #   # Have the pusher events been triggered?
+  #   expect(@pusher_channel).to have_received(:trigger).exactly(message_generation_parameter_set.expected_generated_message_count).times.with('progress', {:value => an_instance_of(Fixnum), :total => message_generation_parameter_set.expected_generated_message_count, :event => 'Message generated'})
 
-    # Has the scheduled date and time been set correctly?
-    publish_date_time = @experiment.message_distribution_start_date
-    publish_date_time = publish_date_time.change({ hour: 12, min: 30, sec: 0 })
-    messages.all.each do |message|
-      expect(message.scheduled_date_time).to eq(publish_date_time)
-      publish_date_time += 1.day
-    end
+  #   # Has the scheduled date and time been set correctly?
+  #   publish_date_time = @experiment.message_distribution_start_date
+  #   publish_date_time = publish_date_time.change({ hour: 12, min: 30, sec: 0 })
+  #   messages.all.each do |message|
+  #     expect(message.scheduled_date_time).to eq(publish_date_time)
+  #     publish_date_time += 1.day
+  #   end
 
-    # Tag matching
-    # Do the websites selected for each message belong to the set of images matched to the message template?
-    messages.all.each do |message|
-      expect(@tag_matcher.match(Website.belonging_to(@experiment), message.message_template.tag_list)).to include(message.promotable)
-    end
-    # Do the images selected for each message belong to the set of images matched to the message template?
-    messages.all.each do |message|
-      expect(@tag_matcher.match(Image.belonging_to(@experiment), message.message_template.tag_list)).to include(message.image) if message.image_present == :with
-    end
-  end
+  #   # Is the image selected for each message taken from the image pool for the corresponding message template?
+  #   messages.all.each do |message|
+  #     expect(message.message_templates.image_pool.include?(message.image.id)).to be true if message.image_present == :with
+  #   end
 
-  it 'creates a set of messages for one website, five message templates, 3 social networks (equal distribution), 2 mediums (equal distribution), with and without images (equal distribution), for 3 days and 3 messages per network per day' do
-    @experiment.posting_times = "12:30 PM,5:30 PM,6:32 PM"
-    @experiment.save
-    message_generation_parameter_set = MessageGenerationParameterSet.new do |m|
-      m.social_network_choices = [:facebook, :twitter, :instagram]
-      m.medium_choices = [:ad, :organic]
-      m.image_present_choices = [:with]
-      m.period_in_days = 3
-      m.number_of_messages_per_social_network = 3
-    end
-    @experiment.message_generation_parameter_set = message_generation_parameter_set
+  #   # # Do the websites selected for each message belong to the set of images matched to the message template?
+  #   # messages.all.each do |message|
+  #   #   expect(@tag_matcher.match(Website.belonging_to(@experiment), message.message_template.tag_list)).to include(message.promotable)
+  #   # end
+  # end
 
-    @message_factory.create(@experiment) 
-    messages = @experiment.messages.all
+  # it 'creates a set of messages for one website, five message templates, 3 social networks (equal distribution), 2 mediums (equal distribution), with and without images (equal distribution), for 3 days and 3 messages per network per day' do
+  #   @experiment.posting_times = "12:30 PM,5:30 PM,6:32 PM"
+  #   @experiment.save
+  #   message_generation_parameter_set = MessageGenerationParameterSet.new do |m|
+  #     m.social_network_choices = [:facebook, :twitter, :instagram]
+  #     m.medium_choices = [:ad, :organic]
+  #     m.image_present_choices = [:with]
+  #     m.period_in_days = 3
+  #     m.number_of_messages_per_social_network = 3
+  #   end
+  #   @experiment.message_generation_parameter_set = message_generation_parameter_set
 
-    expect(messages.count).to eq(message_generation_parameter_set.expected_generated_message_count)
-    messages.each do |message|
-      expect(message.message_generating).to eq(@experiment)
-    end
-    # Are the messages equally distributed across social networks?
-    expect_equal_distribution(messages.group_by { |message| message.message_template.platform })
-    # Are the messages equally distributed across mediums?
-    expect_equal_distribution(messages.group_by { |message| message.medium })
-    # Are the messages equally distributed across image present choices?
-    expect_equal_distribution(messages.group_by { |message| message.image_present })
+  #   @message_factory.create(@experiment) 
+  #   messages = @experiment.messages.all
+
+  #   expect(messages.count).to eq(message_generation_parameter_set.expected_generated_message_count)
+  #   messages.each do |message|
+  #     expect(message.message_generating).to eq(@experiment)
+  #   end
+  #   # Are the messages equally distributed across social networks?
+  #   expect_equal_distribution(messages.group_by { |message| message.message_template.platform })
+  #   # Are the messages equally distributed across mediums?
+  #   expect_equal_distribution(messages.group_by { |message| message.medium })
+  #   # Are the messages equally distributed across image present choices?
+  #   expect_equal_distribution(messages.group_by { |message| message.image_present })
     
-    # Do all the instagram messages have an associated image?
-    messages.each do |message|
-      expect(message.image_present).to eq(:with) if message.message_template.platform == :instagram
-      expect(message.image).not_to be_nil if message.message_template.platform == :instagram
-    end
+  #   # Do all the instagram messages have an associated image?
+  #   messages.each do |message|
+  #     expect(message.image_present).to eq(:with) if message.message_template.platform == :instagram
+  #     expect(message.image).not_to be_nil if message.message_template.platform == :instagram
+  #   end
     
-    # Tag matching
-    # Do the websites selected for each message belong to the set of images matched to the message template?
-    messages.each do |message|
-      expect(message.promotable).not_to be_nil
-      expect(@tag_matcher.match(Website.belonging_to(@experiment), message.message_template.tag_list)).to include(message.promotable)
-    end
-    # Do the images selected for each message belong to the set of images matched to the message template?
-    messages.each do |message|
-      expect(message.image).not_to be_nil if message.image_present == :with
-      expect(@tag_matcher.match(Image.belonging_to(@experiment), message.message_template.tag_list)).to include(message.image) if message.image_present == :with
-    end
+  #   # Tag matching
+  #   # Do the websites selected for each message belong to the set of images matched to the message template?
+  #   messages.each do |message|
+  #     expect(message.promotable).not_to be_nil
+  #     expect(@tag_matcher.match(Website.belonging_to(@experiment), message.message_template.tag_list)).to include(message.promotable)
+  #   end
+  #   # Do the images selected for each message belong to the set of images matched to the message template?
+  #   messages.each do |message|
+  #     expect(message.image).not_to be_nil if message.image_present == :with
+  #     expect(@tag_matcher.match(Image.belonging_to(@experiment), message.message_template.tag_list)).to include(message.image) if message.image_present == :with
+  #   end
     
-    # Social media profile picking
-    messages.each do |message|
-      expect(message.social_media_profile).to eq(@suitable_social_media_profiles[1])
-    end
+  #   # Social media profile picking
+  #   messages.each do |message|
+  #     expect(message.social_media_profile).to eq(@suitable_social_media_profiles[1])
+  #   end
 
-    # Has the scheduled date and time been set correctly?
-    # TODO: How do I test this efficiently?
-  end
+  #   # Has the scheduled date and time been set correctly?
+  #   # TODO: How do I test this efficiently?
+  # end
 
-  it 'recreates the messages each time' do
-    @experiment.posting_times = "12:30 PM,5:30 PM,6:32 PM"
-    @experiment.save
-    message_generation_parameter_set = MessageGenerationParameterSet.new do |m|
-      m.social_network_choices = ['facebook']
-      m.medium_choices = ['ad']
-      m.image_present_choices = ['with']
-      m.period_in_days = 1
-      m.number_of_messages_per_social_network = 3
-    end
-    @experiment.message_generation_parameter_set = message_generation_parameter_set
+  # it 'recreates the messages each time' do
+  #   @experiment.posting_times = "12:30 PM,5:30 PM,6:32 PM"
+  #   @experiment.save
+  #   message_generation_parameter_set = MessageGenerationParameterSet.new do |m|
+  #     m.social_network_choices = ['facebook']
+  #     m.medium_choices = ['ad']
+  #     m.image_present_choices = ['with']
+  #     m.period_in_days = 1
+  #     m.number_of_messages_per_social_network = 3
+  #   end
+  #   @experiment.message_generation_parameter_set = message_generation_parameter_set
 
-    @message_factory.create(@experiment)
-    @message_factory.create(@experiment)
+  #   @message_factory.create(@experiment)
+  #   @message_factory.create(@experiment)
     
-    messages = Message.all
-    expect(messages.count).to eq(message_generation_parameter_set.expected_generated_message_count)
-  end
+  #   messages = Message.all
+  #   expect(messages.count).to eq(message_generation_parameter_set.expected_generated_message_count)
+  # end
 
   def expect_equal_distribution(grouped_messages)
     keys = grouped_messages.keys
