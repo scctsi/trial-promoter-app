@@ -22,7 +22,7 @@ class S3Client
     url.split('/')[2].split('-')[1..3].join('-').split('.')[0]
   end
 
-  def object_exists_in_s3?(bucket, key)
+  def object_exists?(bucket, key)
     object = Aws::S3::Object.new(bucket, key)
     return object.exists?
   end

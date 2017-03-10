@@ -26,7 +26,7 @@ RSpec.describe S3Client do
       asset_exists = false
 
       VCR.use_cassette 's3_client/object_exists_in_s3?' do
-        asset_exists = @s3_client.object_exists_in_s3?('scctsi-tp-development','13-tcors/images/ywCyYa4LSXKtahc4Flgc_3-1-000.jpg')
+        asset_exists = @s3_client.object_exists?('scctsi-tp-development','13-tcors/images/ywCyYa4LSXKtahc4Flgc_3-1-000.jpg')
       end
 
       expect(asset_exists).to be true
@@ -40,11 +40,11 @@ RSpec.describe S3Client do
       File.open('spec/fixtures/logo.png', 'rb') do |file|
         @s3_client.put('scctsi-tp-development', 'object-key', file)
       end
-      expect(@s3_client.object_exists_in_s3?('scctsi-tp-development','object-key')).to be true
+      expect(@s3_client.object_exists?('scctsi-tp-development','object-key')).to be true
 
       # Run delete
       @s3_client.delete('scctsi-tp-development', 'object-key')
-      expect(@s3_client.object_exists_in_s3?('scctsi-tp-development','object-key')).to be false
+      expect(@s3_client.object_exists?('scctsi-tp-development','object-key')).to be false
 
       VCR.turn_on!
       WebMock.disable_net_connect!
