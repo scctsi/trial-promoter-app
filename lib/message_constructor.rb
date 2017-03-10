@@ -1,5 +1,5 @@
 class MessageConstructor
-  def construct(message_generating_instance, message_template, platform, medium, date = nil, time = nil)
+  def construct(message_generating_instance, message_template, platform, medium, social_media_profile, date = nil, time = nil)
     # A message_generating_instance is either an Experiment or Campaign, the two models that can generate messages.
     message = Message.new(content: message_template.content)
     
@@ -11,6 +11,7 @@ class MessageConstructor
     message.message_template = message_template
     message.platform = platform
     message.medium = medium
+    message.social_media_profile = social_media_profile
     message.scheduled_date_time = DateTime.new(date.year, date.month, date.day, time.hour, time.minute, time.second) if date != nil && time != nil
     message
   end

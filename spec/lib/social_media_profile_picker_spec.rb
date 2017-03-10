@@ -20,7 +20,7 @@ RSpec.describe SocialMediaProfilePicker do
       message.platform = :twitter
       message.medium = :ad
       
-      picked_profile = @social_media_profile_picker.pick(@social_media_profiles, message)
+      picked_profile = @social_media_profile_picker.pick(@social_media_profiles, :twitter, :ad)
       
       expect(picked_profile).to eq(@social_media_profiles[0])
     end
@@ -30,7 +30,7 @@ RSpec.describe SocialMediaProfilePicker do
       message.platform = :instagram
       message.medium = :organic
       
-      picked_profile = @social_media_profile_picker.pick(@social_media_profiles, message)
+      picked_profile = @social_media_profile_picker.pick(@social_media_profiles, :instagram, :organic)
       
       expect(picked_profile).to eq(nil)
     end
@@ -40,7 +40,7 @@ RSpec.describe SocialMediaProfilePicker do
       message.platform = :instagram
       message.medium = :ad
       
-      expect{ @social_media_profile_picker.pick(@social_media_profiles, message) }.to raise_error NoSuitableSocialMediaProfileError
+      expect{ @social_media_profile_picker.pick(@social_media_profiles, :instagram, :ad) }.to raise_error NoSuitableSocialMediaProfileError
     end
   end
 end
