@@ -19,6 +19,23 @@ RSpec.describe MessageTemplateImporter do
     expect(@message_template_importer.column_index_attribute_mapping).to eq({ 0 => 'content', 1 => 'platforms', 2 => 'hashtags', 3 => 'tag_list', 6 => 'experiment_variables', 7 => 'original_image_filenames' })
   end
 
+  it 'reads successfully from an Excel file hosted at a URL' do
+    reader = ExcelFileReader.new
+    content = reader.read('')
+    @message_template_importer = MessageTemplateImporter.new(@parsed_excel_content, @experiment_tag)
+
+    @message_template_importer.import
+
+    expect(MessageTemplate.count).to eq(2)
+    message_template = MessageTemplate.first
+    expect(message_template.content).to eq('conent')
+    expect(message_template.platforms).to eq(@parsed_excel_content[1][1])
+    parsed_tag_list = @parsed_excel_content[1][3].split(",").map { |tag| tag.strip }
+    expect(message_template.tag_list).to eq(parsed_tag_list)
+    expect(message_template.experiment_list).to eq([@experiment_tag])
+    expect(message_template.hashtags).to eq(['#hashtag1', '#hashtag2'])
+  end
+
   describe 'pre import prepare method' do
     it 'converts any columns after the 6th column to a hash' do
       @parsed_excel_content = [['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'theme', 'fda_campaign'], ['This is a message template. {url}', 'twitter', '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation', '1', '2']]
