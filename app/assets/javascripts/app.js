@@ -293,6 +293,7 @@ $(document).ready(function() {
     $('#generate-messages-button').click(function() {
       var experimentId = $(this).data('experiment-id');
       var total = $('.ui.modal').data('total');
+      console.log(experimentId);
 
       $('.ui.modal').modal('setting', 'transition', 'Vertical Flip').modal({ blurring: true }).modal('show');
       $('.ui.modal .approve.button').hide();
@@ -310,8 +311,8 @@ $(document).ready(function() {
 
       $.ajax({
         type: 'GET',
-        url: '/experiments/' + experimentId + '/create_messages.json',
-        data: { id: experimentId },
+        url: '/experiments/' + experimentId + '/create_messages',
+        data: { },
         dataType: 'json',
         success: function(data) {
         }
