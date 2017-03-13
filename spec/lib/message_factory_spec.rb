@@ -14,7 +14,7 @@ RSpec.describe MessageFactory do
       message_template.save
     end
     # Add some hashtags to the first 3 message templates
-    message_templates[0..2].each do |message_template]
+    message_templates[0..2].each do |message_template|
       random_hashtags = ['#hashtag1,#hashtag2,#hashtag3','#hashtag1,#hashtag4,#hashtag5','#hashtag6,#hashtag7,#hashtag8']
       message_template.hashtags = random_hashtags.sample
       message_template.save
@@ -99,17 +99,22 @@ RSpec.describe MessageFactory do
     # Has the scheduled date and time been set correctly?
     publish_date_time = @experiment.message_distribution_start_date
     publish_date_time = publish_date_time.change({ hour: 12, min: 30, sec: 0 })
-    messages.all.each do |message|
+    messages.each do |message|
       expect(message.scheduled_date_time).to eq(publish_date_time)
       publish_date_time += 1.day
     end
 
     # Is the image selected for each message taken from the image pool for the corresponding message template?
-    messages.all.each do |message|
+    messages.each do |message|
       expect(message.message_template.image_pool.include?(message.image.id)).to be true
     end
 
-    # Is one hashtag Random hashtags
+    # Is one hashtag selected for each message where the message template has a list of hashtags?
+    messages.each do |message|
+      if !message.message_template.hashtags.nil? && message.message_template.hashtags.length > 0
+        expect(message.message_template.hashtags.any? {|hashtag| message.content.include?(hashtag)}).to be true 
+      end
+    end
   end
 
   it 'creates a set of messages given five message templates, 3 social networks, 2 mediums, images for all messages, 3 cycles, 5 messages per network per day and selectes random hashtags where feasible' do
@@ -155,7 +160,12 @@ RSpec.describe MessageFactory do
       expect(message.message_template.image_pool.include?(message.image.id)).to be true
     end
     
-    # # Random hashtags
+    # Is one hashtag selected for each message where the message template has a list of hashtags?
+    messages.each do |message|
+      if !message.message_template.hashtags.nil? && message.message_template.hashtags.length > 0
+        expect(message.message_template.hashtags.any? {|hashtag| message.content.include?(hashtag)}).to be true 
+      end
+    end
   end
 
   it 'recreates the messages each time' do

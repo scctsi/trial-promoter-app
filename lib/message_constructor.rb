@@ -18,7 +18,7 @@ class MessageConstructor
         fittable_hashtags = MessageConstructor.fittable_hashtags(message.content, hashtags) 
         message.content += fittable_hashtags.sample if fittable_hashtags.length > 0
       else
-        message.content += hashtags.sample if !hashtags.nil?
+        message.content += hashtags.sample if !hashtags.nil? and hashtags.length > 0
       end
     end
     message

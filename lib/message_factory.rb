@@ -21,7 +21,7 @@ class MessageFactory
         parameters[:mediums].each do |medium|
           parameters[:message_templates].each do |message_template|
             picked_social_media_profile = @social_media_profile_picker.pick(parameters[:social_media_profiles], platform, medium)
-            message = parameters[:message_constructor].construct(experiment, message_template, platform, medium, picked_social_media_profile, publish_date, parameters[:posting_times][platform][0])
+            message = parameters[:message_constructor].construct(experiment, message_template, platform, medium, picked_social_media_profile, publish_date, parameters[:posting_times][platform][0], message_template.hashtags)
             message.save
             Pusher['progress'].trigger('progress', {:value => message_index, :total => parameters[:total_count], :event => 'Message generated'})
             message_index += 1
