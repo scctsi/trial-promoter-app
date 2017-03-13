@@ -6,8 +6,19 @@ RSpec.describe MessageFactory do
     @suitable_social_media_profiles = create_list(:social_media_profile, 3)
     @suitable_social_media_profiles.each { |social_media_profile| @experiment.social_media_profiles << social_media_profile }
     @experiment.save
-    create_list(:message_template, 5, platforms: TrialPromoter::SUPPORTED_NETWORKS, experiment_list: @experiment.to_param)
+    message_templates = create_list(:message_template, 5, platforms: TrialPromoter::SUPPORTED_NETWORKS, experiment_list: @experiment.to_param)
     # Create 2 images for each message template's image pool
+    message_templates.each do |message_template|
+      images = create_list(:image, 2, experiment_list: @experiment.to_param)
+      message_template.image_pool = images.map(&:id)
+      message_template.save
+    end
+    # Add some hashtags to the first 3 message templates
+    message_templates[0..2].each do |message_template]
+      random_hashtags = ['#hashtag1,#hashtag2,#hashtag3','#hashtag1,#hashtag4,#hashtag5','#hashtag6,#hashtag7,#hashtag8']
+      message_template.hashtags = random_hashtags.sample
+      message_template.save
+    end
     MessageTemplate.all.each do |message_template|
       images = create_list(:image, 2, experiment_list: @experiment.to_param)
       message_template.image_pool = images.map(&:id)
@@ -97,6 +108,8 @@ RSpec.describe MessageFactory do
     messages.all.each do |message|
       expect(message.message_template.image_pool.include?(message.image.id)).to be true
     end
+
+    # Is one hashtag Random hashtags
   end
 
   it 'creates a set of messages given five message templates, 3 social networks, 2 mediums, images for all messages, 3 cycles, 5 messages per network per day and selectes random hashtags where feasible' do

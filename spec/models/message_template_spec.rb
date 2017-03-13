@@ -206,17 +206,10 @@ RSpec.describe MessageTemplate do
     end
 
     it 'only returns warning messages if the platforms for the message template includes Twitter' do
-      @message_template.platforms = [:faebook, :instagram]
+      @message_template.platforms = [:facebook, :instagram]
       @message_template.content = 'A' * 141
       
       expect(@message_template.warnings.count).to eq(0)
-    end
-
-    it 'returns a warning if the message is too long for Twitter' do
-      @message_template.content = 'A' * 141
-      
-      expect(@message_template.warnings.count).to eq(1)
-      expect(@message_template.warnings[0]).to eq('Too long for use in Twitter')
     end
 
     it 'returns a warning if the content is too long for Twitter' do

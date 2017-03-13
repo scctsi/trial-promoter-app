@@ -116,7 +116,7 @@ RSpec.describe ExperimentsController, type: :controller do
       end
 
       it 'enqueues a job to generate the messages' do
-        expect(GenerateMessagesJob).to have_received(:perform_later).with(an_instance_of(Experiment))
+        expect(GenerateMessagesJob).to have_received(:perform_later).with(@experiment)
       end
 
       it 'redirects unauthenticated user to sign-in page' do
@@ -134,7 +134,7 @@ RSpec.describe ExperimentsController, type: :controller do
       end
 
       it 'enqueues a job to generate the messages' do
-        expect(GenerateMessagesJob).to have_received(:perform_later).with(an_instance_of(Experiment))
+        expect(GenerateMessagesJob).to have_received(:perform_later).with(@experiment)
       end
 
       it 'returns success' do
