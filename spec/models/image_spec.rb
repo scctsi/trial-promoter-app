@@ -85,28 +85,25 @@ RSpec.describe Image do
     expect(image).to have_received(:delete_image_from_s3)
   end
 
-  it 'correctly calculates the S3 bucket name for an image' do
-    image = create(:image, url: 'https://s3-us-west-1.amazonaws.com/scctsi-tp-development/13-tcors/images/ywCyYa4LSXKtahc4Flgc_3-1-000.jpg')
+  it 'calls a post delete callback when the image is destroyed' do
+    image = create(:image)
+    allow(image).to receive(:delete_image_from_s3)
 
-    expect(image.s3_bucket).to eq('scctsi-tp-development')
+    image.destroy
+
+    expect(image).to have_received(:delete_image_from_s3)
   end
 
-  it 'correctly calculates the S3 key for an image' do
-    image = create(:image, url: 'https://s3-us-west-1.amazonaws.com/scctsi-tp-development/13-tcors/images/ywCyYa4LSXKtahc4Flgc_3-1-000.jpg')
+  it 'calls a post delete callback when the image is destroyed' do
+    image = create(:image)
+    s3_client_double = double('s3_client')
+    allow(s3_client_double).to receive(:delete)
+    allow(s3_client_double).to receive(:bucket).and_return('bucket')
+    allow(s3_client_double).to receive(:key).and_return('key')
+    allow(S3Client).to receive(:new).and_return(s3_client_double)
 
-    expect(image.s3_key).to eq('13-tcors/images/ywCyYa4LSXKtahc4Flgc_3-1-000.jpg')
-  end
+    image.delete_image_from_s3
 
-  it 'determines if an asset currently exists in S3' do
-    image = create(:image, url: 'https://s3-us-west-1.amazonaws.com/scctsi-tp-development/13-tcors/images/ywCyYa4LSXKtahc4Flgc_3-1-000.jpg')
-    s3_client = S3Client.new
-
-    WebMock.allow_net_connect!
-    VCR.turn_off!
-    asset_exists = s3_client.asset_exists_in_s3?(image)
-    VCR.turn_on!
-    WebMock.disable_net_connect!
-
-    expect(asset_exists).to be true
+    expect(s3_client_double).to have_received(:delete).with('bucket', 'key')
   end
 end

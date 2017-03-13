@@ -46,7 +46,7 @@ $(document).ready(function() {
   }
 
   function s3BucketContainer() {
-    return 'scctsi-tp-' + $('body').data('environment');
+    return $('body').data('s3-bucket');
   }
 
   function setUpMessageTemplateImports() {
@@ -110,7 +110,6 @@ $(document).ready(function() {
           access: 'public'
         },
         function(Blobs) {
-          console.log(Blobs);
           var imageUrls = createS3BucketUrls(Blobs);
           var filenames = [];
           for (var i = 0; i < Blobs.length; i++) {
@@ -462,7 +461,6 @@ $(document).ready(function() {
       var experimentId = $(this).data('experiment-id');
       var messageTemplateId = $(this).data('message-template-id');
       var messageContent = $(this).parent().siblings(':first').text();
-      console.log(messageContent);
       var $loadingButton = $(this);
 
       $loadingButton.addClass('loading');
