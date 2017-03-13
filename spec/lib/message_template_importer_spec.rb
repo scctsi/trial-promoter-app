@@ -2,13 +2,9 @@ require 'rails_helper'
 
 RSpec.describe MessageTemplateImporter do
   before do
-    # @parsed_excel_content = [['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name'], ['This is a message template. {url}', 'twitter', '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation']]
+    @parsed_excel_content = [['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name'], ['This is a message template. {url}', 'twitter', '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation']]
     @experiment = create(:experiment)
     @experiment_tag = @experiment.to_param
-    # @message_template_importer = MessageTemplateImporter.new(@parsed_excel_content, @experiment_tag)
-
-    #trying out roo gem
-    @parsed_excel_content = [['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name'], ['This is a message template. {url}', 'twitter', '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation']]
     @message_template_importer = MessageTemplateImporter.new(@parsed_excel_content, @experiment_tag)
   end
 
@@ -17,23 +13,6 @@ RSpec.describe MessageTemplateImporter do
 
     expect(@message_template_importer.import_class).to eq(MessageTemplate)
     expect(@message_template_importer.column_index_attribute_mapping).to eq({ 0 => 'content', 1 => 'platforms', 2 => 'hashtags', 3 => 'tag_list', 6 => 'experiment_variables', 7 => 'original_image_filenames' })
-  end
-
-  it 'reads successfully from an Excel file hosted at a URL' do
-    reader = ExcelFileReader.new
-    content = reader.read('')
-    @message_template_importer = MessageTemplateImporter.new(@parsed_excel_content, @experiment_tag)
-
-    @message_template_importer.import
-
-    expect(MessageTemplate.count).to eq(2)
-    message_template = MessageTemplate.first
-    expect(message_template.content).to eq('conent')
-    expect(message_template.platforms).to eq(@parsed_excel_content[1][1])
-    parsed_tag_list = @parsed_excel_content[1][3].split(",").map { |tag| tag.strip }
-    expect(message_template.tag_list).to eq(parsed_tag_list)
-    expect(message_template.experiment_list).to eq([@experiment_tag])
-    expect(message_template.hashtags).to eq(['#hashtag1', '#hashtag2'])
   end
 
   describe 'pre import prepare method' do
@@ -99,6 +78,26 @@ RSpec.describe MessageTemplateImporter do
     expect(message_template.tag_list).to eq(parsed_tag_list)
     expect(message_template.experiment_list).to eq([@experiment_tag])
     expect(message_template.hashtags).to eq(['#hashtag1', '#hashtag2'])
+  end
+
+  it 'successfully imports message templates from an Excel file hosted at a URL' do
+    reader = ExcelFileReader.new
+
+    WebMock.allow_net_connect!
+    VCR.turn_off!
+    content = reader.read('http://sc-ctsi.org/trial-promoter/message_templates.xlsx')
+    WebMock.disable_net_connect!
+    VCR.turn_on!
+    @message_template_importer = MessageTemplateImporter.new(content, @experiment_tag)
+    @message_template_importer.import
+
+    expect(MessageTemplate.count).to eq(2)
+    message_template = MessageTemplate.first
+    expect(message_template.content).to eq(content[1][0] + '{url}')
+    expect(message_template.platforms.texts).to match_array(["Facebook", "Twitter", "Instagram"])
+    expect(message_template.tag_list).to eq([])
+    expect(message_template.experiment_list).to eq([@experiment_tag])
+    expect(message_template.hashtags).to eq([])
   end
 
   it 'successfully imports extra columns in the parsed CSV content into the experiment variables' do

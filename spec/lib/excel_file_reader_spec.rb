@@ -7,7 +7,7 @@ RSpec.describe ExcelFileReader do
 
   it 'successfully reads a Excel file from a URL' do
     excel_url = 'http://sc-ctsi.org/trial-promoter/message_templates.xlsx'
-    sample_excel_content = [["content", "platform", "hashtags", "tag_list", "website_url", "website_name"], ["This is the first message template.", "twitter", "#hashtag1, #hashtag2", "theme-1, stem-1", "http://www.url1", "Smoking cessation"], ["This is the second message template.", "twitter", "#hashtag1, #hashtag2", "theme-1, stem-2", "http://www.url1", "Smoking cessation"]]
+    sample_excel_content = [["content", "platorm", "hashtags", "tags", "website_url", "website_name", "theme", "fda_campaign", "stem_id", "lin_meth_factor", "lin_meth_level", "original_image_filenames"], ["#Smoking damages your DNA, which can lead to cancer almost anywhere in your body.", "facebook, instagram, twitter", nil, nil, "sc-ctsi.org", "CTSI [temp]", "health", "FE", "FE53", 1, 1, "background-md-devices_2.jpg"], ["#Smoking damages our DNA, which can lead to cancer almost anywhere in our bodies.", "facebook, instagram, twitter", nil, nil, "sc-ctsi.org", "CTSI [temp]", "health", "FE", "FE53", 1, 2, "background-md-devices_2.jpg"]]
     excel_content = ''
 
     WebMock.allow_net_connect!

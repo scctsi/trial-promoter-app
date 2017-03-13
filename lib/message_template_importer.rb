@@ -1,4 +1,5 @@
 require 'roo'
+require 'roo-xls'
 
 class MessageTemplateImporter < Importer
   def post_initialize
