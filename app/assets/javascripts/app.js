@@ -54,7 +54,7 @@ $(document).ready(function() {
       var experimentId = $(this).data('experiment-id');
 
       filepicker.pick({
-          mimetypes: ['text/csv', 'application/vnd.ms-excel'],
+          extensions: ['.xls', '.xlsx'],
           container: 'modal',
           services: ['COMPUTER', 'GOOGLE_DRIVE', 'DROPBOX']
         },
@@ -68,6 +68,9 @@ $(document).ready(function() {
               $('.ui.success.message.hidden.ask-refresh-page').removeClass('hidden');
             }
           });
+        },
+        function(FPError){
+          console.log(FPError.toString());
         }
       );
     });
@@ -85,6 +88,7 @@ $(document).ready(function() {
       bucketName = Blobs[0].container;
       namedUrls.push(createS3Url(bucketName, Blobs[i].key));
     }
+
     return namedUrls;
   }
 
