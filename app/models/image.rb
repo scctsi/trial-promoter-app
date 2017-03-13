@@ -23,19 +23,7 @@ class Image < ActiveRecord::Base
   has_many :messages
 
   def delete_image_from_s3
-<<<<<<< HEAD
-  end
-
-  def s3_bucket
-    url.split('/')[3]
-  end
-
-  def s3_key
-    position = url.index(s3_bucket) + s3_bucket.length + 1
-    url[position..(url.length-1)]
-=======
     s3 = S3Client.new
     s3.delete(s3.bucket(self.url), s3.key(self.url))
->>>>>>> development
   end
 end
