@@ -14,7 +14,7 @@ class MessageTemplatesController < ApplicationController
 
     render json: { success: true, selected_images: selected_and_unselected_images[:selected_images], unselected_images: selected_and_unselected_images[:unselected_images] }
   end
-  
+
   def add_image_to_image_pool
     authorize @message_template
     image_pool_manager = ImagePoolManager.new
@@ -35,15 +35,15 @@ class MessageTemplatesController < ApplicationController
     authorize MessageTemplate
     experiment = Experiment.find(params[:experiment_id])
 
-    # Read CSV file from a URL
-    csv_file_reader = CsvFileReader.new
-    parsed_csv_content = csv_file_reader.read(params[:url])
+    # Read Excel file from a URL
+    excel_file_reader = ExcelFileReader.new
+    excel_content = excel_file_reader.read(params[:url])
 
     # Import message templates
-    message_template_importer = MessageTemplateImporter.new(parsed_csv_content, experiment.to_param)
+    message_template_importer = MessageTemplateImporter.new(excel_content, experiment.to_param)
     message_template_importer.import
 
-    render json: { success: true, imported_count: parsed_csv_content.length - 1 }
+    render json: { success: true, imported_count: excel_content.length - 1 }
   end
 
   private

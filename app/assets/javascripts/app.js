@@ -45,7 +45,7 @@ $(document).ready(function() {
   }
 
   function s3BucketContainer() {
-    return 'scctsi-tp-' + $('body').data('environment');
+    return $('body').data('s3-bucket');
   }
 
   function setUpMessageTemplateImports() {
@@ -53,7 +53,7 @@ $(document).ready(function() {
       var experimentId = $(this).data('experiment-id');
 
       filepicker.pick({
-          mimetypes: ['text/csv', 'application/vnd.ms-excel'],
+          extensions: ['.xls', '.xlsx'],
           container: 'modal',
           services: ['COMPUTER', 'GOOGLE_DRIVE', 'DROPBOX']
         },
@@ -67,6 +67,9 @@ $(document).ready(function() {
               $('.ui.success.message.hidden.ask-refresh-page').removeClass('hidden');
             }
           });
+        },
+        function(FPError){
+          console.log(FPError.toString());
         }
       );
     });
@@ -79,12 +82,12 @@ $(document).ready(function() {
   function createS3BucketUrls(Blobs) {
     var namedUrls = [];
     var bucketName = '';
-    
+
     for (var i = 0; i < Blobs.length; i++) {
       bucketName = Blobs[0].container;
       namedUrls.push(createS3Url(bucketName, Blobs[i].key));
     }
-    
+
     return namedUrls;
   }
 
@@ -106,7 +109,6 @@ $(document).ready(function() {
           access: 'public'
         },
         function(Blobs) {
-          console.log(Blobs);
           var imageUrls = createS3BucketUrls(Blobs);
           var filenames = [];
           for (var i = 0; i < Blobs.length; i++) {
@@ -381,13 +383,13 @@ $(document).ready(function() {
     selectedImages.forEach(function(selectedImage) {
       filenames.push(selectedImage.original_filename);
     });
-    
+
     return filenames.join(',');
   }
-  
+
   function getImageCardsHtml(images, buttonType) {
     var html = '';
-  
+
     html += '<div class="ui cards">';
     images.forEach(function (image) {
       html += '<div class="card">';
@@ -409,7 +411,7 @@ $(document).ready(function() {
 
     return html;
   }
-  
+
   function getImagePoolInterfaceHtml(selectedImages, unselectedImages, messageContent) {
     var html = '<div class="ui segment">' + messageContent + '</div>';
     html += '<div class="ui segment filenames-list">Filenames: ';
@@ -423,7 +425,7 @@ $(document).ready(function() {
 
     return html;
   }
-  
+
   function addEventForButton(messageTemplateId, imageId, $button) {
     var action = '';
     var confirmationText = '';
@@ -436,7 +438,7 @@ $(document).ready(function() {
       action = 'remove_image_from_image_pool';
       confirmationText = 'Removed';
     }
-     
+
     $button.addClass('loading');
     $('.filenames-list').html('Selected images have been changed. Please close and reopen this window to see correct list of filenames.');
 
@@ -452,14 +454,13 @@ $(document).ready(function() {
       }
     });
   }
-  
+
   function setUpImagePoolViewing() {
     // Modal for image labeling
     $('.choose-images-button').click(function(){
       var experimentId = $(this).data('experiment-id');
       var messageTemplateId = $(this).data('message-template-id');
       var messageContent = $(this).parent().siblings(':first').text();
-      console.log(messageContent);
       var $loadingButton = $(this);
 
       $loadingButton.addClass('loading');
@@ -485,7 +486,7 @@ $(document).ready(function() {
       });
     });
   }
-  
+
   // Initialize
   setUpPostingTimeInputs();
   showSocialMediaProfiles();

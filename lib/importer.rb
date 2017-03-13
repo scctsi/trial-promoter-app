@@ -1,14 +1,14 @@
 # TODO: This class is only unit tested via its subclasses.
 class Importer
   attr_accessor :import_class, :parsed_csv_content, :column_index_attribute_mapping, :experiment_tag
-  
+
   def initialize(parsed_csv_content, experiment_tag)
     self.parsed_csv_content = parsed_csv_content
     self.experiment_tag = experiment_tag
-    
+
     post_initialize
   end
-  
+
   def post_initialize
     self.import_class = nil
     self.column_index_attribute_mapping = {}
@@ -16,12 +16,12 @@ class Importer
 
   def pre_import
   end
-  
+
   def pre_import_prepare(parsed_csv_content)
     # Always return a duplicate of the parsed_csv_content so that we can modify that content as needed without affecting the original.
     return parsed_csv_content.dup
   end
-  
+
   def post_import(prepared_csv_content)
   end
 
@@ -34,7 +34,7 @@ class Importer
 
     prepared_csv_content.each do |row|
       attributes = {}
-      
+
       row.each.with_index do |value, i|
         attributes[column_index_attribute_mapping[i]] = row[i] if column_index_attribute_mapping.has_key?(i)
 
@@ -46,7 +46,7 @@ class Importer
 
       import_class.create!(attributes)
     end
-    
+
     post_import(prepared_csv_content)
   end
 end
