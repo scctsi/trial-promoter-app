@@ -48,10 +48,9 @@ Rails.application.configure do
   # Allow better_errors gem to show errors on cloud9.io
   BetterErrors::Middleware.allow_ip! '128.125.108.0/24'
 
-  #Allow better_errors gem to show on vagrant
+  # Allow better_errors gem to show on vagrant
   BetterErrors::Middleware.allow_ip! ENV['TRUSTED_IP'] if ENV['TRUSTED_IP']
-BetterErrors::Middleware.allow_ip! "10.0.2.2" if defined? BetterErrors && Rails.env == :development
-
+  BetterErrors::Middleware.allow_ip! "10.0.2.2" if defined? BetterErrors && Rails.env == :development
 
   # Default URL options for the Devise mailer
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
