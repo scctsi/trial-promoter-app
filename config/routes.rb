@@ -15,9 +15,6 @@ Rails.application.routes.draw do
       get 'create_messages(.:format)', to: 'experiments#create_messages'
       get 'create_analytics_file_todos', to: 'experiments#create_analytics_file_todos'
     end
-    collection do
-      get 'calculate_message_count', to: 'experiments#calculate_message_count', constraints: lambda { |req| req.format == :json }
-    end
     resources :message_generation_parameter_sets
   end
 
@@ -27,6 +24,11 @@ Rails.application.routes.draw do
 
   # Message templates
   resources :message_templates do
+    member do
+      post 'get_image_selections', to: 'message_templates#get_image_selections', constraints: lambda { |req| req.format == :json }
+      post 'add_image_to_image_pool', to: 'message_templates#add_image_to_image_pool', constraints: lambda { |req| req.format == :json }
+      post 'remove_image_from_image_pool', to: 'message_templates#remove_image_from_image_pool', constraints: lambda { |req| req.format == :json }
+    end
     collection do
       get :import
     end
@@ -39,10 +41,6 @@ Rails.application.routes.draw do
     end
   end
 
-  # Websites
-  resources :websites do
-  end
-
   # App settings
   namespace :admin do
     resources :settings
@@ -50,12 +48,8 @@ Rails.application.routes.draw do
 
   # Images
   resources :images do
-    member do
-      post 'create', to: 'images#create', constraints: lambda { |req| req.format == :json }
-    end
     collection do
       post :import
-      post 'tag_images', to: 'images#tag_images', constraints: lambda { |req| req.format == :json }
     end
   end
 

@@ -2,12 +2,15 @@
 #
 # Table name: message_templates
 #
-#  id         :integer          not null, primary key
-#  content    :text
-#  platform   :string
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  hashtags   :text
+#  id                       :integer          not null, primary key
+#  content                  :text
+#  created_at               :datetime         not null
+#  updated_at               :datetime         not null
+#  hashtags                 :text
+#  experiment_variables     :text
+#  image_pool               :text
+#  original_image_filenames :text
+#  platforms                :text
 #
 
 class MessageTemplate < ActiveRecord::Base
@@ -19,12 +22,16 @@ class MessageTemplate < ActiveRecord::Base
   extend Enumerize
 
   validates :content, presence: true
-  validates :platform, presence: true
-  enumerize :platform, in: [:twitter, :facebook, :instagram], predicates: true
+  validates :platforms, presence: true
+  validates :promoted_website_url, presence: true
+  enumerize :platforms, in: [:twitter, :facebook, :instagram], multiple: true
 
-  serialize :hashtags
-  serialize :experiment_variables
-  
+  serialize :platforms, Array
+  serialize :hashtags, Array
+  serialize :image_pool, Array
+  serialize :experiment_variables, Hash
+  serialize :original_image_filenames, Array
+
   has_many :messages
 
   scope :belonging_to, ->(experiment) { tagged_with(experiment.to_param, on: :experiments) }
@@ -82,6 +89,7 @@ class MessageTemplate < ActiveRecord::Base
   def warnings
     warnings = []
     return [] if content.nil?
+    return [] if !platforms.include?(:twitter)
     
     warnings << 'Too long for use in Twitter' if content.length > 140
     warnings << 'Too long for use in Twitter (URL takes up 23 characters)' if content.include?('{url}') and content.length > 117 + '{url}'.length

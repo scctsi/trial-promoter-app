@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170217002439) do
+ActiveRecord::Schema.define(version: 20170309193522) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,8 +20,8 @@ ActiveRecord::Schema.define(version: 20170217002439) do
     t.integer  "visit_id"
     t.integer  "user_id"
     t.string   "name"
-    t.datetime "time"
     t.jsonb    "properties"
+    t.datetime "time"
   end
 
   add_index "ahoy_events", ["name", "time"], name: "index_ahoy_events_on_name_and_time", using: :btree
@@ -55,6 +55,16 @@ ActiveRecord::Schema.define(version: 20170217002439) do
     t.datetime "end_date"
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
+  end
+
+  create_table "click_meter_tracking_links", force: :cascade do |t|
+    t.string   "click_meter_id"
+    t.string   "click_meter_uri", limit: 2000
+    t.string   "tracking_url",    limit: 2000
+    t.string   "destination_url", limit: 2000
+    t.integer  "message_id"
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
   end
 
   create_table "clinical_trials", force: :cascade do |t|
@@ -113,7 +123,9 @@ ActiveRecord::Schema.define(version: 20170217002439) do
     t.datetime "created_at",                                   null: false
     t.datetime "updated_at",                                   null: false
     t.boolean  "analytics_file_todos_created"
-    t.text     "posting_times"
+    t.text     "twitter_posting_times"
+    t.text     "facebook_posting_times"
+    t.text     "instagram_posting_times"
   end
 
   create_table "experiments_social_media_profiles", force: :cascade do |t|
@@ -137,9 +149,6 @@ ActiveRecord::Schema.define(version: 20170217002439) do
   end
 
   create_table "message_generation_parameter_sets", force: :cascade do |t|
-    t.string   "medium_distribution"
-    t.string   "social_network_distribution"
-    t.string   "image_present_distribution"
     t.integer  "period_in_days"
     t.integer  "number_of_messages_per_social_network"
     t.datetime "created_at",                            null: false
@@ -149,17 +158,21 @@ ActiveRecord::Schema.define(version: 20170217002439) do
     t.text     "social_network_choices"
     t.text     "medium_choices"
     t.text     "image_present_choices"
+    t.integer  "number_of_cycles"
   end
 
   add_index "message_generation_parameter_sets", ["message_generating_type", "message_generating_id"], name: "index_on_message_generating_type_and_message_generating_id", using: :btree
 
   create_table "message_templates", force: :cascade do |t|
     t.text     "content"
-    t.string   "platform"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
     t.text     "hashtags"
     t.text     "experiment_variables"
+    t.text     "image_pool"
+    t.text     "original_image_filenames"
+    t.text     "platforms"
+    t.string   "promoted_website_url",     limit: 2000
   end
 
   create_table "messages", force: :cascade do |t|
@@ -181,6 +194,8 @@ ActiveRecord::Schema.define(version: 20170217002439) do
     t.datetime "scheduled_date_time"
     t.string   "social_network_id"
     t.integer  "social_media_profile_id"
+    t.string   "platform"
+    t.string   "promoted_website_url",    limit: 2000
   end
 
   add_index "messages", ["message_generating_type", "message_generating_id"], name: "index_on_message_generating_for_analytics_files", using: :btree
@@ -294,13 +309,6 @@ ActiveRecord::Schema.define(version: 20170217002439) do
 
   add_index "visits", ["user_id"], name: "index_visits_on_user_id", using: :btree
   add_index "visits", ["visit_token"], name: "index_visits_on_visit_token", unique: true, using: :btree
-
-  create_table "websites", force: :cascade do |t|
-    t.string   "name",       limit: 1000
-    t.string   "url",        limit: 2000
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
-  end
 
   add_foreign_key "messages", "social_media_profiles"
 end

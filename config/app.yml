@@ -4,7 +4,10 @@ defaults: &defaults
   facebook_access_token: ""
   bitly_access_token: ""
   google_auth_json_file: ""
+  click_meter_api_key: ""
   enable_data_sharing: true
+  aws_access_key_id: ""
+  aws_secret_access_key: ""
 
 development:
   <<: *defaults

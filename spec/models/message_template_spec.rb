@@ -2,34 +2,30 @@
 #
 # Table name: message_templates
 #
-#  id         :integer          not null, primary key
-#  content    :text
-#  platform   :string
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  hashtags   :text
+#  id                       :integer          not null, primary key
+#  content                  :text
+#  created_at               :datetime         not null
+#  updated_at               :datetime         not null
+#  hashtags                 :text
+#  experiment_variables     :text
+#  image_pool               :text
+#  original_image_filenames :text
+#  platforms                :text
 #
 
 require 'rails_helper'
 
 RSpec.describe MessageTemplate do
   it { is_expected.to validate_presence_of :content }
-  it { is_expected.to validate_presence_of :platform }
-  it { is_expected.to enumerize(:platform).in(:twitter, :facebook, :instagram) }
+  it { is_expected.to validate_presence_of :platforms }
+  it { is_expected.to validate_presence_of :promoted_website_url }
+  it { is_expected.to enumerize(:platforms).in(:twitter, :facebook, :instagram).with_multiple(true) }
   it { is_expected.to have_many :messages }
-
-  it 'returns the platform as a symbol' do
-    message_template = create(:message_template, platform: 'twitter')
-    message_template.reload
-
-    expect(message_template.platform).to be(:twitter)
-  end
-
-  it 'stores the experiment variables as a hash' do
-    message_template = build(:message_template, platform: 'twitter', experiment_variables: { 'fda_campaign' => '1', 'theme' => '2', 'lin_meth_factor' => '1', 'lin_meth_level' => '3' })
-
-    expect(message_template.experiment_variables).to eq({ 'fda_campaign' => '1', 'theme' => '2', 'lin_meth_factor' => '1', 'lin_meth_level' => '3' })
-  end
+  it { is_expected.to serialize(:platforms).as(Array) }
+  it { is_expected.to serialize(:hashtags).as(Array) }
+  it { is_expected.to serialize(:experiment_variables).as(Hash) }
+  it { is_expected.to serialize(:original_image_filenames).as(Array) }
+  it { is_expected.to serialize(:image_pool).as(Array) }
 
   describe 'standardizing variables' do
     it 'downcases the pi_first_name variable' do
@@ -172,14 +168,6 @@ RSpec.describe MessageTemplate do
       expect(@message_template.hashtags).to eq([])
     end
     
-    it 'stores an array of hashtags' do
-      @message_template.hashtags = ["#bcsm", "#cancer"]
-      @message_template.save
-      @message_template.reload
-
-      expect(@message_template.hashtags).to eq(["#bcsm", "#cancer"])
-    end
-
     it 'stores comma separated strings as an array of hashtags' do
       @message_template.hashtags = "#bcsm, #cancer"
       @message_template.save
@@ -208,14 +196,7 @@ RSpec.describe MessageTemplate do
   describe 'warning messages' do
     before do
       @message_template = build(:message_template)
-    end
-
-    it 'returns a warning if the message is too long for Twitter' do
-      @message_template.platform = :twitter
-      @message_template.content = 'A' * 141
-      
-      expect(@message_template.warnings.count).to eq(1)
-      expect(@message_template.warnings[0]).to eq('Too long for use in Twitter')
+      @message_template.platforms = [:twitter]
     end
 
     it "returns an empty array if the message template's content is nil" do
@@ -224,8 +205,14 @@ RSpec.describe MessageTemplate do
       expect(@message_template.warnings).to eq([])
     end
 
+    it 'only returns warning messages if the platforms for the message template includes Twitter' do
+      @message_template.platforms = [:facebook, :instagram]
+      @message_template.content = 'A' * 141
+      
+      expect(@message_template.warnings.count).to eq(0)
+    end
+
     it 'returns a warning if the content is too long for Twitter' do
-      @message_template.platform = :twitter
       @message_template.content = 'A' * 141
       
       expect(@message_template.warnings.count).to eq(1)
@@ -233,7 +220,6 @@ RSpec.describe MessageTemplate do
     end
 
     it 'returns a warning if the content is too long for Twitter (including a URL)' do
-      @message_template.platform = :twitter
       @message_template.content = "#{'A' * 118}{url}"
 
       expect(@message_template.warnings.count).to eq(1)
@@ -241,7 +227,6 @@ RSpec.describe MessageTemplate do
     end
 
     it 'does not raise an error if the hashtags are an empty array' do
-      @message_template.platform = :twitter
       @message_template.hashtags = []
       @message_template.content = "#{'A' * 118}{url}"
 
@@ -250,7 +235,6 @@ RSpec.describe MessageTemplate do
     end
 
     it 'returns a warning if the content is too long for Twitter (including a single hashtag)' do
-      @message_template.platform = :twitter
       @message_template.hashtags = ['#hashtag1']
       @message_template.content = 'A' * (141 - '#hashtag1'.length)
 
@@ -259,7 +243,6 @@ RSpec.describe MessageTemplate do
     end
 
     it 'returns a warning if the content is too long for Twitter (including any of the allowed hashtags)' do
-      @message_template.platform = :twitter
       @message_template.hashtags = ['#hashtag1', '#longer-hashtag1', '#longest-hashtag1', '#tag']
       @message_template.content = 'A' * (141 - '#tag'.length)
 
@@ -268,7 +251,6 @@ RSpec.describe MessageTemplate do
     end
 
     it 'returns a warning if the content is too long for Twitter (at least any of the allowed hashtags will never be included)' do
-      @message_template.platform = :twitter
       @message_template.hashtags = ['#hashtag1', '#longer-hashtag1', '#longest-hashtag1', '#tag']
       @message_template.content = 'A' * (141 - '#longer-hashtag1'.length)
 

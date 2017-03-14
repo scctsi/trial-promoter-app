@@ -15,25 +15,7 @@ class ExperimentsController < ApplicationController
     authorize @experiment
     @message_templates = MessageTemplate.belonging_to(@experiment)
     @images = Image.belonging_to(@experiment)
-    @websites = Website.belonging_to(@experiment)
     @messages = Message.where(:message_generating_id => @experiment.id).page(params[:page]).order('created_at ASC')
-    tag_matcher = TagMatcher.new
-    @distinct_tag_list = tag_matcher.distinct_tag_list(@message_templates)
-
-
-    # temp data
-    @messages_with_metrics = []
-    @messages_with_metrics[0] = Message.new(content: 'Stop smoking!', medium: :organic)
-    @messages_with_metrics[0].metrics << Metric.new(data: {likes: 2, impressions: 2460, clicks: 56, shares: 20, comments: 10}, source: :twitter)
-    click_rate = (@messages_with_metrics[0].metrics[0].data[:clicks].to_f/ @messages_with_metrics[0].metrics[0].data[:impressions].to_f * 100).round(2)
-    @messages_with_metrics[0].metrics[0].data[:click_rate] = click_rate
-
-
-    @messages_with_metrics[1] = Message.new(content: 'Stop getting cancer', medium: :ad)
-    @messages_with_metrics[1].metrics << Metric.new(data: {likes: 99, impressions: 8763, clicks: 89, shares: 64, comments: 19}, source: :facebook)
-    click_rate = (@messages_with_metrics[1].metrics[0].data[:clicks].to_f/ @messages_with_metrics[1].metrics[0].data[:impressions].to_f * 100).round(2)
-    @messages_with_metrics[1].metrics[0].data[:click_rate] = click_rate
-    # end of temp data
   end
 
   def new
@@ -80,12 +62,6 @@ class ExperimentsController < ApplicationController
     redirect_to experiment_url(@experiment)
   end
 
-  def calculate_message_count
-    authorize Experiment
-    message_count = MessageGenerationParameterSet.calculate_message_count(params[:social_network_choices_count].to_i, params[:medium_choices_count].to_i, params[:period_in_days].to_i, params[:number_of_messages_per_social_network].to_i)
-    render json: { message_count: message_count }
-  end
-
   private
 
   def set_experiment
@@ -95,6 +71,6 @@ class ExperimentsController < ApplicationController
 
   def experiment_params
     # TODO: Unit test this
-    params.require(:experiment).permit(:name, :end_date, :message_distribution_start_date, :posting_times, {:social_media_profile_ids => []}, message_generation_parameter_set_attributes: [:social_network_distribution, :medium_distribution, :image_present_distribution, :period_in_days, :number_of_messages_per_social_network, social_network_choices: [], medium_choices: [], image_present_choices: []])
+    params.require(:experiment).permit(:name, :end_date, :message_distribution_start_date, :twitter_posting_times, :facebook_posting_times, :instagram_posting_times, {:social_media_profile_ids => []}, message_generation_parameter_set_attributes: [:number_of_cycles, :number_of_messages_per_social_network, :image_present_choices, social_network_choices: [], medium_choices: []])
   end
 end

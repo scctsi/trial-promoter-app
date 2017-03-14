@@ -11,14 +11,14 @@
       Details
     %ul.list.experiment-details-real-time
     = f.input :name, label: 'Name your experiment', hint: 'Give your experiment a good name'
-    = f.input :message_distribution_start_date, as: :string, label: 'Start date'
-    = f.input :end_date, as: :string
+    = f.input :message_distribution_start_date, as: :string, label: 'Message distribution start date', hint: 'When do you want Trial Promoter to start distributing messages on social media?'
     .ui.header
       Specifications
     = f.simple_fields_for :message_generation_parameter_set do |m|
       = m.input :social_network_choices, as: :check_boxes, wrapper_class: 'inline fields', item_wrapper_class: 'ui field checkbox', collection: { 'Facebook' => :facebook, 'Instagram' => :instagram, 'Twitter' => :twitter }, label: 'Which social media social media type(s) do you want to use?', required: false
       = m.input :medium_choices, as: :check_boxes, wrapper_class: 'inline fields', item_wrapper_class: 'ui field checkbox', collection: { 'Ad' => :ad, 'Organic/Unpaid' => :organic }, label: 'What type(s) of message do you want to use?', required: false
-      =m.input :period_in_days, label: 'Length of experiment in days'
+      = m.input :image_present_choices, as: :radio_buttons, wrapper_class: 'inline fields', item_wrapper_class: 'ui radio checkbox field', collection: { 'All messages' => :all_messages, 'Half of the messages' => :half_of_the_messageswithout, 'No messages' => :no_messages }, label: 'How often do you want to include images in messages?', required: false
+      =m.input :number_of_cycles, label: 'Number of cycles', hint: 'All messages are distributed once over a single cycle'
       =m.input :number_of_messages_per_social_network, label: 'Number of messages per day per social network'
     .ui.header
       Social media profiles
@@ -28,5 +28,7 @@
     = f.association :social_media_profiles, required: true, as: :check_boxes, label_method: :description, value_method: :id, wrapper_class: 'grouped fields', item_wrapper_class: 'ui field checkbox', label: 'What social media profile(s) do you want to use?'
     .ui.header
       Schedule
-    = f.input :posting_times, :input_html => { :data => { 'allowed-times' => allowed_times }}, label: false
+    = f.input :facebook_posting_times
+    = f.input :instagram_posting_times
+    = f.input :twitter_posting_times, :input_html => { :data => { 'allowed-times' => allowed_times }}
     = f.button :submit

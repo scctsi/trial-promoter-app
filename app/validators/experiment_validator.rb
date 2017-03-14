@@ -38,11 +38,12 @@ class ExperimentValidator < ActiveModel::Validator
       record.errors[:social_media_profiles] << "requires at least one selection for #{missing_platform_medium_combinations_string}."
       return
     end
-
-    posting_times = record.posting_times.split(',')
-    if posting_times.count != record.message_generation_parameter_set.number_of_messages_per_social_network
-      record.errors[:message_generation_parameter_set] << "requires that the number of selected posting times matches the number of messages per social network per day"
-      return
+    
+    [record.twitter_posting_times, record.instagram_posting_times, record.facebook_posting_times].each do |posting_times|
+      if !posting_times.nil? && posting_times.split(',').count != record.message_generation_parameter_set.number_of_messages_per_social_network
+        record.errors[:message_generation_parameter_set] << "requires that the number of selected posting times matches the number of messages per social network per day"
+        return
+      end
     end
   end
 end

@@ -85,10 +85,7 @@ RSpec.describe ExperimentValidator, type: :validator do
 
   it "ignores a requirement for Instagram [Organic]" do
     experiment = build(:experiment)
-    experiment.message_generation_parameter_set = build(:message_generation_parameter_set, message_generating: experiment, :social_network_choices => [:instagram],
-    :medium_choices => ['organic'])
-    posting_times = '12:30AM'
-    experiment.posting_times = posting_times
+    experiment.message_generation_parameter_set = build(:message_generation_parameter_set, message_generating: experiment, :social_network_choices => [:instagram], :medium_choices => ['organic'])
     social_media_profile = build(:social_media_profile)
     social_media_profile.platform = 'instagram'
     social_media_profile.allowed_mediums = [:ad]
@@ -101,24 +98,54 @@ RSpec.describe ExperimentValidator, type: :validator do
   describe 'posting times validations' do
     before do
       @experiment.message_generation_parameter_set = build(:message_generation_parameter_set, :number_of_messages_per_social_network => 3, :message_generating => @experiment)
-      @experiment.social_media_profiles << build(:social_media_profile, :platform => 'facebook', :allowed_mediums => ['ad'])
     end
 
-    it 'rejects posting times if it is less than the number of messages per social network per day' do
-      posting_times = "12:52 AM,1:03 AM"
-      @experiment.posting_times = posting_times
+    it 'rejects twitter posting times if twitter is selected and the number of posting times is less than the number of messages per network per day' do
+      @experiment.message_generation_parameter_set.social_network_choices = [:twitter]
+      @experiment.social_media_profiles << build(:social_media_profile, :platform => 'twitter', :allowed_mediums => ['ad'])
+      @experiment.twitter_posting_times = '12:52 AM,1:03 AM'
+
+      expect(@experiment).not_to be_valid
+    end
+
+    it 'rejects twitter posting times if twitter is selected and the number of posting times is more than the number of messages per network per day' do
+      @experiment.message_generation_parameter_set.social_network_choices = [:twitter]
+      @experiment.social_media_profiles << build(:social_media_profile, :platform => 'twitter', :allowed_mediums => ['ad'])
+      @experiment.twitter_posting_times = "12:52 AM,1:03 AM,12:30 PM,5:12 PM"
 
       @experiment.save
 
       expect(@experiment).not_to be_valid
-
     end
 
-    it 'rejects posting times if it is more than the number of messages per social network per day' do
-      posting_times = "12:52 AM,1:03 AM,12:30 PM,5:12 PM"
-      @experiment.posting_times = posting_times
+    it 'rejects facebook posting times if facebook is selected and the number of posting times is less than the number of messages per network per day' do
+      @experiment.message_generation_parameter_set.social_network_choices = [:facebook]
+      @experiment.social_media_profiles << build(:social_media_profile, :platform => 'facebook', :allowed_mediums => ['ad'])
+      @experiment.facebook_posting_times = '12:52 AM,1:03 AM'
 
-      @experiment.save
+      expect(@experiment).not_to be_valid
+    end
+
+    it 'rejects facebook posting times if facebook is selected and the number of posting times is more than the number of messages per network per day' do
+      @experiment.message_generation_parameter_set.social_network_choices = [:facebook]
+      @experiment.social_media_profiles << build(:social_media_profile, :platform => 'facebook', :allowed_mediums => ['ad'])
+      @experiment.facebook_posting_times = "12:52 AM,1:03 AM,12:30 PM,5:12 PM"
+
+      expect(@experiment).not_to be_valid
+    end
+
+    it 'rejects instagram posting times if instagram is selected and the number of posting times is less than the number of messages per network per day' do
+      @experiment.message_generation_parameter_set.social_network_choices = [:instagram]
+      @experiment.social_media_profiles << build(:social_media_profile, :platform => 'instagram', :allowed_mediums => ['ad'])
+      @experiment.instagram_posting_times = '12:52 AM,1:03 AM'
+
+      expect(@experiment).not_to be_valid
+    end
+
+    it 'rejects instagram posting times if facebook is selected and the number of posting times is more than the number of messages per network per day' do
+      @experiment.message_generation_parameter_set.social_network_choices = [:instagram]
+      @experiment.social_media_profiles << build(:social_media_profile, :platform => 'instagram', :allowed_mediums => ['ad'])
+      @experiment.instagram_posting_times = "12:52 AM,1:03 AM,12:30 PM,5:12 PM"
 
       expect(@experiment).not_to be_valid
     end

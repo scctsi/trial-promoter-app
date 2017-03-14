@@ -21,29 +21,39 @@
 #  scheduled_date_time     :datetime
 #  social_network_id       :string
 #  social_media_profile_id :integer
+#  platform                :string
 #
 
 require 'rails_helper'
 
 describe Message do
-  it { is_expected.to validate_presence_of :content }
   it { is_expected.to belong_to :message_template }
   it { is_expected.to enumerize(:publish_status).in(:pending, :published_to_buffer, :published_to_social_network).with_default(:pending).with_predicates(true) }
   it { is_expected.to have_one :buffer_update }
+  it { is_expected.to have_one :click_meter_tracking_link }
   it { is_expected.to have_many :metrics }
-  it { is_expected.to validate_presence_of :message_generating }
   it { is_expected.to belong_to(:message_generating) }
-  it { is_expected.to belong_to(:promotable) }
+  it { is_expected.to enumerize(:platform).in(:twitter, :facebook, :instagram) }
   it { is_expected.to enumerize(:medium).in(:ad, :organic).with_default(:organic) }
   it { is_expected.to enumerize(:image_present).in(:with, :without).with_default(:without) }
   it { is_expected.to belong_to :image }
   it { is_expected.to belong_to :social_media_profile }
+  it { is_expected.to validate_presence_of :message_generating }
+  it { is_expected.to validate_presence_of :platform }
+  it { is_expected.to validate_presence_of :promoted_website_url }
+  it { is_expected.to validate_presence_of :content }
 
   it 'returns the medium as a symbol' do
     message = build(:message)
     message.medium = :ad
 
     expect(message.medium).to be :ad
+  end
+  
+  it 'returns the platform as a symbol' do
+    message = build(:message, platform: 'twitter')
+
+    expect(message.platform).to be(:twitter)
   end
 
   describe "#visits" do
@@ -79,34 +89,15 @@ describe Message do
       expect(@messages[3].events.count).to eq(0)
     end
   end
+  
+  it 'always updates existing metrics from a particular source' do
+    message = build(:message)
 
-  describe "adding metrics" do
-    it 'always updates existing metrics from a particular source' do
-      message = build(:message)
+    message.metrics << Metric.new(source: :twitter, data: {"likes": 1})
+    message.metrics << Metric.new(source: :twitter, data: {"likes": 2})
 
-      message.metrics << Metric.new(source: :twitter, data: {"likes": 1})
-      message.metrics << Metric.new(source: :twitter, data: {"likes": 2})
-
-      expect(message.metrics.length).to eq(1)
-      expect(message.metrics[0].data[:likes]).to eq(2)
-    end
-
-    it "allows metrics from buffer, google_analytics and the message's platform" do
-      message = build(:message)
-
-      message.metrics << Metric.new(source: :twitter, data: {"likes": 1})
-      message.metrics << Metric.new(source: :google_analytics, data: {"users": 1})
-      message.metrics << Metric.new(source: :buffer, data: {"likes": 1})
-
-      expect(message.metrics.length).to eq(3)
-    end
-
-    it "raises an exception if metrics are being added from a platform other than the message's platform" do
-      skip "Cannot get this test to work!"
-      message = build(:message)
-
-      expect { message.metrics << Metric.new(source: :facebook, data: {"likes": 1}) }.to raise_error(InvalidMetricSourceError, "Message platform is twitter, but metric source was facebook")
-    end
+    expect(message.metrics.length).to eq(1)
+    expect(message.metrics[0].data[:likes]).to eq(2)
   end
 
   it "parameterizes id and the experiments's param together" do

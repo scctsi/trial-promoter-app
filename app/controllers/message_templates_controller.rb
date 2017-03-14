@@ -1,64 +1,54 @@
 class MessageTemplatesController < ApplicationController
-  before_action :set_message_template, only: [:edit, :update]
+  before_action :set_message_template, only: [:get_image_selections, :add_image_to_image_pool, :remove_image_from_image_pool]
 
   def index
     authorize MessageTemplate
     @message_templates = MessageTemplate.all
   end
 
-  def new
-    authorize MessageTemplate
-    @message_template = MessageTemplate.new
+  def get_image_selections
+    authorize @message_template
+    image_pool_manager = ImagePoolManager.new
+    experiment = Experiment.find(params[:experiment_id])
+    selected_and_unselected_images = image_pool_manager.get_selected_and_unselected_images(experiment, @message_template)
+
+    render json: { success: true, selected_images: selected_and_unselected_images[:selected_images], unselected_images: selected_and_unselected_images[:unselected_images] }
   end
 
-  def edit
-    authorize MessageTemplate
-    @message_template = MessageTemplate.find(params[:id])
+  def add_image_to_image_pool
+    authorize @message_template
+    image_pool_manager = ImagePoolManager.new
+    image_pool_manager.add_images(params[:image_id], @message_template)
+
+    render json: { success: true }
   end
 
-  def create
-    @message_template = MessageTemplate.new(message_template_params)
-    authorize MessageTemplate
+  def remove_image_from_image_pool
+    authorize @message_template
+    image_pool_manager = ImagePoolManager.new
+    image_pool_manager.remove_image(params[:image_id], @message_template)
 
-    if @message_template.save
-      redirect_to message_templates_url
-    else
-      render :new
-    end
-  end
-
-  def update
-    authorize MessageTemplate
-    if @message_template.update(message_template_params)
-      redirect_to message_templates_url
-    else
-      render :edit
-    end
+    render json: { success: true }
   end
 
   def import
     authorize MessageTemplate
     experiment = Experiment.find(params[:experiment_id])
 
-    # Read CSV file from a URL
-    csv_file_reader = CsvFileReader.new
-    parsed_csv_content = csv_file_reader.read(params[:url])
+    # Read Excel file from a URL
+    excel_file_reader = ExcelFileReader.new
+    excel_content = excel_file_reader.read(params[:url])
 
     # Import message templates
-    message_template_importer = MessageTemplateImporter.new(parsed_csv_content, experiment.to_param)
+    message_template_importer = MessageTemplateImporter.new(excel_content, experiment.to_param)
     message_template_importer.import
 
-    render json: { success: true, imported_count: parsed_csv_content.length - 1 }
+    render json: { success: true, imported_count: excel_content.length - 1 }
   end
 
   private
 
   def set_message_template
     @message_template = MessageTemplate.find(params[:id])
-  end
-
-  def message_template_params
-    # TODO: Unit test this
-    params[:message_template].permit(:content, :platform, :tag_list)
   end
 end

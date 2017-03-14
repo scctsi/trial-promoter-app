@@ -30,130 +30,19 @@ RSpec.describe MessageTemplatesController, type: :controller do
     end
   end
 
-  describe 'GET #new' do
-    before do
-      get :new
-    end
-
-    it 'assigns a new message template to @message_template' do
-      expect(assigns(:message_template)).to be_a_new(MessageTemplate)
-    end
-
-    it { is_expected.to respond_with :ok }
-    it { is_expected.to render_template :new }
-
-    it 'redirects unauthenticated user to sign-in page' do
-      sign_out(:user)
-
-      get :new
-
-      expect(response).to redirect_to :new_user_session
-    end
-  end
-
-  describe 'GET #edit' do
-    before do
-      @message_template = create(:message_template)
-      get :edit, id: @message_template
-    end
-
-    it 'assigns the requested message template to @message_template' do
-      expect(assigns(:message_template)).to eq(@message_template)
-    end
-
-    it 'renders the edit template' do
-      expect(response).to render_template :edit
-    end
-
-    it 'redirects unauthenticated user to sign-in page' do
-      sign_out(:user)
-
-      get :edit, id: @message_template
-
-      expect(response).to redirect_to :new_user_session
-    end
-  end
-
-  describe 'POST #create' do
-    context 'with valid attributes' do
-      it 'creates a new message template' do
-        expect {
-          post :create, message_template: attributes_for(:message_template)
-        }.to change(MessageTemplate, :count).by(1)
-      end
-
-      it 'redirects to the index page' do
-        post :create, message_template: attributes_for(:message_template)
-        expect(response).to redirect_to message_templates_url
-      end
-    end
-
-    context 'with invalid attributes' do
-      it 'does not save the message template to the database' do
-        expect {
-          post :create, message_template: attributes_for(:invalid_message_template)
-        }.to_not change(MessageTemplate, :count)
-      end
-
-      it "re-renders the new template" do
-        post :create, message_template: attributes_for(:invalid_message_template)
-        expect(response).to render_template :new
-      end
-    end
-
-    it 'redirects unauthenticated user to sign-in page' do
-      sign_out(:user)
-
-      post :create
-
-      expect(response).to redirect_to :new_user_session
-    end
-  end
-
-  describe 'PATCH update' do
-    before :each do
-      @message_template = create(:message_template)
-      patch :update, id: @message_template, message_template: attributes_for(:message_template, content: 'New content', platform: :facebook)
-    end
-
-    context 'with valid attributes' do
-      it 'locates the requested message template' do
-        expect(assigns(:message_template)).to eq(@message_template)
-      end
-
-      it "changes the message template's attributes" do
-        @message_template.reload
-        expect(@message_template.content).to eq('New content')
-        expect(@message_template.platform).to eq(:facebook)
-      end
-
-      it 'redirects to the index page' do
-        expect(response).to redirect_to message_templates_url
-      end
-    end
-
-    it 'redirects unauthenticated user to sign-in page' do
-      sign_out(:user)
-
-      patch :update, id: @message_template
-
-      expect(response).to redirect_to :new_user_session
-    end
-  end
-
   describe 'GET #import' do
-    it 'imports message templates from a CSV file accessible at a URL' do
+    it 'imports message templates from an Excel file accessible at a URL' do
       experiment = create(:experiment)
-      csv_url = 'http://sc-ctsi.org/trial-promoter/message_templates.csv'
+      excel_url = 'http://sc-ctsi.org/trial-promoter/message_templates.xlsx'
       expected_json = { success: true, imported_count: 2}.to_json
 
       message_template_importer = nil
       VCR.use_cassette 'message_templates/import' do
-        csv_file_reader = CsvFileReader.new
-        message_template_importer = MessageTemplateImporter.new(csv_file_reader.read(csv_url), experiment.to_param)
+        excel_file_reader = ExcelFileReader.new
+        message_template_importer = MessageTemplateImporter.new(excel_file_reader.read(excel_url), experiment.to_param)
         allow(MessageTemplateImporter).to receive(:new).with(instance_of(Array), experiment.to_param).and_return(message_template_importer)
         allow(message_template_importer).to receive(:import).and_call_original
-        get :import, url: csv_url, experiment_id: experiment.id
+        get :import, url: excel_url, experiment_id: experiment.id
       end
 
       expect(MessageTemplate.count).to eq(2)
@@ -167,6 +56,88 @@ RSpec.describe MessageTemplatesController, type: :controller do
       sign_out(:user)
 
       get :import
+
+      expect(response).to redirect_to :new_user_session
+    end
+  end
+
+  describe 'POST #get_image_selections' do
+    before do
+      @experiments = create_list(:experiment, 2)
+      @images = create_list(:image, 5)
+      @images[0..3].each do |image|
+        image.experiment_list = @experiments[0].to_param
+        image.save
+      end
+      @message_templates = create_list(:message_template, 3)
+    end
+
+    it 'returns a list of all the selected and unselected images for a message template' do
+      image_pool_manager = ImagePoolManager.new
+      selected_and_unselected_images = image_pool_manager.get_selected_and_unselected_images(@experiments[0], @message_templates[0])
+
+      post :get_image_selections, id: @message_templates[0].id, experiment_id: @experiments[0].id
+
+      expected_json = { success: true, selected_images: selected_and_unselected_images[:selected_images], unselected_images: selected_and_unselected_images[:unselected_images] }.to_json
+      expect(response.header['Content-Type']).to match(/json/)
+      expect(response.body).to eq(expected_json)
+    end
+
+    it 'redirects unauthenticated user to sign-in page' do
+      sign_out(:user)
+
+      post :get_image_selections, id: @message_templates[0].id
+
+      expect(response).to redirect_to :new_user_session
+    end
+  end
+
+  describe 'POST #add_image_to_image_pool' do
+    before do
+      @images = create_list(:image, 5)
+      @message_templates = create_list(:message_template, 3)
+    end
+
+    it 'adds an image to the image pool for a message template' do
+      post :add_image_to_image_pool, id: @message_templates[0].id, image_id: @images[1].id
+
+      expected_json = { success: true }.to_json
+      expect(response.header['Content-Type']).to match(/json/)
+      expect(response.body).to eq(expected_json)
+      @message_templates[0].reload
+      expect(@message_templates[0].image_pool).to eq([@images[1].id])
+    end
+
+    it 'redirects unauthenticated user to sign-in page' do
+      sign_out(:user)
+
+      post :add_image_to_image_pool, id: @message_templates[0].id
+
+      expect(response).to redirect_to :new_user_session
+    end
+  end
+
+  describe 'POST #remove_image_from_image_pool' do
+    before do
+      @images = create_list(:image, 5)
+      @message_templates = create_list(:message_template, 3)
+    end
+
+    it 'removes an image from the image pool for a message template' do
+      ImagePoolManager.new.add_images([@images[0].id, @images[2].id, @images[4].id], @message_templates[0])
+      post :remove_image_from_image_pool, id: @message_templates[0].id, image_id: @images[2].id
+
+      expected_json = { success: true }.to_json
+      expect(response.header['Content-Type']).to match(/json/)
+      expect(response.body).to eq(expected_json)
+      @message_templates[0].reload
+      expect(@message_templates[0].image_pool).to eq([@images[0].id, @images[4].id])
+    end
+
+    it 'redirects unauthenticated user to sign-in page' do
+      sign_out(:user)
+
+      post :remove_image_from_image_pool, id: @message_templates[0].id
 
       expect(response).to redirect_to :new_user_session
     end
