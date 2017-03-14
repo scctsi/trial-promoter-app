@@ -28,5 +28,7 @@
     = f.association :social_media_profiles, required: true, as: :check_boxes, label_method: :description, value_method: :id, wrapper_class: 'grouped fields', item_wrapper_class: 'ui field checkbox', label: 'What social media profile(s) do you want to use?'
     .ui.header
       Schedule
-    = f.input :posting_times, :input_html => { :data => { 'allowed-times' => allowed_times }}, label: false
+    = f.input :facebook_posting_times
+    = f.input :instagram_posting_times
+    = f.input :twitter_posting_times, :input_html => { :data => { 'allowed-times' => allowed_times }}
     = f.button :submit

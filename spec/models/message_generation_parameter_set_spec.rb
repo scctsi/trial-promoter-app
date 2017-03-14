@@ -3,9 +3,6 @@
 # Table name: message_generation_parameter_sets
 #
 #  id                                    :integer          not null, primary key
-#  medium_distribution                   :string
-#  social_network_distribution           :string
-#  image_present_distribution            :string
 #  period_in_days                        :integer
 #  number_of_messages_per_social_network :integer
 #  created_at                            :datetime         not null
@@ -15,6 +12,7 @@
 #  social_network_choices                :text
 #  medium_choices                        :text
 #  image_present_choices                 :text
+#  number_of_cycles                      :integer
 #
 
 require 'rails_helper'
@@ -99,7 +97,20 @@ describe MessageGenerationParameterSet do
   end
 
   describe 'number of generated messages' do
-    it 'is calculated correctly when the parameters include one website, nine message templates, 1 social network, 1 medium, with half of the messages having images, 1 cycle and 3 messages per network per day' do
+    it 'is calculated correctly for five message templates, 1 social network, 1 medium, no messages with images, 1 cycle and 1 messages per network per day' do
+      message_generation_parameter_set = MessageGenerationParameterSet.new do |m|
+        m.social_network_choices = ['facebook']
+        m.medium_choices = ['ad']
+        m.image_present_choices = :no_messages
+        m.number_of_cycles = 1
+        m.number_of_messages_per_social_network = 1
+      end
+
+      # Number of social networks (1) * Number of mediums (1) * Number of message templates (5) * Number of cycles (1)
+      expect(message_generation_parameter_set.expected_generated_message_count(5)).to eq(1 * 1 * 5 * 1)
+    end
+    
+    it 'is calculated correctly for nine message templates, 1 social network, 1 medium, with half of the messages having images, 1 cycle and 3 messages per network per day' do
       message_generation_parameter_set = MessageGenerationParameterSet.new do |m|
         m.social_network_choices = ['facebook']
         m.medium_choices = ['ad']
@@ -121,8 +132,9 @@ describe MessageGenerationParameterSet do
         number_of_messages_per_social_network: 3
       )
 
-      # Number of social networks (3) * Number of mediums (2) * Number of message templates (9) * Number of cycles (3)
-      expect(message_generation_parameter_set.expected_generated_message_count(9)).to eq(3 * 2 * 9 * 3)
+      # Number of social networks (3) * Number of mediums (2) * Number of message templates (9) * Number of cycles (3) - (Number of message templates (9) * Number of cycles (3))
+      # Instagram organic messages are NOT generated, so the count accounts for that
+      expect(message_generation_parameter_set.expected_generated_message_count(9)).to eq(3 * 2 * 9 * 3 - (9 * 3))
     end
 
     it 'is calculated correctly given a set of calculation parameters' do
@@ -134,11 +146,32 @@ describe MessageGenerationParameterSet do
 
       expect(MessageGenerationParameterSet.calculate_message_count(calculation_parameters)).to eq(calculation_parameters[:social_network_choices_count] * calculation_parameters[:medium_choices_count] * calculation_parameters[:number_of_message_templates] * calculation_parameters[:number_of_cycles])
     end
-    
+
+    it 'correctly removes the count of the instagram organic messages given a set of calculation parameters which indicates that instagram organic has been selected' do
+      calculation_parameters = {}
+      calculation_parameters[:social_network_choices_count] = 2
+      calculation_parameters[:medium_choices_count] = 3
+      calculation_parameters[:number_of_message_templates] = 4
+      calculation_parameters[:number_of_cycles] = 5
+      calculation_parameters[:instagram_organic] = true
+
+      expect(MessageGenerationParameterSet.calculate_message_count(calculation_parameters)).to eq(calculation_parameters[:social_network_choices_count] * calculation_parameters[:medium_choices_count] * calculation_parameters[:number_of_message_templates] * calculation_parameters[:number_of_cycles] - (calculation_parameters[:number_of_message_templates] * calculation_parameters[:number_of_cycles]))
+    end
+
     it 'returns noncalculable when the number of message templates is not passed in' do
       message_generation_parameter_set = MessageGenerationParameterSet.new
 
       expect(message_generation_parameter_set.expected_generated_message_count).to eq('Noncalculable')
+    end
+
+    it 'returns noncalculable when any of the calculation parameters are nil' do
+      calculation_parameters = {}
+      calculation_parameters[:social_network_choices_count] = nil
+      calculation_parameters[:medium_choices_count] = nil
+      calculation_parameters[:number_of_message_templates] = nil
+      calculation_parameters[:number_of_cycles] = nil
+
+      expect(MessageGenerationParameterSet.calculate_message_count(calculation_parameters)).to eq('Noncalculable')
     end
   end
 end

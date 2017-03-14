@@ -15,10 +15,7 @@ class ExperimentsController < ApplicationController
     authorize @experiment
     @message_templates = MessageTemplate.belonging_to(@experiment)
     @images = Image.belonging_to(@experiment)
-    @websites = Website.belonging_to(@experiment)
     @messages = Message.where(:message_generating_id => @experiment.id).page(params[:page]).order('created_at ASC')
-    tag_matcher = TagMatcher.new
-    @distinct_tag_list = tag_matcher.distinct_tag_list(@message_templates)
   end
 
   def new
@@ -74,6 +71,6 @@ class ExperimentsController < ApplicationController
 
   def experiment_params
     # TODO: Unit test this
-    params.require(:experiment).permit(:name, :end_date, :message_distribution_start_date, :posting_times, {:social_media_profile_ids => []}, message_generation_parameter_set_attributes: [:number_of_cycles, :number_of_messages_per_social_network, :image_present_choices, social_network_choices: [], medium_choices: []])
+    params.require(:experiment).permit(:name, :end_date, :message_distribution_start_date, :twitter_posting_times, :facebook_posting_times, :instagram_posting_times, {:social_media_profile_ids => []}, message_generation_parameter_set_attributes: [:number_of_cycles, :number_of_messages_per_social_network, :image_present_choices, social_network_choices: [], medium_choices: []])
   end
 end

@@ -25,4 +25,5 @@
   %tfoot.full-width
     %tr
       %th{ colspan: 2 }
-        Total messages: #{message_generation_parameter_set.expected_generated_message_count}
+        - message_count = message_generation_parameter_set.expected_generated_message_count(MessageTemplate.belonging_to(message_generation_parameter_set.message_generating).count)
+        Total messages: #{message_count}

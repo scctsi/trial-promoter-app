@@ -21,22 +21,23 @@
 #  scheduled_date_time     :datetime
 #  social_network_id       :string
 #  social_media_profile_id :integer
+#  platform                :string
 #
-
-
 
 class Message < ActiveRecord::Base
   extend Enumerize
   acts_as_ordered_taggable_on :experiments
 
   validates :content, presence: true
+  validates :platform, presence: true
+  validates :promoted_website_url, presence: true
   enumerize :publish_status, in: [:pending, :published_to_buffer, :published_to_social_network], default: :pending, predicates: true
   enumerize :medium, in: [:ad, :organic], default: :organic
+  enumerize :platform, in: [:twitter, :facebook, :instagram]
   enumerize :image_present, in: [:with, :without], default: :without
 
   validates :message_generating, presence: true
   belongs_to :message_generating, polymorphic: true
-  belongs_to :promotable, polymorphic: true
   belongs_to :message_template
   belongs_to :image
   belongs_to :social_media_profile
@@ -61,6 +62,11 @@ class Message < ActiveRecord::Base
 
   def medium
     return self[:medium].to_sym if !self[:medium].nil?
+    nil
+  end
+
+  def platform
+    return self[:platform].to_sym if !self[:platform].nil?
     nil
   end
 

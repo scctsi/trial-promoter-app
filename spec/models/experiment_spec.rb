@@ -60,7 +60,7 @@ RSpec.describe Experiment, type: :model do
   it 'creates messages using a message factory' do
     experiment = build(:experiment)
     allow(experiment).to receive(:create_messages).and_call_original
-    message_factory = MessageFactory.new(TagMatcher.new, SocialMediaProfilePicker.new)
+    message_factory = double('message_factory')
     allow(message_factory).to receive(:create).with(experiment)
     allow(MessageFactory).to receive(:new).and_return(message_factory)
 
@@ -141,39 +141,39 @@ RSpec.describe Experiment, type: :model do
     end
   end
   
-  describe 'when returning posting times as an array of DateTime instances' do
+  describe 'returning posting times' do
     before do
       @experiment = build(:experiment)
     end
+
+    it 'returns a hash with platform key and an array of DateTime instances value' do
+      @experiment.twitter_posting_times = '12:30 AM,12:30 PM,05:10 AM' 
+      @experiment.facebook_posting_times = '12:30 AM,12:30 PM,05:10 AM' 
+      @experiment.instagram_posting_times = '12:30 AM,12:30 PM,05:10 AM' 
+      
+      posting_times_as_datetimes = @experiment.posting_times_as_datetimes
+      
+      expect(posting_times_as_datetimes.keys.count).to eq(3)
+      twitter_posting_times = posting_times_as_datetimes[:twitter]
+      expect(twitter_posting_times.count).to eq(3)
+      expect(twitter_posting_times[0].hour).to eq(0)
+      expect(twitter_posting_times[0].minute).to eq(30)
+      expect(twitter_posting_times[1].hour).to eq(12)
+      expect(twitter_posting_times[1].minute).to eq(30)
+      expect(twitter_posting_times[2].hour).to eq(5)
+      expect(twitter_posting_times[2].minute).to eq(10)
+    end
     
-    it 'is successful' do
-      @experiment.posting_times = '12:30 AM,12:30 PM,05:10 AM' 
+    it 'returns a hash with platform key and an array of DateTime instances value with an empty array for missing platform times' do
+      @experiment.twitter_posting_times = '12:30 AM,12:30 PM,05:10 AM' 
+      @experiment.facebook_posting_times = '' 
+      @experiment.instagram_posting_times = nil
       
       posting_times_as_datetimes = @experiment.posting_times_as_datetimes
       
-      expect(posting_times_as_datetimes.count).to eq(3)
-      expect(posting_times_as_datetimes[0].hour).to eq(0)
-      expect(posting_times_as_datetimes[0].minute).to eq(30)
-      expect(posting_times_as_datetimes[1].hour).to eq(12)
-      expect(posting_times_as_datetimes[1].minute).to eq(30)
-      expect(posting_times_as_datetimes[2].hour).to eq(5)
-      expect(posting_times_as_datetimes[2].minute).to eq(10)
-    end
-  
-    it 'returns an empty array posting_times is blank' do
-      @experiment.posting_times = ''
-      
-      posting_times_as_datetimes = @experiment.posting_times_as_datetimes
-      
-      expect(posting_times_as_datetimes.count).to eq(0)
-    end
-  
-    it 'returns an empty array if posting_times is nil' do
-      @experiment.posting_times = nil
-      
-      posting_times_as_datetimes = @experiment.posting_times_as_datetimes
-      
-      expect(posting_times_as_datetimes.count).to eq(0)
+      expect(posting_times_as_datetimes.keys.count).to eq(3)
+      expect(posting_times_as_datetimes[:facebook]).to eq([])
+      expect(posting_times_as_datetimes[:instagram]).to eq([])
     end
   end
   

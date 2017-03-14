@@ -4,6 +4,7 @@
       %th Content
       %th Platform
       %th Hashtags
+      %th URL
       %th Experiment variables
       %th
   %tbody
@@ -13,12 +14,13 @@
         %td= message_template.platforms.map{ |platform| platform.titleize }.join(', ')
         %td
           = render partial: 'shared/tag_list', locals: { tags: message_template.hashtags, hashtags: true }
+        %td= message_template.promoted_website_url
         %td
           = render partial: 'shared/hash', locals: { hash: message_template.experiment_variables }
         %td.collapsing
           %a.choose-images-button.ui.labeled.icon.button{ 'data-experiment-id': "#{experiment.id}", 'data-message-template-id': "#{message_template.id}" }
             %i.image.icon
-            View images
+            Edit images
       - if message_template.warnings.count > 0
         %tr.negative
           %td{ :colspan => 5 }

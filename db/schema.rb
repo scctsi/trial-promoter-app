@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170307221111) do
+ActiveRecord::Schema.define(version: 20170309193522) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -123,7 +123,9 @@ ActiveRecord::Schema.define(version: 20170307221111) do
     t.datetime "created_at",                                   null: false
     t.datetime "updated_at",                                   null: false
     t.boolean  "analytics_file_todos_created"
-    t.text     "posting_times"
+    t.text     "twitter_posting_times"
+    t.text     "facebook_posting_times"
+    t.text     "instagram_posting_times"
   end
 
   create_table "experiments_social_media_profiles", force: :cascade do |t|
@@ -163,14 +165,14 @@ ActiveRecord::Schema.define(version: 20170307221111) do
 
   create_table "message_templates", force: :cascade do |t|
     t.text     "content"
-    t.string   "platform"
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
     t.text     "hashtags"
     t.text     "experiment_variables"
     t.text     "image_pool"
     t.text     "original_image_filenames"
     t.text     "platforms"
+    t.string   "promoted_website_url",     limit: 2000
   end
 
   create_table "messages", force: :cascade do |t|
@@ -192,6 +194,8 @@ ActiveRecord::Schema.define(version: 20170307221111) do
     t.datetime "scheduled_date_time"
     t.string   "social_network_id"
     t.integer  "social_media_profile_id"
+    t.string   "platform"
+    t.string   "promoted_website_url",    limit: 2000
   end
 
   add_index "messages", ["message_generating_type", "message_generating_id"], name: "index_on_message_generating_for_analytics_files", using: :btree
@@ -305,13 +309,6 @@ ActiveRecord::Schema.define(version: 20170307221111) do
 
   add_index "visits", ["user_id"], name: "index_visits_on_user_id", using: :btree
   add_index "visits", ["visit_token"], name: "index_visits_on_visit_token", unique: true, using: :btree
-
-  create_table "websites", force: :cascade do |t|
-    t.string   "name",       limit: 1000
-    t.string   "url",        limit: 2000
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
-  end
 
   add_foreign_key "messages", "social_media_profiles"
 end
