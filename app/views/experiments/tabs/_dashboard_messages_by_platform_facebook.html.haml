@@ -1,0 +1,34 @@
+.ui.items
+  - @facebook_messages = @messages.select{ |message| message.social_media_profile.platform == :facebook}
+  - @facebook_messages.each do |message|
+    .item
+      .ui.small.image
+        -if message.image
+          = image_tag "#{message.image.url}"
+        -else
+          %img{ :src => "/assets/no-image.png" }
+      .content
+        .description
+          .ui.left.basic.label
+            = message.medium
+          = message.content
+        .extra
+          %table.ui.very.basic.compact.table
+            %thead
+              %th Clicks
+              %th Impressions
+              %th Primary outcome measure
+              %th Likes
+              %th Shares
+              %th Comments
+            %tbody
+              %tr
+                %td= @messages_with_metrics[1].metrics[0].data[:clicks]
+                %td= @messages_with_metrics[1].metrics[0].data[:impressions]
+                %td
+                  .ui.label.basic.teal
+                    = @messages_with_metrics[1].metrics[0].data[:click_rate].to_s + "%"
+                    Click rate
+                %td= @messages_with_metrics[1].metrics[0].data[:likes]
+                %td= @messages_with_metrics[1].metrics[0].data[:shares]
+                %td= @messages_with_metrics[1].metrics[0].data[:comments]
