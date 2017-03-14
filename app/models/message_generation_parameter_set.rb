@@ -50,11 +50,18 @@ class MessageGenerationParameterSet < ActiveRecord::Base
     calculation_parameters[:medium_choices_count] = medium_choices.select { |medium| !medium.blank? }.count
     calculation_parameters[:number_of_message_templates] = number_of_message_templates
     calculation_parameters[:number_of_cycles] = number_of_cycles
+    if social_network_choices.include?(:instagram) && medium_choices.include?(:organic)
+      calculation_parameters[:instagram_organic] = true
+    else
+      calculation_parameters[:instagram_organic] = false
+    end
 
     MessageGenerationParameterSet.calculate_message_count(calculation_parameters)
   end
 
   def self.calculate_message_count(calculation_parameters)
-    calculation_parameters[:social_network_choices_count] * calculation_parameters[:medium_choices_count] * calculation_parameters[:number_of_message_templates] * calculation_parameters[:number_of_cycles]
+    calculated_count = calculation_parameters[:social_network_choices_count] * calculation_parameters[:medium_choices_count] * calculation_parameters[:number_of_message_templates] * calculation_parameters[:number_of_cycles]
+    calculated_count -= (calculation_parameters[:number_of_message_templates] * calculation_parameters[:number_of_cycles]) if calculation_parameters[:instagram_organic]
+    calculated_count
   end
 end

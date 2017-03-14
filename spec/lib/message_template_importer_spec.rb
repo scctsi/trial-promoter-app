@@ -20,42 +20,42 @@ RSpec.describe MessageTemplateImporter do
       @parsed_excel_content = [['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'theme', 'fda_campaign'], ['This is a message template. {url}', 'twitter', '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation', '1', '2']]
       prepared_excel_content = @message_template_importer.pre_import_prepare(@parsed_excel_content)
 
-      expect(prepared_excel_content).to eq([['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'experiment_variables'], ['This is a message template. {url}', [:twitter], '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation', { 'theme' => '1', 'fda_campaign' => '2'}]])
+      expect(prepared_excel_content).to eq([['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'experiment_variables'], ['This is a message template. {url}', [:twitter], '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://url.com', 'Smoking cessation', { 'theme' => '1', 'fda_campaign' => '2'}]])
     end
 
     it 'does not use the content of a column with a header of original_image_filenames in the experiment_variables hash' do
       @parsed_excel_content = [['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'theme', 'fda_campaign', 'original_image_filenames'], ['This is a message template. {url}', 'twitter', '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation', '1', '2', 'filename1.png, filename2.png']]
       prepared_excel_content = @message_template_importer.pre_import_prepare(@parsed_excel_content)
 
-      expect(prepared_excel_content).to eq([['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'experiment_variables', 'original_image_filenames'], ['This is a message template. {url}', [:twitter], '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation', { 'theme' => '1', 'fda_campaign' => '2'}, ['filename1.png', 'filename2.png']]])
+      expect(prepared_excel_content).to eq([['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'experiment_variables', 'original_image_filenames'], ['This is a message template. {url}', [:twitter], '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://url.com', 'Smoking cessation', { 'theme' => '1', 'fda_campaign' => '2'}, ['filename1.png', 'filename2.png']]])
     end
 
     it 'converts multiple platforms (comma separated list of platform names) into an array of platform symbols' do
       @parsed_excel_content = [['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'theme', 'fda_campaign'], ['This is a message template. {url}', 'twitter, facebook, instagram', '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation', '1', '2']]
       prepared_excel_content = @message_template_importer.pre_import_prepare(@parsed_excel_content)
 
-      expect(prepared_excel_content).to eq([['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'experiment_variables'], ['This is a message template. {url}', [:twitter, :facebook, :instagram], '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation', { 'theme' => '1', 'fda_campaign' => '2'}]])
+      expect(prepared_excel_content).to eq([['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'experiment_variables'], ['This is a message template. {url}', [:twitter, :facebook, :instagram], '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://url.com', 'Smoking cessation', { 'theme' => '1', 'fda_campaign' => '2'}]])
     end
 
     it 'adds {url} message template variable to the content if it is missing' do
       @parsed_excel_content = [['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name'], ['This is a message template.', 'twitter', '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation'], ['This is a message template. {url}', 'twitter', '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation']]
       prepared_excel_content = @message_template_importer.pre_import_prepare(@parsed_excel_content)
 
-      expect(prepared_excel_content).to eq([['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name'], ['This is a message template.{url}', [:twitter], '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation'], ['This is a message template. {url}', [:twitter], '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation']])
+      expect(prepared_excel_content).to eq([['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name'], ['This is a message template.{url}', [:twitter], '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://url.com', 'Smoking cessation'], ['This is a message template. {url}', [:twitter], '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://url.com', 'Smoking cessation']])
     end
 
     it 'converts a nil value for original image filenames to an empty array' do
       @parsed_excel_content = [['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'theme', 'fda_campaign', 'original_image_filenames'], ['This is a message template. {url}', 'twitter', '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation', '1', '2', nil]]
       prepared_excel_content = @message_template_importer.pre_import_prepare(@parsed_excel_content)
 
-      expect(prepared_excel_content).to eq([['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'experiment_variables', 'original_image_filenames'], ['This is a message template. {url}', [:twitter], '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation', { 'theme' => '1', 'fda_campaign' => '2'}, []]])
+      expect(prepared_excel_content).to eq([['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'experiment_variables', 'original_image_filenames'], ['This is a message template. {url}', [:twitter], '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://url.com', 'Smoking cessation', { 'theme' => '1', 'fda_campaign' => '2'}, []]])
     end
 
     it 'converts a blank value for original image filenames to an empty array' do
       @parsed_excel_content = [['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'theme', 'fda_campaign', 'original_image_filenames'], ['This is a message template. {url}', 'twitter', '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation', '1', '2', '']]
       prepared_excel_content = @message_template_importer.pre_import_prepare(@parsed_excel_content)
 
-      expect(prepared_excel_content).to eq([['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'experiment_variables', 'original_image_filenames'], ['This is a message template. {url}', [:twitter], '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://www.url.com', 'Smoking cessation', { 'theme' => '1', 'fda_campaign' => '2'}, []]])
+      expect(prepared_excel_content).to eq([['content', 'platforms', 'hashtags', 'tags', 'website_url', 'website_name', 'experiment_variables', 'original_image_filenames'], ['This is a message template. {url}', [:twitter], '#hashtag1, #hashtag2', 'theme-1, stem-1', 'http://url.com', 'Smoking cessation', { 'theme' => '1', 'fda_campaign' => '2'}, []]])
     end
 
     it 'deletes all the message templates associated with the experiment' do

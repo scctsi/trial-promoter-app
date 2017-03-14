@@ -286,7 +286,7 @@ $(document).ready(function() {
 
       if(data.value === data.total) {
         $('.ui.progress').progress('set success');
-        $('.ui.modal .approve.button').show();
+        $('#message-generation-progress .approve.button').show();
       }
     });
   }
@@ -294,11 +294,10 @@ $(document).ready(function() {
   function setUpAsyncMessageGeneration() {
     $('#generate-messages-button').click(function() {
       var experimentId = $(this).data('experiment-id');
-      var total = $('.ui.modal').data('total');
-      console.log(experimentId);
+      var total = $('#message-generation-progress').data('total');
 
-      $('.ui.modal').modal('setting', 'transition', 'Vertical Flip').modal({ blurring: true }).modal('show');
-      $('.ui.modal .approve.button').hide();
+      $('#message-generation-progress').modal('setting', 'transition', 'Vertical Flip').modal({ blurring: true }).modal('show');
+      $('#message-generation-progress .approve.button').hide();
 
       // Set up progress bar
       $('.ui.progress').progress({

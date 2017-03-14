@@ -19,6 +19,7 @@ class MessageFactory
     parameters[:number_of_cycles].times do |cycle_index|
       parameters[:platforms].each do |platform|
         parameters[:mediums].each do |medium|
+          next if platform == :instagram && medium == :organic # Do not create organic instagram messages
           parameters[:message_templates].each do |message_template|
             picked_social_media_profile = @social_media_profile_picker.pick(parameters[:social_media_profiles], platform, medium)
             message = parameters[:message_constructor].construct(experiment, message_template, platform, medium, picked_social_media_profile, publish_date, parameters[:posting_times][platform][0], message_template.hashtags)
@@ -34,12 +35,6 @@ class MessageFactory
         end
       end
     end
-
-    # # Pick the social media profile on which to send out each message
-    # experiment.messages.all.each do |message|
-    #   message.social_media_profile = social_media_profile_picker.pick(experiment.social_media_profiles.to_a, message)
-    #   message.save
-    # end
 
     select_images(experiment.messages)
   end

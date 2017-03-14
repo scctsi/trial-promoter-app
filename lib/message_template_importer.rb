@@ -73,11 +73,11 @@ class MessageTemplateImporter < Importer
     end
     
     # Step 6: Canonicalize all the website URLs
-    prepared_csv_content.each.with_index do |csv_row, index|
+    prepared_excel_content.each.with_index do |csv_row, index|
       csv_row[4] = to_canonical(csv_row[4]) if index != 0
     end
 
-    prepared_csv_content
+    prepared_excel_content
   end
   
   private

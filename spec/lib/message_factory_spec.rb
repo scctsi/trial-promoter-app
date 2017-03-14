@@ -133,12 +133,14 @@ RSpec.describe MessageFactory do
     @message_factory.create(@experiment)
     
     messages = Message.all.order('created_at ASC')
+    # Was the generation of instagram organic messages skipped?
+    expect(messages.any? { |message| message.platform == :instagram && message.medium == :organic }).to be false
     # Have the correct number of messages been generated?
     expect(messages.count).to eq(expected_generated_message_count)
     # Was every message template used in every cycle (3)?
     # Basically each message template should have been used 3 * 6 times (number_of_cycles * platform count * medium count)
     messages_grouped_by_message_template = messages.group_by { |message| message.message_template.id }
-    messages_grouped_by_message_template.each{ |message_template_id, messages_using_message_template| expect(messages_using_message_template.count).to eq(18) }
+    messages_grouped_by_message_template.each{ |message_template_id, messages_using_message_template| expect(messages_using_message_template.count).to eq(15) }
     # Are the message templates with their platform and medium distributed equally?
     messages_grouped_by_message_template_platform_and_medium = messages.group_by { |message| message.message_template.id.to_s + message.platform.to_s + message.medium.to_s }
     expect_equal_distribution(messages_grouped_by_message_template_platform_and_medium)

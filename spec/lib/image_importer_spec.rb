@@ -12,13 +12,13 @@ RSpec.describe ImageImporter do
   it 'defines a post_initialize method which sets the import_class and column_index_attribute_mapping attributes' do
     @image_importer.post_initialize
     expect(@image_importer.import_class).to eq(Image)
-    expect(@image_importer.column_index_attribute_mapping).to eq({ 0 => 'url', 1 => 'original_filename', 2 => 'tag_list' })
+    expect(@image_importer.column_index_attribute_mapping).to eq({ 0 => 'url', 1 => 'original_filename' })
   end
 
-  it 'defines a pre_import method which deletes all the message templates associated with the experiment' do
+  it 'defines a pre_import method which deletes all the images associated with the experiment' do
     s3_client_double = double('s3_client').as_null_object
     allow(S3Client).to receive(:new).and_return(s3_client_double)
-    create_list(:image, 2, experiment_list: [@experiment.to_param])
+    images = create_list(:image, 2, experiment_list: [@experiment.to_param])
 
     @image_importer.pre_import
 

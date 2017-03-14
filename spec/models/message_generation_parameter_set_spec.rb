@@ -132,8 +132,9 @@ describe MessageGenerationParameterSet do
         number_of_messages_per_social_network: 3
       )
 
-      # Number of social networks (3) * Number of mediums (2) * Number of message templates (9) * Number of cycles (3)
-      expect(message_generation_parameter_set.expected_generated_message_count(9)).to eq(3 * 2 * 9 * 3)
+      # Number of social networks (3) * Number of mediums (2) * Number of message templates (9) * Number of cycles (3) - (Number of message templates (9) * Number of cycles (3))
+      # Instagram organic messages are NOT generated, so the count accounts for that
+      expect(message_generation_parameter_set.expected_generated_message_count(9)).to eq(3 * 2 * 9 * 3 - (9 * 3))
     end
 
     it 'is calculated correctly given a set of calculation parameters' do
@@ -145,7 +146,18 @@ describe MessageGenerationParameterSet do
 
       expect(MessageGenerationParameterSet.calculate_message_count(calculation_parameters)).to eq(calculation_parameters[:social_network_choices_count] * calculation_parameters[:medium_choices_count] * calculation_parameters[:number_of_message_templates] * calculation_parameters[:number_of_cycles])
     end
-    
+
+    it 'correctly removes the count of the instagram organic messages given a set of calculation parameters which indicates that instagram organic has been selected' do
+      calculation_parameters = {}
+      calculation_parameters[:social_network_choices_count] = 2
+      calculation_parameters[:medium_choices_count] = 3
+      calculation_parameters[:number_of_message_templates] = 4
+      calculation_parameters[:number_of_cycles] = 5
+      calculation_parameters[:instagram_organic] = true
+
+      expect(MessageGenerationParameterSet.calculate_message_count(calculation_parameters)).to eq(calculation_parameters[:social_network_choices_count] * calculation_parameters[:medium_choices_count] * calculation_parameters[:number_of_message_templates] * calculation_parameters[:number_of_cycles] - (calculation_parameters[:number_of_message_templates] * calculation_parameters[:number_of_cycles]))
+    end
+
     it 'returns noncalculable when the number of message templates is not passed in' do
       message_generation_parameter_set = MessageGenerationParameterSet.new
 
