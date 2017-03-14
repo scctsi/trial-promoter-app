@@ -6,11 +6,8 @@
         -if message.image
           = image_tag "#{message.image.url}"
         -else
-          %img{ :src => "/assets/image.png" }
+          %img{ :src => "/assets/no-image.png" }
       .content
-        / .header
-        /   /
-        /   = message.social_media_profile.service_username
         .description
           .ui.left.basic.label
             = message.medium
