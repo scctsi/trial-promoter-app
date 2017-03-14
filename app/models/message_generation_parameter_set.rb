@@ -60,6 +60,8 @@ class MessageGenerationParameterSet < ActiveRecord::Base
   end
 
   def self.calculate_message_count(calculation_parameters)
+    return 'Noncalculable' if calculation_parameters[:social_network_choices_count].nil? || calculation_parameters[:medium_choices_count].nil? || calculation_parameters[:number_of_message_templates].nil? || calculation_parameters[:number_of_cycles].nil?
+
     calculated_count = calculation_parameters[:social_network_choices_count] * calculation_parameters[:medium_choices_count] * calculation_parameters[:number_of_message_templates] * calculation_parameters[:number_of_cycles]
     calculated_count -= (calculation_parameters[:number_of_message_templates] * calculation_parameters[:number_of_cycles]) if calculation_parameters[:instagram_organic]
     calculated_count
