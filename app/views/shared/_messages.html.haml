@@ -1,7 +1,8 @@
+.ui.header
+  .content
+    = paginate messages
+  = render partial: 'shared/object_count', locals: { count: messages.count.to_s + " out of " + messages.total_count.to_s, object_name: 'messages' }
 .ui.divided.items
-  .ui.header
-    .content
-      = paginate messages
   - messages.each do |message|
     - show_label = false
     - if !message.buffer_update.nil?
