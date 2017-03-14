@@ -2,7 +2,6 @@
 /*global filepicker*/
 /*global Pusher*/
 $(document).ready(function() {
-  var $select_time;
   if (typeof filepicker != 'undefined') {
     filepicker.setKey("At8mEYziyTc6axVbB4njtz");
   }
@@ -287,7 +286,7 @@ $(document).ready(function() {
 
       if(data.value === data.total) {
         $('.ui.progress').progress('set success');
-        $('.ui.modal .approve.button').show();
+        $('#message-generation-progress .approve.button').show();
       }
     });
   }
@@ -295,10 +294,10 @@ $(document).ready(function() {
   function setUpAsyncMessageGeneration() {
     $('#generate-messages-button').click(function() {
       var experimentId = $(this).data('experiment-id');
-      var total = $('.ui.modal').data('total');
+      var total = $('#message-generation-progress').data('total');
 
-      $('.ui.modal').modal('setting', 'transition', 'Vertical Flip').modal({ blurring: true }).modal('show');
-      $('.ui.modal .approve.button').hide();
+      $('#message-generation-progress').modal('setting', 'transition', 'Vertical Flip').modal({ blurring: true }).modal('show');
+      $('#message-generation-progress .approve.button').hide();
 
       // Set up progress bar
       $('.ui.progress').progress({
@@ -313,8 +312,8 @@ $(document).ready(function() {
 
       $.ajax({
         type: 'GET',
-        url: '/experiments/' + experimentId + '/create_messages.json',
-        data: { id: experimentId },
+        url: '/experiments/' + experimentId + '/create_messages',
+        data: { },
         dataType: 'json',
         success: function(data) {
         }
@@ -325,7 +324,7 @@ $(document).ready(function() {
   }
 
   function setUpPostingTimeInputs() {
-    var allowedTimes = $('#experiment_posting_times').data('allowed-times');
+    var allowedTimes = $('#experiment_twitter_posting_times').data('allowed-times');
 
     // Selectize requires options to be of the form [{'value': 'val', 'item', 'val'}]
     if (typeof allowedTimes === "undefined") {
@@ -334,7 +333,7 @@ $(document).ready(function() {
     allowedTimes = allowedTimes.map(function(x) { return { item: x } });
 
     // Setup the posting times input
-    $select_time = $('#experiment_posting_times').selectize({
+    $('#experiment_twitter_posting_times, #experiment_facebook_posting_times, #experiment_instagram_posting_times').selectize({
       plugins: ['restore_on_backspace', 'remove_button'],
       valueField: 'item',
       labelField: 'item',
