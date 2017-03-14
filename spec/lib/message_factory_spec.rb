@@ -6,22 +6,17 @@ RSpec.describe MessageFactory do
     @suitable_social_media_profiles = create_list(:social_media_profile, 3)
     @suitable_social_media_profiles.each { |social_media_profile| @experiment.social_media_profiles << social_media_profile }
     @experiment.save
-    message_templates = create_list(:message_template, 5, platforms: TrialPromoter::SUPPORTED_NETWORKS, experiment_list: @experiment.to_param)
+    @message_templates = create_list(:message_template, 5, platforms: TrialPromoter::SUPPORTED_NETWORKS, experiment_list: @experiment.to_param)
     # Create 2 images for each message template's image pool
-    message_templates.each do |message_template|
+    @message_templates.each do |message_template|
       images = create_list(:image, 2, experiment_list: @experiment.to_param)
       message_template.image_pool = images.map(&:id)
       message_template.save
     end
     # Add some hashtags to the first 3 message templates
-    message_templates[0..2].each do |message_template|
+    @message_templates[0..2].each do |message_template|
       random_hashtags = ['#hashtag1,#hashtag2,#hashtag3','#hashtag1,#hashtag4,#hashtag5','#hashtag6,#hashtag7,#hashtag8']
       message_template.hashtags = random_hashtags.sample
-      message_template.save
-    end
-    MessageTemplate.all.each do |message_template|
-      images = create_list(:image, 2, experiment_list: @experiment.to_param)
-      message_template.image_pool = images.map(&:id)
       message_template.save
     end
     # Set up social media profile picking
@@ -59,7 +54,8 @@ RSpec.describe MessageFactory do
     expect(parameters[:number_of_messages_per_day]).to eq(@experiment.message_generation_parameter_set.number_of_messages_per_social_network)
     expect(parameters[:platforms]).to eq(@experiment.message_generation_parameter_set.social_network_choices)
     expect(parameters[:mediums]).to eq(@experiment.message_generation_parameter_set.medium_choices)
-    expect(parameters[:message_templates]).to eq(MessageTemplate.belonging_to(@experiment))
+    expect(parameters[:message_templates]).to eq(MessageTemplate.belonging_to(@experiment).to_a)
+    expect(parameters[:message_templates]).to be_instance_of(Array)
     expect(parameters[:posting_times]).to eq(@experiment.posting_times_as_datetimes)
     expect(parameters[:total_count]).to eq(@experiment.message_generation_parameter_set.expected_generated_message_count(parameters[:message_templates].count))
     expect(parameters[:social_media_profiles]).to eq(@experiment.social_media_profiles)
@@ -129,6 +125,10 @@ RSpec.describe MessageFactory do
     end
     @experiment.message_generation_parameter_set = message_generation_parameter_set
     expected_generated_message_count = message_generation_parameter_set.expected_generated_message_count(MessageTemplate.count)
+    # Because this test depends on the randomness of shuffle, in order to make sure this test always passes, we are reurning a determinstic set of values for shuffle.
+    # shuffle is called 15 times
+    permutations = @message_templates.permutation.to_a
+    allow_any_instance_of(Array).to receive(:shuffle).and_return(*permutations[0..14])
 
     @message_factory.create(@experiment)
     
@@ -144,6 +144,12 @@ RSpec.describe MessageFactory do
     # Are the message templates with their platform and medium distributed equally?
     messages_grouped_by_message_template_platform_and_medium = messages.group_by { |message| message.message_template.id.to_s + message.platform.to_s + message.medium.to_s }
     expect_equal_distribution(messages_grouped_by_message_template_platform_and_medium)
+    # Are the message templates shuffled each cycle?
+    facebook_organic_messages = messages.select { |message| message.platform == :facebook && message.medium == :organic }
+    sliced_facebook_organic_messages = facebook_organic_messages.each_slice(5).to_a
+    expect(sliced_facebook_organic_messages[0].map(&:message_template).map(&:id)).not_to eq(sliced_facebook_organic_messages[1].map(&:message_template).map(&:id))
+    expect(sliced_facebook_organic_messages[0].map(&:message_template).map(&:id)).not_to eq(sliced_facebook_organic_messages[2].map(&:message_template).map(&:id))
+    expect(sliced_facebook_organic_messages[1].map(&:message_template).map(&:id)).not_to eq(sliced_facebook_organic_messages[2].map(&:message_template).map(&:id))
 
     # Does every message have a suitable social media profile selected?
     messages.each do |message|

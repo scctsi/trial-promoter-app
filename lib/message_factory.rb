@@ -20,7 +20,8 @@ class MessageFactory
       parameters[:platforms].each do |platform|
         parameters[:mediums].each do |medium|
           next if platform == :instagram && medium == :organic # Do not create organic instagram messages
-          parameters[:message_templates].each do |message_template|
+          shuffled_message_templates = parameters[:message_templates].shuffle
+          shuffled_message_templates.each do |message_template|
             picked_social_media_profile = @social_media_profile_picker.pick(parameters[:social_media_profiles], platform, medium)
             message = parameters[:message_constructor].construct(experiment, message_template, platform, medium, picked_social_media_profile, publish_date, parameters[:posting_times][platform][0], message_template.hashtags)
             message.save
@@ -55,7 +56,7 @@ class MessageFactory
     parameters[:number_of_messages_per_day] = experiment.message_generation_parameter_set.number_of_messages_per_social_network
     parameters[:platforms] = experiment.message_generation_parameter_set.social_network_choices
     parameters[:mediums] = experiment.message_generation_parameter_set.medium_choices
-    parameters[:message_templates] = MessageTemplate.belonging_to(experiment)
+    parameters[:message_templates] = MessageTemplate.belonging_to(experiment).to_a
     parameters[:posting_times] = experiment.posting_times_as_datetimes
     parameters[:total_count] = experiment.message_generation_parameter_set.expected_generated_message_count(parameters[:message_templates].count)
     parameters[:social_media_profiles] = experiment.social_media_profiles
