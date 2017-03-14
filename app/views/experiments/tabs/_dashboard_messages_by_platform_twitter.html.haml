@@ -1,21 +1,35 @@
-%table.ui.sortable.celled.table
-  %thead
-    %th Message
-    %th Ad/Organic
-    %th Likes (Favorites)
-    %th Retweets
-    %th Comments
-    %th Clicks
-    %th Impressions
-    %th Click rate
-  %tbody
-    %td Never underestimate the power of people. We're looking for participants @KeckMedUSC #LiverDisease #ClinicalTrial http://bit.ly/1KvZHqF
-    %td Organic
-    %td 1
-    %td 2
-    %td 3
-    %td 4
-    %td 67
-    %td 5.97%
-    
-    
+.ui.items
+  - @twitter_messages = @messages.select{ |message| message.social_media_profile.platform == :twitter}
+  - @twitter_messages.each do |message|
+    .item
+      .ui.small.image
+        -if message.image
+          = image_tag "#{message.image.url}"
+        -else
+          %img{ :src => "/assets/no-image.png" }
+      .content
+        .description
+          .ui.left.basic.label
+            = message.medium
+          = message.content
+        .extra
+          %table.ui.very.basic.compact.table
+            %thead
+              %th Clicks
+              %th Impressions
+              %th Primary outcome measure
+              %th Favorites
+              %th Retweets
+              %th Repliess
+            %tbody
+              %tr
+                %td= @messages_with_metrics[1].metrics[0].data[:clicks]
+                %td= @messages_with_metrics[1].metrics[0].data[:impressions]
+                %td
+                  .ui.label.basic.teal
+                    = @messages_with_metrics[1].metrics[0].data[:click_rate].to_s + "%"
+                    Click rate
+                %td= @messages_with_metrics[1].metrics[0].data[:likes]
+                %td= @messages_with_metrics[1].metrics[0].data[:shares]
+                %td= @messages_with_metrics[1].metrics[0].data[:comments]
+

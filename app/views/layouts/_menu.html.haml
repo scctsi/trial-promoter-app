@@ -2,9 +2,6 @@
   %a.item{:href => root_path, :class => current_page?(root_path) ? "active" : ""}
     %i.home.icon
     Home
-  %a.item{:href => campaigns_path, :class => current_page?(campaigns_path) ? "active" : ""}
-    %i.announcement.outline.icon
-    Campaigns
   %a.item{:href => experiments_path, :class => current_page?(experiments_path) ? "active" : ""}
     %i.line.chart.outline.icon
     Experiments
@@ -14,5 +11,5 @@
   %a.item{ :href => admin_settings_path, :class => current_page?(admin_settings_path) ? "active" : ""}
     %i.settings.icon
     Settings
-    
-    
+
+
