@@ -163,5 +163,15 @@ describe MessageGenerationParameterSet do
 
       expect(message_generation_parameter_set.expected_generated_message_count).to eq('Noncalculable')
     end
+
+    it 'returns noncalculable when any of the calculation parameters are nil' do
+      calculation_parameters = {}
+      calculation_parameters[:social_network_choices_count] = nil
+      calculation_parameters[:medium_choices_count] = nil
+      calculation_parameters[:number_of_message_templates] = nil
+      calculation_parameters[:number_of_cycles] = nil
+
+      expect(MessageGenerationParameterSet.calculate_message_count(calculation_parameters)).to eq('Noncalculable')
+    end
   end
 end
