@@ -15,7 +15,7 @@ class ExperimentsController < ApplicationController
     authorize @experiment
     @message_templates = MessageTemplate.belonging_to(@experiment)
     @images = Image.belonging_to(@experiment)
-    @messages = Message.where(:message_generating_id => @experiment.id).page(params[:page]).order('created_at ASC')
+    @messages = Message.where(:message_generating_id => @experiment.id).page(params[:page]).order('scheduled_date_time ASC')
   end
 
   def new
