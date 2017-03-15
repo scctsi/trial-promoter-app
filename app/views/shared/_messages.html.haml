@@ -2,45 +2,53 @@
   .content
     = paginate messages
   = render partial: 'shared/object_count', locals: { count: messages.count.to_s + " out of " + messages.total_count.to_s, object_name: 'messages' }
-.ui.divided.items
-  - messages.each do |message|
-    - show_label = false
-    - if !message.buffer_update.nil?
-      - if message.delayed?
-        - show_label = true
-    .item
-      .ui.tiny.image
-        -if message.image
-          = image_tag "#{message.image.url}"
-        -else
-          %img{ :src => "/assets/no-image.png" }
-      .content
-        .header
-          = message.social_media_profile.platform_icon_and_name
-          = message.social_media_profile.service_username
-          - if show_label
-            .ui.left.pointing.red.basic.label
-              The message has been delayed
-        .description
-          .ui.left.basic.label
-            = message.medium
-          = message.content
-        .extra
-          - if !message.buffer_publish_date
-            Scheduled to be published: #{message.scheduled_date_time.strftime("%b %d, %Y")} at #{message.scheduled_date_time.strftime("%I:%M %P")}
-          - else
-            - if !message.buffer_update.nil?
-              Message was published on #{message.social_media_profile.platform_icon_and_name} at
-              .ui.left.green.basic.label
-                = message.buffer_update.sent_from_date_time.strftime("%I:%M %P, %b %d, %Y")
+- grouped_messages = messages.group_by{ |message| message.scheduled_date_time.to_date }
+- grouped_messages.keys.each do |scheduled_date|
+  %h3.ui.header
+    = scheduled_date.strftime("%b #{scheduled_date.day.ordinalize}")
+  .ui.items
+    - grouped_messages[scheduled_date].each do |message|
+      - show_label = false
+      - if !message.buffer_update.nil?
+        - if message.delayed?
+          - show_label = true
+      .item
+        .ui.tiny.image
+          -if message.image
+            = image_tag "#{message.image.url}"
+          -else
+            %img{ :src => '/assets/no-image.png' }
+        .content
+          %description
+            = message.content
+            - if show_label
+              .ui.left.pointing.red.basic.label
+                The message has been delayed
+          .extra
+            .ui.basic.small.label
+              = message.social_media_profile.platform_icon_and_name
+            .ui.basic.small.label
+              %i.hashtag.icon
+              = message.social_media_profile.service_username
+            .ui.basic.small.label
+              = message.medium.to_s.titleize
+            - if !message.buffer_publish_date
+              .ui.basic.small.label
+                %i.clock.outline.icon
+                #{message.scheduled_date_time.strftime("%I:%M %p")}
             - else
-              - if message.buffer_publish_date
-                Sent to Buffer on
-                - if message.scheduled_date_time <= message.buffer_publish_date + 2.days
-                  .ui.left.red.basic.label
-                    message.buffer_publish_date.strftime("%b %d, %Y")
-                - else
-                  = message.buffer_publish_date.strftime("%b %d, %Y")
-  .ui.header
-    .content
-      = paginate messages
+              - if !message.buffer_update.nil?
+                Message was published on #{message.social_media_profile.platform_icon_and_name} at
+                .ui.left.green.basic.label
+                  = message.buffer_update.sent_from_date_time.strftime("%I:%M %P, %b %d, %Y")
+              - else
+                - if message.buffer_publish_date
+                  Sent to Buffer on
+                  - if message.scheduled_date_time <= message.buffer_publish_date + 2.days
+                    .ui.left.red.basic.label
+                      message.buffer_publish_date.strftime("%b %d, %Y")
+                  - else
+                    = message.buffer_publish_date.strftime("%b %d, %Y")
+.ui.header
+  .content
+    = paginate messages
