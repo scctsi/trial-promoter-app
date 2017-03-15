@@ -6,7 +6,7 @@
         -if message.image
           = image_tag "#{message.image.url}"
         -else
-          %img{ :src => "/assets/no-image.png" }
+          = image_tag "no-image.png"
       .content
         .description
           .ui.left.basic.label
@@ -28,3 +28,4 @@
               %td= @messages_with_metrics[0].metrics[0].data[:likes]
               %td= @messages_with_metrics[0].metrics[0].data[:shares]
               %td= @messages_with_metrics[0].metrics[0].data[:comments]
+
