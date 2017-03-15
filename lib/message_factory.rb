@@ -13,27 +13,28 @@ class MessageFactory
     # Initial setup
     parameters = get_message_generation_parameters(experiment)
     message_index = 1
-    message_for_day_index = 1
     publish_date = experiment.message_distribution_start_date
 
     parameters[:number_of_cycles].times do |cycle_index|
-      parameters[:platforms].each do |platform|
-        parameters[:mediums].each do |medium|
-          next if platform == :instagram && medium == :organic # Do not create organic instagram messages
-          shuffled_message_templates = parameters[:message_templates].shuffle
-          shuffled_message_templates.each do |message_template|
-            picked_social_media_profile = @social_media_profile_picker.pick(parameters[:social_media_profiles], platform, medium)
-            message = parameters[:message_constructor].construct(experiment, message_template, platform, medium, picked_social_media_profile, publish_date, parameters[:posting_times][platform][0], message_template.hashtags)
-            message.save
-            Pusher['progress'].trigger('progress', {:value => message_index, :total => parameters[:total_count], :event => 'Message generated'})
-            message_index += 1
-            message_for_day_index += 1
-            if message_for_day_index > parameters[:number_of_messages_per_day]
-              publish_date += 1.day
-              message_for_day_index = 1
+      message_template_index = 0
+      shuffled_message_templates = parameters[:message_templates].shuffle
+      while message_template_index < shuffled_message_templates.count
+        parameters[:number_of_messages_per_day].times do |message_index_for_day|
+          message_template = shuffled_message_templates[message_template_index]
+          message_template_index += 1
+          parameters[:platforms].each do |platform|
+            parameters[:mediums].each do |medium|
+              next if platform == :instagram && medium == :organic # Do not create organic instagram messages
+              # TODO: Select hashtags and images here!
+              picked_social_media_profile = @social_media_profile_picker.pick(parameters[:social_media_profiles], platform, medium)
+              message = parameters[:message_constructor].construct(experiment, message_template, platform, medium, picked_social_media_profile, publish_date, parameters[:posting_times][platform][message_index_for_day], message_template.hashtags)
+              message.save
+              Pusher['progress'].trigger('progress', {:value => message_index, :total => parameters[:total_count], :event => 'Message generated'})
+              message_index += 1
             end
           end
         end
+        publish_date += 1.day
       end
     end
 

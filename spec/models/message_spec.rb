@@ -120,14 +120,14 @@ describe Message do
 
   describe 'pagination' do
     before do
-      create_list(:message, 30)
+      create_list(:message, 100)
       @messages = Message.order('created_at ASC')
     end
 
-    it 'has a default of 25 messages per page' do
+    it 'has a default of 90 messages per page' do
       page_of_messages = Message.page(1)
 
-      expect(page_of_messages.count).to eq(25)
+      expect(page_of_messages.count).to eq(90)
     end
 
     it 'returns the first page of messages given a per page value' do
