@@ -23,13 +23,13 @@
               %th Repliess
             %tbody
               %tr
-                / %td= @messages_with_metrics[1].metrics[0].data[:clicks]
-                / %td= @messages_with_metrics[1].metrics[0].data[:impressions]
-                / %td
-                /   .ui.label.basic.teal
-                /     = @messages_with_metrics[1].metrics[0].data[:click_rate].to_s + "%"
-                /     Click rate
-                / %td= @messages_with_metrics[1].metrics[0].data[:likes]
-                / %td= @messages_with_metrics[1].metrics[0].data[:shares]
-                / %td= @messages_with_metrics[1].metrics[0].data[:comments]
+                %td= @messages_with_metrics[1].metrics[0].data[:clicks]
+                %td= @messages_with_metrics[1].metrics[0].data[:impressions]
+                %td
+                  .ui.label.basic.teal
+                    = @messages_with_metrics[1].metrics[0].data[:click_rate].to_s + "%"
+                    Click rate
+                %td= @messages_with_metrics[1].metrics[0].data[:likes]
+                %td= @messages_with_metrics[1].metrics[0].data[:shares]
+                %td= @messages_with_metrics[1].metrics[0].data[:comments]
 

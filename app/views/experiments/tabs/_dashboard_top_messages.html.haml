@@ -19,18 +19,19 @@
           = image_tag "no-image.png"
       .content
         %i.heart.icon
-        / = @messages_with_metrics[0].metrics[0].data[:likes]
+        = @messages_with_metrics[0].metrics[0].data[:likes]
         like(s)
         %i.refresh.icon
-        / = @messages_with_metrics[0].metrics[0].data[:shares]
+        = @messages_with_metrics[0].metrics[0].data[:shares]
         shares
         %i.comment.icon
-        / = @messages_with_metrics[0].metrics[0].data[:comments]
+        = @messages_with_metrics[0].metrics[0].data[:comments]
         comments
       .extra.content
         .ui.label.basic.teal
           %i.checkmark.icon
-          / = @messages_with_metrics[0].metrics[0].data[:click_rate].to_s + "%"
+          = @messages_with_metrics[0].metrics[0].data[:click_rate].to_s + "%"
           Click rate
         %br/
-        /(#{@messages_with_metrics[0].metrics[0].data[:clicks]} clicks / #{@messages_with_metrics[0].metrics[0].data[:impressions]} impressions)
+        (#{@messages_with_metrics[0].metrics[0].data[:clicks]} clicks / #{@messages_with_metrics[0].metrics[0].data[:impressions]} impressions)
+

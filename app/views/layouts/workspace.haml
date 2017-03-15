@@ -9,7 +9,7 @@
     = javascript_include_tag  '//api.filestackapi.com/filestack.js'
     = javascript_include_tag  'application'
     = csrf_meta_tags
-  %body{'data-environment' => Rails.env, 'data-filepicker-api-key' => ENV["FILEPICKER_API_KEY"], 'data-s3-bucket' => ENV['S3_BUCKET']}
+  %body{'data-environment' => Rails.env, 'data-filepicker-api-key' => ENV["FILEPICKER_API_KEY"], 'data-s3-bucket' => ENV['S3_BUCKET'], 'data-pusher-key' => Pusher.key}
     .ui.container
       = render 'layouts/header'
       - if notice
