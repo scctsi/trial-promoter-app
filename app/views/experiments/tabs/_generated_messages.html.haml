@@ -19,8 +19,9 @@
 - else
   .ui.message
     .header
-      Regarding message generation
+      Note
     %ul.list
-      %li All messages for a experiment are deleted each time messages are generated.
-      %li Three days before the experiment is scheduled to start message distribution, message generation will be locked.
+      %li Randomization: The messages are assigned to a random sequence using a random sequence generator (Ref, year). The selection of the hashtag (if applicable) and the images is randomized as well using ADD technique name (Ref, year).
+      %li Message generation: All existing messages for an experiment are deleted each time the messages are re-generated (by clicking on the “Generate messages” button).
+      %li Editing restriction: Set up, message templates, and generation will be locked 3 days before the experiment is scheduled to start.
   = render partial: 'shared/messages', locals: { messages: @messages }
