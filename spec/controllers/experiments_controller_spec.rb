@@ -67,7 +67,7 @@ RSpec.describe ExperimentsController, type: :controller do
     it 'assigns all messages to @messages' do
       expect(Message).to have_received(:where).with(:message_generating_id => @experiment.id)
       expect(@experiment_messages).to have_received(:page).with('2')
-      expect(@paged_messages).to have_received(:order).with('created_at ASC')
+      expect(@paged_messages).to have_received(:order).with('scheduled_date_time ASC')
       expect(assigns(:messages)).to eq(@ordered_messages)
     end
 
@@ -151,7 +151,6 @@ RSpec.describe ExperimentsController, type: :controller do
         expect(response).to redirect_to :new_user_session
       end
     end
-
   end
 
   describe 'GET #create_analytics_file_todos' do
