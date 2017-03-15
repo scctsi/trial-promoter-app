@@ -16,7 +16,7 @@
         -if message.image
           = image_tag "#{message.image.url}"
         -else
-          %img{ :src => "/assets/no-image.png" }
+          = image_tag "no-image.png"
       .content
         %i.heart.icon
         = @messages_with_metrics[0].metrics[0].data[:likes]
@@ -34,3 +34,4 @@
           Click rate
         %br/
         (#{@messages_with_metrics[0].metrics[0].data[:clicks]} clicks / #{@messages_with_metrics[0].metrics[0].data[:impressions]} impressions)
+
