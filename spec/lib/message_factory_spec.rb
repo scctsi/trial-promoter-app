@@ -3,7 +3,17 @@ require 'rails_helper'
 RSpec.describe MessageFactory do
   before do
     @experiment = create(:experiment)
-    @suitable_social_media_profiles = create_list(:social_media_profile, 3)
+    @suitable_social_media_profiles = create_list(:social_media_profile, 5)
+    @suitable_social_media_profiles[0].platform = :facebook
+    @suitable_social_media_profiles[0].allowed_mediums = [:ad]
+    @suitable_social_media_profiles[1].platform = :facebook
+    @suitable_social_media_profiles[1].allowed_mediums = [:organic]
+    @suitable_social_media_profiles[2].platform = :twitter
+    @suitable_social_media_profiles[2].allowed_mediums = [:ad]
+    @suitable_social_media_profiles[3].platform = :twitter
+    @suitable_social_media_profiles[3].allowed_mediums = [:organic]
+    @suitable_social_media_profiles[4].platform = :instagram
+    @suitable_social_media_profiles[4].allowed_mediums = [:ad]
     @suitable_social_media_profiles.each { |social_media_profile| @experiment.social_media_profiles << social_media_profile }
     @experiment.save
     @message_templates = create_list(:message_template, 5, platforms: TrialPromoter::SUPPORTED_NETWORKS, experiment_list: @experiment.to_param)
@@ -114,8 +124,6 @@ RSpec.describe MessageFactory do
   end
 
   it 'creates a set of messages given five message templates, 3 social networks, 2 mediums, images for all messages, 3 cycles, 5 messages per network per day and selectes random hashtags where feasible' do
-    @experiment.facebook_posting_times = "12:30 PM"
-    @experiment.save
     message_generation_parameter_set = MessageGenerationParameterSet.new do |m|
       m.social_network_choices = [:facebook, :instagram, :twitter]
       m.medium_choices = ['ad', 'organic']
@@ -124,6 +132,10 @@ RSpec.describe MessageFactory do
       m.number_of_messages_per_social_network = 5
     end
     @experiment.message_generation_parameter_set = message_generation_parameter_set
+    @experiment.facebook_posting_times = "12:30 PM,1:30 PM,2:30 PM,3:30 PM,4:30 PM"
+    @experiment.twitter_posting_times = "12:40 PM,1:40 PM,2:40 PM,3:40 PM,4:40 PM"
+    @experiment.instagram_posting_times = "12:50 PM,1:50 PM,2:50 PM,3:50 PM,4:50 PM"
+    @experiment.save
     expected_generated_message_count = message_generation_parameter_set.expected_generated_message_count(MessageTemplate.count)
     # Because this test depends on the randomness of shuffle, in order to make sure this test always passes, we are reurning a determinstic set of values for shuffle.
     # shuffle is called 15 times
@@ -150,6 +162,28 @@ RSpec.describe MessageFactory do
     expect(sliced_facebook_organic_messages[0].map(&:message_template).map(&:id)).not_to eq(sliced_facebook_organic_messages[1].map(&:message_template).map(&:id))
     expect(sliced_facebook_organic_messages[0].map(&:message_template).map(&:id)).not_to eq(sliced_facebook_organic_messages[2].map(&:message_template).map(&:id))
     expect(sliced_facebook_organic_messages[1].map(&:message_template).map(&:id)).not_to eq(sliced_facebook_organic_messages[2].map(&:message_template).map(&:id))
+    # Was every message scheduled with some date and time?
+    messages.each { |message| expect(message.scheduled_date_time).not_to be_nil }
+    messages_grouped_by_scheduled_send_date = messages.group_by{ |message| message.scheduled_date_time.to_date }
+    # Was the experiment run for 3 days (With 5 message templates and 5 messages sent out every day, each cycle should have taken one day. We have 3 cycles, to the experiment should have taken a total of 3 days to run.)
+    expect(messages_grouped_by_scheduled_send_date.keys.length).to eq(3)
+    # Are the correct number of messages scheduled to go out on each day? 
+    # total = number of social networks * number of mediums * number of messages per day per social network - number of messages per day per social network (to account for no instagram organic messages)
+    number_of_messages_scheduled_per_day = 3 * 2 * 5 - 5
+    messages_grouped_by_scheduled_send_date.each { |scheduled_send_date, messages_by_send_date| expect(messages_by_send_date.length).to eq(number_of_messages_scheduled_per_day) }
+    # Were the messages scheduled at the right times?
+    organic_facebook_messages_on_first_day = messages_grouped_by_scheduled_send_date[messages_grouped_by_scheduled_send_date.keys[0]].select{ |message| message.platform == :facebook && message.medium == :ad }
+    publish_date_time = @experiment.message_distribution_start_date
+    publish_date_time = publish_date_time.change({ hour: 12, min: 30, sec: 0 })
+    expect(organic_facebook_messages_on_first_day[0].scheduled_date_time).to eq(publish_date_time)
+    publish_date_time = publish_date_time.change({ hour: 13, min: 30, sec: 0 })
+    expect(organic_facebook_messages_on_first_day[1].scheduled_date_time).to eq(publish_date_time)
+    publish_date_time = publish_date_time.change({ hour: 14, min: 30, sec: 0 })
+    expect(organic_facebook_messages_on_first_day[2].scheduled_date_time).to eq(publish_date_time)
+    publish_date_time = publish_date_time.change({ hour: 15, min: 30, sec: 0 })
+    expect(organic_facebook_messages_on_first_day[3].scheduled_date_time).to eq(publish_date_time)
+    publish_date_time = publish_date_time.change({ hour: 16, min: 30, sec: 0 })
+    expect(organic_facebook_messages_on_first_day[4].scheduled_date_time).to eq(publish_date_time)
 
     # Does every message have a suitable social media profile selected?
     messages.each do |message|
