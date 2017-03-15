@@ -6,10 +6,10 @@
   %tbody
     %tr
       %td.collapsing Social media types
-      %td= message_generation_parameter_set.social_network_choices.join(',').chomp(',')
+      %td= message_generation_parameter_set.social_network_choices.join(', ').titleize.chomp(',')
     %tr
       %td.collapsing Paid (ad)/unpaid (organic)
-      %td= message_generation_parameter_set.medium_choices.join(',').chomp(',')
+      %td= message_generation_parameter_set.medium_choices.join(', ').titleize.chomp(',')
     %tr
       %td.collapsing Images
       %td= message_generation_parameter_set.image_present_choices.titleize

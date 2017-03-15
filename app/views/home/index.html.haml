@@ -15,16 +15,6 @@
       %a.ui.fluid.huge.teal.labeled.icon.button.start-experiment-button{:href => new_experiment_path}
         %i.line.chart.icon
         Start an experiment
-    .column
-      %a.ui.fluid.huge.teal.labeled.icon.button.start-campaign-button{:href => new_campaign_path}
-        %i.announcement.outline.icon
-        Start a campaign
-
-- if @campaigns.count > 0
-  %h3.ui.header
-    %i.announcement.outline.icon
-    Ongoing campaigns
-  = render partial: 'shared/campaigns', locals: {campaigns: @campaigns}
 - if @experiments.count > 0
   %h3.ui.header
     %i.line.chart.icon

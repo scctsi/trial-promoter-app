@@ -279,7 +279,8 @@ $(document).ready(function() {
   }
 
   function setUpPusherChannels() {
-    var pusher = new Pusher('645d88fef1ee61febc2d'); // uses your APP KEY
+    var pusherKey = $('body').data('pusher-key');
+    var pusher = new Pusher(pusherKey); // uses your APP KEY
     var channel = pusher.subscribe('progress');
     channel.bind('progress', function(data) {
       $('.ui.progress').progress('increment');

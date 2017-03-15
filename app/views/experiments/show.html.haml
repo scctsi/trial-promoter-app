@@ -21,8 +21,9 @@
       Dashboard
     %a{ class: 'item', 'data-tab': 'reports' }
       Reports
-    %a{ class: 'item', 'data-tab': 'analytics-file-uploads' }
-      Analytics file uploads
+    - if current_user.role.include?('administrator')
+      %a{ class: 'item', 'data-tab': 'analytics-file-uploads' }
+        Analytics file uploads
   .ui.bottom.attached.tab.segment{ 'data-tab': 'setup' }
     = render partial: 'experiments/tabs/setup'
   .ui.bottom.attached.tab.segment{ 'data-tab': 'images' }
@@ -32,7 +33,7 @@
   .ui.bottom.attached.tab.segment{ 'data-tab': 'generated-messages' }
     = render partial: 'experiments/tabs/generated_messages'
   .ui.bottom.attached.tab.segment{ 'data-tab': 'dashboard' }
-    = render partial: 'experiments/tabs/dashboard'
+    // = render partial: 'experiments/tabs/dashboard'
   .ui.bottom.attached.tab.segment{ 'data-tab': 'reports' }
     = render partial: 'experiments/tabs/reports', locals: { experiment: @experiment }
   .ui.bottom.attached.tab.segment{ 'data-tab': 'analytics-file-uploads' }

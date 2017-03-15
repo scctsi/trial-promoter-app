@@ -13,7 +13,7 @@ class Admin::SettingsController < ApplicationController
   end
 
   def update
-            authorize Setting
+    authorize Setting
     if @setting.value != params[:setting][:value]
       @setting.value = params[:setting][:value]
       @setting.save

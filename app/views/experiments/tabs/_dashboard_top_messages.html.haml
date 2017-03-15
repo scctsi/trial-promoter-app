@@ -1,40 +1,36 @@
 .ui.link.cards
-  .card
-    .content
-      .header
-        .right.floated.meta 23 Sep, 2017 10:15 PM
-        %i.facebook.icon
-    .content
-      Never underestimate the power of people. We're looking for participants @KeckMedUSC #LiverDisease #ClinicalTrial http://bit.ly/1KvZHqF
-    .image
-      = image_tag("no-image.png", alt: "No image")
-    .content
-      %i.heart.icon
-      1 like(s)
-      %i.refresh.icon
-      3 retweets
-      %i.comment.icon
-      4 comments
-    .extra.content
-      10% Engagement rate
-      10% Click rate
-  .card
-    .content
-      .header
-        .right.floated.meta 27 Sep, 2017 10:15 PM
-        %i.twitter.icon
-    .content
-      We're looking for volunteers. We're looking for participants @KeckMedUSC #LiverDisease #ClinicalTrial http://bit.ly/1KvZHqF
-    .image
-      = image_tag("image.png", alt: "Image")
-    .content
-      %i.heart.icon
-      1 like(s)
-      %i.refresh.icon
-      2 retweets
-      %i.comment.icon
-      2 comments
-    .extra.content
-      10% Engagement rate
-      10% Click rate
-  
+  - @messages.each do |message|
+    .card
+      .content
+        .header
+          .left.floated
+            = message.social_media_profile.platform_icon
+          .right.floated.meta
+            - if !message.buffer_update.nil?
+              = message.buffer_update.sent_from_date_time.strftime("%I:%M %P, %b %d, %Y")
+            - else
+              02:35 pm, Sep 17, 2015
+      .content
+        = message.content
+      .ui.medium.image
+        -if message.image
+          = image_tag "#{message.image.url}"
+        -else
+          %img{ :src => "/assets/no-image.png" }
+      .content
+        %i.heart.icon
+        = @messages_with_metrics[0].metrics[0].data[:likes]
+        like(s)
+        %i.refresh.icon
+        = @messages_with_metrics[0].metrics[0].data[:shares]
+        shares
+        %i.comment.icon
+        = @messages_with_metrics[0].metrics[0].data[:comments]
+        comments
+      .extra.content
+        .ui.label.basic.teal
+          %i.checkmark.icon
+          = @messages_with_metrics[0].metrics[0].data[:click_rate].to_s + "%"
+          Click rate
+        %br/
+        (#{@messages_with_metrics[0].metrics[0].data[:clicks]} clicks / #{@messages_with_metrics[0].metrics[0].data[:impressions]} impressions)
