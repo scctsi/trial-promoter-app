@@ -21,13 +21,16 @@ class MessageFactory
       while message_template_index < shuffled_message_templates.count
         parameters[:number_of_messages_per_day].times do |message_index_for_day|
           message_template = shuffled_message_templates[message_template_index]
+          # TODO: Select hashtags and images here!
+          random_image_id = message_template.image_pool.sample
           message_template_index += 1
           parameters[:platforms].each do |platform|
             parameters[:mediums].each do |medium|
               next if platform == :instagram && medium == :organic # Do not create organic instagram messages
-              # TODO: Select hashtags and images here!
               picked_social_media_profile = @social_media_profile_picker.pick(parameters[:social_media_profiles], platform, medium)
               message = parameters[:message_constructor].construct(experiment, message_template, platform, medium, picked_social_media_profile, publish_date, parameters[:posting_times][platform][message_index_for_day], message_template.hashtags)
+              message.image_present = :with
+              message.image_id = random_image_id
               message.save
               Pusher['progress'].trigger('progress', {:value => message_index, :total => parameters[:total_count], :event => 'Message generated'})
               message_index += 1
@@ -37,18 +40,8 @@ class MessageFactory
         publish_date += 1.day
       end
     end
-
-    select_images(experiment.messages)
   end
 
-  def select_images(messages)
-    messages.all.each do |message|
-      message.image_present = :with
-      message.image_id = message.message_template.image_pool.sample
-      message.save
-    end
-  end
-  
   def get_message_generation_parameters(experiment)
     parameters = {}
 

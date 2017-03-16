@@ -71,7 +71,7 @@ RSpec.describe MessageFactory do
     expect(parameters[:social_media_profiles]).to eq(@experiment.social_media_profiles)
   end
 
-  it 'creates a set of messages given five message templates, 1 social network, 1 medium, images for all messages, 1 cycle, 1 message per network per day and no hashtags' do
+  it 'creates a set of messages given five message templates, 1 social network, 1 medium, images for all messages, 1 cycle, 1 message per network per day (no hashtags)' do
     @experiment.facebook_posting_times = "12:30 PM"
     @experiment.save
     message_generation_parameter_set = MessageGenerationParameterSet.new do |m|
@@ -123,7 +123,7 @@ RSpec.describe MessageFactory do
     end
   end
 
-  it 'creates a set of messages given five message templates, 3 social networks, 2 mediums, images for all messages, 3 cycles, 5 messages per network per day and selectes random hashtags where feasible' do
+  it 'creates a set of messages given five message templates, 3 social networks, 2 mediums, images for all messages, 3 cycles, 5 messages per network per day (random hashtags)' do
     message_generation_parameter_set = MessageGenerationParameterSet.new do |m|
       m.social_network_choices = [:facebook, :instagram, :twitter]
       m.medium_choices = ['ad', 'organic']
@@ -184,7 +184,14 @@ RSpec.describe MessageFactory do
     expect(organic_facebook_messages_on_first_day[3].scheduled_date_time).to eq(publish_date_time)
     publish_date_time = publish_date_time.change({ hour: 16, min: 30, sec: 0 })
     expect(organic_facebook_messages_on_first_day[4].scheduled_date_time).to eq(publish_date_time)
-
+    # Were the same images used across all platforms and mediums for the very first message_template used?
+    messages_created_from_first_message_template_for_first_cycle = messages.select{ |message| message.message_template == @message_templates[0] }[0..4]
+    expect(messages_created_from_first_message_template_for_first_cycle[0].image).to eq(messages_created_from_first_message_template_for_first_cycle[1].image)
+    expect(messages_created_from_first_message_template_for_first_cycle[0].image).to eq(messages_created_from_first_message_template_for_first_cycle[2].image)
+    expect(messages_created_from_first_message_template_for_first_cycle[0].image).to eq(messages_created_from_first_message_template_for_first_cycle[3].image)
+    expect(messages_created_from_first_message_template_for_first_cycle[0].image).to eq(messages_created_from_first_message_template_for_first_cycle[4].image)
+    # TODO: How do I test that the same hashtags were used?
+    
     # Does every message have a suitable social media profile selected?
     messages.each do |message|
       expect(message.social_media_profile).to eq(@suitable_social_media_profiles[1])
