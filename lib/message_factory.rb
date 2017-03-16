@@ -21,14 +21,20 @@ class MessageFactory
       while message_template_index < shuffled_message_templates.count
         parameters[:number_of_messages_per_day].times do |message_index_for_day|
           message_template = shuffled_message_templates[message_template_index]
-          # TODO: Select hashtags here!
+          # The message contructor randomly selects a hashtag.
+          # However since we require that the hashtag be the same across all the messages generated from this template, we select the hashtag here and put it in an array (the message constructor requires this to be an array).
+          if !message_template.hashtags.nil? && message_template.hashtags.length > 0
+            randomly_selected_hashtags = [message_template.hashtags.sample]
+          else
+            randomly_selected_hashtags = nil
+          end
           random_image_id = message_template.image_pool.sample
           message_template_index += 1
           parameters[:platforms].each do |platform|
             parameters[:mediums].each do |medium|
               next if platform == :instagram && medium == :organic # Do not create organic instagram messages
               picked_social_media_profile = @social_media_profile_picker.pick(parameters[:social_media_profiles], platform, medium)
-              message = parameters[:message_constructor].construct(experiment, message_template, platform, medium, picked_social_media_profile, publish_date, parameters[:posting_times][platform][message_index_for_day], message_template.hashtags)
+              message = parameters[:message_constructor].construct(experiment, message_template, platform, medium, picked_social_media_profile, publish_date, parameters[:posting_times][platform][message_index_for_day], randomly_selected_hashtags)
               message.image_present = :with
               message.image_id = random_image_id
               message.save
