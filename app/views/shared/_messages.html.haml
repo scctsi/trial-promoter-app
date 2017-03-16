@@ -8,11 +8,10 @@
     = scheduled_date.strftime("%b #{scheduled_date.day.ordinalize}")
   - grouped_messages_by_platform = messages_by_scheduled_date.group_by(&:platform)
   - grouped_messages_by_platform.each do |platform, messages_by_platform|
-    - if platform == :facebook
-      %h4.ui.header
-        %i.facebook.icon
-        .content
-          = platform.to_s.titleize
+    %h4.ui.header
+      %i{ :class => "#{platform.to_s} icon"}
+      .content
+        = platform.to_s.titleize
     .ui.items
       - messages_by_platform.each do |message|
         - show_label = false
