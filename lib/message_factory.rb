@@ -21,7 +21,7 @@ class MessageFactory
       while message_template_index < shuffled_message_templates.count
         parameters[:number_of_messages_per_day].times do |message_index_for_day|
           message_template = shuffled_message_templates[message_template_index]
-          # TODO: Select hashtags and images here!
+          # TODO: Select hashtags here!
           random_image_id = message_template.image_pool.sample
           message_template_index += 1
           parameters[:platforms].each do |platform|
