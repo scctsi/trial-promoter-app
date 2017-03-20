@@ -68,5 +68,11 @@ RSpec.describe ClickMeterClient do
       expect(message.persisted?).to be_truthy
       expect(message.click_meter_tracking_link.persisted?).to be_truthy
     end
+    
+    it 'can create a fake Click Meter tracking link for development environments' do
+      # Click Meter uses "names" for tracking links. These names are similar to what bit.ly does: bit.ly.com/<NAME>.
+      # Once these names are used, new links cannot be created with these names. 
+      # Since multiple development environments might be trying to create the same name even if we did get a development domain (think 5 development environmentsd all trying to create links with the same name), we get around this (for now) by returning fake tracking links for use in development.
+    end
   end
 end

@@ -18,6 +18,21 @@ class Experiment < ActiveRecord::Base
   include ActiveModel::Validations
 
   validates_with ExperimentValidator
+  # REF: http://rawsyntax.com/blog/url-validation-in-rails-3-and-ruby-in-general/
+  class UrlValidator < ActiveModel::EachValidator
+    def validate_each(record, attribute, value)
+      begin
+        return if value.blank?
+        uri = Addressable::URI.parse(value)
+
+        if !["http","https","ftp"].include?(uri.scheme)
+          raise Addressable::URI::InvalidURIError
+        end
+      rescue Addressable::URI::InvalidURIError
+        record.errors[attribute] << "Invalid URL"
+      end
+    end
+  end
   validates :name, presence: true
   validates :message_distribution_start_date, presence: true
 
@@ -26,6 +41,7 @@ class Experiment < ActiveRecord::Base
   has_many :messages, as: :message_generating
   has_many :analytics_files, as: :message_generating
   has_and_belongs_to_many :social_media_profiles
+  validates :tracking_url_custom_domain_name, :url => true
 
   accepts_nested_attributes_for :message_generation_parameter_set, update_only: true
 
