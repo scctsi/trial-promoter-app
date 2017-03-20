@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170320191707) do
+ActiveRecord::Schema.define(version: 20170320225425) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -127,6 +127,8 @@ ActiveRecord::Schema.define(version: 20170320191707) do
     t.text     "facebook_posting_times"
     t.text     "instagram_posting_times"
     t.string   "tracking_url_custom_domain_name"
+    t.integer  "click_meter_group_id"
+    t.integer  "click_meter_domain_id"
   end
 
   create_table "experiments_social_media_profiles", force: :cascade do |t|

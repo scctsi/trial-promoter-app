@@ -54,6 +54,35 @@ class ClickMeterClient
     delete("http://apiv2.clickmeter.com:80/datapoints/#{tracking_link_id}", :headers => { 'Content-Type' => 'application/json; charset=UTF-8', 'X-Clickmeter-Authkey' => Setting[:click_meter_api_key]} )
   end
   
+  def self.get_groups
+    groups = []
+    
+    response = get("http://apiv2.clickmeter.com:80/groups", :headers => { 'Content-Type' => 'application/json; charset=UTF-8', 'X-Clickmeter-Authkey' => Setting[:click_meter_api_key]} )
+    
+    response.parsed_response["entities"].each do |group|
+      group_details = get("http://apiv2.clickmeter.com:80/groups/#{group["id"]}", :headers => { 'Content-Type' => 'application/json; charset=UTF-8', 'X-Clickmeter-Authkey' => Setting[:click_meter_api_key]} )
+      if group_details["deleted"] != true
+        groups << OpenStruct.new(id: group_details["id"], name: group_details["name"])
+      end
+    end
+    
+    groups
+  end
+
+  def self.get_domains
+    domains = []
+    
+    response = get("http://apiv2.clickmeter.com:80/domains", :headers => { 'Content-Type' => 'application/json; charset=UTF-8', 'X-Clickmeter-Authkey' => Setting[:click_meter_api_key]} )
+    
+    response.parsed_response["entities"].each do |domain|
+      domain_details = get("http://apiv2.clickmeter.com:80/domains/#{domain["id"]}", :headers => { 'Content-Type' => 'application/json; charset=UTF-8', 'X-Clickmeter-Authkey' => Setting[:click_meter_api_key]} )
+      domains << OpenStruct.new(id: domain_details["id"], name: domain_details["name"])
+    end
+    
+    domains << OpenStruct.new(id: 1501, name: '9nl.es')
+    domains
+  end
+  
   def self.create_click_meter_tracking_link(message, group_id, domain_id)
     click_meter_tracking_link = create_tracking_link(group_id, domain_id, TrackingUrl.campaign_url(message), message.to_param, BijectiveFunction.encode(message.id))
     message.click_meter_tracking_link = click_meter_tracking_link

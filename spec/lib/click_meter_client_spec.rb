@@ -9,7 +9,7 @@ RSpec.describe ClickMeterClient do
   end
 
   describe "(development only tests)", :development_only_tests => true do
-    it 'returns the body of the POST request for creating a tracking link via the ClickMeter API' do
+    it 'returns the body of the POST request for creating a tracking link via the Click Meter API' do
       post_request_body = ClickMeterClient.post_request_body_for_create_tracking_link(571973, 1501, 'http://www.sc-ctsi.org', '1-tcors-message-1', BijectiveFunction.encode(1))
 
       expect(post_request_body["type"]).to eq(0)
@@ -96,6 +96,28 @@ RSpec.describe ClickMeterClient do
         ClickMeterClient.delete_tracking_link(tracking_link_id)
         click_meter_tracking_link = ClickMeterClient.get_tracking_link(tracking_link_id)
         expect(click_meter_tracking_link).to be nil
+      end
+    end
+    
+    it 'gets a list of all groups using the Click Meter API' do
+      VCR.use_cassette 'click_meter/get_groups' do
+        groups = ClickMeterClient.get_groups
+        expect(groups.count).to eq(1)
+        expect(groups[0].id).to eq(571973)
+        expect(groups[0].name).to eq("Default")
+      end
+    end
+
+    it 'gets a list of all domains using the Click Meter API' do
+      VCR.use_cassette 'click_meter/get_domains' do
+        domains = ClickMeterClient.get_domains
+        expect(domains.count).to eq(3)
+        expect(domains[0].id).to eq(836)
+        expect(domains[0].name).to eq("9nl.it")
+        expect(domains[1].id).to eq(2361)
+        expect(domains[1].name).to eq("padlock.link")
+        expect(domains[2].id).to eq(1501)
+        expect(domains[2].name).to eq("9nl.es")
       end
     end
  
