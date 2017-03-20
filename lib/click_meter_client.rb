@@ -21,6 +21,10 @@ class ClickMeterClient
 
   def self.get_tracking_link(tracking_link_id)
     response = get("http://apiv2.clickmeter.com:80/datapoints/#{tracking_link_id}", :headers => { 'Content-Type' => 'application/json; charset=UTF-8', 'X-Clickmeter-Authkey' => Setting[:click_meter_api_key]} )
+    # Non-existant tracking link?
+    return nil if response.parsed_response['httpErrorCode'] && response.parsed_response['httpErrorCode'] == 404
+    # Deleted link?
+    return nil if response.parsed_response['status'] && response.parsed_response['status'] == 3
     
     click_meter_tracking_link = ClickMeterTrackingLink.new
     click_meter_tracking_link.click_meter_id = response.parsed_response["id"]
@@ -44,6 +48,10 @@ class ClickMeterClient
     click_meter_tracking_link.click_meter_uri = response.parsed_response["uri"]
     
     click_meter_tracking_link
+  end
+  
+  def self.delete_tracking_link(tracking_link_id)
+    delete("http://apiv2.clickmeter.com:80/datapoints/#{tracking_link_id}", :headers => { 'Content-Type' => 'application/json; charset=UTF-8', 'X-Clickmeter-Authkey' => Setting[:click_meter_api_key]} )
   end
   
   def self.create_click_meter_tracking_link(message, group_id, domain_id)

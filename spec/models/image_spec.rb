@@ -53,7 +53,7 @@ RSpec.describe Image do
     expect(images_for_first_experiment[0].experiment_list).to eq([experiments[0].to_param])
   end
 
-  it 'triggers a callback when the image is destroyed' do
+  it 'triggers a callback when an image is destroyed' do
     image = create(:image)
     allow(image).to receive(:delete_image_from_s3)
 

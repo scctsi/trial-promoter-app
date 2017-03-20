@@ -30,8 +30,28 @@ RSpec.describe ClickMeterClient do
       expect(click_meter_tracking_link.tracking_url).to eq('http://9nl.es/name-unique-to-sc-ctsi')
       expect(click_meter_tracking_link.destination_url).to eq('http://www.sc-ctsi.org')
     end
+    
+    it 'returns nil if trying to get a non-existent tracking link' do
+      click_meter_tracking_link = nil
+      
+      VCR.use_cassette 'click_meter/get_non_existent_tracking_link' do
+        click_meter_tracking_link = ClickMeterClient.get_tracking_link('non-existent')
+      end
 
-    it 'uses the Click Meter API To create a tracking link' do
+      expect(click_meter_tracking_link).to be nil
+    end
+
+    it 'returns nil if trying to get a deleted tracking link' do
+      click_meter_tracking_link = nil
+      
+      VCR.use_cassette 'click_meter/get_deleted_tracking_link' do
+        click_meter_tracking_link = ClickMeterClient.get_tracking_link('11067935')
+      end
+
+      expect(click_meter_tracking_link).to be nil
+    end
+
+    it 'uses the Click Meter API to create a tracking link' do
       click_meter_tracking_link = nil
       VCR.use_cassette 'click_meter/get_tracking_link' do
         click_meter_tracking_link = ClickMeterClient.get_tracking_link('9948001')
@@ -68,7 +88,17 @@ RSpec.describe ClickMeterClient do
       expect(message.persisted?).to be_truthy
       expect(message.click_meter_tracking_link.persisted?).to be_truthy
     end
-    
+   
+    it 'deletes a Click Meter tracking link using the Click Meter API' do
+      VCR.use_cassette 'click_meter/delete_tracking_link' do
+        tracking_link = ClickMeterClient.create_tracking_link(571973, 1501, 'http://www.sc-ctsi.org', 'SC CTSI', 'name-unique-to-sc-ctsi-to-be-deleted-2')
+        tracking_link_id = tracking_link.click_meter_id
+        ClickMeterClient.delete_tracking_link(tracking_link_id)
+        click_meter_tracking_link = ClickMeterClient.get_tracking_link(tracking_link_id)
+        expect(click_meter_tracking_link).to be nil
+      end
+    end
+ 
     it 'can create a fake Click Meter tracking link for development environments' do
       # Click Meter uses "names" for tracking links. These names are similar to what bit.ly does: bit.ly.com/<NAME>.
       # Once these names are used, new links cannot be created with these names. 
