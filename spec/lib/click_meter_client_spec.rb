@@ -99,7 +99,7 @@ RSpec.describe ClickMeterClient do
       end
     end
     
-    it 'gets a list of all groups using the Click Meter API' do
+    it 'gets an array of all groups using the Click Meter API' do
       VCR.use_cassette 'click_meter/get_groups' do
         groups = ClickMeterClient.get_groups
         expect(groups.count).to eq(1)
@@ -108,7 +108,16 @@ RSpec.describe ClickMeterClient do
       end
     end
 
-    it 'gets a list of all domains using the Click Meter API' do
+    it 'returns an empty array of all groups using the Click Meter API when the Click Meter API is not set' do
+      allow(Setting).to receive(:[]).with(:click_meter_api_key).and_return(nil)
+
+      VCR.use_cassette 'click_meter/get_groups_click_meter_api_not_set' do
+        groups = ClickMeterClient.get_groups
+        expect(groups).to eq([])
+      end
+    end
+
+    it 'gets an array of all domains using the Click Meter API' do
       VCR.use_cassette 'click_meter/get_domains' do
         domains = ClickMeterClient.get_domains
         expect(domains.count).to eq(3)
@@ -118,6 +127,15 @@ RSpec.describe ClickMeterClient do
         expect(domains[1].name).to eq("padlock.link")
         expect(domains[2].id).to eq(1501)
         expect(domains[2].name).to eq("9nl.es")
+      end
+    end
+
+    it 'gets an empty array of all domains using the Click Meter API when the Click Meter API is not set' do
+      allow(Setting).to receive(:[]).with(:click_meter_api_key).and_return(nil)
+
+      VCR.use_cassette 'click_meter/get_domains_click_meter_api_not_set' do
+        domains = ClickMeterClient.get_domains
+        expect(domains).to eq([])
       end
     end
  

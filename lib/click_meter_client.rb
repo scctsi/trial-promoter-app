@@ -55,6 +55,8 @@ class ClickMeterClient
   end
   
   def self.get_groups
+    # Click Meter API key not set?
+    return [] if Setting[:click_meter_api_key].blank?
     groups = []
     
     response = get("http://apiv2.clickmeter.com:80/groups", :headers => { 'Content-Type' => 'application/json; charset=UTF-8', 'X-Clickmeter-Authkey' => Setting[:click_meter_api_key]} )
@@ -70,6 +72,8 @@ class ClickMeterClient
   end
 
   def self.get_domains
+    # Click Meter API key not set?
+    return [] if Setting[:click_meter_api_key].blank?
     domains = []
     
     response = get("http://apiv2.clickmeter.com:80/domains", :headers => { 'Content-Type' => 'application/json; charset=UTF-8', 'X-Clickmeter-Authkey' => Setting[:click_meter_api_key]} )
