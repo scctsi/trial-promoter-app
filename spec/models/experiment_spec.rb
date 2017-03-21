@@ -30,30 +30,6 @@ RSpec.describe Experiment, type: :model do
   it { is_expected.to have_many(:analytics_files) }
   it { is_expected.to have_and_belong_to_many :social_media_profiles }
 
-  it 'validates the custom domain name for tracking URLs' do
-    experiment = build(:experiment)
-    
-    experiment.tracking_url_custom_domain_name = 'trialpromoter'
-    
-    expect(experiment.valid?).to be false
-  end
-  
-  it 'validates that a scheme (http or https) is specified for the custom domain name for tracking URLs' do
-    experiment = build(:experiment)
-    
-    experiment.tracking_url_custom_domain_name = 'trialpromoter.org'
-    
-    expect(experiment.valid?).to be false
-  end
-
-  it 'validates a correct URL successfully' do
-    experiment = build(:experiment)
-    
-    experiment.tracking_url_custom_domain_name = 'http://trialpromoter.org'
-    
-    expect(experiment.valid?).to be true
-  end
-
   it 'returns an array of all possible times in a day' do
     expect(Experiment.allowed_times.count).to be(12 * 60 * 2)
   end
