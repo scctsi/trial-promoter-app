@@ -97,7 +97,7 @@ class ClickMeterClient
     if Rails.env.development? || Rails.env.test? # Create a "fake" Click Meter tracking link on development
       message.click_meter_tracking_link = ClickMeterTrackingLink.new
       message.click_meter_tracking_link.click_meter_id = message.id.to_s
-      message.click_meter_tracking_link.click_meter_uri = "/datapoints/#{message.id.to_s}"
+      message.click_meter_tracking_link.click_meter_uri = "/datapoints/#{message.id}"
       message.click_meter_tracking_link.tracking_url = "http://development.tracking-domain.com/#{BijectiveFunction.encode(message.id)}"
       message.click_meter_tracking_link.destination_url = TrackingUrl.campaign_url(message)
       message.save
