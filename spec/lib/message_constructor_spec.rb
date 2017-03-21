@@ -7,30 +7,13 @@ RSpec.describe MessageConstructor do
     @social_media_profile = create(:social_media_profile)
   end
 
-  it 'does not try to replace the {url} variable if {url} is missing in the content of the message_template' do
-    message_template = build(:message_template, content: 'This is a message template containing no variables')
+  it 'never replaces the {url} variable during construction' do
+    message_template = build(:message_template, content: 'This is a message template containing a {url} variable')
 
     message = @message_constructor.construct(@experiment, message_template, :facebook, :ad, @social_media_profile)
 
     expect(message.valid?).to be true
-    expect(message.content).to eq("This is a message template containing no variables")
-    expect(message.message_template).to eq(message_template)
-    expect(message.promoted_website_url).to eq(message_template.promoted_website_url)
-    expect(message.message_generating).to eq(@experiment)
-    expect(message.platform).to eq :facebook
-    expect(message.medium).to be :ad
-    expect(message.image_present).to eq(:without)
-    expect(message.image).to be_nil
-    expect(message.social_media_profile).to eq(@social_media_profile)
-  end
-  
-  it 'constructs a message and replaces the {url} variable with the value of promoted_website_url in the message template' do
-    message_template = build(:message_template, content: 'This is a message template containing {url} variables')
-
-    message = @message_constructor.construct(@experiment, message_template, :facebook, :ad, @social_media_profile)
-
-    expect(message.valid?).to be true
-    expect(message.content).to eq("This is a message template containing #{message_template.promoted_website_url} variables")
+    expect(message.content).to eq("This is a message template containing a {url} variable")
     expect(message.message_template).to eq(message_template)
     expect(message.promoted_website_url).to eq(message_template.promoted_website_url)
     expect(message.message_generating).to eq(@experiment)
@@ -42,12 +25,12 @@ RSpec.describe MessageConstructor do
   end
   
   it 'sets a date and time for the message' do
-    message_template = build(:message_template, content: 'This is a message template containing {url} variables')
+    message_template = build(:message_template, content: 'This is a message template containing a {url} variable')
 
     message = @message_constructor.construct(@experiment, message_template, :facebook, :ad, @social_media_profile, DateTime.new(2017, 1, 1), DateTime.new(2017, 1, 1, 1, 30, 0))
 
     expect(message.valid?).to be true
-    expect(message.content).to eq("This is a message template containing #{message_template.promoted_website_url} variables")
+    expect(message.content).to eq("This is a message template containing a {url} variable")
     expect(message.message_template).to eq(message_template)
     expect(message.promoted_website_url).to eq(message_template.promoted_website_url)
     expect(message.message_generating).to eq(@experiment)
@@ -60,12 +43,12 @@ RSpec.describe MessageConstructor do
   end
   
   it 'appends a random hashtag from an array of hashtags to the message content' do
-    message_template = build(:message_template, content: 'This is a message template containing {url} variables', hashtags: ['#hashtag1', '#hashtag2', '#hashtag3'])
+    message_template = build(:message_template, content: 'This is a message template containing a {url} variable', hashtags: ['#hashtag1', '#hashtag2', '#hashtag3'])
 
     message = @message_constructor.construct(@experiment, message_template, :facebook, :ad, @social_media_profile, DateTime.new(2017, 1, 1), DateTime.new(2017, 1, 1, 1, 30, 0), ['#hashtag1,#hashtag2,#hashtag3'])
 
     expect(message.valid?).to be true
-    expect(message.content).to include("This is a message template containing #{message_template.promoted_website_url} variables")
+    expect(message.content).to include("This is a message template containing a {url} variable")
     expect(message.message_template).to eq(message_template)
     expect(message.promoted_website_url).to eq(message_template.promoted_website_url)
     expect(message.message_generating).to eq(@experiment)
@@ -79,13 +62,13 @@ RSpec.describe MessageConstructor do
   end
 
   it 'appends a random hashtag from the fittable hashtags to the contents of a Twitter message' do
-    message_template = build(:message_template, content: 'This is a message template containing {url} variables', hashtags: ['#hashtag1', '#hashtag2', '#hashtag3'])
+    message_template = build(:message_template, content: 'This is a message template containing a {url} variable', hashtags: ['#hashtag1', '#hashtag2', '#hashtag3'])
 
     allow(MessageConstructor).to receive(:fittable_hashtags).and_return(['#hashtag1', '#hashtag2', '#hashtag3'])
     message = @message_constructor.construct(@experiment, message_template, :twitter, :ad, @social_media_profile, DateTime.new(2017, 1, 1), DateTime.new(2017, 1, 1, 1, 30, 0), ['#hashtag1,#hashtag2,#hashtag3'])
 
     expect(message.valid?).to be true
-    expect(message.content).to include("This is a message template containing #{message_template.promoted_website_url} variables")
+    expect(message.content).to include("This is a message template containing a {url} variable")
     expect(message.message_template).to eq(message_template)
     expect(message.promoted_website_url).to eq(message_template.promoted_website_url)
     expect(message.message_generating).to eq(@experiment)
@@ -97,7 +80,39 @@ RSpec.describe MessageConstructor do
     expect(message.scheduled_date_time).to eq(DateTime.new(2017, 1, 1, 1, 30, 0))
     expect(MessageConstructor.fittable_hashtags(message.content, message_template.hashtags).any? {|hashtag| message.content.include?(hashtag)}).to be true
   end
+  
+  it 'replaces {url} in the content of a message with a given URL' do
+    message = build(:message, content: 'This is a message containing a {url} variable')
 
+    @message_constructor.replace_url_variable(message, 'http://tracking-url.com')
+    
+    expect(message.content).to eq('This is a message containing a http://tracking-url.com variable')
+  end
+
+  it 'ignores replacing {url} in the content of a message if it does not exist' do
+    message = build(:message, content: 'This is a message containing no variable')
+
+    @message_constructor.replace_url_variable(message, 'http://tracking-url.com')
+    
+    expect(message.content).to eq('This is a message containing no variable')
+  end
+
+  it 'adds a space at the end of a url (for extraction by Twitter and readability)' do
+    message = build(:message, content: 'This is a message containing a {url}variable')
+
+    @message_constructor.replace_url_variable(message, 'http://tracking-url.com')
+    
+    expect(message.content).to eq('This is a message containing a http://tracking-url.com variable')
+  end
+
+  it 'does not add a space if the url variable is at the end' do
+    message = build(:message, content: 'This is a message containing a {url}')
+
+    @message_constructor.replace_url_variable(message, 'http://tracking-url.com')
+    
+    expect(message.content).to eq('This is a message containing a http://tracking-url.com')
+  end
+  
   it 'does not append a hashtag if there are no allowed hashtags (empty array)' do
     message_template = build(:message_template, content: 'This is a message template containing {url} variables', hashtags: ['#hashtag1', '#hashtag2', '#hashtag3'])
 

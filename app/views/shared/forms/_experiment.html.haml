@@ -31,4 +31,8 @@
     = f.input :facebook_posting_times
     = f.input :instagram_posting_times
     = f.input :twitter_posting_times, :input_html => { :data => { 'allowed-times' => allowed_times }}
+    .ui.header
+      Click tracking (via Click Meter)
+    = f.input :click_meter_group_id, collection: @click_meter_groups, label_method: :name, value_method: :id, label: 'Click Meter campaign'
+    = f.input :click_meter_domain_id, collection: @click_meter_domains, label_method: :name, value_method: :id, label: 'Custom domain for tracking URLs'
     = f.button :submit

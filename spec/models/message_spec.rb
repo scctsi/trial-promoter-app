@@ -30,7 +30,7 @@ describe Message do
   it { is_expected.to belong_to :message_template }
   it { is_expected.to enumerize(:publish_status).in(:pending, :published_to_buffer, :published_to_social_network).with_default(:pending).with_predicates(true) }
   it { is_expected.to have_one :buffer_update }
-  it { is_expected.to have_one :click_meter_tracking_link }
+  it { is_expected.to have_one(:click_meter_tracking_link).dependent(:destroy) }
   it { is_expected.to have_many :metrics }
   it { is_expected.to belong_to(:message_generating) }
   it { is_expected.to enumerize(:platform).in(:twitter, :facebook, :instagram) }
@@ -168,5 +168,35 @@ describe Message do
 
       expect(@message.delayed?).to be(false)
     end
+  end
+  
+  it 'triggers a callback when a message is destroyed' do
+    message = create(:message)
+    allow(message).to receive(:delete_click_meter_tracking_link)
+
+    message.destroy
+
+    expect(message).to have_received(:delete_click_meter_tracking_link)
+  end
+  
+  it 'asks Click Meter to delete the corresponding tracking link during the before destroy callback' do
+    message = create(:message)
+    message.click_meter_tracking_link = ClickMeterTrackingLink.new
+    message.click_meter_tracking_link.click_meter_id = '101'
+    allow(ClickMeterClient).to receive(:delete_tracking_link)
+
+    message.delete_click_meter_tracking_link
+
+    expect(ClickMeterClient).to have_received(:delete_tracking_link).with('101')
+  end
+
+  it 'does not ask Click Meter to delete a tracking link (during the before destroy callback) if there is no associated ClickMeterTrackingLink' do
+    message = create(:message)
+    message.click_meter_tracking_link = nil
+    allow(ClickMeterClient).to receive(:delete_tracking_link)
+
+    message.delete_click_meter_tracking_link
+
+    expect(ClickMeterClient).not_to have_received(:delete_tracking_link).with('101')
   end
 end

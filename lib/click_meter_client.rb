@@ -21,6 +21,10 @@ class ClickMeterClient
 
   def self.get_tracking_link(tracking_link_id)
     response = get("http://apiv2.clickmeter.com:80/datapoints/#{tracking_link_id}", :headers => { 'Content-Type' => 'application/json; charset=UTF-8', 'X-Clickmeter-Authkey' => Setting[:click_meter_api_key]} )
+    # Non-existant tracking link?
+    return nil if response.parsed_response['httpErrorCode'] && response.parsed_response['httpErrorCode'] == 404
+    # Deleted link?
+    return nil if response.parsed_response['status'] && response.parsed_response['status'] == 3
     
     click_meter_tracking_link = ClickMeterTrackingLink.new
     click_meter_tracking_link.click_meter_id = response.parsed_response["id"]
@@ -46,9 +50,58 @@ class ClickMeterClient
     click_meter_tracking_link
   end
   
+  def self.delete_tracking_link(tracking_link_id)
+    delete("http://apiv2.clickmeter.com:80/datapoints/#{tracking_link_id}", :headers => { 'Content-Type' => 'application/json; charset=UTF-8', 'X-Clickmeter-Authkey' => Setting[:click_meter_api_key]} )
+  end
+  
+  def self.get_groups
+    # Click Meter API key not set?
+    return [] if Setting[:click_meter_api_key].blank?
+    groups = []
+    
+    response = get("http://apiv2.clickmeter.com:80/groups", :headers => { 'Content-Type' => 'application/json; charset=UTF-8', 'X-Clickmeter-Authkey' => Setting[:click_meter_api_key]} )
+    
+    response.parsed_response["entities"].each do |group|
+      group_details = get("http://apiv2.clickmeter.com:80/groups/#{group["id"]}", :headers => { 'Content-Type' => 'application/json; charset=UTF-8', 'X-Clickmeter-Authkey' => Setting[:click_meter_api_key]} )
+      if group_details["deleted"] != true
+        groups << OpenStruct.new(id: group_details["id"], name: group_details["name"])
+      end
+    end
+    
+    groups
+  end
+
+  def self.get_domains
+    # Click Meter API key not set?
+    return [] if Setting[:click_meter_api_key].blank?
+    domains = []
+    
+    response = get("http://apiv2.clickmeter.com:80/domains", :headers => { 'Content-Type' => 'application/json; charset=UTF-8', 'X-Clickmeter-Authkey' => Setting[:click_meter_api_key]} )
+    
+    response.parsed_response["entities"].each do |domain|
+      domain_details = get("http://apiv2.clickmeter.com:80/domains/#{domain["id"]}", :headers => { 'Content-Type' => 'application/json; charset=UTF-8', 'X-Clickmeter-Authkey' => Setting[:click_meter_api_key]} )
+      domains << OpenStruct.new(id: domain_details["id"], name: domain_details["name"])
+    end
+    
+    domains << OpenStruct.new(id: 1501, name: '9nl.es')
+    domains
+  end
+  
   def self.create_click_meter_tracking_link(message, group_id, domain_id)
-    click_meter_tracking_link = create_tracking_link(group_id, domain_id, TrackingUrl.campaign_url(message), message.to_param, BijectiveFunction.encode(message.id))
-    message.click_meter_tracking_link = click_meter_tracking_link
-    message.save
+    if Rails.env.production?
+      click_meter_tracking_link = create_tracking_link(group_id, domain_id, TrackingUrl.campaign_url(message), message.to_param, BijectiveFunction.encode(message.id))
+      message.click_meter_tracking_link = click_meter_tracking_link
+      message.save
+      message.click_meter_tracking_link.save
+    end
+    if Rails.env.development? || Rails.env.test? # Create a "fake" Click Meter tracking link on development
+      message.click_meter_tracking_link = ClickMeterTrackingLink.new
+      message.click_meter_tracking_link.click_meter_id = message.id.to_s
+      message.click_meter_tracking_link.click_meter_uri = "/datapoints/#{message.id}"
+      message.click_meter_tracking_link.tracking_url = "http://development.tracking-domain.com/#{BijectiveFunction.encode(message.id)}"
+      message.click_meter_tracking_link.destination_url = TrackingUrl.campaign_url(message)
+      message.save
+      message.click_meter_tracking_link.save
+    end
   end
 end

@@ -3,6 +3,8 @@ require 'rails_helper'
 RSpec.describe MessageFactory do
   before do
     @experiment = create(:experiment)
+    @experiment.click_meter_group_id = 1
+    @experiment.click_meter_domain_id = 2
     @suitable_social_media_profiles = create_list(:social_media_profile, 5)
     @suitable_social_media_profiles[0].platform = :facebook
     @suitable_social_media_profiles[0].allowed_mediums = [:ad]
@@ -23,6 +25,11 @@ RSpec.describe MessageFactory do
       message_template.image_pool = images.map(&:id)
       message_template.save
     end
+    # Add the {url} parameter to each message template.
+    @message_templates.each do |message_template|
+      message_template.content += '{url}'
+      message_template.save
+    end
     # Add some hashtags to the first 3 message templates
     @message_templates[0..2].each do |message_template|
       random_hashtags = ['#hashtag1,#hashtag2,#hashtag3','#hashtag1,#hashtag4,#hashtag5','#hashtag6,#hashtag7,#hashtag8']
@@ -37,6 +44,9 @@ RSpec.describe MessageFactory do
     @pusher_channel = double()
     allow(Pusher).to receive(:[]).with('progress').and_return(@pusher_channel)
     allow(@pusher_channel).to receive(:trigger)
+    # Set up click tracking
+    allow(ClickMeterClient).to receive(:create_click_meter_tracking_link).and_call_original
+    allow(ClickMeterClient).to receive(:delete_tracking_link)
   end
 
   it 'can be initialized with a social media profile picker' do
@@ -120,6 +130,19 @@ RSpec.describe MessageFactory do
       if !message.message_template.hashtags.nil? && message.message_template.hashtags.length > 0
         expect(message.message_template.hashtags.any? {|hashtag| message.content.include?(hashtag)}).to be true 
       end
+    end
+    
+    # Was a Click Meter tracking link created for each message?
+    expect(ClickMeterClient).to have_received(:create_click_meter_tracking_link).exactly(expected_generated_message_count).times.with(an_instance_of(Message), @experiment.click_meter_group_id, @experiment.click_meter_domain_id)
+    messages.each do |message|
+      expect(message.click_meter_tracking_link).not_to be_nil
+      # These next 4 lines are really only useful to ensure that on development machines we are getting back fake ClickMeter links.
+      expect(message.click_meter_tracking_link.click_meter_id).to eq(message.id.to_s)
+      expect(message.click_meter_tracking_link.click_meter_uri).to eq("/datapoints/#{message.id.to_s}")
+      expect(message.click_meter_tracking_link.tracking_url).to eq("http://development.tracking-domain.com/#{BijectiveFunction.encode(message.id)}")
+      expect(message.click_meter_tracking_link.destination_url).to eq(TrackingUrl.campaign_url(message))
+      # Was the tracking URL (code) used in place of the {url} variable?
+      expect(message.content.index(message.click_meter_tracking_link.tracking_url)).not_to be nil
     end
   end
 

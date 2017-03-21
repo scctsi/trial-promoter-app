@@ -28,6 +28,8 @@ class Message < ActiveRecord::Base
   extend Enumerize
   acts_as_ordered_taggable_on :experiments
 
+  before_destroy :delete_click_meter_tracking_link
+
   validates :content, presence: true
   validates :platform, presence: true
   validates :promoted_website_url, presence: true
@@ -42,7 +44,7 @@ class Message < ActiveRecord::Base
   belongs_to :image
   belongs_to :social_media_profile
   has_one :buffer_update
-  has_one :click_meter_tracking_link
+  has_one :click_meter_tracking_link, dependent: :destroy
   has_many :metrics do
     def << (value)
       source_metrics_exists = false
@@ -90,5 +92,9 @@ class Message < ActiveRecord::Base
 
   def delayed?
     return scheduled_date_time + 5.minutes < buffer_update.sent_from_date_time
+  end
+  
+  def delete_click_meter_tracking_link
+    ClickMeterClient.delete_tracking_link(click_meter_tracking_link.click_meter_id) if !click_meter_tracking_link.nil?
   end
 end
