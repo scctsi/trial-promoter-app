@@ -95,8 +95,6 @@ class Message < ActiveRecord::Base
   end
   
   def delete_click_meter_tracking_link
-    click_meter_client = ClickMeterClient.new
-    
-    click_meter_client.delete_tracking_link(click_meter_tracking_link.click_meter_id) if !click_meter_tracking_link.nil?
+    ClickMeterClient.delete_tracking_link(click_meter_tracking_link.click_meter_id) if !click_meter_tracking_link.nil?
   end
 end

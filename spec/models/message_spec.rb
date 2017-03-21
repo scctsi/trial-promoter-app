@@ -183,24 +183,20 @@ describe Message do
     message = create(:message)
     message.click_meter_tracking_link = ClickMeterTrackingLink.new
     message.click_meter_tracking_link.click_meter_id = '101'
-    click_meter_client_double = double('click_meter_client')
-    allow(click_meter_client_double).to receive(:delete_tracking_link)
-    allow(ClickMeterClient).to receive(:new).and_return(click_meter_client_double)
+    allow(ClickMeterClient).to receive(:delete_tracking_link)
 
     message.delete_click_meter_tracking_link
 
-    expect(click_meter_client_double).to have_received(:delete_tracking_link).with('101')
+    expect(ClickMeterClient).to have_received(:delete_tracking_link).with('101')
   end
 
   it 'does not ask Click Meter to delete a tracking link (during the before destroy callback) if there is no associated ClickMeterTrackingLink' do
     message = create(:message)
     message.click_meter_tracking_link = nil
-    click_meter_client_double = double('click_meter_client')
-    allow(click_meter_client_double).to receive(:delete_tracking_link)
-    allow(ClickMeterClient).to receive(:new).and_return(click_meter_client_double)
+    allow(ClickMeterClient).to receive(:delete_tracking_link)
 
     message.delete_click_meter_tracking_link
 
-    expect(click_meter_client_double).not_to have_received(:delete_tracking_link).with('101')
+    expect(ClickMeterClient).not_to have_received(:delete_tracking_link).with('101')
   end
 end

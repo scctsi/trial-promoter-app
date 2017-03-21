@@ -3,8 +3,6 @@ class MessageConstructor
     # A message_generating_instance is either an Experiment or Campaign, the two models that can generate messages.
     message = Message.new(content: message_template.content)
     
-    message.content.gsub!('{url}', message_template.promoted_website_url) if !message.content.index('{url}').nil?
-      
     # Set all associations so that we can trace the exact context in which a message was constructed.
     message.promoted_website_url = message_template.promoted_website_url
     message.message_generating = message_generating_instance
@@ -24,6 +22,17 @@ class MessageConstructor
     message
   end
   
+  def replace_url_variable(message, url)
+    index_of_url_variable = message.content.index('{url}')
+    return if index_of_url_variable.nil?
+    
+    if message.content[index_of_url_variable + 5] != ' ' and !message.content[index_of_url_variable + 5].nil?
+      message.content.gsub!('{url}', url + ' ')
+    else
+      message.content.gsub!('{url}', url)
+    end
+  end
+
   def self.fittable_hashtags(content, hashtags)
     twitter_message_content = content.gsub('{url}', '')
     return_value = []
