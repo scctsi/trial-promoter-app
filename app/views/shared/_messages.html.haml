@@ -52,6 +52,13 @@
               .ui.basic.small.label
                 %i.hashtag.icon
                 = message.social_media_profile.service_username
+            - if message.click_meter_tracking_link
+              .extra
+                .ui.list
+                  .item
+                    Tracking URL: #{message.click_meter_tracking_link.tracking_url}
+                  .item
+                    Destination URL: #{message.click_meter_tracking_link.destination_url}
 .ui.header
   .content
     = paginate messages
