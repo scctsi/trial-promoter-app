@@ -14,7 +14,10 @@
         %td= message_template.platforms.map{ |platform| platform.titleize }.join(', ')
         %td
           = render partial: 'shared/tag_list', locals: { tags: message_template.hashtags, hashtags: true }
-        %td= message_template.promoted_website_url
+        %td 
+          %a{:href => "#{message_template.promoted_website_url}", :target => '_blank'}
+            = message_template.promoted_website_url
+            %i.external.icon
         %td
           = render partial: 'shared/hash', locals: { hash: message_template.experiment_variables }
         %td.collapsing
