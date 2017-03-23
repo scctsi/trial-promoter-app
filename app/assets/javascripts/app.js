@@ -387,11 +387,15 @@ $(document).ready(function() {
     return filenames.join(',');
   }
 
-  function getImageCardsHtml(images, buttonType) {
+  function getImageCardsHtml(images, buttonType, filenameStartswithRestriction) {
     var html = '';
+    filenameStartswithRestriction = filenameStartswithRestriction || '';
 
     html += '<div class="ui cards">';
     images.forEach(function (image) {
+      if (filenameStartswithRestriction != '' && !(image.original_filename.startsWith(filenameStartswithRestriction))) {
+        return;
+      }
       html += '<div class="card">';
       html += '<div class="content">';
       html += '<div class="ui image">';
@@ -412,16 +416,16 @@ $(document).ready(function() {
     return html;
   }
 
-  function getImagePoolInterfaceHtml(selectedImages, unselectedImages, messageContent) {
+  function getImagePoolInterfaceHtml(selectedImages, unselectedImages, messageContent, filenameStartswithRestriction) {
     var html = '<div class="ui segment">' + messageContent + '</div>';
     html += '<div class="ui segment filenames-list">Filenames: ';
     html += getFilenames(selectedImages) + '</div>';
 
     html += '<h3 class="ui block header">Selected images</h3>';
-    html += getImageCardsHtml(selectedImages, 'remove');
+    html += getImageCardsHtml(selectedImages, 'remove', filenameStartswithRestriction);
 
     html += '<h3 class="ui block header">Unselected images</h3>';
-    html += getImageCardsHtml(unselectedImages, 'add');
+    html += getImageCardsHtml(unselectedImages, 'add', filenameStartswithRestriction);
 
     return html;
   }
@@ -462,6 +466,7 @@ $(document).ready(function() {
       var messageTemplateId = $(this).data('message-template-id');
       var messageContent = $(this).parent().siblings(':first').text();
       var $loadingButton = $(this);
+      var filenameStartswithRestriction = $(this).data('filename-startswith-restriction');
 
       $loadingButton.addClass('loading');
       $.ajax({
@@ -474,7 +479,7 @@ $(document).ready(function() {
           var selectedImages = retdata.selected_images;
           var unselectedImages = retdata.unselected_images;
 
-          html = getImagePoolInterfaceHtml(selectedImages, unselectedImages, messageContent);
+          html = getImagePoolInterfaceHtml(selectedImages, unselectedImages, messageContent, filenameStartswithRestriction);
 
           $loadingButton.removeClass('loading');
           $('#lightbox .image-list').html(html);

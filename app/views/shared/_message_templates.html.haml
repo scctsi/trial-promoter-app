@@ -18,7 +18,7 @@
         %td
           = render partial: 'shared/hash', locals: { hash: message_template.experiment_variables }
         %td.collapsing
-          %a.choose-images-button.ui.labeled.icon.button{ 'data-experiment-id': "#{experiment.id}", 'data-message-template-id': "#{message_template.id}" }
+          %a.choose-images-button.ui.labeled.icon.button{ 'data-experiment-id': "#{experiment.id}", 'data-message-template-id': "#{message_template.id}", 'data-filename-startswith-restriction': "#{message_template.experiment_variables['fda_campaign'].downcase}" }
             %i.image.icon
             Edit images
       - if message_template.warnings.count > 0
