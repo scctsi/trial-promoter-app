@@ -32,7 +32,7 @@ RSpec.describe BufferClient do
       expect(post_request_body[:text]).to eq(@message.content)
       expect(post_request_body[:shorten]).to eq(true)
       expect(post_request_body[:access_token]).to eq(Setting[:buffer_access_token])
-      expect(post_request_body[:media]).to eq({"thumbnail": @message.image.url, "photo": @message.image.url})
+      expect(post_request_body[:media]).to eq({"thumbnail" => @message.image.url, "photo" => @message.image.url})
     end
 
     it 'adds a scheduled_at key in the body of the POST request for a message that has a specifc scheduled date time' do
