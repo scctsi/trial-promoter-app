@@ -145,34 +145,36 @@ RSpec.describe Experiment, type: :model do
       @experiment = build(:experiment)
     end
 
-    it 'returns a hash with platform key and an array of DateTime instances value' do
-      @experiment.twitter_posting_times = '12:30 AM,12:30 PM,05:10 AM' 
+    it 'returns a hash with platform key and an array of hashes containing the hour and minute values' do
+      @experiment.twitter_posting_times = '12:30 AM,12:30 PM,05:10 AM,05:20 PM' 
       @experiment.facebook_posting_times = '12:30 AM,12:30 PM,05:10 AM' 
       @experiment.instagram_posting_times = '12:30 AM,12:30 PM,05:10 AM' 
       
-      posting_times_as_datetimes = @experiment.posting_times_as_datetimes
+      posting_times = @experiment.posting_times
       
-      expect(posting_times_as_datetimes.keys.count).to eq(3)
-      twitter_posting_times = posting_times_as_datetimes[:twitter]
-      expect(twitter_posting_times.count).to eq(3)
-      expect(twitter_posting_times[0].hour).to eq(0)
-      expect(twitter_posting_times[0].minute).to eq(30)
-      expect(twitter_posting_times[1].hour).to eq(12)
-      expect(twitter_posting_times[1].minute).to eq(30)
-      expect(twitter_posting_times[2].hour).to eq(5)
-      expect(twitter_posting_times[2].minute).to eq(10)
+      expect(posting_times.keys.count).to eq(3)
+      twitter_posting_times = posting_times[:twitter]
+      expect(twitter_posting_times.count).to eq(4)
+      expect(twitter_posting_times[0][:hour]).to eq(0)
+      expect(twitter_posting_times[0][:minute]).to eq(30)
+      expect(twitter_posting_times[1][:hour]).to eq(12)
+      expect(twitter_posting_times[1][:minute]).to eq(30)
+      expect(twitter_posting_times[2][:hour]).to eq(5)
+      expect(twitter_posting_times[2][:minute]).to eq(10)
+      expect(twitter_posting_times[3][:hour]).to eq(17)
+      expect(twitter_posting_times[3][:minute]).to eq(20)
     end
     
-    it 'returns a hash with platform key and an array of DateTime instances value with an empty array for missing platform times' do
+    it 'returns a hash with platform key and an empty array for missing platform times' do
       @experiment.twitter_posting_times = '12:30 AM,12:30 PM,05:10 AM' 
       @experiment.facebook_posting_times = '' 
       @experiment.instagram_posting_times = nil
       
-      posting_times_as_datetimes = @experiment.posting_times_as_datetimes
+      posting_times = @experiment.posting_times
       
-      expect(posting_times_as_datetimes.keys.count).to eq(3)
-      expect(posting_times_as_datetimes[:facebook]).to eq([])
-      expect(posting_times_as_datetimes[:instagram]).to eq([])
+      expect(posting_times.keys.count).to eq(3)
+      expect(posting_times[:facebook]).to eq([])
+      expect(posting_times[:instagram]).to eq([])
     end
   end
   

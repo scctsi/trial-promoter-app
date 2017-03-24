@@ -86,15 +86,26 @@ class Experiment < ActiveRecord::Base
     allowed_times
   end
   
-  def posting_times_as_datetimes
+  def posting_times
     hash_of_posting_times = {}
     
     {:facebook => facebook_posting_times, :instagram => instagram_posting_times, :twitter => twitter_posting_times}.each do |platform, platform_posting_times|
       array_of_posting_times = []
       
       if !platform_posting_times.blank?
-        array_of_posting_times = platform_posting_times.split(',')
-        array_of_posting_times.map! { |posting_time| DateTime.parse(posting_time, DateTime.new(2000, 1, 1)) }
+        platform_posting_times.split(',').each do |posting_time|
+          parsed_posting_time = {}
+          parsed_posting_time[:hour] = posting_time.split(':')[0].to_i
+          # Convert to military time
+          if !posting_time.index('AM').nil? # AM
+            parsed_posting_time[:hour] = 0 if parsed_posting_time[:hour] == 12
+          end
+          if !posting_time.index('PM').nil? # PM
+            parsed_posting_time[:hour] += 12 if parsed_posting_time[:hour] != 12
+          end
+          parsed_posting_time[:minute] = posting_time.split(':')[1].to_i
+          array_of_posting_times << parsed_posting_time
+        end
       end
       
       hash_of_posting_times[platform] = array_of_posting_times
