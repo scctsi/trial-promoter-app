@@ -47,6 +47,8 @@ RSpec.describe MessageFactory do
     # Set up click tracking
     allow(ClickMeterClient).to receive(:create_click_meter_tracking_link).and_call_original
     allow(ClickMeterClient).to receive(:delete_tracking_link)
+    # Set up action throttling
+    allow(@message_factory).to receive(:throttle).and_call_original
   end
 
   it 'can be initialized with a social media profile picker' do
@@ -111,6 +113,8 @@ RSpec.describe MessageFactory do
     end
     # Were the pusher events triggered?
     expect(@pusher_channel).to have_received(:trigger).exactly(expected_generated_message_count).times.with('progress', {:value => an_instance_of(Fixnum), :total => expected_generated_message_count, :event => 'Message generated'})
+    # Was the message generation throttled (limit of 10 req/sec for Click Meter)
+    expect(@message_factory).to have_received(:throttle).with(10).exactly(expected_generated_message_count).times
 
     # Has the scheduled date and time been set correctly?
     publish_date_time = @experiment.message_distribution_start_date
@@ -235,6 +239,8 @@ RSpec.describe MessageFactory do
     expect((messages.select{ |message| message.promoted_website_url.nil? }).count).to eq(0)
     # Were the pusher events triggered?
     expect(@pusher_channel).to have_received(:trigger).exactly(expected_generated_message_count).times.with('progress', {:value => an_instance_of(Fixnum), :total => expected_generated_message_count, :event => 'Message generated'})
+    # Was the message generation throttled (limit of 10 req/sec for Click Meter)
+    expect(@message_factory).to have_received(:throttle).with(10).exactly(expected_generated_message_count).times
 
     # # Has the scheduled date and time been set correctly?
     # TODO: Not sure how I can test this efficiently.
@@ -277,5 +283,32 @@ RSpec.describe MessageFactory do
     (0...(keys.count - 1)).each do |index|
       expect(grouped_messages[keys[index]].length == grouped_messages[keys[index + 1]].length)
     end
+  end
+  
+  it 'can throttle an action' do
+    allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('production'))
+    allow(Kernel).to receive(:sleep)
+    
+    @message_factory.throttle(10)
+    
+    expect(Kernel).to have_received(:sleep).with(0.1)
+  end
+  
+  it 'ignores throttling on development environments' do
+    allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('development'))
+    allow(Kernel).to receive(:sleep)
+    
+    @message_factory.throttle(10)
+    
+    expect(Kernel).not_to have_received(:sleep).with(0.1)
+  end
+
+  it 'ignores throttling on test environments' do
+    allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('test'))
+    allow(Kernel).to receive(:sleep)
+    
+    @message_factory.throttle(10)
+    
+    expect(Kernel).not_to have_received(:sleep).with(0.1)
   end
 end
