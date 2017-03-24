@@ -43,6 +43,7 @@ class MessageFactory
               message.save
               Pusher['progress'].trigger('progress', {:value => message_index, :total => parameters[:total_count], :event => 'Message generated'})
               message_index += 1
+              throttle(10)
             end
           end
         end
@@ -65,6 +66,10 @@ class MessageFactory
     parameters[:social_media_profiles] = experiment.social_media_profiles
 
     parameters
+  end
+  
+  def throttle(operations_per_second)
+    Kernel.sleep(1.0 / operations_per_second) if Rails.env.production?
   end
 end
 

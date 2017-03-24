@@ -22,6 +22,19 @@ RSpec.describe BufferClient do
       expect(post_request_body[:access_token]).to eq(Setting[:buffer_access_token])
     end
 
+    it 'returns the body of the POST request when the message contains an image' do
+      @message.image_present = :with
+      @message.image = create(:image)
+      @message.save
+      post_request_body = BufferClient.post_request_body_for_create(@message)
+
+      expect(post_request_body[:profile_ids]).to eq(@message.social_media_profile.buffer_id)
+      expect(post_request_body[:text]).to eq(@message.content)
+      expect(post_request_body[:shorten]).to eq(true)
+      expect(post_request_body[:access_token]).to eq(Setting[:buffer_access_token])
+      expect(post_request_body[:media]).to eq({"thumbnail" => @message.image.url, "photo" => @message.image.url})
+    end
+
     it 'adds a scheduled_at key in the body of the POST request for a message that has a specifc scheduled date time' do
       @message.scheduled_date_time = DateTime.new(2000, 1, 1, 6, 30, 0)
 
