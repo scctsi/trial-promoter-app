@@ -61,7 +61,7 @@ class MessageFactory
     parameters[:platforms] = experiment.message_generation_parameter_set.social_network_choices
     parameters[:mediums] = experiment.message_generation_parameter_set.medium_choices
     parameters[:message_templates] = MessageTemplate.belonging_to(experiment).to_a
-    parameters[:posting_times] = experiment.posting_times_as_datetimes
+    parameters[:posting_times] = experiment.posting_times
     parameters[:total_count] = experiment.message_generation_parameter_set.expected_generated_message_count(parameters[:message_templates].count)
     parameters[:social_media_profiles] = experiment.social_media_profiles
 
