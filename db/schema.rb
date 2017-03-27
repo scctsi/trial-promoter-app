@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170321000643) do
+ActiveRecord::Schema.define(version: 20170327222036) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -192,7 +192,6 @@ ActiveRecord::Schema.define(version: 20170321000643) do
     t.string   "image_present"
     t.integer  "image_id"
     t.string   "publish_status"
-    t.datetime "buffer_publish_date"
     t.datetime "scheduled_date_time"
     t.string   "social_network_id"
     t.integer  "social_media_profile_id"

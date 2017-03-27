@@ -6,7 +6,7 @@
         Generate messages
     .or
     %a.ui.labeled.icon.button{ href: "/experiments/#{@experiment.id}/send_to_buffer" }
-      %i.play.icon
+      %i.rocket.icon
       Send to Buffer
   -else
     %a#generate-messages-button.ui.primary.labeled.icon.button{:href => "/experiments/#{@experiment.id}/create_messages.html", 'data-experiment-id' => @experiment.id}
@@ -14,7 +14,7 @@
       Generate messages
     .or
     %a.ui.labeled.icon.button{ href: "/experiments/#{@experiment.id}/send_to_buffer" }
-      %i.play.icon
+      %i.rocket.icon
       Send to Buffer
 -if @experiment.message_distribution_start_date.nil?
   .ui.negative.message

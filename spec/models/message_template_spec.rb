@@ -11,6 +11,7 @@
 #  image_pool               :text
 #  original_image_filenames :text
 #  platforms                :text
+#  promoted_website_url     :string(2000)
 #
 
 require 'rails_helper'

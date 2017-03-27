@@ -9,9 +9,12 @@
 #  created_at                      :datetime         not null
 #  updated_at                      :datetime         not null
 #  analytics_file_todos_created    :boolean
-#  posting_times                   :text
+#  twitter_posting_times           :text
+#  facebook_posting_times          :text
+#  instagram_posting_times         :text
+#  click_meter_group_id            :integer
+#  click_meter_domain_id           :integer
 #
-
 
 class Experiment < ActiveRecord::Base
   include ActionView::Helpers::DateHelper
