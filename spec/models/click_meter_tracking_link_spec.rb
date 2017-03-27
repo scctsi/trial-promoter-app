@@ -31,11 +31,30 @@ RSpec.describe ClickMeterTrackingLink, type: :model do
   end
   
   it 'asks Click Meter to delete the corresponding tracking link during the before destroy callback' do
+    allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('production'))
     allow(ClickMeterClient).to receive(:delete_tracking_link)
 
     @click_meter_tracking_link.delete_click_meter_tracking_link
 
     expect(ClickMeterClient).to have_received(:delete_tracking_link).with('101')
+  end
+
+  it 'ignores asking Click Meter to delete the corresponding tracking link during the before destroy callback on development environment' do
+    allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('development'))
+    allow(ClickMeterClient).to receive(:delete_tracking_link)
+
+    @click_meter_tracking_link.delete_click_meter_tracking_link
+
+    expect(ClickMeterClient).not_to have_received(:delete_tracking_link).with('101')
+  end
+
+  it 'ignores asking Click Meter to delete the corresponding tracking link during the before destroy callback on test environment' do
+    allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('test'))
+    allow(ClickMeterClient).to receive(:delete_tracking_link)
+
+    @click_meter_tracking_link.delete_click_meter_tracking_link
+
+    expect(ClickMeterClient).not_to have_received(:delete_tracking_link).with('101')
   end
   
   it 'throttles requests to delete Click Meter tracking links' do

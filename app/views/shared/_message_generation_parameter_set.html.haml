@@ -20,7 +20,12 @@
       %td= message_generation_parameter_set.number_of_cycles
     %tr
       %td.collapsing Social media profiles
-      %td= message_generation_parameter_set.message_generating.social_media_profiles.map{ |social_media_profile| social_media_profile.service_username }.join(', ').chomp(',')
+      %td
+        .ui.list
+          - message_generation_parameter_set.message_generating.social_media_profiles.each do |social_media_profile|
+            .item
+              = social_media_profile.platform_icon
+              = social_media_profile.service_username
   %tfoot.full-width
     %tr
       %th{ colspan: 2 }
