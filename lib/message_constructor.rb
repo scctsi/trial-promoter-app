@@ -10,8 +10,8 @@ class MessageConstructor
     message.platform = platform
     message.medium = medium
     message.social_media_profile = social_media_profile
-    message.scheduled_date_time = DateTime.new(date.year, date.month, date.day, time_hash[:hour], time_hash[:minute], 0) if date != nil && time_hash != nil
-    message.scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local_to_utc(message.scheduled_date_time)
+    message.scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(date.year, date.month, date.day, time_hash[:hour], time_hash[:minute], 0) if date != nil && time_hash != nil
+    # message.scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local_to_utc(message.scheduled_date_time)
     if !hashtags.nil?
       if message.platform == :twitter
         fittable_hashtags = MessageConstructor.fittable_hashtags(message.content, hashtags) 

@@ -24,7 +24,7 @@ RSpec.describe MessageConstructor do
     expect(message.social_media_profile).to eq(@social_media_profile)
   end
   
-  it 'sets a date and time for the message' do
+  it 'sets a date and time for the message (America/Los_Angeles timezone)' do
     message_template = build(:message_template, content: 'This is a message template containing a {url} variable')
 
     message = @message_constructor.construct(@experiment, message_template, :facebook, :ad, @social_media_profile, DateTime.new(2017, 1, 1), {:hour => 10, :minute => 30})
@@ -39,7 +39,19 @@ RSpec.describe MessageConstructor do
     expect(message.image_present).to eq(:without)
     expect(message.image).to be_nil
     expect(message.social_media_profile).to eq(@social_media_profile)
-    expect(message.scheduled_date_time).to eq(DateTime.new(2017, 1, 1, 10, 30, 0))
+    expected_scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017, 1, 1, 10, 30, 0)
+    expect(message.scheduled_date_time).to eq(expected_scheduled_date_time)
+  end
+
+  it 'saves the scheduled date time in UTC' do
+    message_template = build(:message_template, content: 'This is a message template containing a {url} variable')
+    message = @message_constructor.construct(@experiment, message_template, :facebook, :ad, @social_media_profile, DateTime.new(2017, 1, 1), {:hour => 10, :minute => 30})
+
+    message.save
+    message.reload
+    
+    expected_scheduled_date_time = DateTime.new(2017, 1, 1, 18, 30, 0)
+    expect(message.scheduled_date_time).to eq(expected_scheduled_date_time)
   end
   
   it 'appends a random hashtag from an array of hashtags to the message content' do
@@ -57,7 +69,8 @@ RSpec.describe MessageConstructor do
     expect(message.image_present).to eq(:without)
     expect(message.image).to be_nil
     expect(message.social_media_profile).to eq(@social_media_profile)
-    expect(message.scheduled_date_time).to eq(DateTime.new(2017, 1, 1, 1, 30, 0))
+    expected_scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017, 1, 1, 10, 30, 0)
+    expect(message.scheduled_date_time).to eq(expected_scheduled_date_time)
     expect(message_template.hashtags.any? {|hashtag| message.content.include?(hashtag)}).to be true
   end
 
@@ -77,7 +90,8 @@ RSpec.describe MessageConstructor do
     expect(message.image_present).to eq(:without)
     expect(message.image).to be_nil
     expect(message.social_media_profile).to eq(@social_media_profile)
-    expect(message.scheduled_date_time).to eq(DateTime.new(2017, 1, 1, 1, 30, 0))
+    expected_scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017, 1, 1, 10, 30, 0)
+    expect(message.scheduled_date_time).to eq(expected_scheduled_date_time)
     expect(MessageConstructor.fittable_hashtags(message.content, message_template.hashtags).any? {|hashtag| message.content.include?(hashtag)}).to be true
   end
   
