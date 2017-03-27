@@ -115,8 +115,16 @@ RSpec.describe ExperimentsController, type: :controller do
         get :create_messages, id: @experiment, format: 'html'
       end
 
+      it 'assigns the requested experiment to @experiment' do
+        expect(assigns(:experiment)).to eq(@experiment)
+      end
+
       it 'enqueues a job to generate the messages' do
         expect(GenerateMessagesJob).to have_received(:perform_later).with(@experiment)
+      end
+      
+      it 'redirects to the experiment workspace' do
+        expect(response).to redirect_to experiment_url(Experiment.first)
       end
 
       it 'redirects unauthenticated user to sign-in page' do
@@ -131,6 +139,10 @@ RSpec.describe ExperimentsController, type: :controller do
     context 'JSON format' do
       before do
         get :create_messages, id: @experiment, format: 'json'
+      end
+
+      it 'assigns the requested experiment to @experiment' do
+        expect(assigns(:experiment)).to eq(@experiment)
       end
 
       it 'enqueues a job to generate the messages' do
@@ -150,6 +162,37 @@ RSpec.describe ExperimentsController, type: :controller do
 
         expect(response).to redirect_to :new_user_session
       end
+    end
+  end
+
+  describe 'GET #send_to_buffer' do
+    before do
+      @experiment = create(:experiment)
+      allow(PublishMessagesJob).to receive(:perform_later)
+    end
+
+    before do
+      get :send_to_buffer, id: @experiment
+    end
+
+    it 'enqueues a job to generate the messages' do
+      expect(PublishMessagesJob).to have_received(:perform_later)
+    end
+    
+    it 'sets a notice' do
+      expect(flash[:notice]).to eq('Messages scheduled for the next 7 days have been pushed to Buffer')
+    end
+
+    it 'redirects to the experiment workspace' do
+      expect(response).to redirect_to experiment_url(Experiment.first)
+    end
+
+    it 'redirects unauthenticated user to sign-in page' do
+      sign_out(:user)
+
+      get :send_to_buffer, id: @experiment
+
+      expect(response).to redirect_to :new_user_session
     end
   end
 

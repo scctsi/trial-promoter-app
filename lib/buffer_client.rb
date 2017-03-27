@@ -7,7 +7,7 @@ class BufferClient
     request_body = {
       :profile_ids => message.social_media_profile.buffer_id,
       :text => message.content,
-      :shorten => true,
+      :shorten => false,
       :access_token => Setting[:buffer_access_token]
     }
 

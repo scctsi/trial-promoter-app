@@ -15,6 +15,7 @@ RSpec.describe ExperimentPolicy, type: :policy do
     it { should_not be_permitted_to(:edit) }
     it { should_not be_permitted_to(:update) }
     it { should_not be_permitted_to(:create_messages) }
+    it { should_not be_permitted_to(:send_to_buffer) }
     it { should_not be_permitted_to(:create_analytics_file_todos) }
     it { should_not be_permitted_to(:set_experiment) }
     it { should_not be_permitted_to(:calculate_message_count) }
@@ -30,6 +31,7 @@ RSpec.describe ExperimentPolicy, type: :policy do
     it { should be_permitted_to(:create) }
     it { should be_permitted_to(:update) }
     it { should be_permitted_to(:create_messages) }
+    it { should be_permitted_to(:send_to_buffer) }
     it { should be_permitted_to(:create_analytics_file_todos) }
     it { should be_permitted_to(:set_experiment) }
     it { should be_permitted_to(:calculate_message_count) }
@@ -45,6 +47,7 @@ RSpec.describe ExperimentPolicy, type: :policy do
     it { should_not be_permitted_to(:create) }
     it { should_not be_permitted_to(:update) }
     it { should_not be_permitted_to(:create_messages) }
+    it { should_not be_permitted_to(:send_to_buffer) }
     it { should_not be_permitted_to(:create_analytics_file_todos) }
     it { should_not be_permitted_to(:set_experiment) }
     it { should_not be_permitted_to(:calculate_message_count) }
@@ -60,6 +63,7 @@ RSpec.describe ExperimentPolicy, type: :policy do
     it { should_not be_permitted_to(:create) }
     it { should_not be_permitted_to(:update) }
     it { should_not be_permitted_to(:create_messages) }
+    it { should_not be_permitted_to(:send_to_buffer) }
     it { should_not be_permitted_to(:create_analytics_file_todos) }
     it { should_not be_permitted_to(:set_experiment) }
     it { should_not be_permitted_to(:calculate_message_count) }

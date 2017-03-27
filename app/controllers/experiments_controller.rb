@@ -1,5 +1,5 @@
 class ExperimentsController < ApplicationController
-  before_action :set_experiment, only: [:show, :edit, :update, :parameterized_slug, :create_messages, :create_analytics_file_todos]
+  before_action :set_experiment, only: [:show, :edit, :update, :parameterized_slug, :send_to_buffer, :create_messages, :create_analytics_file_todos]
   before_action :set_click_meter_groups_and_domains, only: [:new, :edit]
   layout "workspace", only: [:show]
 
@@ -48,6 +48,12 @@ class ExperimentsController < ApplicationController
     else
       render :edit
     end
+  end
+  
+  def send_to_buffer
+    PublishMessagesJob.perform_later
+    flash[:notice] = 'Messages scheduled for the next 7 days have been pushed to Buffer'
+    redirect_to experiment_url(@experiment)
   end
 
   def create_messages

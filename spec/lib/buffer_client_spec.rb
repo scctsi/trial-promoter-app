@@ -18,7 +18,7 @@ RSpec.describe BufferClient do
 
       expect(post_request_body[:profile_ids]).to eq(@message.social_media_profile.buffer_id)
       expect(post_request_body[:text]).to eq(@message.content)
-      expect(post_request_body[:shorten]).to eq(true)
+      expect(post_request_body[:shorten]).to eq(false)
       expect(post_request_body[:access_token]).to eq(Setting[:buffer_access_token])
     end
 
@@ -30,7 +30,7 @@ RSpec.describe BufferClient do
 
       expect(post_request_body[:profile_ids]).to eq(@message.social_media_profile.buffer_id)
       expect(post_request_body[:text]).to eq(@message.content)
-      expect(post_request_body[:shorten]).to eq(true)
+      expect(post_request_body[:shorten]).to eq(false)
       expect(post_request_body[:access_token]).to eq(Setting[:buffer_access_token])
       expect(post_request_body[:media]).to eq({"thumbnail" => @message.image.url, "photo" => @message.image.url})
     end
