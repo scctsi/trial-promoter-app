@@ -5,7 +5,7 @@
         %i.send.icon
         Generate messages
     .or
-    %a.ui.labeled.icon.button
+    %a.ui.labeled.icon.button{ href: "/experiments/#{@experiment.id}/send_to_buffer" }
       %i.play.icon
       Send to Buffer
   -else
@@ -13,7 +13,7 @@
       %i.send.icon
       Generate messages
     .or
-    %a.ui.labeled.icon.button
+    %a.ui.labeled.icon.button{ href: "/experiments/#{@experiment.id}/send_to_buffer" }
       %i.play.icon
       Send to Buffer
 -if @experiment.message_distribution_start_date.nil?
@@ -35,16 +35,3 @@
       %li Send to Buffer: Trial Promoter sends messages to Buffer nightly (up to a week in advance). Please use this button to immediately send the messages scheduled for the next 7 days to Buffer.
   = render partial: 'shared/messages', locals: { messages: @messages }
 = render partial: 'message_generation_progress_modal', locals: { total: @experiment.message_generation_parameter_set.expected_generated_message_count(MessageTemplate.belonging_to(@experiment).count) }
-
-// .ui.buttons
-//   %a#message-templates-file-upload-button.ui.primary.labeled.icon.button{ 'data-experiment-id': @experiment.id }
-//     %i.upload.icon
-//     Import message templates
-//   .or
-// .ui.success.message.hidden.ask-refresh-page
-//   .header
-//     %p Your upload was successful. Please refresh the page to see the messages.
-// - if @message_templates.count == 0
-//   .ui.message
-//     .header
-//     %p Trial Promoter uses parameterized message templates in order to generate the final messages for the experiment. The sample CSV file includes the data elements you will need and example message templates for Twitter, Facebook, and Instagram.
