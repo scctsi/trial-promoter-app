@@ -104,16 +104,20 @@ RSpec.describe ClickMeterClient do
       end
     end
 
-    it 'gets an array of all domains using the Click Meter API' do
+    it 'gets an array of all domains (including dedicated domains) using the Click Meter API' do
       VCR.use_cassette 'click_meter/get_domains' do
         domains = ClickMeterClient.get_domains
-        expect(domains.count).to eq(3)
+        expect(domains.count).to eq(5)
         expect(domains[0].id).to eq(836)
         expect(domains[0].name).to eq("9nl.it")
         expect(domains[1].id).to eq(2361)
         expect(domains[1].name).to eq("padlock.link")
-        expect(domains[2].id).to eq(1501)
-        expect(domains[2].name).to eq("9nl.es")
+        expect(domains[2].id).to eq(18982)
+        expect(domains[2].name).to eq("go.befreeoftobacco.org")
+        expect(domains[3].id).to eq(18984)
+        expect(domains[3].name).to eq("go-staging.befreeoftobacco.org")
+        expect(domains[4].id).to eq(1501)
+        expect(domains[4].name).to eq("9nl.es")
       end
     end
 

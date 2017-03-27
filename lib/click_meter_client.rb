@@ -75,12 +75,15 @@ class ClickMeterClient
     # Click Meter API key not set?
     return [] if Setting[:click_meter_api_key].blank?
     domains = []
-    
-    response = get("http://apiv2.clickmeter.com:80/domains", :headers => { 'Content-Type' => 'application/json; charset=UTF-8', 'X-Clickmeter-Authkey' => Setting[:click_meter_api_key]} )
-    
-    response.parsed_response["entities"].each do |domain|
-      domain_details = get("http://apiv2.clickmeter.com:80/domains/#{domain["id"]}", :headers => { 'Content-Type' => 'application/json; charset=UTF-8', 'X-Clickmeter-Authkey' => Setting[:click_meter_api_key]} )
-      domains << OpenStruct.new(id: domain_details["id"], name: domain_details["name"])
+
+    # Get both system and dedicated domains 
+    ["http://apiv2.clickmeter.com:80/domains", "http://apiv2.clickmeter.com:80/domains?type=dedicated"].each do |request_url|
+      response = get(request_url, :headers => { 'Content-Type' => 'application/json; charset=UTF-8', 'X-Clickmeter-Authkey' => Setting[:click_meter_api_key]} )
+      
+      response.parsed_response["entities"].each do |domain|
+        domain_details = get("http://apiv2.clickmeter.com:80/domains/#{domain["id"]}", :headers => { 'Content-Type' => 'application/json; charset=UTF-8', 'X-Clickmeter-Authkey' => Setting[:click_meter_api_key]} )
+        domains << OpenStruct.new(id: domain_details["id"], name: domain_details["name"])
+      end
     end
     
     domains << OpenStruct.new(id: 1501, name: '9nl.es')
