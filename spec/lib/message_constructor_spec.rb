@@ -24,10 +24,10 @@ RSpec.describe MessageConstructor do
     expect(message.social_media_profile).to eq(@social_media_profile)
   end
   
-  it 'sets a date and time for the message' do
+  it 'sets a date and time for the message (America/Los_Angeles timezone)' do
     message_template = build(:message_template, content: 'This is a message template containing a {url} variable')
 
-    message = @message_constructor.construct(@experiment, message_template, :facebook, :ad, @social_media_profile, DateTime.new(2017, 1, 1), DateTime.new(2017, 1, 1, 1, 30, 0))
+    message = @message_constructor.construct(@experiment, message_template, :facebook, :ad, @social_media_profile, DateTime.new(2017, 1, 1), {:hour => 10, :minute => 30})
 
     expect(message.valid?).to be true
     expect(message.content).to eq("This is a message template containing a {url} variable")
@@ -39,13 +39,25 @@ RSpec.describe MessageConstructor do
     expect(message.image_present).to eq(:without)
     expect(message.image).to be_nil
     expect(message.social_media_profile).to eq(@social_media_profile)
-    expect(message.scheduled_date_time).to eq(DateTime.new(2017, 1, 1, 1, 30, 0))
+    expected_scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017, 1, 1, 10, 30, 0)
+    expect(message.scheduled_date_time).to eq(expected_scheduled_date_time)
+  end
+
+  it 'saves the scheduled date time in UTC' do
+    message_template = build(:message_template, content: 'This is a message template containing a {url} variable')
+    message = @message_constructor.construct(@experiment, message_template, :facebook, :ad, @social_media_profile, DateTime.new(2017, 1, 1), {:hour => 10, :minute => 30})
+
+    message.save
+    message.reload
+    
+    expected_scheduled_date_time = DateTime.new(2017, 1, 1, 18, 30, 0)
+    expect(message.scheduled_date_time).to eq(expected_scheduled_date_time)
   end
   
   it 'appends a random hashtag from an array of hashtags to the message content' do
     message_template = build(:message_template, content: 'This is a message template containing a {url} variable', hashtags: ['#hashtag1', '#hashtag2', '#hashtag3'])
 
-    message = @message_constructor.construct(@experiment, message_template, :facebook, :ad, @social_media_profile, DateTime.new(2017, 1, 1), DateTime.new(2017, 1, 1, 1, 30, 0), ['#hashtag1,#hashtag2,#hashtag3'])
+    message = @message_constructor.construct(@experiment, message_template, :facebook, :ad, @social_media_profile, DateTime.new(2017, 1, 1), {:hour => 10, :minute => 30}, ['#hashtag1,#hashtag2,#hashtag3'])
 
     expect(message.valid?).to be true
     expect(message.content).to include("This is a message template containing a {url} variable")
@@ -57,7 +69,8 @@ RSpec.describe MessageConstructor do
     expect(message.image_present).to eq(:without)
     expect(message.image).to be_nil
     expect(message.social_media_profile).to eq(@social_media_profile)
-    expect(message.scheduled_date_time).to eq(DateTime.new(2017, 1, 1, 1, 30, 0))
+    expected_scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017, 1, 1, 10, 30, 0)
+    expect(message.scheduled_date_time).to eq(expected_scheduled_date_time)
     expect(message_template.hashtags.any? {|hashtag| message.content.include?(hashtag)}).to be true
   end
 
@@ -65,7 +78,7 @@ RSpec.describe MessageConstructor do
     message_template = build(:message_template, content: 'This is a message template containing a {url} variable', hashtags: ['#hashtag1', '#hashtag2', '#hashtag3'])
 
     allow(MessageConstructor).to receive(:fittable_hashtags).and_return(['#hashtag1', '#hashtag2', '#hashtag3'])
-    message = @message_constructor.construct(@experiment, message_template, :twitter, :ad, @social_media_profile, DateTime.new(2017, 1, 1), DateTime.new(2017, 1, 1, 1, 30, 0), ['#hashtag1,#hashtag2,#hashtag3'])
+    message = @message_constructor.construct(@experiment, message_template, :twitter, :ad, @social_media_profile, DateTime.new(2017, 1, 1), {:hour => 10, :minute => 30}, ['#hashtag1,#hashtag2,#hashtag3'])
 
     expect(message.valid?).to be true
     expect(message.content).to include("This is a message template containing a {url} variable")
@@ -77,7 +90,8 @@ RSpec.describe MessageConstructor do
     expect(message.image_present).to eq(:without)
     expect(message.image).to be_nil
     expect(message.social_media_profile).to eq(@social_media_profile)
-    expect(message.scheduled_date_time).to eq(DateTime.new(2017, 1, 1, 1, 30, 0))
+    expected_scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017, 1, 1, 10, 30, 0)
+    expect(message.scheduled_date_time).to eq(expected_scheduled_date_time)
     expect(MessageConstructor.fittable_hashtags(message.content, message_template.hashtags).any? {|hashtag| message.content.include?(hashtag)}).to be true
   end
   
@@ -116,7 +130,7 @@ RSpec.describe MessageConstructor do
   it 'does not append a hashtag if there are no allowed hashtags (empty array)' do
     message_template = build(:message_template, content: 'This is a message template containing {url} variables', hashtags: ['#hashtag1', '#hashtag2', '#hashtag3'])
 
-    expect { @message_constructor.construct(@experiment, message_template, :facebook, :ad, @social_media_profile, DateTime.new(2017, 1, 1), DateTime.new(2017, 1, 1, 1, 30, 0), []) }.not_to raise_error
+    expect { @message_constructor.construct(@experiment, message_template, :facebook, :ad, @social_media_profile, DateTime.new(2017, 1, 1), {:hour => 10, :minute => 30}, []) }.not_to raise_error
   end
 
   it 'does not raise an error if there are no suitable hashtags that can be appended to the contents of a Twitter message' do
@@ -124,7 +138,7 @@ RSpec.describe MessageConstructor do
 
     allow(MessageConstructor).to receive(:fittable_hashtags).and_return([])
     
-    expect { @message_constructor.construct(@experiment, message_template, :twitter, :ad, @social_media_profile, DateTime.new(2017, 1, 1), DateTime.new(2017, 1, 1, 1, 30, 0), ['#hashtag1,#hashtag2,#hashtag3']) }.not_to raise_error
+    expect { @message_constructor.construct(@experiment, message_template, :twitter, :ad, @social_media_profile, DateTime.new(2017, 1, 1), {:hour => 10, :minute => 30}, ['#hashtag1,#hashtag2,#hashtag3']) }.not_to raise_error
   end
 
   describe 'appending a random hashtag for a Twitter message' do

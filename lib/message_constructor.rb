@@ -1,5 +1,5 @@
 class MessageConstructor
-  def construct(message_generating_instance, message_template, platform, medium, social_media_profile, date = nil, time = nil, hashtags = nil)
+  def construct(message_generating_instance, message_template, platform, medium, social_media_profile, date = nil, time_hash = nil, hashtags = nil)
     # A message_generating_instance is either an Experiment or Campaign, the two models that can generate messages.
     message = Message.new(content: message_template.content)
     
@@ -10,7 +10,8 @@ class MessageConstructor
     message.platform = platform
     message.medium = medium
     message.social_media_profile = social_media_profile
-    message.scheduled_date_time = DateTime.new(date.year, date.month, date.day, time.hour, time.minute, time.second) if date != nil && time != nil
+    message.scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(date.year, date.month, date.day, time_hash[:hour], time_hash[:minute], 0) if date != nil && time_hash != nil
+    # message.scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local_to_utc(message.scheduled_date_time)
     if !hashtags.nil?
       if message.platform == :twitter
         fittable_hashtags = MessageConstructor.fittable_hashtags(message.content, hashtags) 

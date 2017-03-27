@@ -13,6 +13,7 @@ Rails.application.routes.draw do
     member do
       get 'parameterized_slug', to: 'experiments#parameterized_slug', constraints: lambda { |req| req.format == :json }
       get 'create_messages(.:format)', to: 'experiments#create_messages'
+      get 'send_to_buffer', to: 'experiments#send_to_buffer'
       get 'create_analytics_file_todos', to: 'experiments#create_analytics_file_todos'
     end
     resources :message_generation_parameter_sets

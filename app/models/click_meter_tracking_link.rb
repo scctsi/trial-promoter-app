@@ -19,7 +19,9 @@ class ClickMeterTrackingLink < ActiveRecord::Base
   before_destroy :delete_click_meter_tracking_link
   
   def delete_click_meter_tracking_link
-    ClickMeterClient.delete_tracking_link(click_meter_id)
-    Kernel.sleep(0.1) if Rails.env.production?
+    if Rails.env.production?
+      ClickMeterClient.delete_tracking_link(click_meter_id)
+      Kernel.sleep(0.1) 
+    end
   end
 end

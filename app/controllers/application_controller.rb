@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::Base
+  before_filter :set_timezone
+
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :null_session
@@ -8,6 +10,9 @@ class ApplicationController < ActionController::Base
   after_action :verify_authorized, unless: :devise_controller?
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
+  def set_timezone
+    Time.zone = ActiveSupport::TimeZone["America/Los_Angeles"]
+  end
 
   private
 

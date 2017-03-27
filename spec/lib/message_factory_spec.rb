@@ -78,7 +78,7 @@ RSpec.describe MessageFactory do
     expect(parameters[:mediums]).to eq(@experiment.message_generation_parameter_set.medium_choices)
     expect(parameters[:message_templates]).to eq(MessageTemplate.belonging_to(@experiment).to_a)
     expect(parameters[:message_templates]).to be_instance_of(Array)
-    expect(parameters[:posting_times]).to eq(@experiment.posting_times_as_datetimes)
+    expect(parameters[:posting_times]).to eq(@experiment.posting_times)
     expect(parameters[:total_count]).to eq(@experiment.message_generation_parameter_set.expected_generated_message_count(parameters[:message_templates].count))
     expect(parameters[:social_media_profiles]).to eq(@experiment.social_media_profiles)
   end
@@ -118,9 +118,9 @@ RSpec.describe MessageFactory do
 
     # Has the scheduled date and time been set correctly?
     publish_date_time = @experiment.message_distribution_start_date
-    publish_date_time = publish_date_time.change({ hour: 12, min: 30, sec: 0 })
     messages.each do |message|
-      expect(message.scheduled_date_time).to eq(publish_date_time)
+      expected_scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(publish_date_time.year, publish_date_time.month, publish_date_time.day, 12, 30, 0)
+      expect(message.scheduled_date_time).to eq(expected_scheduled_date_time)
       publish_date_time += 1.day
     end
 
@@ -165,9 +165,9 @@ RSpec.describe MessageFactory do
       message_template.save
     end
     @experiment.message_generation_parameter_set = message_generation_parameter_set
-    @experiment.facebook_posting_times = "12:30 PM,1:30 PM,2:30 PM,3:30 PM,4:30 PM"
-    @experiment.twitter_posting_times = "12:40 PM,1:40 PM,2:40 PM,3:40 PM,4:40 PM"
-    @experiment.instagram_posting_times = "12:50 PM,1:50 PM,2:50 PM,3:50 PM,4:50 PM"
+    @experiment.facebook_posting_times = "12:30 AM,08:30 AM,2:30 PM,3:30 PM,12:30 PM"
+    @experiment.twitter_posting_times = "12:40 AM,08:40 AM,2:40 PM,3:40 PM,12:40 PM"
+    @experiment.instagram_posting_times = "12:50 AM,08:50 AM,2:50 PM,3:50 PM,12:50 PM"
     @experiment.save
     expected_generated_message_count = message_generation_parameter_set.expected_generated_message_count(MessageTemplate.count)
     # Because this test depends on the randomness of shuffle, in order to make sure this test always passes, we are reurning a determinstic set of values for shuffle.
@@ -205,18 +205,19 @@ RSpec.describe MessageFactory do
     number_of_messages_scheduled_per_day = 3 * 2 * 5 - 5
     messages_grouped_by_scheduled_send_date.each { |scheduled_send_date, messages_by_send_date| expect(messages_by_send_date.length).to eq(number_of_messages_scheduled_per_day) }
     # Were the messages scheduled at the right times?
+    # 12:30 AM,08:30 AM,2:30 PM,3:30 PM,12:30 PM
     organic_facebook_messages_on_first_day = messages_grouped_by_scheduled_send_date[messages_grouped_by_scheduled_send_date.keys[0]].select{ |message| message.platform == :facebook && message.medium == :ad }
     publish_date_time = @experiment.message_distribution_start_date
-    publish_date_time = publish_date_time.change({ hour: 12, min: 30, sec: 0 })
-    expect(organic_facebook_messages_on_first_day[0].scheduled_date_time).to eq(publish_date_time)
-    publish_date_time = publish_date_time.change({ hour: 13, min: 30, sec: 0 })
-    expect(organic_facebook_messages_on_first_day[1].scheduled_date_time).to eq(publish_date_time)
-    publish_date_time = publish_date_time.change({ hour: 14, min: 30, sec: 0 })
-    expect(organic_facebook_messages_on_first_day[2].scheduled_date_time).to eq(publish_date_time)
-    publish_date_time = publish_date_time.change({ hour: 15, min: 30, sec: 0 })
-    expect(organic_facebook_messages_on_first_day[3].scheduled_date_time).to eq(publish_date_time)
-    publish_date_time = publish_date_time.change({ hour: 16, min: 30, sec: 0 })
-    expect(organic_facebook_messages_on_first_day[4].scheduled_date_time).to eq(publish_date_time)
+    expected_scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(publish_date_time.year, publish_date_time.month, publish_date_time.day, 0, 30, 0)
+    expect(organic_facebook_messages_on_first_day[0].scheduled_date_time).to eq(expected_scheduled_date_time)
+    expected_scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(publish_date_time.year, publish_date_time.month, publish_date_time.day, 8, 30, 0)
+    expect(organic_facebook_messages_on_first_day[1].scheduled_date_time).to eq(expected_scheduled_date_time)
+    expected_scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(publish_date_time.year, publish_date_time.month, publish_date_time.day, 14, 30, 0)
+    expect(organic_facebook_messages_on_first_day[2].scheduled_date_time).to eq(expected_scheduled_date_time)
+    expected_scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(publish_date_time.year, publish_date_time.month, publish_date_time.day, 15, 30, 0)
+    expect(organic_facebook_messages_on_first_day[3].scheduled_date_time).to eq(expected_scheduled_date_time)
+    expected_scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(publish_date_time.year, publish_date_time.month, publish_date_time.day, 12, 30, 0)
+    expect(organic_facebook_messages_on_first_day[4].scheduled_date_time).to eq(expected_scheduled_date_time)
     # Were the same images used across all platforms and mediums for the very first message_template used?
     messages_created_from_first_message_template_for_first_cycle = messages.select{ |message| message.message_template == @message_templates[0] }[0..4]
     messages_created_from_first_message_template_for_first_cycle[1..4].each do |message|

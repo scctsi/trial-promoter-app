@@ -18,7 +18,7 @@ RSpec.describe BufferClient do
 
       expect(post_request_body[:profile_ids]).to eq(@message.social_media_profile.buffer_id)
       expect(post_request_body[:text]).to eq(@message.content)
-      expect(post_request_body[:shorten]).to eq(true)
+      expect(post_request_body[:shorten]).to eq(false)
       expect(post_request_body[:access_token]).to eq(Setting[:buffer_access_token])
     end
 
@@ -30,7 +30,7 @@ RSpec.describe BufferClient do
 
       expect(post_request_body[:profile_ids]).to eq(@message.social_media_profile.buffer_id)
       expect(post_request_body[:text]).to eq(@message.content)
-      expect(post_request_body[:shorten]).to eq(true)
+      expect(post_request_body[:shorten]).to eq(false)
       expect(post_request_body[:access_token]).to eq(Setting[:buffer_access_token])
       expect(post_request_body[:media]).to eq({"thumbnail" => @message.image.url, "photo" => @message.image.url})
     end
@@ -50,13 +50,13 @@ RSpec.describe BufferClient do
         end
 
         expect(BufferClient).to have_received(:get).with("https://api.bufferapp.com/1/profiles.json?access_token=#{Setting[:buffer_access_token]}")
-        expect(SocialMediaProfile.count).to eq(7)
+        expect(SocialMediaProfile.count).to eq(12)
         social_media_profile = SocialMediaProfile.first
         expect(social_media_profile.platform).to eq(:facebook)
-        expect(social_media_profile.service_id).to eq('864687273610386')
+        expect(social_media_profile.service_id).to eq('951745098223517')
         expect(social_media_profile.service_type).to eq('page')
-        expect(social_media_profile.service_username).to eq('Boosted-Staging USC Clinical Trials')
-        expect(social_media_profile.buffer_id).to eq('55c11ce246042c5e7f8ae843')
+        expect(social_media_profile.service_username).to eq('Boosted USC Clinical Trials')
+        expect(social_media_profile.buffer_id).to eq('55c11ce346042c5e7f8ae844')
       end
 
       it 'does not add a profile if it already exists (based on buffer_id being unique)' do
@@ -67,7 +67,7 @@ RSpec.describe BufferClient do
         end
 
         social_media_profiles = SocialMediaProfile.all
-        expect(social_media_profiles.count).to eq(7)
+        expect(social_media_profiles.count).to eq(13)
         # Are the buffer ids unique?
         buffer_ids = social_media_profiles.map(&:buffer_id)
         expect(buffer_ids.detect{ |buffer_id| buffer_ids.count(buffer_id) > 1 }).to be_nil
