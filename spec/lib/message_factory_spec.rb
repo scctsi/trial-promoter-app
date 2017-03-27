@@ -118,10 +118,9 @@ RSpec.describe MessageFactory do
 
     # Has the scheduled date and time been set correctly?
     publish_date_time = @experiment.message_distribution_start_date
-    publish_date_time = publish_date_time.change({ hour: 12, min: 30, sec: 0 })
     messages.each do |message|
-      expect(message.scheduled_date_time).to eq(publish_date_time)
-      expect(message.scheduled_date_time.time_zone).to eq(ActiveSupport::TimeZone["America/Los_Angeles"])
+      expected_scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(publish_date_time.year, publish_date_time.month, publish_date_time.day, 12, 30, 0)
+      expect(message.scheduled_date_time).to eq(expected_scheduled_date_time)
       publish_date_time += 1.day
     end
 
@@ -206,21 +205,19 @@ RSpec.describe MessageFactory do
     number_of_messages_scheduled_per_day = 3 * 2 * 5 - 5
     messages_grouped_by_scheduled_send_date.each { |scheduled_send_date, messages_by_send_date| expect(messages_by_send_date.length).to eq(number_of_messages_scheduled_per_day) }
     # Were the messages scheduled at the right times?
+    # 12:30 AM,08:30 AM,2:30 PM,3:30 PM,12:30 PM
     organic_facebook_messages_on_first_day = messages_grouped_by_scheduled_send_date[messages_grouped_by_scheduled_send_date.keys[0]].select{ |message| message.platform == :facebook && message.medium == :ad }
-    organic_facebook_messages_on_first_day.each do |organic_facebook_message_on_first_day|
-      expect(organic_facebook_message_on_first_day.time_zone).to eq(ActiveSupport::TimeZone["America/Los_Angeles"])
-    end
     publish_date_time = @experiment.message_distribution_start_date
-    publish_date_time = publish_date_time.change({ hour: 12, min: 30, sec: 0 })
-    expect(organic_facebook_messages_on_first_day[0].scheduled_date_time).to eq(publish_date_time)
-    publish_date_time = publish_date_time.change({ hour: 13, min: 30, sec: 0 })
-    expect(organic_facebook_messages_on_first_day[1].scheduled_date_time).to eq(publish_date_time)
-    publish_date_time = publish_date_time.change({ hour: 14, min: 30, sec: 0 })
-    expect(organic_facebook_messages_on_first_day[2].scheduled_date_time).to eq(publish_date_time)
-    publish_date_time = publish_date_time.change({ hour: 15, min: 30, sec: 0 })
-    expect(organic_facebook_messages_on_first_day[3].scheduled_date_time).to eq(publish_date_time)
-    publish_date_time = publish_date_time.change({ hour: 16, min: 30, sec: 0 })
-    expect(organic_facebook_messages_on_first_day[4].scheduled_date_time).to eq(publish_date_time)
+    expected_scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(publish_date_time.year, publish_date_time.month, publish_date_time.day, 0, 30, 0)
+    expect(organic_facebook_messages_on_first_day[0].scheduled_date_time).to eq(expected_scheduled_date_time)
+    expected_scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(publish_date_time.year, publish_date_time.month, publish_date_time.day, 8, 30, 0)
+    expect(organic_facebook_messages_on_first_day[1].scheduled_date_time).to eq(expected_scheduled_date_time)
+    expected_scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(publish_date_time.year, publish_date_time.month, publish_date_time.day, 14, 30, 0)
+    expect(organic_facebook_messages_on_first_day[2].scheduled_date_time).to eq(expected_scheduled_date_time)
+    expected_scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(publish_date_time.year, publish_date_time.month, publish_date_time.day, 15, 30, 0)
+    expect(organic_facebook_messages_on_first_day[3].scheduled_date_time).to eq(expected_scheduled_date_time)
+    expected_scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(publish_date_time.year, publish_date_time.month, publish_date_time.day, 12, 30, 0)
+    expect(organic_facebook_messages_on_first_day[4].scheduled_date_time).to eq(expected_scheduled_date_time)
     # Were the same images used across all platforms and mediums for the very first message_template used?
     messages_created_from_first_message_template_for_first_cycle = messages.select{ |message| message.message_template == @message_templates[0] }[0..4]
     messages_created_from_first_message_template_for_first_cycle[1..4].each do |message|
