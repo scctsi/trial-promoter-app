@@ -66,4 +66,8 @@ class MessageGenerationParameterSet < ActiveRecord::Base
     calculated_count -= (calculation_parameters[:number_of_message_templates] * calculation_parameters[:number_of_cycles]) if calculation_parameters[:instagram_organic]
     calculated_count
   end
+  
+  def length_of_experiment_in_days(number_of_message_templates)
+    number_of_cycles * number_of_message_templates / number_of_messages_per_social_network
+  end
 end

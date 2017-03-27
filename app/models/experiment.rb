@@ -57,7 +57,7 @@ class Experiment < ActiveRecord::Base
   end
 
   def social_media_profiles_needing_analytics_uploads
-    social_media_profiles.select { |social_media_profile| social_media_profile.platform == :twitter }
+    social_media_profiles
   end
 
   def create_analytics_file_todos
@@ -67,6 +67,10 @@ class Experiment < ActiveRecord::Base
         profiles.each do |profile|
           AnalyticsFile.create(:required_upload_date => day, :social_media_profile => profile, :message_generating => self)
         end
+      end
+      # Add in one additional day to ensure a full day of data collection after the experiment has ended
+      profiles.each do |profile|
+        AnalyticsFile.create(:required_upload_date => end_date + 1.day, :social_media_profile => profile, :message_generating => self)
       end
     end
 
@@ -119,5 +123,9 @@ class Experiment < ActiveRecord::Base
   
   def timeline
     Timeline.build_default_timeline(self)
+  end
+  
+  def end_date
+    message_distribution_start_date + message_generation_parameter_set.length_of_experiment_in_days(MessageTemplate.belonging_to(self).count).days
   end
 end
