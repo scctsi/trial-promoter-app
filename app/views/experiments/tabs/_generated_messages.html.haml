@@ -1,7 +1,7 @@
 .ui.buttons
   -if @experiment.disable_message_generation?
     .disabled.button
-      %a.ui.labeled.icon.button.disable-message-generation-button
+      %a.ui.labeled.icon.button.disabled-message-generation-button
         %i.send.icon
         Generate messages
     .or
@@ -9,7 +9,7 @@
       %i.rocket.icon
       Send to Buffer
   -else
-    %a#generate-messages-button.ui.primary.labeled.icon.button{:href => "/experiments/#{@experiment.id}/create_messages.html", 'data-experiment-id' => @experiment.id}
+    %a#generate-messages-button.ui.primary.labeled.icon.button
       %i.send.icon
       Generate messages
     .or
@@ -34,4 +34,5 @@
       %li Editing restriction: Set up, message templates, and generation will be locked 3 days before the experiment is scheduled to start.
       %li Send to Buffer: Trial Promoter sends messages to Buffer nightly (up to a week in advance). Please use this button to immediately send the messages scheduled for the next 7 days to Buffer.
   = render partial: 'shared/messages', locals: { messages: @messages }
-= render partial: 'message_generation_progress_modal', locals: { total: @experiment.message_generation_parameter_set.expected_generated_message_count(MessageTemplate.belonging_to(@experiment).count) }
+= render partial: 'message_generation_confirmation_modal', locals: { total: @experiment.message_generation_parameter_set.expected_generated_message_count(MessageTemplate.belonging_to(@experiment).count), experiment_id: @experiment.id }
+= render partial: 'message_generation_progress_modal', locals: { total: @experiment.message_generation_parameter_set.expected_generated_message_count(MessageTemplate.belonging_to(@experiment).count), experiment_id: @experiment.id }
