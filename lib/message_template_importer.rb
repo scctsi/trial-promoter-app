@@ -72,27 +72,10 @@ class MessageTemplateImporter < Importer
       excel_row[0] += '{url}' if excel_row[0].index('{url}').nil? and index > 0
     end
     
-    # Step 6: Canonicalize all the website URLs
-    prepared_excel_content.each.with_index do |csv_row, index|
-      csv_row[4] = to_canonical(csv_row[4]) if index != 0
-    end
-
     prepared_excel_content
   end
   
   private
-  def to_canonical(url)
-    uri = Addressable::URI.parse(url)
-    uri.scheme = "http" if uri.scheme.blank?
-    host = uri.host.sub(/\www\./, '') if uri.host.present?
-    path = (uri.path.present? && uri.host.blank?) ? uri.path.sub(/\www\./, '') : uri.path
-    (uri.scheme.to_s + "://" + host.to_s + path.to_s).downcase
-  rescue Addressable::URI::InvalidURIError
-    nil
-  rescue URI::Error
-    nil
-  end
-
   def post_import(parsed_csv_content)
     # For every message template belonging to the experiment, set up the image pool
     image_pool_manager = ImagePoolManager.new
