@@ -22,6 +22,7 @@
 #  social_network_id       :string
 #  social_media_profile_id :integer
 #  platform                :string
+#  promoted_website_url    :string(2000)
 #
 
 class Message < ActiveRecord::Base

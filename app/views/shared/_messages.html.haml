@@ -28,37 +28,34 @@
             = message.content
             - if show_label
               .ui.left.pointing.red.basic.label
-                The message has been delayed
+                The message was delayed
             .extra
-              - if !message.buffer_publish_date
-                .ui.basic.small.label
-                  %i.clock.outline.icon
-                  #{message.scheduled_date_time.strftime("%I:%M %p")}
-              - else
-                - if !message.buffer_update.nil?
-                  Message was published on #{message.social_media_profile.platform_icon_and_name} at
-                  .ui.left.green.basic.label
-                    = message.buffer_update.sent_from_date_time.strftime("%I:%M %P, %b %d, %Y")
-                - else
-                  - if message.buffer_publish_date
-                    Sent to Buffer on
-                    - if message.scheduled_date_time <= message.buffer_publish_date + 2.days
-                      .ui.left.red.basic.label
-                        message.buffer_publish_date.strftime("%b %d, %Y")
-                    - else
-                      = message.buffer_publish_date.strftime("%b %d, %Y")
+              .ui.basic.small.label
+                %i.clock.outline.icon
+                #{message.scheduled_date_time.strftime("%I:%M %p")}
               .ui.basic.small.label
                 = message.medium.to_s.titleize
               .ui.basic.small.label
                 %i.hashtag.icon
                 = message.social_media_profile.service_username
+              - if !message.buffer_update.nil? 
+                - if !message.buffer_update.sent_from_date_time.nil?
+                  .ui.basic.grey.small.label
+                    %i.rocket.icon
+                    Published from Buffer on #{message.social_media_profile.platform_icon_and_name} at #{message.buffer_update.sent_from_date_time.strftime("%I:%M %P, %b %d, %Y")}
+                - else
+                  .ui.basic.grey.small.label
+                    %i.rocket.icon
+                    Sent to Buffer on #{message.buffer_update.created_at.strftime("%b %d, %Y")}
             - if message.click_meter_tracking_link
               .extra
-                .ui.list
-                  .item
-                    Tracking URL: #{message.click_meter_tracking_link.tracking_url}
-                  .item
-                    Destination URL: #{message.click_meter_tracking_link.destination_url}
+                .ui.small.basic.labels
+                  .ui.url.label{ "data-content" => "#{message.click_meter_tracking_link.tracking_url}" }
+                    %i.linkify.icon
+                    Tracking URL
+                  .ui.url.label{ "data-content" => "#{message.click_meter_tracking_link.destination_url}" }
+                    %i.linkify.icon
+                    Destination URL
 .ui.header
   .content
     = paginate messages

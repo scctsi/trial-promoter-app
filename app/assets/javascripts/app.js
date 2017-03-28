@@ -189,6 +189,8 @@ $(document).ready(function() {
       title : "Why can't I generate messages?",
       content : 'This experiment has already started distributing messages. You can no longer generate messages for this experiment.'
     })
+ 
+    $('.url.label').popup();
   }
 
   String.prototype.capitalizeFirstLetter = function() {
