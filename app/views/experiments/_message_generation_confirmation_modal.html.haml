@@ -1,0 +1,21 @@
+.ui.modal#message-generation-confirmation{'data-experiment-id' => experiment_id}
+  .content
+    .ui.negative.message
+      .header
+        Are you sure you want to generate messages? Before generating messages, please note: 
+    .ui.bulleted.list
+      .item
+        Finalize the setup of your experiment.
+      .item
+        Check the accuracy of your images and the pool of images associated with each message template.
+      .item
+        Check the accuracy of the message templates that you've uploaded.
+      .item
+        Any existing messages will be deleted and regenerated if you click on "Generate messages".
+  .actions
+    .ui.left.labeled.icon.deny.button
+      %i.arrow.left.icon
+      Return to your experiment without generating messages
+    %a.ui.positive.right.labeled.icon.approve.button#generate-message-confirm-button
+      %i.arrow.right.icon
+      Generate messages

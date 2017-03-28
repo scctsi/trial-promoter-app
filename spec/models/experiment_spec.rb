@@ -42,14 +42,14 @@ RSpec.describe Experiment, type: :model do
     expect(Experiment.allowed_times).to include('12:30 AM', '3:04 AM', '1:30 PM')
   end
 
-  it 'disables message generation when distribution start date is less than 3 days (72 hours) from current time' do
-    experiment = create(:experiment, message_distribution_start_date: Time.new(2017, 01, 03, 23, 59, 0,  "+00:00") )
+  it 'disables message generation when distribution start date is less than 1 day (24 hours) from current time' do
+    experiment = create(:experiment, message_distribution_start_date: Time.new(2017, 01, 01, 23, 59, 0,  "+00:00") )
 
     expect(experiment.disable_message_generation?).to be true
   end
 
   it 'does not disable message generation when distribution start date is more than 24 hours from current time' do
-    experiment = create(:experiment, message_distribution_start_date: Time.new(2017, 01, 04, 0, 0, 0, "+00:00") )
+    experiment = create(:experiment, message_distribution_start_date: Time.new(2017, 01, 02, 0, 0, 0, "+00:00") )
 
     expect(experiment.disable_message_generation?).to be false
   end

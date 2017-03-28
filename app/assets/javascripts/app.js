@@ -185,7 +185,7 @@ $(document).ready(function() {
       content : 'A campaign allows you to promote one or multiple types of contents (news, research studies, research findings, award announcements, etc.) without applying scientific study design techniques.'
     });
 
-    $('.ui.labeled.icon.button.disable-message-generation-button').popup({
+    $('.ui.labeled.icon.button.disabled-message-generation-button').popup({
       title : "Why can't I generate messages?",
       content : 'This experiment has already started distributing messages. You can no longer generate messages for this experiment.'
     })
@@ -294,35 +294,39 @@ $(document).ready(function() {
     });
   }
 
+  function generateMessages(experimentId, totalMessageCount) {
+    $('#message-generation-progress').modal('setting', 'transition', 'Vertical Flip').modal({ blurring: true }).modal('show');
+    $('#message-generation-progress .approve.button').hide();
+
+    // Set up progress bar
+    $('.ui.progress').progress({
+      duration : 200,
+      total    : totalMessageCount,
+      text     : {
+        active: '{value} of {total} done',
+        success: 'All the messages for this experiment were successfully generated!',
+        error: 'Something went wrong during message generation!'
+      }
+    });
+
+    $.ajax({
+      type: 'GET',
+      url: '/experiments/' + experimentId + '/create_messages',
+      data: { },
+      dataType: 'json',
+      success: function(data) {
+      }
+    });
+
+    return false;
+  }
+  
   function setUpAsyncMessageGeneration() {
     $('#generate-messages-button').click(function() {
-      var experimentId = $(this).data('experiment-id');
-      var total = $('#message-generation-progress').data('total');
-
-      $('#message-generation-progress').modal('setting', 'transition', 'Vertical Flip').modal({ blurring: true }).modal('show');
-      $('#message-generation-progress .approve.button').hide();
-
-      // Set up progress bar
-      $('.ui.progress').progress({
-        duration : 200,
-        total    : total,
-        text     : {
-          active: '{value} of {total} done',
-          success: 'All the messages for this experiment were successfully generated!',
-          error: 'Something went wrong during message generation!'
-        }
-      });
-
-      $.ajax({
-        type: 'GET',
-        url: '/experiments/' + experimentId + '/create_messages',
-        data: { },
-        dataType: 'json',
-        success: function(data) {
-        }
-      });
-
-      return false;
+      $('#message-generation-confirmation').modal('setting', 'transition', 'Vertical Flip').modal({ 
+          blurring: true, 
+          onApprove: function() { generateMessages($(this).data('experiment-id'), $(this).data('total')) }
+        }).modal('show');
     });
   }
 
