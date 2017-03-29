@@ -69,7 +69,7 @@ class MessageFactory
   end
   
   def throttle(operations_per_second)
-    Kernel.sleep(1.0 / operations_per_second) if Rails.env.production?
+    Kernel.sleep(1.0 / operations_per_second) if !Rails.env.test?
   end
 end
 

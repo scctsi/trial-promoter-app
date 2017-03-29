@@ -295,16 +295,17 @@ RSpec.describe MessageFactory do
     expect(Kernel).to have_received(:sleep).with(0.1)
   end
   
-  it 'ignores throttling on development environments' do
+  it 'throttles an action (on development environments)' do
     allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('development'))
     allow(Kernel).to receive(:sleep)
     
     @message_factory.throttle(10)
     
-    expect(Kernel).not_to have_received(:sleep).with(0.1)
+    expect(Kernel).to have_received(:sleep).with(0.1)
   end
 
-  it 'ignores throttling on test environments' do
+  
+  it 'ignores throttling (on test environments)' do
     allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('test'))
     allow(Kernel).to receive(:sleep)
     

@@ -130,7 +130,7 @@ RSpec.describe ClickMeterClient do
       end
     end
  
-    it 'creates a Click Meter tracking link for a message (on production environment)' do
+    it 'creates a Click Meter tracking link for a message' do
       allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('production'))
       click_meter_tracking_link = ClickMeterTrackingLink.new
       message = create(:message)
@@ -140,46 +140,6 @@ RSpec.describe ClickMeterClient do
       
       expect(ClickMeterClient).to have_received(:create_tracking_link).with(100, 200, TrackingUrl.campaign_url(message), message.to_param, BijectiveFunction.encode(message.id))
       expect(message.click_meter_tracking_link).not_to be_nil
-      expect(message.persisted?).to be_truthy
-      expect(message.click_meter_tracking_link.persisted?).to be_truthy
-    end
-
-    it 'creates a fake Click Meter tracking link for a message (on development environment)' do
-      # Click Meter uses "names" for tracking links. These names are similar to other URL shorteners like bit.ly: http://bit.ly.com/<NAME>
-      # Once these names are used, new links cannot be created with these names (there is no way to delete a link permanently, so a name is "used" up permanently). 
-      # Since multiple development environments might be trying to create the same name even if we did get a development domain (think 5 development environmentsd all trying to create links with the same name), we get around this (for now) by returning fake tracking links for use in development.
-      allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('development'))
-      click_meter_tracking_link = ClickMeterTrackingLink.new
-      message = create(:message)
-      allow(ClickMeterClient).to receive(:create_tracking_link).and_return(click_meter_tracking_link)
-      
-      ClickMeterClient.create_click_meter_tracking_link(message, 100, 200)
-      
-      expect(ClickMeterClient).not_to have_received(:create_tracking_link)
-      expect(message.click_meter_tracking_link).not_to be_nil
-      expect(message.click_meter_tracking_link.click_meter_id).to eq(message.id.to_s)
-      expect(message.click_meter_tracking_link.click_meter_uri).to eq("/datapoints/#{message.id.to_s}")
-      expect(message.click_meter_tracking_link.tracking_url).to eq("http://development.tracking-domain.com/#{BijectiveFunction.encode(message.id)}")
-      expect(message.click_meter_tracking_link.destination_url).to eq(TrackingUrl.campaign_url(message))
-      expect(message.persisted?).to be_truthy
-      expect(message.click_meter_tracking_link.persisted?).to be_truthy
-    end
-    
-    it 'creates a fake Click Meter tracking link for a message (on test environment)' do
-      # See note above (for development environment)
-      allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('test'))
-      click_meter_tracking_link = ClickMeterTrackingLink.new
-      message = create(:message)
-      allow(ClickMeterClient).to receive(:create_tracking_link).and_return(click_meter_tracking_link)
-      
-      ClickMeterClient.create_click_meter_tracking_link(message, 100, 200)
-      
-      expect(ClickMeterClient).not_to have_received(:create_tracking_link)
-      expect(message.click_meter_tracking_link).not_to be_nil
-      expect(message.click_meter_tracking_link.click_meter_id).to eq(message.id.to_s)
-      expect(message.click_meter_tracking_link.click_meter_uri).to eq("/datapoints/#{message.id.to_s}")
-      expect(message.click_meter_tracking_link.tracking_url).to eq("http://development.tracking-domain.com/#{BijectiveFunction.encode(message.id)}")
-      expect(message.click_meter_tracking_link.destination_url).to eq(TrackingUrl.campaign_url(message))
       expect(message.persisted?).to be_truthy
       expect(message.click_meter_tracking_link.persisted?).to be_truthy
     end
