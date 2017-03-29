@@ -102,6 +102,7 @@ class ClickMeterClient
       message.click_meter_tracking_link.save
       return
     end
+
     click_meter_tracking_link = create_tracking_link(group_id, domain_id, TrackingUrl.campaign_url(message), message.to_param, BijectiveFunction.encode(message.id))
     message.click_meter_tracking_link = click_meter_tracking_link
     message.save
