@@ -39,6 +39,7 @@ class ClickMeterClient
     
     # Raise error if name already exists on the domain with the specified name
     if response.parsed_response["errors"]
+      p response.parsed_response['errors']
       if response.parsed_response["errors"][0]["property"] == "Name"
         raise ClickMeterTrackingLinkNameExistsError.new(name, domain_id)
       end
