@@ -92,13 +92,7 @@ class ClickMeterClient
   end
   
   def self.create_click_meter_tracking_link(message, group_id, domain_id)
-    if Rails.env.production?
-      click_meter_tracking_link = create_tracking_link(group_id, domain_id, TrackingUrl.campaign_url(message), message.to_param, BijectiveFunction.encode(message.id))
-      message.click_meter_tracking_link = click_meter_tracking_link
-      message.save
-      message.click_meter_tracking_link.save
-    end
-    if Rails.env.development? || Rails.env.test? # Create a "fake" Click Meter tracking link on development
+    if Rails.env.test?  # Create a "fake" Click Meter tracking link on test environment
       message.click_meter_tracking_link = ClickMeterTrackingLink.new
       message.click_meter_tracking_link.click_meter_id = message.id.to_s
       message.click_meter_tracking_link.click_meter_uri = "/datapoints/#{message.id}"
@@ -106,6 +100,11 @@ class ClickMeterClient
       message.click_meter_tracking_link.destination_url = TrackingUrl.campaign_url(message)
       message.save
       message.click_meter_tracking_link.save
+      return
     end
+    click_meter_tracking_link = create_tracking_link(group_id, domain_id, TrackingUrl.campaign_url(message), message.to_param, BijectiveFunction.encode(message.id))
+    message.click_meter_tracking_link = click_meter_tracking_link
+    message.save
+    message.click_meter_tracking_link.save
   end
 end

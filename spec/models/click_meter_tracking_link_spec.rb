@@ -39,16 +39,16 @@ RSpec.describe ClickMeterTrackingLink, type: :model do
     expect(ClickMeterClient).to have_received(:delete_tracking_link).with('101')
   end
 
-  it 'ignores asking Click Meter to delete the corresponding tracking link during the before destroy callback on development environment' do
+  it 'asks Click Meter to delete the corresponding tracking link during the before destroy callback (on development environment)' do
     allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('development'))
     allow(ClickMeterClient).to receive(:delete_tracking_link)
 
     @click_meter_tracking_link.delete_click_meter_tracking_link
 
-    expect(ClickMeterClient).not_to have_received(:delete_tracking_link).with('101')
+    expect(ClickMeterClient).to have_received(:delete_tracking_link).with('101')
   end
 
-  it 'ignores asking Click Meter to delete the corresponding tracking link during the before destroy callback on test environment' do
+  it 'ignores asking Click Meter to delete the corresponding tracking link during the before destroy callback (on test environment)' do
     allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('test'))
     allow(ClickMeterClient).to receive(:delete_tracking_link)
 
@@ -67,14 +67,14 @@ RSpec.describe ClickMeterTrackingLink, type: :model do
     expect(Kernel).to have_received(:sleep).with(0.1)
   end
   
-  it 'ignores throttling when deleting Click Meter tracking links on development environments' do
+  it 'throttles requests to delete Click Meter tracking links (on development environments)' do
     allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('development'))
     allow(Kernel).to receive(:sleep)
     allow(ClickMeterClient).to receive(:delete_tracking_link)
     
     @click_meter_tracking_link.delete_click_meter_tracking_link
     
-    expect(Kernel).not_to have_received(:sleep).with(0.1)
+    expect(Kernel).to have_received(:sleep).with(0.1)
   end
 
   it 'ignores throttling when deleting Click Meter tracking links on test environments' do
