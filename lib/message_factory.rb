@@ -32,18 +32,20 @@ class MessageFactory
           message_template_index += 1
           parameters[:platforms].each do |platform|
             parameters[:mediums].each do |medium|
-              next if platform == :instagram && medium == :organic # Do not create organic instagram messages
-              picked_social_media_profile = @social_media_profile_picker.pick(parameters[:social_media_profiles], platform, medium)
-              message = parameters[:message_constructor].construct(experiment, message_template, platform, medium, picked_social_media_profile, publish_date, parameters[:posting_times][platform][message_index_for_day], randomly_selected_hashtags)
-              message.image_present = :with
-              message.image_id = random_image_id
-              message.save
-              ClickMeterClient.create_click_meter_tracking_link(message, experiment.click_meter_group_id, experiment.click_meter_domain_id)
-              parameters[:message_constructor].replace_url_variable(message, message.click_meter_tracking_link.tracking_url)
-              message.save
-              Pusher['progress'].trigger('progress', {:value => message_index, :total => parameters[:total_count], :event => 'Message generated'})
-              message_index += 1
-              throttle(10)
+              if !(platform == :instagram && medium == :organic) # Do not create organic instagram messages
+                picked_social_media_profile = @social_media_profile_picker.pick(parameters[:social_media_profiles], platform, medium)
+                message = parameters[:message_constructor].construct(experiment, message_template, platform, medium, picked_social_media_profile, publish_date, parameters[:posting_times][platform][message_index_for_day], randomly_selected_hashtags)
+                message.image_present = :with
+                message.image_id = random_image_id
+                message.save
+                message.reload
+                ClickMeterClient.create_click_meter_tracking_link(message, experiment.click_meter_group_id, experiment.click_meter_domain_id)
+                parameters[:message_constructor].replace_url_variable(message, message.click_meter_tracking_link.tracking_url)
+                message.save
+                Pusher['progress'].trigger('progress', {:value => message_index, :total => parameters[:total_count], :event => 'Message generated'})
+                message_index += 1
+                throttle(10)
+              end
             end
           end
         end
