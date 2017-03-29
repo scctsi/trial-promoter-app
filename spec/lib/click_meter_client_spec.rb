@@ -143,5 +143,38 @@ RSpec.describe ClickMeterClient do
       expect(message.persisted?).to be_truthy
       expect(message.click_meter_tracking_link.persisted?).to be_truthy
     end
+
+    it 'creates a Click Meter tracking link for a message (on development environment)' do
+      allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('development'))
+      click_meter_tracking_link = ClickMeterTrackingLink.new
+      message = create(:message)
+      allow(ClickMeterClient).to receive(:create_tracking_link).and_return(click_meter_tracking_link)
+      
+      ClickMeterClient.create_click_meter_tracking_link(message, 100, 200)
+      
+      expect(ClickMeterClient).to have_received(:create_tracking_link).with(100, 200, TrackingUrl.campaign_url(message), message.to_param, BijectiveFunction.encode(message.id))
+      expect(message.click_meter_tracking_link).not_to be_nil
+      expect(message.persisted?).to be_truthy
+      expect(message.click_meter_tracking_link.persisted?).to be_truthy
+      click_meter_tracking_link = ClickMeterTrackingLink.new
+    end
+    
+    it 'creates a fake Click Meter tracking link for a message (on test environment)' do
+      allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('test'))
+      click_meter_tracking_link = ClickMeterTrackingLink.new
+      message = create(:message)
+      allow(ClickMeterClient).to receive(:create_tracking_link).and_return(click_meter_tracking_link)
+      
+      ClickMeterClient.create_click_meter_tracking_link(message, 100, 200)
+      
+      expect(ClickMeterClient).not_to have_received(:create_tracking_link)
+      expect(message.click_meter_tracking_link).not_to be_nil
+      expect(message.click_meter_tracking_link.click_meter_id).to eq(message.id.to_s)
+      expect(message.click_meter_tracking_link.click_meter_uri).to eq("/datapoints/#{message.id.to_s}")
+      expect(message.click_meter_tracking_link.tracking_url).to eq("http://development.tracking-domain.com/#{BijectiveFunction.encode(message.id)}")
+      expect(message.click_meter_tracking_link.destination_url).to eq(TrackingUrl.campaign_url(message))
+      expect(message.persisted?).to be_truthy
+      expect(message.click_meter_tracking_link.persisted?).to be_truthy
+    end
   end
 end
