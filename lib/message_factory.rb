@@ -38,6 +38,7 @@ class MessageFactory
                 message.image_present = :with
                 message.image_id = random_image_id
                 message.save
+                message.reload
                 ClickMeterClient.create_click_meter_tracking_link(message, experiment.click_meter_group_id, experiment.click_meter_domain_id)
                 parameters[:message_constructor].replace_url_variable(message, message.click_meter_tracking_link.tracking_url)
                 message.save
