@@ -115,8 +115,16 @@ RSpec.describe ExperimentsController, type: :controller do
         get :create_messages, id: @experiment, format: 'html'
       end
 
+      it 'assigns the requested experiment to @experiment' do
+        expect(assigns(:experiment)).to eq(@experiment)
+      end
+
       it 'enqueues a job to generate the messages' do
         expect(GenerateMessagesJob).to have_received(:perform_later).with(@experiment)
+      end
+      
+      it 'redirects to the experiment workspace' do
+        expect(response).to redirect_to experiment_url(Experiment.first)
       end
 
       it 'redirects unauthenticated user to sign-in page' do
@@ -131,6 +139,10 @@ RSpec.describe ExperimentsController, type: :controller do
     context 'JSON format' do
       before do
         get :create_messages, id: @experiment, format: 'json'
+      end
+
+      it 'assigns the requested experiment to @experiment' do
+        expect(assigns(:experiment)).to eq(@experiment)
       end
 
       it 'enqueues a job to generate the messages' do
@@ -150,6 +162,37 @@ RSpec.describe ExperimentsController, type: :controller do
 
         expect(response).to redirect_to :new_user_session
       end
+    end
+  end
+
+  describe 'GET #send_to_buffer' do
+    before do
+      @experiment = create(:experiment)
+      allow(PublishMessagesJob).to receive(:perform_later)
+    end
+
+    before do
+      get :send_to_buffer, id: @experiment
+    end
+
+    it 'enqueues a job to generate the messages' do
+      expect(PublishMessagesJob).to have_received(:perform_later)
+    end
+    
+    it 'sets a notice' do
+      expect(flash[:notice]).to eq('Messages scheduled for the next 7 days have been pushed to Buffer')
+    end
+
+    it 'redirects to the experiment workspace' do
+      expect(response).to redirect_to experiment_url(Experiment.first)
+    end
+
+    it 'redirects unauthenticated user to sign-in page' do
+      sign_out(:user)
+
+      get :send_to_buffer, id: @experiment
+
+      expect(response).to redirect_to :new_user_session
     end
   end
 
@@ -182,11 +225,23 @@ RSpec.describe ExperimentsController, type: :controller do
     before do
       @experiment = Experiment.new
       allow(Experiment).to receive(:new).and_return(@experiment)
+      @click_meter_groups = []
+      @click_meter_domains = []
+      allow(ClickMeterClient).to receive(:get_groups).and_return(@click_meter_groups)
+      allow(ClickMeterClient).to receive(:get_domains).and_return(@click_meter_domains)
       get :new
     end
 
     it 'assigns a new experiment to @experiment' do
       expect(assigns(:experiment)).to be_a_new(Experiment)
+    end
+    
+    it 'assigns the groups available through Click Meter' do
+      expect(assigns(:click_meter_groups)).to eq(@click_meter_groups)
+    end
+
+    it 'assigns the domains available through Click Meter' do
+      expect(assigns(:click_meter_domains)).to eq(@click_meter_domains)
     end
 
     it 'builds an associated message generation parameter set' do
@@ -208,11 +263,23 @@ RSpec.describe ExperimentsController, type: :controller do
   describe 'GET #edit' do
     before do
       @experiment = create(:experiment)
+      @click_meter_groups = []
+      @click_meter_domains = []
+      allow(ClickMeterClient).to receive(:get_groups).and_return(@click_meter_groups)
+      allow(ClickMeterClient).to receive(:get_domains).and_return(@click_meter_domains)
       get :edit, id: @experiment
     end
 
     it 'assigns the requested experiment to @experiment' do
       expect(assigns(:experiment)).to eq(@experiment)
+    end
+
+    it 'assigns the groups available through Click Meter' do
+      expect(assigns(:click_meter_groups)).to eq(@click_meter_groups)
+    end
+
+    it 'assigns the domains available through Click Meter' do
+      expect(assigns(:click_meter_domains)).to eq(@click_meter_domains)
     end
 
     it 'renders the edit template' do
@@ -296,7 +363,7 @@ RSpec.describe ExperimentsController, type: :controller do
       @social_media_profiles[2].platform = :facebook
       @social_media_profiles[2].allowed_mediums = [:organic]
       @social_media_profiles[2].save
-      patch :update, id: @experiment, experiment: attributes_for(:experiment, name: 'New name', end_date: Time.local(2000, 2, 1, 9, 0, 0), message_distribution_start_date: Time.local(2000, 3, 1, 9, 0, 0), facebook_posting_times: '4:09 PM,6:22 PM,9:34 AM,10:02 PM,2:12 AM', instagram_posting_times: '4:09 PM,6:22 PM,9:34 AM,10:02 PM,2:12 AM', twitter_posting_times: '4:09 PM,6:22 PM,9:34 AM,10:02 PM,2:12 AM', social_media_profile_ids: [@social_media_profiles[1].id, @social_media_profiles[2].id], message_generation_parameter_set_attributes: {number_of_cycles: 4, number_of_messages_per_social_network: 5, social_network_choices: ['facebook', 'twitter'], medium_choices: ['organic'], image_present_choices: :no_messages})
+      patch :update, id: @experiment, experiment: attributes_for(:experiment, name: 'New name', message_distribution_start_date: Time.local(2000, 3, 1, 9, 0, 0), click_meter_group_id: 1, click_meter_domain_id: 2, facebook_posting_times: '4:09 PM,6:22 PM,9:34 AM,10:02 PM,2:12 AM', instagram_posting_times: '4:09 PM,6:22 PM,9:34 AM,10:02 PM,2:12 AM', twitter_posting_times: '4:09 PM,6:22 PM,9:34 AM,10:02 PM,2:12 AM', social_media_profile_ids: [@social_media_profiles[1].id, @social_media_profiles[2].id], message_generation_parameter_set_attributes: {number_of_cycles: 4, number_of_messages_per_social_network: 5, social_network_choices: ['facebook', 'twitter'], medium_choices: ['organic'], image_present_choices: :no_messages})
     end
 
     context 'with valid attributes' do
@@ -308,8 +375,9 @@ RSpec.describe ExperimentsController, type: :controller do
         @experiment.reload
         expect(@experiment.name).to eq('New name')
         expect(@experiment.message_distribution_start_date).to eq(Time.local(2000, 3, 1, 9, 0, 0))
-        expect(@experiment.end_date).to eq(Time.local(2000, 2, 1, 9, 0, 0))
         expect(@experiment.message_distribution_start_date).to eq(Time.local(2000, 3, 1, 9, 0, 0))
+        expect(@experiment.click_meter_group_id).to eq(1)
+        expect(@experiment.click_meter_domain_id).to eq(2)
         expect(@experiment.twitter_posting_times).to eq('4:09 PM,6:22 PM,9:34 AM,10:02 PM,2:12 AM')
         expect(@experiment.facebook_posting_times).to eq('4:09 PM,6:22 PM,9:34 AM,10:02 PM,2:12 AM')
         expect(@experiment.instagram_posting_times).to eq('4:09 PM,6:22 PM,9:34 AM,10:02 PM,2:12 AM')

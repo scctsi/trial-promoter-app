@@ -11,6 +11,7 @@
 #  image_pool               :text
 #  original_image_filenames :text
 #  platforms                :text
+#  promoted_website_url     :string(2000)
 #
 
 require 'rails_helper'
@@ -258,4 +259,48 @@ RSpec.describe MessageTemplate do
       expect(@message_template.warnings[0]).to eq('Too long for use in Twitter (At least one of the hashtags will never be included)')
     end
   end
+  
+  describe 'storing promoted website URLs in a canonical format' do
+    it 'removes www' do
+      message_template = build(:message_template)
+      message_template.promoted_website_url = 'http://www.url.com'
+      
+      message_template.save
+      message_template.reload
+      
+      expect(message_template.promoted_website_url).to eq('http://url.com')
+    end
+
+    it 'lowercases the URL' do
+      message_template = build(:message_template)
+      message_template.promoted_website_url = 'http://URL.com'
+      
+      message_template.save
+      message_template.reload
+      
+      expect(message_template.promoted_website_url).to eq('http://url.com')
+    end
+    
+    it 'adds a scheme' do
+      message_template = build(:message_template)
+      message_template.promoted_website_url = 'url.com'
+      
+      message_template.save
+      message_template.reload
+      
+      expect(message_template.promoted_website_url).to eq('http://url.com')
+    end
+    
+    it 'keeps anchor links at the end of a URL (even if this is not according to the standards)' do
+      message_template = build(:message_template)
+      message_template.promoted_website_url = 'http://url.com/#anchor'
+      
+      message_template.save
+      message_template.reload
+      
+      expect(message_template.promoted_website_url).to eq('http://url.com/#anchor')
+    end
+
+  end
+  
 end

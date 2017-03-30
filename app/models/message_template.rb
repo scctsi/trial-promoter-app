@@ -11,6 +11,7 @@
 #  image_pool               :text
 #  original_image_filenames :text
 #  platforms                :text
+#  promoted_website_url     :string(2000)
 #
 
 class MessageTemplate < ActiveRecord::Base
@@ -104,5 +105,28 @@ class MessageTemplate < ActiveRecord::Base
     end
     
     warnings
+  end
+  
+  def promoted_website_url=(value)
+    self[:promoted_website_url] = nil if value.nil?
+    self[:promoted_website_url] = to_canonical(value) if !value.nil?
+  end
+  
+  private  
+  def to_canonical(url)
+    uri = Addressable::URI.parse(url)
+    uri.scheme = "http" if uri.scheme.blank?
+    host = uri.host.sub(/\www\./, '') if uri.host.present?
+    path = (uri.path.present? && uri.host.blank?) ? uri.path.sub(/\www\./, '') : uri.path
+    # Preserve anchor links (http://www.url.com/#anchor)
+    anchor_link = ''
+    if !url.index('#').nil?
+      anchor_link = url[url.index('#')..-1]
+    end
+    (uri.scheme.to_s + "://" + host.to_s + path.to_s + anchor_link).downcase
+  rescue Addressable::URI::InvalidURIError
+    nil
+  rescue URI::Error
+    nil
   end
 end

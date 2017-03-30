@@ -9,9 +9,12 @@
 #  created_at                      :datetime         not null
 #  updated_at                      :datetime         not null
 #  analytics_file_todos_created    :boolean
-#  posting_times                   :text
+#  twitter_posting_times           :text
+#  facebook_posting_times          :text
+#  instagram_posting_times         :text
+#  click_meter_group_id            :integer
+#  click_meter_domain_id           :integer
 #
-
 
 require 'rails_helper'
 
@@ -39,14 +42,14 @@ RSpec.describe Experiment, type: :model do
     expect(Experiment.allowed_times).to include('12:30 AM', '3:04 AM', '1:30 PM')
   end
 
-  it 'disables message generation when distribution start date is less than 3 days (72 hours) from current time' do
-    experiment = create(:experiment, message_distribution_start_date: Time.new(2017, 01, 03, 23, 59, 0,  "+00:00") )
+  it 'disables message generation when distribution start date is after the current date' do
+    experiment = create(:experiment, message_distribution_start_date: Time.new(2017, 01, 01, 0, 0, 0,  "+00:00") )
 
     expect(experiment.disable_message_generation?).to be true
   end
 
-  it 'does not disable message generation when distribution start date is more than 24 hours from current time' do
-    experiment = create(:experiment, message_distribution_start_date: Time.new(2017, 01, 04, 0, 0, 0, "+00:00") )
+  it 'does not disable message generation when distribution start date is before the current date' do
+    experiment = create(:experiment, message_distribution_start_date: Time.new(2017, 01, 01, 0, 0, 1, "+00:00") )
 
     expect(experiment.disable_message_generation?).to be false
   end
@@ -71,7 +74,8 @@ RSpec.describe Experiment, type: :model do
   end
 
   it 'iterates over all the days in the experiment' do
-    experiment = build(:experiment, message_distribution_start_date: Time.new(2017, 01, 01, 0, 0, 0, "+00:00"), end_date: Time.new(2017, 01, 02, 0, 0, 0, "+00:00"))
+    experiment = build(:experiment, message_distribution_start_date: Time.new(2017, 01, 01, 0, 0, 0, "+00:00"))
+    allow(experiment).to receive(:end_date).and_return(experiment.message_distribution_start_date + 10.days)
     number_of_days = 0
 
     experiment.each_day do |day|
@@ -79,12 +83,12 @@ RSpec.describe Experiment, type: :model do
       expect(day).to be <= experiment.end_date
       number_of_days += 1
     end
-    expect(number_of_days).to eq((experiment.end_date - experiment.message_distribution_start_date).to_i / (24 * 60 * 60) + 1)
+    expect(number_of_days).to be(11)
   end
 
   describe 'creating a todo list for analytics uploads' do
     before do
-      @social_media_profiles = create_list(:social_media_profile, 4)
+      @social_media_profiles = create_list(:social_media_profile, 5)
       @social_media_profiles[0].platform = :twitter
       @social_media_profiles[0].allowed_mediums = [:ad]
       @social_media_profiles[1].platform = :twitter
@@ -93,6 +97,8 @@ RSpec.describe Experiment, type: :model do
       @social_media_profiles[2].allowed_mediums = [:ad]
       @social_media_profiles[3].platform = :facebook
       @social_media_profiles[3].allowed_mediums = [:organic]
+      @social_media_profiles[4].platform = :instagram
+      @social_media_profiles[4].allowed_mediums = [:ad]
       @social_media_profiles.each { |social_media_profile| social_media_profile.save }
     end
 
@@ -103,14 +109,13 @@ RSpec.describe Experiment, type: :model do
 
       profiles = experiment.social_media_profiles_needing_analytics_uploads
 
-      expect(profiles.count).to eq(2)
-      profiles.each { |profile| expect(profile.platform) == :twitter }
+      # ALL social media profiles (for now) need an analytics file upload.
+      expect(profiles.count).to eq(5)
     end
 
     it 'does not create todos if no social media profiles require analytics uploads' do
       experiment = build(:experiment)
-      experiment.social_media_profiles << @social_media_profiles[2]
-      experiment.save
+      allow(experiment).to receive(:social_media_profiles_needing_analytics_uploads).and_return([])
 
       experiment.create_analytics_file_todos
 
@@ -118,16 +123,15 @@ RSpec.describe Experiment, type: :model do
       expect(experiment.analytics_file_todos_created).to be true
     end
 
-    it 'creates todos (one for each day and social media profile) if any social media profiles require analytics uploads' do
-      experiment = build(:experiment, message_distribution_start_date: Time.new(2017, 01, 01, 0, 0, 0, "+00:00"), end_date: Time.new(2017, 01, 02, 0, 0, 0, "+00:00"))
-      experiment.social_media_profiles << @social_media_profiles[0]
-      experiment.social_media_profiles << @social_media_profiles[1]
-      experiment.save
+    it 'creates todos (one for each day of the experiment and social media profile plus one additional day) if any social media profiles require analytics uploads' do
+      experiment = build(:experiment, message_distribution_start_date: Time.new(2017, 01, 01, 0, 0, 0, "+00:00"))
+      allow(experiment).to receive(:end_date).and_return(experiment.message_distribution_start_date + 1.days)
+      allow(experiment).to receive(:social_media_profiles_needing_analytics_uploads).and_return([@social_media_profiles[0], @social_media_profiles[1]])
 
       experiment.create_analytics_file_todos
 
       analytics_files = AnalyticsFile.all
-      expect(analytics_files.count).to eq(4)
+      expect(analytics_files.count).to eq(6)
       analytics_files.each { |analytics_file| expect(analytics_file.message_generating).to eq(experiment)}
       expect(analytics_files[0].social_media_profile).to eq(@social_media_profiles[0])
       expect(analytics_files[0].required_upload_date).to eq(experiment.message_distribution_start_date)
@@ -137,6 +141,10 @@ RSpec.describe Experiment, type: :model do
       expect(analytics_files[2].required_upload_date).to eq(experiment.end_date)
       expect(analytics_files[3].social_media_profile).to eq(@social_media_profiles[1])
       expect(analytics_files[3].required_upload_date).to eq(experiment.end_date)
+      expect(analytics_files[4].social_media_profile).to eq(@social_media_profiles[0])
+      expect(analytics_files[4].required_upload_date).to eq(experiment.end_date + 1.day)
+      expect(analytics_files[5].social_media_profile).to eq(@social_media_profiles[1])
+      expect(analytics_files[5].required_upload_date).to eq(experiment.end_date + 1.day)
       expect(experiment.analytics_file_todos_created).to be true
     end
   end
@@ -146,39 +154,50 @@ RSpec.describe Experiment, type: :model do
       @experiment = build(:experiment)
     end
 
-    it 'returns a hash with platform key and an array of DateTime instances value' do
-      @experiment.twitter_posting_times = '12:30 AM,12:30 PM,05:10 AM' 
+    it 'returns a hash with platform key and an array of hashes containing the hour and minute values' do
+      @experiment.twitter_posting_times = '12:30 AM,12:30 PM,05:10 AM,05:20 PM' 
       @experiment.facebook_posting_times = '12:30 AM,12:30 PM,05:10 AM' 
       @experiment.instagram_posting_times = '12:30 AM,12:30 PM,05:10 AM' 
       
-      posting_times_as_datetimes = @experiment.posting_times_as_datetimes
+      posting_times = @experiment.posting_times
       
-      expect(posting_times_as_datetimes.keys.count).to eq(3)
-      twitter_posting_times = posting_times_as_datetimes[:twitter]
-      expect(twitter_posting_times.count).to eq(3)
-      expect(twitter_posting_times[0].hour).to eq(0)
-      expect(twitter_posting_times[0].minute).to eq(30)
-      expect(twitter_posting_times[1].hour).to eq(12)
-      expect(twitter_posting_times[1].minute).to eq(30)
-      expect(twitter_posting_times[2].hour).to eq(5)
-      expect(twitter_posting_times[2].minute).to eq(10)
+      expect(posting_times.keys.count).to eq(3)
+      twitter_posting_times = posting_times[:twitter]
+      expect(twitter_posting_times.count).to eq(4)
+      expect(twitter_posting_times[0][:hour]).to eq(0)
+      expect(twitter_posting_times[0][:minute]).to eq(30)
+      expect(twitter_posting_times[1][:hour]).to eq(12)
+      expect(twitter_posting_times[1][:minute]).to eq(30)
+      expect(twitter_posting_times[2][:hour]).to eq(5)
+      expect(twitter_posting_times[2][:minute]).to eq(10)
+      expect(twitter_posting_times[3][:hour]).to eq(17)
+      expect(twitter_posting_times[3][:minute]).to eq(20)
     end
     
-    it 'returns a hash with platform key and an array of DateTime instances value with an empty array for missing platform times' do
+    it 'returns a hash with platform key and an empty array for missing platform times' do
       @experiment.twitter_posting_times = '12:30 AM,12:30 PM,05:10 AM' 
       @experiment.facebook_posting_times = '' 
       @experiment.instagram_posting_times = nil
       
-      posting_times_as_datetimes = @experiment.posting_times_as_datetimes
+      posting_times = @experiment.posting_times
       
-      expect(posting_times_as_datetimes.keys.count).to eq(3)
-      expect(posting_times_as_datetimes[:facebook]).to eq([])
-      expect(posting_times_as_datetimes[:instagram]).to eq([])
+      expect(posting_times.keys.count).to eq(3)
+      expect(posting_times[:facebook]).to eq([])
+      expect(posting_times[:instagram]).to eq([])
     end
   end
   
-  xit 'returns a default timeline' do
+  it 'calculates the end date for the experiment' do
     experiment = build(:experiment)
+    experiment.message_generation_parameter_set = build(:message_generation_parameter_set)
+    allow(experiment.message_generation_parameter_set).to receive(:length_of_experiment_in_days).and_return(10)
+    
+    expect(experiment.end_date).to eq(experiment.message_distribution_start_date + experiment.message_generation_parameter_set.length_of_experiment_in_days(10).days)
+  end
+  
+  it 'returns a default timeline' do
+    experiment = build(:experiment)
+    allow(experiment).to receive(:end_date).and_return(experiment.message_distribution_start_date + 10.days)
     
     expect(experiment.timeline.events).to eq(Timeline.build_default_timeline(experiment).events)
   end

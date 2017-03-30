@@ -1,13 +1,21 @@
--if @experiment.disable_message_generation?
-  .disabled.button
-    %a.ui.labeled.icon.button.disable-message-generation-button
+.ui.buttons
+  -if @experiment.disable_message_generation?
+    .disabled.button
+      %a.ui.labeled.icon.button.disabled-message-generation-button
+        %i.send.icon
+        Generate messages
+    .or
+    %a.ui.labeled.icon.button{ href: "/experiments/#{@experiment.id}/send_to_buffer" }
+      %i.rocket.icon
+      Send to Buffer
+  -else
+    %a#generate-messages-button.ui.primary.labeled.icon.button
       %i.send.icon
       Generate messages
--else
-  %a#generate-messages-button.ui.primary.labeled.icon.button{:href => "/experiments/#{@experiment.id}/create_messages.html", 'data-experiment-id' => @experiment.id}
-    %i.send.icon
-    Generate messages
-  = render partial: 'message_generation_progress_modal', locals: { total: @experiment.message_generation_parameter_set.expected_generated_message_count(MessageTemplate.belonging_to(@experiment).count) }
+    .or
+    %a.ui.labeled.icon.button{ href: "/experiments/#{@experiment.id}/send_to_buffer" }
+      %i.rocket.icon
+      Send to Buffer
 -if @experiment.message_distribution_start_date.nil?
   .ui.negative.message
     .header
@@ -19,8 +27,23 @@
 - else
   .ui.message
     .header
-      Regarding message generation
-    %ul.list
-      %li All messages for a experiment are deleted each time messages are generated.
-      %li Three days before the experiment is scheduled to start message distribution, message generation will be locked.
+      Note
+    .ui.bulleted.list
+      .item 
+        Randomization (Shuffling): The messages are assigned to a random sequence for each cycle using a Fisher-Yates shuffle <a href="http://dl.acm.org/citation.cfm?doid=364520.364540" target="_blank">[1]</a>.
+      .item
+        Randomization (Sampling): The selection of the hashtag (if applicable) and the image (if applicable) is randomized as well using sampling <a href="https://ruby-doc.org/core-2.2.0/Array.html#method-i-sample" target="_blank">[2]</a>.
+      .item
+        Message generation: When you click on "Generate  messages", all existing messages for this experiment will be deleted and then regenerated.
+      .item
+        Editing restriction: Set up, message templates, and generation will be locked 3 days before the experiment is scheduled to start.
+      .item
+        Send to Buffer: Trial Promoter sends messages to Buffer nightly (up to a week in advance). Please click on "Send to Buffer" to immediately send the messages scheduled for the next 7 days to Buffer.
+    .ui.mini.list
+      .item
+        <sup><a href="http://dl.acm.org/citation.cfm?doid=364520.364540" target="_blank">1</a></sup> Durstenfeld, R. "Algorithm 235: Random Permutation." Communications of the ACM. ACM, 1 July 1964. Web. 29 Mar. 2017.
+      .item
+        <sup><a href="https://ruby-doc.org/core-2.2.0/Array.html#method-i-sample" target="_blank">2</a></sup> "Class: Array (Ruby 2.2.0)." Ruby Language Documentation, n.d. Web. 29 Mar. 2017.
   = render partial: 'shared/messages', locals: { messages: @messages }
+= render partial: 'message_generation_confirmation_modal', locals: { total: @experiment.message_generation_parameter_set.expected_generated_message_count(MessageTemplate.belonging_to(@experiment).count), experiment_id: @experiment.id }
+= render partial: 'message_generation_progress_modal', locals: { total: @experiment.message_generation_parameter_set.expected_generated_message_count(MessageTemplate.belonging_to(@experiment).count), experiment_id: @experiment.id }

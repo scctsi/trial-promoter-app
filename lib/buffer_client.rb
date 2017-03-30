@@ -7,10 +7,11 @@ class BufferClient
     request_body = {
       :profile_ids => message.social_media_profile.buffer_id,
       :text => message.content,
-      :shorten => true,
+      :shorten => false,
       :access_token => Setting[:buffer_access_token]
     }
 
+    request_body[:media] = {"thumbnail" => message.image.url, "photo" => message.image.url} if message.image_present == :with
     request_body[:scheduled_at] = message.scheduled_date_time.to_s if !message.scheduled_date_time.nil?
 
     request_body

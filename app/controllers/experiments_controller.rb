@@ -1,5 +1,6 @@
 class ExperimentsController < ApplicationController
-  before_action :set_experiment, only: [:show, :edit, :update, :parameterized_slug, :create_messages, :create_analytics_file_todos]
+  before_action :set_experiment, only: [:show, :edit, :update, :parameterized_slug, :send_to_buffer, :create_messages, :create_analytics_file_todos]
+  before_action :set_click_meter_groups_and_domains, only: [:new, :edit]
   layout "workspace", only: [:show]
 
   def index
@@ -48,6 +49,12 @@ class ExperimentsController < ApplicationController
       render :edit
     end
   end
+  
+  def send_to_buffer
+    PublishMessagesJob.perform_later
+    flash[:notice] = 'Messages scheduled for the next 7 days have been pushed to Buffer'
+    redirect_to experiment_url(@experiment)
+  end
 
   def create_messages
     respond_to do |format|
@@ -69,8 +76,13 @@ class ExperimentsController < ApplicationController
     authorize @experiment
   end
 
+  def set_click_meter_groups_and_domains
+    @click_meter_groups = ClickMeterClient.get_groups
+    @click_meter_domains = ClickMeterClient.get_domains
+  end
+
   def experiment_params
     # TODO: Unit test this
-    params.require(:experiment).permit(:name, :end_date, :message_distribution_start_date, :twitter_posting_times, :facebook_posting_times, :instagram_posting_times, {:social_media_profile_ids => []}, message_generation_parameter_set_attributes: [:number_of_cycles, :number_of_messages_per_social_network, :image_present_choices, social_network_choices: [], medium_choices: []])
+    params.require(:experiment).permit(:name, :message_distribution_start_date, :click_meter_group_id, :click_meter_domain_id, :twitter_posting_times, :facebook_posting_times, :instagram_posting_times, {:social_media_profile_ids => []}, message_generation_parameter_set_attributes: [:number_of_cycles, :number_of_messages_per_social_network, :image_present_choices, social_network_choices: [], medium_choices: []])
   end
 end

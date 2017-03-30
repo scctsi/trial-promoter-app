@@ -1,4 +1,8 @@
 class ExperimentPolicy < ApplicationPolicy
+  def send_to_buffer?
+    user.role.administrator?
+  end
+
   def create_messages?
     user.role.administrator?
   end

@@ -4,7 +4,7 @@
 # Basically encodes any integer into a base(n) string, where n is ALPHABET.length.
 # Based on pseudocode from http://stackoverflow.com/questions/742013/how-to-code-a-url-shortener/742047#742047
 
-ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".split(//)
+ALPHABET = "abcdefghijklmnopqrstuvwxyz0123456789".split(//)
 
 class BijectiveFunction
   def self.encode(i)

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170309193522) do
+ActiveRecord::Schema.define(version: 20170327222036) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,8 +20,8 @@ ActiveRecord::Schema.define(version: 20170309193522) do
     t.integer  "visit_id"
     t.integer  "user_id"
     t.string   "name"
-    t.jsonb    "properties"
     t.datetime "time"
+    t.jsonb    "properties"
   end
 
   add_index "ahoy_events", ["name", "time"], name: "index_ahoy_events_on_name_and_time", using: :btree
@@ -126,6 +126,8 @@ ActiveRecord::Schema.define(version: 20170309193522) do
     t.text     "twitter_posting_times"
     t.text     "facebook_posting_times"
     t.text     "instagram_posting_times"
+    t.integer  "click_meter_group_id"
+    t.integer  "click_meter_domain_id"
   end
 
   create_table "experiments_social_media_profiles", force: :cascade do |t|
@@ -190,7 +192,6 @@ ActiveRecord::Schema.define(version: 20170309193522) do
     t.string   "image_present"
     t.integer  "image_id"
     t.string   "publish_status"
-    t.datetime "buffer_publish_date"
     t.datetime "scheduled_date_time"
     t.string   "social_network_id"
     t.integer  "social_media_profile_id"

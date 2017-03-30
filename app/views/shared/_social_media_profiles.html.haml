@@ -16,7 +16,10 @@
         %td= social_media_profile.service_type.titleize
         %td= social_media_profile.service_username
         %td= social_media_profile.buffer_id
-        %td= social_media_profile.allowed_mediums.to_s[2...-1].titleize
+        - if !social_media_profile.allowed_mediums.nil?
+          %td= social_media_profile.allowed_mediums.to_s[2...-1].titleize
+        - else
+          %td
         %td
           %a{ href: edit_social_media_profile_path(social_media_profile) }
             Edit

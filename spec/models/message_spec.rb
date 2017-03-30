@@ -22,6 +22,7 @@
 #  social_network_id       :string
 #  social_media_profile_id :integer
 #  platform                :string
+#  promoted_website_url    :string(2000)
 #
 
 require 'rails_helper'
@@ -30,7 +31,7 @@ describe Message do
   it { is_expected.to belong_to :message_template }
   it { is_expected.to enumerize(:publish_status).in(:pending, :published_to_buffer, :published_to_social_network).with_default(:pending).with_predicates(true) }
   it { is_expected.to have_one :buffer_update }
-  it { is_expected.to have_one :click_meter_tracking_link }
+  it { is_expected.to have_one(:click_meter_tracking_link).dependent(:destroy) }
   it { is_expected.to have_many :metrics }
   it { is_expected.to belong_to(:message_generating) }
   it { is_expected.to enumerize(:platform).in(:twitter, :facebook, :instagram) }
@@ -120,14 +121,14 @@ describe Message do
 
   describe 'pagination' do
     before do
-      create_list(:message, 30)
+      create_list(:message, 100)
       @messages = Message.order('created_at ASC')
     end
 
-    it 'has a default of 25 messages per page' do
+    it 'has a default of 90 messages per page' do
       page_of_messages = Message.page(1)
 
-      expect(page_of_messages.count).to eq(25)
+      expect(page_of_messages.count).to eq(90)
     end
 
     it 'returns the first page of messages given a per page value' do

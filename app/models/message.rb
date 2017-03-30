@@ -22,6 +22,7 @@
 #  social_network_id       :string
 #  social_media_profile_id :integer
 #  platform                :string
+#  promoted_website_url    :string(2000)
 #
 
 class Message < ActiveRecord::Base
@@ -42,7 +43,7 @@ class Message < ActiveRecord::Base
   belongs_to :image
   belongs_to :social_media_profile
   has_one :buffer_update
-  has_one :click_meter_tracking_link
+  has_one :click_meter_tracking_link, dependent: :destroy
   has_many :metrics do
     def << (value)
       source_metrics_exists = false

@@ -3,7 +3,19 @@ require 'rails_helper'
 RSpec.describe MessageFactory do
   before do
     @experiment = create(:experiment)
-    @suitable_social_media_profiles = create_list(:social_media_profile, 3)
+    @experiment.click_meter_group_id = 1
+    @experiment.click_meter_domain_id = 2
+    @suitable_social_media_profiles = create_list(:social_media_profile, 5)
+    @suitable_social_media_profiles[0].platform = :facebook
+    @suitable_social_media_profiles[0].allowed_mediums = [:ad]
+    @suitable_social_media_profiles[1].platform = :facebook
+    @suitable_social_media_profiles[1].allowed_mediums = [:organic]
+    @suitable_social_media_profiles[2].platform = :twitter
+    @suitable_social_media_profiles[2].allowed_mediums = [:ad]
+    @suitable_social_media_profiles[3].platform = :twitter
+    @suitable_social_media_profiles[3].allowed_mediums = [:organic]
+    @suitable_social_media_profiles[4].platform = :instagram
+    @suitable_social_media_profiles[4].allowed_mediums = [:ad]
     @suitable_social_media_profiles.each { |social_media_profile| @experiment.social_media_profiles << social_media_profile }
     @experiment.save
     @message_templates = create_list(:message_template, 5, platforms: TrialPromoter::SUPPORTED_NETWORKS, experiment_list: @experiment.to_param)
@@ -11,6 +23,11 @@ RSpec.describe MessageFactory do
     @message_templates.each do |message_template|
       images = create_list(:image, 2, experiment_list: @experiment.to_param)
       message_template.image_pool = images.map(&:id)
+      message_template.save
+    end
+    # Add the {url} parameter to each message template.
+    @message_templates.each do |message_template|
+      message_template.content += '{url}'
       message_template.save
     end
     # Add some hashtags to the first 3 message templates
@@ -27,6 +44,11 @@ RSpec.describe MessageFactory do
     @pusher_channel = double()
     allow(Pusher).to receive(:[]).with('progress').and_return(@pusher_channel)
     allow(@pusher_channel).to receive(:trigger)
+    # Set up click tracking
+    allow(ClickMeterClient).to receive(:create_click_meter_tracking_link).and_call_original
+    allow(ClickMeterClient).to receive(:delete_tracking_link)
+    # Set up action throttling
+    allow(@message_factory).to receive(:throttle).and_call_original
   end
 
   it 'can be initialized with a social media profile picker' do
@@ -56,12 +78,12 @@ RSpec.describe MessageFactory do
     expect(parameters[:mediums]).to eq(@experiment.message_generation_parameter_set.medium_choices)
     expect(parameters[:message_templates]).to eq(MessageTemplate.belonging_to(@experiment).to_a)
     expect(parameters[:message_templates]).to be_instance_of(Array)
-    expect(parameters[:posting_times]).to eq(@experiment.posting_times_as_datetimes)
+    expect(parameters[:posting_times]).to eq(@experiment.posting_times)
     expect(parameters[:total_count]).to eq(@experiment.message_generation_parameter_set.expected_generated_message_count(parameters[:message_templates].count))
     expect(parameters[:social_media_profiles]).to eq(@experiment.social_media_profiles)
   end
 
-  it 'creates a set of messages given five message templates, 1 social network, 1 medium, images for all messages, 1 cycle, 1 message per network per day and no hashtags' do
+  it 'creates a set of messages given five message templates, 1 social network, 1 medium, images for all messages, 1 cycle, 1 message per network per day (no hashtags)' do
     @experiment.facebook_posting_times = "12:30 PM"
     @experiment.save
     message_generation_parameter_set = MessageGenerationParameterSet.new do |m|
@@ -91,12 +113,14 @@ RSpec.describe MessageFactory do
     end
     # Were the pusher events triggered?
     expect(@pusher_channel).to have_received(:trigger).exactly(expected_generated_message_count).times.with('progress', {:value => an_instance_of(Fixnum), :total => expected_generated_message_count, :event => 'Message generated'})
+    # Was the message generation throttled (limit of 10 req/sec for Click Meter)
+    expect(@message_factory).to have_received(:throttle).with(5).exactly(expected_generated_message_count).times
 
     # Has the scheduled date and time been set correctly?
     publish_date_time = @experiment.message_distribution_start_date
-    publish_date_time = publish_date_time.change({ hour: 12, min: 30, sec: 0 })
     messages.each do |message|
-      expect(message.scheduled_date_time).to eq(publish_date_time)
+      expected_scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(publish_date_time.year, publish_date_time.month, publish_date_time.day, 12, 30, 0)
+      expect(message.scheduled_date_time).to eq(expected_scheduled_date_time)
       publish_date_time += 1.day
     end
 
@@ -111,11 +135,22 @@ RSpec.describe MessageFactory do
         expect(message.message_template.hashtags.any? {|hashtag| message.content.include?(hashtag)}).to be true 
       end
     end
+    
+    # Was a Click Meter tracking link created for each message?
+    expect(ClickMeterClient).to have_received(:create_click_meter_tracking_link).exactly(expected_generated_message_count).times.with(an_instance_of(Message), @experiment.click_meter_group_id, @experiment.click_meter_domain_id)
+    messages.each do |message|
+      expect(message.click_meter_tracking_link).not_to be_nil
+      # These next 4 lines are really only useful to ensure that on development machines we are getting back fake ClickMeter links.
+      expect(message.click_meter_tracking_link.click_meter_id).to eq(message.id.to_s)
+      expect(message.click_meter_tracking_link.click_meter_uri).to eq("/datapoints/#{message.id.to_s}")
+      expect(message.click_meter_tracking_link.tracking_url).to eq("http://development.tracking-domain.com/#{BijectiveFunction.encode(message.id)}")
+      expect(message.click_meter_tracking_link.destination_url).to eq(TrackingUrl.campaign_url(message))
+      # Was the tracking URL (code) used in place of the {url} variable?
+      expect(message.content.index(message.click_meter_tracking_link.tracking_url)).not_to be nil
+    end
   end
 
-  it 'creates a set of messages given five message templates, 3 social networks, 2 mediums, images for all messages, 3 cycles, 5 messages per network per day and selectes random hashtags where feasible' do
-    @experiment.facebook_posting_times = "12:30 PM"
-    @experiment.save
+  it 'creates a set of messages given five message templates, 3 social networks, 2 mediums, images for all messages, 3 cycles, 5 messages per network per day (random hashtags)' do
     message_generation_parameter_set = MessageGenerationParameterSet.new do |m|
       m.social_network_choices = [:facebook, :instagram, :twitter]
       m.medium_choices = ['ad', 'organic']
@@ -123,7 +158,17 @@ RSpec.describe MessageFactory do
       m.number_of_cycles = 3
       m.number_of_messages_per_social_network = 5
     end
+    # In order to test that the same hashtags are used, set every template to have a set of allowed hashtags
+    @message_templates.each do |message_template|
+      random_hashtags = ['#hashtag1,#hashtag2,#hashtag3','#hashtag1,#hashtag4,#hashtag5','#hashtag6,#hashtag7,#hashtag8']
+      message_template.hashtags = random_hashtags.sample
+      message_template.save
+    end
     @experiment.message_generation_parameter_set = message_generation_parameter_set
+    @experiment.facebook_posting_times = "12:30 AM,08:30 AM,2:30 PM,3:30 PM,12:30 PM"
+    @experiment.twitter_posting_times = "12:40 AM,08:40 AM,2:40 PM,3:40 PM,12:40 PM"
+    @experiment.instagram_posting_times = "12:50 AM,08:50 AM,2:50 PM,3:50 PM,12:50 PM"
+    @experiment.save
     expected_generated_message_count = message_generation_parameter_set.expected_generated_message_count(MessageTemplate.count)
     # Because this test depends on the randomness of shuffle, in order to make sure this test always passes, we are reurning a determinstic set of values for shuffle.
     # shuffle is called 15 times
@@ -150,7 +195,43 @@ RSpec.describe MessageFactory do
     expect(sliced_facebook_organic_messages[0].map(&:message_template).map(&:id)).not_to eq(sliced_facebook_organic_messages[1].map(&:message_template).map(&:id))
     expect(sliced_facebook_organic_messages[0].map(&:message_template).map(&:id)).not_to eq(sliced_facebook_organic_messages[2].map(&:message_template).map(&:id))
     expect(sliced_facebook_organic_messages[1].map(&:message_template).map(&:id)).not_to eq(sliced_facebook_organic_messages[2].map(&:message_template).map(&:id))
-
+    # Was every message scheduled with some date and time?
+    messages.each { |message| expect(message.scheduled_date_time).not_to be_nil }
+    messages_grouped_by_scheduled_send_date = messages.group_by{ |message| message.scheduled_date_time.to_date }
+    # Was the experiment run for 3 days (With 5 message templates and 5 messages sent out every day, each cycle should have taken one day. We have 3 cycles, to the experiment should have taken a total of 3 days to run.)
+    expect(messages_grouped_by_scheduled_send_date.keys.length).to eq(3)
+    # Are the correct number of messages scheduled to go out on each day? 
+    # total = number of social networks * number of mediums * number of messages per day per social network - number of messages per day per social network (to account for no instagram organic messages)
+    number_of_messages_scheduled_per_day = 3 * 2 * 5 - 5
+    messages_grouped_by_scheduled_send_date.each { |scheduled_send_date, messages_by_send_date| expect(messages_by_send_date.length).to eq(number_of_messages_scheduled_per_day) }
+    # Were the messages scheduled at the right times?
+    # 12:30 AM,08:30 AM,2:30 PM,3:30 PM,12:30 PM
+    organic_facebook_messages_on_first_day = messages_grouped_by_scheduled_send_date[messages_grouped_by_scheduled_send_date.keys[0]].select{ |message| message.platform == :facebook && message.medium == :ad }
+    publish_date_time = @experiment.message_distribution_start_date
+    expected_scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(publish_date_time.year, publish_date_time.month, publish_date_time.day, 0, 30, 0)
+    expect(organic_facebook_messages_on_first_day[0].scheduled_date_time).to eq(expected_scheduled_date_time)
+    expected_scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(publish_date_time.year, publish_date_time.month, publish_date_time.day, 8, 30, 0)
+    expect(organic_facebook_messages_on_first_day[1].scheduled_date_time).to eq(expected_scheduled_date_time)
+    expected_scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(publish_date_time.year, publish_date_time.month, publish_date_time.day, 14, 30, 0)
+    expect(organic_facebook_messages_on_first_day[2].scheduled_date_time).to eq(expected_scheduled_date_time)
+    expected_scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(publish_date_time.year, publish_date_time.month, publish_date_time.day, 15, 30, 0)
+    expect(organic_facebook_messages_on_first_day[3].scheduled_date_time).to eq(expected_scheduled_date_time)
+    expected_scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(publish_date_time.year, publish_date_time.month, publish_date_time.day, 12, 30, 0)
+    expect(organic_facebook_messages_on_first_day[4].scheduled_date_time).to eq(expected_scheduled_date_time)
+    # Were the same images used across all platforms and mediums for the very first message_template used?
+    messages_created_from_first_message_template_for_first_cycle = messages.select{ |message| message.message_template == @message_templates[0] }[0..4]
+    messages_created_from_first_message_template_for_first_cycle[1..4].each do |message|
+      expect(messages_created_from_first_message_template_for_first_cycle[0].image).to eq(message.image)
+    end
+    # Was the same hashtag used across all platforms and mediums for the very first message template used?
+    %w(#hashtag1 #hashtag2 #hashtag3 #hashtag4 #hashtag5 #hashtag6 #hashtag7 #hashtag8).each do |hashtag|
+      if !messages_created_from_first_message_template_for_first_cycle[0].content.index(hashtag).nil?
+        messages_created_from_first_message_template_for_first_cycle[1..4].each do |message|
+          expect(messages_created_from_first_message_template_for_first_cycle[0].content.index(hashtag)).to eq(message.content.index(hashtag))
+        end
+      end
+    end
+    
     # Does every message have a suitable social media profile selected?
     messages.each do |message|
       expect(message.social_media_profile).to eq(@suitable_social_media_profiles[1])
@@ -159,6 +240,8 @@ RSpec.describe MessageFactory do
     expect((messages.select{ |message| message.promoted_website_url.nil? }).count).to eq(0)
     # Were the pusher events triggered?
     expect(@pusher_channel).to have_received(:trigger).exactly(expected_generated_message_count).times.with('progress', {:value => an_instance_of(Fixnum), :total => expected_generated_message_count, :event => 'Message generated'})
+    # Was the message generation throttled (limit of 10 req/sec for Click Meter)
+    expect(@message_factory).to have_received(:throttle).with(5).exactly(expected_generated_message_count).times
 
     # # Has the scheduled date and time been set correctly?
     # TODO: Not sure how I can test this efficiently.
@@ -201,5 +284,32 @@ RSpec.describe MessageFactory do
     (0...(keys.count - 1)).each do |index|
       expect(grouped_messages[keys[index]].length == grouped_messages[keys[index + 1]].length)
     end
+  end
+  
+  it 'can throttle an action' do
+    allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('production'))
+    allow(Kernel).to receive(:sleep)
+    
+    @message_factory.throttle(10)
+    
+    expect(Kernel).to have_received(:sleep).with(0.1)
+  end
+  
+  it 'throttles an action (on development environments)' do
+    allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('development'))
+    allow(Kernel).to receive(:sleep)
+    
+    @message_factory.throttle(10)
+    
+    expect(Kernel).to have_received(:sleep).with(0.1)
+  end
+
+  it 'ignores throttling (on test environments)' do
+    allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('test'))
+    allow(Kernel).to receive(:sleep)
+    
+    @message_factory.throttle(10)
+    
+    expect(Kernel).not_to have_received(:sleep).with(0.1)
   end
 end

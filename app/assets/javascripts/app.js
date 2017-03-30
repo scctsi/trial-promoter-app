@@ -185,10 +185,12 @@ $(document).ready(function() {
       content : 'A campaign allows you to promote one or multiple types of contents (news, research studies, research findings, award announcements, etc.) without applying scientific study design techniques.'
     });
 
-    $('.ui.labeled.icon.button.disable-message-generation-button').popup({
+    $('.ui.labeled.icon.button.disabled-message-generation-button').popup({
       title : "Why can't I generate messages?",
       content : 'This experiment has already started distributing messages. You can no longer generate messages for this experiment.'
     })
+ 
+    $('.url.label').popup();
   }
 
   String.prototype.capitalizeFirstLetter = function() {
@@ -292,35 +294,39 @@ $(document).ready(function() {
     });
   }
 
+  function generateMessages(experimentId, totalMessageCount) {
+    $('#message-generation-progress').modal('setting', 'transition', 'Vertical Flip').modal({ blurring: true }).modal('show');
+    $('#message-generation-progress .approve.button').hide();
+
+    // Set up progress bar
+    $('.ui.progress').progress({
+      duration : 200,
+      total    : totalMessageCount,
+      text     : {
+        active: '{value} of {total} done',
+        success: 'All the messages for this experiment were successfully generated!',
+        error: 'Something went wrong during message generation!'
+      }
+    });
+
+    $.ajax({
+      type: 'GET',
+      url: '/experiments/' + experimentId + '/create_messages',
+      data: { },
+      dataType: 'json',
+      success: function(data) {
+      }
+    });
+
+    return false;
+  }
+  
   function setUpAsyncMessageGeneration() {
     $('#generate-messages-button').click(function() {
-      var experimentId = $(this).data('experiment-id');
-      var total = $('#message-generation-progress').data('total');
-
-      $('#message-generation-progress').modal('setting', 'transition', 'Vertical Flip').modal({ blurring: true }).modal('show');
-      $('#message-generation-progress .approve.button').hide();
-
-      // Set up progress bar
-      $('.ui.progress').progress({
-        duration : 200,
-        total    : total,
-        text     : {
-          active: '{value} of {total} done',
-          success: 'All the messages for this experiment were successfully generated!',
-          error: 'Something went wrong during message generation!'
-        }
-      });
-
-      $.ajax({
-        type: 'GET',
-        url: '/experiments/' + experimentId + '/create_messages',
-        data: { },
-        dataType: 'json',
-        success: function(data) {
-        }
-      });
-
-      return false;
+      $('#message-generation-confirmation').modal('setting', 'transition', 'Vertical Flip').modal({ 
+          blurring: true, 
+          onApprove: function() { generateMessages($(this).data('experiment-id'), $(this).data('total')) }
+        }).modal('show');
     });
   }
 
@@ -387,11 +393,15 @@ $(document).ready(function() {
     return filenames.join(',');
   }
 
-  function getImageCardsHtml(images, buttonType) {
+  function getImageCardsHtml(images, buttonType, filenameStartswithRestriction) {
     var html = '';
+    filenameStartswithRestriction = filenameStartswithRestriction || '';
 
     html += '<div class="ui cards">';
     images.forEach(function (image) {
+      if (filenameStartswithRestriction != '' && !(image.original_filename.startsWith(filenameStartswithRestriction))) {
+        return;
+      }
       html += '<div class="card">';
       html += '<div class="content">';
       html += '<div class="ui image">';
@@ -412,16 +422,16 @@ $(document).ready(function() {
     return html;
   }
 
-  function getImagePoolInterfaceHtml(selectedImages, unselectedImages, messageContent) {
+  function getImagePoolInterfaceHtml(selectedImages, unselectedImages, messageContent, filenameStartswithRestriction) {
     var html = '<div class="ui segment">' + messageContent + '</div>';
     html += '<div class="ui segment filenames-list">Filenames: ';
     html += getFilenames(selectedImages) + '</div>';
 
     html += '<h3 class="ui block header">Selected images</h3>';
-    html += getImageCardsHtml(selectedImages, 'remove');
+    html += getImageCardsHtml(selectedImages, 'remove', filenameStartswithRestriction);
 
     html += '<h3 class="ui block header">Unselected images</h3>';
-    html += getImageCardsHtml(unselectedImages, 'add');
+    html += getImageCardsHtml(unselectedImages, 'add', filenameStartswithRestriction);
 
     return html;
   }
@@ -462,6 +472,7 @@ $(document).ready(function() {
       var messageTemplateId = $(this).data('message-template-id');
       var messageContent = $(this).parent().siblings(':first').text();
       var $loadingButton = $(this);
+      var filenameStartswithRestriction = $(this).data('filename-startswith-restriction');
 
       $loadingButton.addClass('loading');
       $.ajax({
@@ -474,7 +485,7 @@ $(document).ready(function() {
           var selectedImages = retdata.selected_images;
           var unselectedImages = retdata.unselected_images;
 
-          html = getImagePoolInterfaceHtml(selectedImages, unselectedImages, messageContent);
+          html = getImagePoolInterfaceHtml(selectedImages, unselectedImages, messageContent, filenameStartswithRestriction);
 
           $loadingButton.removeClass('loading');
           $('#lightbox .image-list').html(html);

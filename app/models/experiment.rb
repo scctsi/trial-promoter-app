@@ -9,9 +9,12 @@
 #  created_at                      :datetime         not null
 #  updated_at                      :datetime         not null
 #  analytics_file_todos_created    :boolean
-#  posting_times                   :text
+#  twitter_posting_times           :text
+#  facebook_posting_times          :text
+#  instagram_posting_times         :text
+#  click_meter_group_id            :integer
+#  click_meter_domain_id           :integer
 #
-
 
 class Experiment < ActiveRecord::Base
   include ActionView::Helpers::DateHelper
@@ -34,8 +37,7 @@ class Experiment < ActiveRecord::Base
   end
 
   def disable_message_generation?
-    return false if message_distribution_start_date.nil?
-    (self.message_distribution_start_date - Time.now ) < 3.days
+    (self.message_distribution_start_date - Time.now) <= 0
   end
 
   def create_messages
@@ -54,7 +56,7 @@ class Experiment < ActiveRecord::Base
   end
 
   def social_media_profiles_needing_analytics_uploads
-    social_media_profiles.select { |social_media_profile| social_media_profile.platform == :twitter }
+    social_media_profiles
   end
 
   def create_analytics_file_todos
@@ -64,6 +66,10 @@ class Experiment < ActiveRecord::Base
         profiles.each do |profile|
           AnalyticsFile.create(:required_upload_date => day, :social_media_profile => profile, :message_generating => self)
         end
+      end
+      # Add in one additional day to ensure a full day of data collection after the experiment has ended
+      profiles.each do |profile|
+        AnalyticsFile.create(:required_upload_date => end_date + 1.day, :social_media_profile => profile, :message_generating => self)
       end
     end
 
@@ -86,15 +92,26 @@ class Experiment < ActiveRecord::Base
     allowed_times
   end
   
-  def posting_times_as_datetimes
+  def posting_times
     hash_of_posting_times = {}
     
     {:facebook => facebook_posting_times, :instagram => instagram_posting_times, :twitter => twitter_posting_times}.each do |platform, platform_posting_times|
       array_of_posting_times = []
       
       if !platform_posting_times.blank?
-        array_of_posting_times = platform_posting_times.split(',')
-        array_of_posting_times.map! { |posting_time| DateTime.parse(posting_time, DateTime.new(2000, 1, 1)) }
+        platform_posting_times.split(',').each do |posting_time|
+          parsed_posting_time = {}
+          parsed_posting_time[:hour] = posting_time.split(':')[0].to_i
+          # Convert to military time
+          if !posting_time.index('AM').nil? # AM
+            parsed_posting_time[:hour] = 0 if parsed_posting_time[:hour] == 12
+          end
+          if !posting_time.index('PM').nil? # PM
+            parsed_posting_time[:hour] += 12 if parsed_posting_time[:hour] != 12
+          end
+          parsed_posting_time[:minute] = posting_time.split(':')[1].to_i
+          array_of_posting_times << parsed_posting_time
+        end
       end
       
       hash_of_posting_times[platform] = array_of_posting_times
@@ -105,5 +122,9 @@ class Experiment < ActiveRecord::Base
   
   def timeline
     Timeline.build_default_timeline(self)
+  end
+  
+  def end_date
+    message_distribution_start_date + message_generation_parameter_set.length_of_experiment_in_days(MessageTemplate.belonging_to(self).count).days
   end
 end

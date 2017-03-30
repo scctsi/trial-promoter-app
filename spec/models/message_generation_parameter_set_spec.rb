@@ -173,5 +173,15 @@ describe MessageGenerationParameterSet do
 
       expect(MessageGenerationParameterSet.calculate_message_count(calculation_parameters)).to eq('Noncalculable')
     end
+    
+    it 'calculates the length of the experiment in days' do
+      message_generation_parameter_set = MessageGenerationParameterSet.new do |m|
+        m.number_of_cycles = 2
+        m.number_of_messages_per_social_network = 3
+      end
+
+      # Length of experiment in days = Number of cycles (2) * Number of message templates (6) / Messages per social network per day (3) 
+      expect(message_generation_parameter_set.length_of_experiment_in_days(6)).to eq(2 * 6 / 3)
+    end
   end
 end
