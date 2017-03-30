@@ -54,6 +54,20 @@ RSpec.describe Experiment, type: :model do
     expect(experiment.disable_message_generation?).to be false
   end
 
+  it 'disables imports when there are messages present' do
+    experiment = create(:experiment, message_distribution_start_date: Time.new(2017, 01, 01, 0, 0, 0,  "+00:00") )
+    experiment.messages << build(:message)
+    experiment.save
+    
+    expect(experiment.disable_import?).to be true
+  end
+
+  it 'does not disable message generation when distribution start date is before the current date' do
+    experiment = create(:experiment, message_distribution_start_date: Time.new(2017, 01, 01, 0, 0, 0,  "+00:00") )
+
+    expect(experiment.disable_import?).to be false
+  end
+
   it 'parameterizes id and name together' do
     experiment = create(:experiment, name: 'TCORS 2')
 

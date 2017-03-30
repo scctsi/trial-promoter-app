@@ -28,9 +28,14 @@ class ClickMeterClient
     
     click_meter_tracking_link = ClickMeterTrackingLink.new
     click_meter_tracking_link.click_meter_id = response.parsed_response["id"]
-    click_meter_tracking_link.tracking_url = response.parsed_response["trackingCode"]
-    click_meter_tracking_link.destination_url = response.parsed_response["typeTL"]["url"]
-    
+    # This code needs testing. Is the Click Meter response sometimes inconsistent in case?
+    click_meter_tracking_link.tracking_url = response.parsed_response["trackingCode"] if !response.parsed_response["trackingCode"].nil?
+    click_meter_tracking_link.tracking_url = response.parsed_response["trackingcode"] if !response.parsed_response["trackingcode"].nil?
+    click_meter_tracking_link.destination_url = response.parsed_response["typeTL"]["url"] if !response.parsed_response["typeTL"].nil?
+    click_meter_tracking_link.destination_url = response.parsed_response["typetL"]["url"] if !response.parsed_response["typetL"].nil?
+    click_meter_tracking_link.destination_url = response.parsed_response["typeTl"]["url"] if !response.parsed_response["typeTl"].nil?
+    click_meter_tracking_link.destination_url = response.parsed_response["typetl"]["url"] if !response.parsed_response["typetl"].nil?
+
     click_meter_tracking_link
   end
   

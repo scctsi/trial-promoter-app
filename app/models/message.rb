@@ -92,4 +92,27 @@ class Message < ActiveRecord::Base
   def delayed?
     return scheduled_date_time + 5.minutes < buffer_update.sent_from_date_time
   end
+  
+  def method_missing(name, *args, &block)
+    name = name.to_s
+    
+    if name.start_with?('metric')
+      source = name[7..-1].split('_')[0]
+      metric_name = name[7..-1].split('_')[1] 
+      metrics_from_source = metrics.select{ |metric| metric.source.to_s == source }
+      return 'N/A' if metrics_from_source.count == 0
+      return 'N/A' if metrics_from_source[0].data[metric_name].nil?
+      return metrics_from_source[0].data[metric_name]
+    end
+    
+    if name.start_with?('percentage')
+      source = name[11..-1].split('_')[0]
+      metrics_from_source = metrics.select{ |metric| metric.source.to_s == source }
+      return 'N/A' if metrics_from_source.count == 0
+      metric_1_name = name[11..-1].split('_')[1]
+      metric_2_name = name[11..-1].split('_')[2] 
+      return 'N/A' if metrics_from_source[0].data[metric_1_name].nil? || metrics_from_source[0].data[metric_2_name].nil?
+      return (metrics_from_source[0].data[metric_1_name].to_f / metrics_from_source[0].data[metric_2_name].to_f) * 100
+    end
+  end
 end
