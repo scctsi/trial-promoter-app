@@ -7,6 +7,7 @@ class PublishMessagesJob < ActiveJob::Base
 
     pending_messages.all.each do |pending_message|
       BufferClient.create_update(pending_message) unless (pending_message.platform == :instagram && pending_message.medium == :organic)
+      Throttler.throttle(1)
     end
   end
 end

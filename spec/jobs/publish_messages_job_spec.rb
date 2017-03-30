@@ -37,6 +37,14 @@ RSpec.describe PublishMessagesJob, type: :job do
     perform_enqueued_jobs { PublishMessagesJob.perform_later }
   end
 
+  it 'throttles the job to 1 request per second (based on Buffer rate limits)' do
+    (0..4).each do |index|
+      expect(Throttler).to receive(:throttle).with(1)
+    end
+
+    perform_enqueued_jobs { PublishMessagesJob.perform_later }
+  end
+
   it 'executes perform and publishes pending messages except organic Instagram messages' do
     # There is currently no way to track organic Instagram messages, so these messages are currently never published to Buffer.
     @messages[0].medium = :organic

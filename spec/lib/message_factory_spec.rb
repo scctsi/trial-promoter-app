@@ -304,7 +304,6 @@ RSpec.describe MessageFactory do
     expect(Kernel).to have_received(:sleep).with(0.1)
   end
 
-  
   it 'ignores throttling (on test environments)' do
     allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('test'))
     allow(Kernel).to receive(:sleep)
