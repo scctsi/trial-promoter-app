@@ -39,6 +39,10 @@ class Experiment < ActiveRecord::Base
   def disable_message_generation?
     (self.message_distribution_start_date - Time.now) <= 0
   end
+  
+  def disable_import?
+    messages.count > 0 
+  end
 
   def create_messages
     social_media_profile_picker = SocialMediaProfilePicker.new

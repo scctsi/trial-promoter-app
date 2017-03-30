@@ -1,11 +1,21 @@
 .ui.buttons
-  %a#message-templates-file-upload-button.ui.primary.labeled.icon.button{ 'data-experiment-id': @experiment.id }
-    %i.upload.icon
-    Import message templates
-  .or
-  %a#example-button.ui.labeled.icon.button{ href: asset_path('example.csv') }
-    %i.download.icon
-    Download sample CSV file
+  - if @experiment.disable_import?
+    .tooltip{ "data-tooltip" => "Message templates cannot be imported once messages have been generated.", "data-position" => "right center" }
+      %a.ui.labeled.icon.disabled.button
+        %i.upload.icon
+        Import message templates
+    .or
+    %a#example-button.ui.labeled.icon.button{ href: asset_path('example.csv') }
+      %i.download.icon
+      Download sample CSV file
+  - else
+    %a#message-templates-file-upload-button.ui.primary.labeled.icon.button{ 'data-experiment-id': @experiment.id }
+      %i.upload.icon
+      Import message templates
+    .or
+    %a#example-button.ui.labeled.icon.button{ href: asset_path('example.csv') }
+      %i.download.icon
+      Download sample CSV file
 .ui.success.message.hidden.ask-refresh-page
   .header
     %p Your upload was successful. Please refresh the page to see the messages.

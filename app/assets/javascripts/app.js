@@ -185,11 +185,6 @@ $(document).ready(function() {
       content : 'A campaign allows you to promote one or multiple types of contents (news, research studies, research findings, award announcements, etc.) without applying scientific study design techniques.'
     });
 
-    $('.ui.labeled.icon.button.disabled-message-generation-button').popup({
-      title : "Why can't I generate messages?",
-      content : 'This experiment has already started distributing messages. You can no longer generate messages for this experiment.'
-    })
- 
     $('.url.label').popup();
   }
 
