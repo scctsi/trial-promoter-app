@@ -36,8 +36,10 @@
               .ui.basic.small.label
                 = message.medium.to_s.titleize
               .ui.basic.small.label
-                %i.hashtag.icon
                 = message.social_media_profile.service_username
+              .ui.basic.small.label
+                Database Id:
+                = message.id.to_s
               - if !message.buffer_update.nil? 
                 - if !message.buffer_update.sent_from_date_time.nil?
                   .ui.basic.grey.small.label
