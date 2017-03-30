@@ -11,10 +11,15 @@
       %td= message_generation_parameter_set.medium_choices.join(', ').titleize.chomp(',')
     %tr
       %td.collapsing Inclusion of images
-      %td= message_generation_parameter_set.image_present_choices.titleize
-    %tr
-      %td.collapsing Number of messages per day per social media type
-      %td= message_generation_parameter_set.number_of_messages_per_social_network
+      %td= message_generation_parameter_set.image_present_choices.split('_').join(' ').capitalize
+    - if message_generation_parameter_set.medium_choices.include?(:ad)
+      %tr
+        %td.collapsing Number of ads per day per social media type
+        %td= message_generation_parameter_set.number_of_messages_per_social_network
+    - if message_generation_parameter_set.medium_choices.include?(:organic)
+      %tr
+        %td.collapsing Number of organic messages per day per social media type
+        %td= message_generation_parameter_set.number_of_messages_per_social_network
     %tr
       %td.collapsing Number of cycles
       %td= message_generation_parameter_set.number_of_cycles
