@@ -1,6 +1,13 @@
-%a#images-upload-button.ui.primary.labeled.icon.button{'data-experiment-id': @experiment.id, 'data-experiment-param': @experiment.to_param}
-  %i.upload.icon
-  Import images
+.ui.buttons
+  - if @experiment.disable_import?
+    .tooltip{ "data-tooltip" => "Images cannot be imported once messages have been generated.", "data-position" => "right center" }
+      %a.ui.labeled.icon.disabled.button
+        %i.upload.icon
+        Import images
+  - else
+    %a#images-upload-button.ui.primary.labeled.icon.button{'data-experiment-id': @experiment.id, 'data-experiment-param': @experiment.to_param}
+      %i.upload.icon
+      Import images
 .ui.success.message.hidden.ask-refresh-page
   .header
     %p Your upload was successful. Please refresh the page to see the image(s).
