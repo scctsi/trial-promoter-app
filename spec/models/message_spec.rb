@@ -153,7 +153,7 @@ describe Message do
     end
   end
 
-  describe "#delayed?" do
+  describe '#delayed?' do
     before do
       @message = create(:message)
       @message.scheduled_date_time = "2017-10-10 13:04:00"
@@ -168,6 +168,49 @@ describe Message do
       @message.scheduled_date_time = "2017-10-10 13:09:00"
 
       expect(@message.delayed?).to be(false)
+    end
+  end
+  
+  describe 'metric helpers' do
+    before do
+      @message = create(:message)
+    end
+    
+    it 'returns N/A if asked to retrieve a metric for a missing source' do
+      expect(@message.metric_facebook_likes).to eq('N/A')
+    end
+
+    it 'returns N/A if asked to retrieve a missing metric for an existing source' do
+      @message.metrics << Metric.new(source: :facebook, data: {"likes" => 5})
+      expect(@message.metric_facebook_shares).to eq('N/A')
+    end
+
+    it 'returns the value of the metric if asked to retrieve an existing metric for an existing source' do
+      @message.metrics << Metric.new(source: :facebook, data: {"likes" => 5})
+      expect(@message.metric_facebook_likes).to eq(5)
+    end
+
+    it 'returns N/A when asked to find a percentage given a missing source' do
+      @message.metrics << Metric.new(source: :twitter, data: {"shares" => 100})
+      expect(@message.percentage_facebook_clicks_impressions).to eq('N/A')
+    end
+
+    it 'returns N/A when asked to find a percentage given two metric names, either of which is missing' do
+      @message.metrics << Metric.new(source: :facebook, data: {"impressions" => 100})
+      expect(@message.percentage_facebook_clicks_impressions).to eq('N/A')
+
+      @message.metrics << Metric.new(source: :facebook, data: {"clicks" => 5})
+      expect(@message.percentage_facebook_clicks_impressions).to eq('N/A')
+    end
+
+    it 'returns N/A when asked to find a percentage given two metric names, both of which are missing' do
+      @message.metrics << Metric.new(source: :facebook, data: {"shares" => 100})
+      expect(@message.percentage_facebook_clicks_impressions).to eq('N/A')
+    end
+    
+    it 'returns a percentage given two metric names (first metric / second metric accurate to two decimal places)' do
+      @message.metrics << Metric.new(source: :facebook, data: {"clicks" => 5, "impressions" => 100})
+      expect(@message.percentage_facebook_clicks_impressions).to eq(5.0)
     end
   end
 end
