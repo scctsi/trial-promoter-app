@@ -20,16 +20,16 @@
               %th Primary outcome measure
               %th Favorites
               %th Retweets
-              %th Repliess
+              %th Replies
             %tbody
               %tr
-                / %td= @messages_with_metrics[1].metrics[0].data[:clicks]
-                / %td= @messages_with_metrics[1].metrics[0].data[:impressions]
+                %td= message.clicks
+                %td= message.impressions
                 %td
                   .ui.label.basic.teal
-                    / = @messages_with_metrics[1].metrics[0].data[:click_rate].to_s + "%"
+                    = message.click_rate.to_s + "%"
                     Click rate
-                / %td= @messages_with_metrics[1].metrics[0].data[:likes]
-                / %td= @messages_with_metrics[1].metrics[0].data[:shares]
-                / %td= @messages_with_metrics[1].metrics[0].data[:comments]
+                %td= message.likes
+                %td= message.shares
+                %td= message.comments
 
