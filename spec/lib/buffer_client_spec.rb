@@ -88,6 +88,16 @@ RSpec.describe BufferClient do
       expect(@message.buffer_update.persisted?).to be_truthy
     end
 
+    it 'ignores any update that Buffer rejects as being in the past (scheduled time is before now)' do
+      @message.scheduled_date_time = DateTime.new(2017, 1, 1, 12, 0, 0)
+      VCR.use_cassette 'buffer/ignore_past_update' do
+        BufferClient.create_update(@message)
+      end
+
+      expect(BufferClient).to have_received(:post).with('https://api.bufferapp.com/1/updates/create.json', {:body => BufferClient.post_request_body_for_create(@message)})
+      expect(@message.buffer_update).to be_nil
+    end
+
     it 'uses the Buffer API to get an update to the status (pending, sent) of a BufferUpdate and simultaneously updates the metrics for the corresponding message' do
       buffer_id = '55f8a111b762b0cf06d79116'
       @message.buffer_update = BufferUpdate.new(:buffer_id => buffer_id)
