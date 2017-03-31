@@ -84,6 +84,7 @@ RSpec.describe BufferClient do
       # The response returned from Buffer contains a Buffer ID that we need to store in a newly created buffer_update
       expect(@message.buffer_update.buffer_id).not_to be_blank
       # The message and the new Buffer update should be persisted
+      expect(@message.publish_status).to eq(:published_to_buffer)
       expect(@message.persisted?).to be_truthy
       expect(@message.buffer_update.persisted?).to be_truthy
     end
@@ -118,6 +119,7 @@ RSpec.describe BufferClient do
       expect(@message.metrics[0].source).to eq(:buffer)
       expect(@message.metrics[0].data).not_to eq(0)
       # The call should have automatically saved both the message and the new Buffer update
+      expect(@message.publish_status).to eq(:published_to_social_network)
       expect(@message.persisted?).to be_truthy
       expect(@message.buffer_update.persisted?).to be_truthy
     end
