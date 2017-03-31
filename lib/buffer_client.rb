@@ -40,13 +40,17 @@ class BufferClient
     # However it makes sense in this case, because 1) it's convenient to access the social_network_id from the message and 2) the social_network_id should remain unchanged for ever.
     message.social_network_id = message.buffer_update.service_update_id
     message.metrics << Metric.new(source: :buffer, data: response.parsed_response["statistics"])
+    message.publish_status = :published_to_social_network
     message.save
   end
 
   def self.create_update(message)
     response = post('https://api.bufferapp.com/1/updates/create.json', {:body => BufferClient.post_request_body_for_create(message)})
+    return if response.parsed_response['success'] == false && response.parsed_response['code'] == 1034 # Update was scheduled for the past, ignore!
+    p response.parsed_response
     buffer_update = BufferUpdate.new(:buffer_id => response.parsed_response["updates"][0]["id"])
     message.buffer_update = buffer_update
+    message.publish_status = :published_to_buffer
     message.save
   end
 end
