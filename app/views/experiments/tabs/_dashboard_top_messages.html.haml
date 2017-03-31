@@ -1,6 +1,7 @@
 .ui.link.cards
   %br
-  %h4.ui.header Most effective messages (by click rate)
+  .ui.horizontal.divider.header
+    Most effective messages (by click rate)
   - @messages.each do |message|
     .card
       .content
@@ -21,19 +22,19 @@
           = image_tag "no-image.png"
       .content
         %i.heart.icon
-          = @messages_with_metrics[0].metrics[0].data[:likes]
+          = message.likes
         like(s)
         %i.refresh.icon
-          = @messages_with_metrics[0].metrics[0].data[:shares]
+          = message.shares
         shares
         %i.comment.icon
-          = @messages_with_metrics[0].metrics[0].data[:comments]
+          = message.comments
         comments
       .extra.content
         .ui.label.basic.teal
           %i.checkmark.icon
-          = @messages_with_metrics[0].metrics[0].data[:click_rate].to_s + "%"
+          = message.click_rate.to_s + "%"
           Click rate
         %br
-        (#{@messages_with_metrics[0].metrics[0].data[:clicks]} clicks / #{@messages_with_metrics[0].metrics[0].data[:impressions]} impressions)
+          ( #{message.clicks} clicks / #{message.impressions} impressions )
 
