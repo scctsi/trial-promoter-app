@@ -98,6 +98,13 @@ RSpec.describe BufferClient do
       expect(BufferClient).to have_received(:post).with('https://api.bufferapp.com/1/updates/create.json', {:body => BufferClient.post_request_body_for_create(@message)})
       expect(@message.buffer_update).to be_nil
     end
+    
+    it 'raises an error if the message content is too long for Twitter' do
+      @message.content = 'Smoking can cause cancer almost anywhere in the body. 160,000+ US cancer deaths every year are linked to #smoking.http://go-staging.befreeoftobacco.org/0kn'
+      VCR.use_cassette 'buffer/raise_error_length_for_twitter' do
+        expect{ BufferClient.create_update(@message) }.to raise_error(MessageTooLongForTwitterError, "Message content for message ID #{@message.id} is too long for Twitter.")
+      end
+    end
 
     it 'uses the Buffer API to get an update to the status (pending, sent) of a BufferUpdate and simultaneously updates the metrics for the corresponding message' do
       buffer_id = '55f8a111b762b0cf06d79116'
