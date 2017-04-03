@@ -20,9 +20,11 @@
           (#{analytics_file.social_media_profile.service_username})
         - if analytics_file.url.nil?
           %td.collapsing
-            %a.analytics-file-upload-button.ui.primary.labeled.icon.button{'data-analytics-file-id': analytics_file.id, 'data-experiment-id': @experiment.id, 'data-experiment-param': @experiment.to_param}
+            %a.analytics-file-upload-button.ui.labeled.icon.button{'data-analytics-file-id': analytics_file.id, 'data-experiment-id': @experiment.id, 'data-experiment-param': @experiment.to_param}
               %i.upload.icon
               Upload analytics file
         - else
           %td
-            Download
+            %a.ui.labeled.icon.button{:href => "#{analytics_file.url}"}
+              %i.download.icon
+              Download
