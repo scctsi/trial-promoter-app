@@ -22,18 +22,18 @@
           = image_tag "no-image.png"
       .content
         %i.heart.icon
-          = message.likes
+          = message.metric_likes
         like(s)
         %i.refresh.icon
-          = message.shares
+          = message.metric_shares
         shares
         %i.comment.icon
-          = message.comments
+          = message.metric_comments
         comments
       .extra.content
         .ui.label.basic.teal
           %i.checkmark.icon
-          = message.click_rate.to_s + "%"
+          = message.percentage_clicks_impressions.to_s + "%"
           Click rate
         %br
           ( #{message.clicks} clicks / #{message.impressions} impressions )

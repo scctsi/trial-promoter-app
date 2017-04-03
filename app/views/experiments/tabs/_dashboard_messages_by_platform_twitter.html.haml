@@ -23,13 +23,13 @@
               %th Replies
             %tbody
               %tr
-                %td= message.clicks
-                %td= message.impressions
+                %td= message.metric_twitter_clicks
+                %td= message.metric_twitter_impressions
                 %td
                   .ui.label.basic.teal
-                    = message.click_rate.to_s + "%"
+                    = message.percentage_twitter_clicks_impressions.to_s + "%"
                     Click rate
-                %td= message.likes
-                %td= message.shares
-                %td= message.comments
+                %td= message.metric_twitter_likes
+                %td= message.metric_twitter_shares
+                %td= message.metric_twitter_comments
 

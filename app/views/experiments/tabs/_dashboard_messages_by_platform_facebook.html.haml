@@ -23,13 +23,13 @@
               %th Comments
             %tbody
               %tr
-                %td= message.clicks
-                %td= message.impressions
+                %td= message.metric_facebook_clicks
+                %td= message.percentage_facebook_clicks_impressions
                 %td
                   .ui.label.basic.teal
                     = message.click_rate.to_s + "%"
                     Click rate
-                %td= message.likes
-                %td= message.shares
-                %td= message.comments
+                %td= message.metric_facebook_likes
+                %td= message.metric_facebook_shares
+                %td= message.metric_facebook_comments
 

@@ -42,10 +42,10 @@ class MessageGenerationParameterSet < ActiveRecord::Base
 
   def expected_generated_message_count(number_of_message_templates = nil)
     return 'Noncalculable' if number_of_message_templates.nil?
-    
+
     # Number of social networks (1) * Number of mediums (1) * (Number of message templates (9) / Number of messages per social network (3)) * Number of cycles
     calculation_parameters = {}
-    
+
     calculation_parameters[:social_network_choices_count] = social_network_choices.select { |network| !network.blank? }.count
     calculation_parameters[:medium_choices_count] = medium_choices.select { |medium| !medium.blank? }.count
     calculation_parameters[:number_of_message_templates] = number_of_message_templates
@@ -66,7 +66,7 @@ class MessageGenerationParameterSet < ActiveRecord::Base
     calculated_count -= (calculation_parameters[:number_of_message_templates] * calculation_parameters[:number_of_cycles]) if calculation_parameters[:instagram_organic]
     calculated_count
   end
-  
+
   def length_of_experiment_in_days(number_of_message_templates)
     number_of_cycles * number_of_message_templates / number_of_messages_per_social_network
   end
