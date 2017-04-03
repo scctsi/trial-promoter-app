@@ -12,6 +12,14 @@ class TrackingUrl
   end
 
   def self.campaign_url(message)
-    "#{message.promoted_website_url}?utm_source=#{utm_parameters(message)[:source]}&utm_campaign=#{utm_parameters(message)[:campaign]}&utm_medium=#{utm_parameters(message)[:medium]}&utm_term=#{utm_parameters(message)[:term]}&utm_content=#{utm_parameters(message)[:content]}"
+    # Pull out any anchor link in the message's promoted website url and move it to the end of the campaign URL
+    anchor_link = ''
+    if !message.promoted_website_url.index('#').nil?
+      anchor_link = message.promoted_website_url[message.promoted_website_url.index('#')..-1]
+      # Strip out the anchor link
+      message.promoted_website_url[message.promoted_website_url.index('#')..-1] = ''
+    end
+
+    "#{message.promoted_website_url}?utm_source=#{utm_parameters(message)[:source]}&utm_campaign=#{utm_parameters(message)[:campaign]}&utm_medium=#{utm_parameters(message)[:medium]}&utm_term=#{utm_parameters(message)[:term]}&utm_content=#{utm_parameters(message)[:content]}#{anchor_link}"
   end
 end
