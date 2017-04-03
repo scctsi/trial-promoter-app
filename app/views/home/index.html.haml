@@ -14,10 +14,9 @@
     .column
       %a.ui.fluid.huge.teal.labeled.icon.button.start-experiment-button{:href => new_experiment_path}
         %i.line.chart.icon
-        Start an experiment
+        Start a new experiment
 - if @experiments.count > 0
   %h3.ui.header
-    %i.line.chart.icon
     Ongoing experiments
   = render partial: 'shared/experiments', locals: {experiments: @experiments }
 
