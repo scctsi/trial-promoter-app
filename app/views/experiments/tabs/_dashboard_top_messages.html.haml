@@ -22,13 +22,15 @@
           = image_tag "no-image.png"
       .content
         %i.heart.icon
-          = message.metric_likes
+        = message.metric_likes
         like(s)
+        %br
         %i.refresh.icon
-          = message.metric_shares
+        = message.metric_shares
         shares
+        %br
         %i.comment.icon
-          = message.metric_comments
+        = message.metric_comments
         comments
       .extra.content
         .ui.label.basic.teal
