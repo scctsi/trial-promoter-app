@@ -9,10 +9,10 @@
           .left.floated
             = message.social_media_profile.platform_icon
           .right.floated.meta
-            - if !message.buffer_update.nil?
+            - if !message.buffer_update.sent_from_date_time.nil?
               = message.buffer_update.sent_from_date_time.strftime("%I:%M %P, %b %d, %Y")
             - else
-              02:35 pm, Sep 17, 2015
+              -
       .content
         = message.content
       .ui.medium.image
