@@ -134,7 +134,7 @@ $(document).ready(function() {
   }
 
   function setUpAnalyticsFileImports() {
-    $('.analytics-file-upload-button').click(function() {
+    $('.analytics-file-upload-button').on('click', function() {
       var $fileUploadButton = $(this);
       $fileUploadButton.addClass('loading');
       var analyticsFileId = $(this).data('analytics-file-id');
@@ -174,7 +174,7 @@ $(document).ready(function() {
         function(progress){
         }
       );
-    })
+    });
   }
 
   function setUpPopupInfo() {
