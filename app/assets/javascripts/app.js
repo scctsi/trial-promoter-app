@@ -135,15 +135,14 @@ $(document).ready(function() {
 
   function setUpAnalyticsFileImports() {
     $('.analytics-file-upload-button').click(function() {
-      $(this).addClass('loading');
-      $(this).removeClass('primary');
+      var $fileUploadButton = $(this);
+      $fileUploadButton.addClass('loading');
       var analyticsFileId = $(this).data('analytics-file-id');
-      var experimentId = $(this).data('experiment-id');
       var experimentParam = $(this).data('experiment-param');
 
       filepicker.pickAndStore({
           mimetypes: ['text/csv', 'application/vnd.ms-excel'],
-          multiple: true,
+          multiple: false,
           container: 'modal',
           services: ['COMPUTER', 'GOOGLE_DRIVE', 'DROPBOX']
         },
@@ -154,17 +153,21 @@ $(document).ready(function() {
           access: 'public'
         },
         function(Blobs) {
-          var analyticsFileUrls = createS3BucketUrls(Blobs);
+          var analyticsFileUrl = createS3BucketUrls(Blobs)[0];
 
           $.ajax({
             url : '/analytics_files/' + analyticsFileId.toString() + '/update',
-            type: 'POST',
-            data: {analytics_file_urls: analyticsFileUrls, experiment_id: experimentId.toString()},
+            type: 'PATCH',
+            data: {url: Blobs[0].url},
             dataType: 'json',
             success: function(retdata) {
-              $('.ui.success.message.hidden.ask-refresh-page').removeClass('hidden');
+              $fileUploadButton.removeClass('loading');
+              $fileUploadButton.removeClass('analytics-file-upload-button');
+              $fileUploadButton.attr('href', analyticsFileUrl);
+              $fileUploadButton.html('<i class="download icon"></i>Download');
             }
           });
+          
         },
         function(error){
         },
