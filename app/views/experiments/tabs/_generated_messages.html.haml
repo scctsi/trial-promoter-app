@@ -29,10 +29,8 @@
     .header
       Note
     .ui.bulleted.list
-      .item 
-        Randomization (Shuffling): The messages are assigned to a random sequence for each cycle using a Fisher-Yates shuffle <a href="http://dl.acm.org/citation.cfm?doid=364520.364540" target="_blank">[1]</a>.
       .item
-        Randomization (Sampling): The selection of the hashtag (if applicable) and the image (if applicable) is randomized as well using sampling <a href="https://ruby-doc.org/core-2.2.0/Array.html#method-i-sample" target="_blank">[2]</a>.
+        Randomization: Trial Promoter uses two methods for randomization. The messages are shuffled into a random sequence using a Fisher-Yates shuffle <a href="http://dl.acm.org/citation.cfm?doid=364520.364540" target="_blank">[1]</a>. The selection of hashtags (if applicable) and the images (if applicable) are randomized using a sampling method <a href="https://ruby-doc.org/core-2.2.0/Array.html#method-i-sample" target="_blank">[2]</a>.
       .item
         Message generation: When you click on "Generate  messages", all existing messages for this experiment will be deleted and then regenerated.
       .item
