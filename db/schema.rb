@@ -20,8 +20,8 @@ ActiveRecord::Schema.define(version: 20170327222036) do
     t.integer  "visit_id"
     t.integer  "user_id"
     t.string   "name"
-    t.datetime "time"
     t.jsonb    "properties"
+    t.datetime "time"
   end
 
   add_index "ahoy_events", ["name", "time"], name: "index_ahoy_events_on_name_and_time", using: :btree
