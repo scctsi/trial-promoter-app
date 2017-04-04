@@ -2,7 +2,7 @@
   %br
   .ui.horizontal.divider.header
     Most effective messages (by click rate)
-  - @messages.each do |message|
+  - @messages[0..4].each do |message|
     .card
       .content
         .header
