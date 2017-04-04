@@ -39,6 +39,7 @@
       %th
       %th Required upload date
       %th Social media type and username
+      %th
   %tbody
     - analytics_files.to_a.sort!{ |x, y| x.required_upload_date <=> y.required_upload_date }.each do |analytics_file|
       %tr{ class: [('positive' if !analytics_file.url.nil?)] }
