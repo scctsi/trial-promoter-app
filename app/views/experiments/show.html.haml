@@ -19,8 +19,6 @@
       Generated messages
     %a{ class: 'item', 'data-tab': 'dashboard' }
       Dashboard
-    %a{ class: 'item', 'data-tab': 'reports' }
-      Reports
     - if current_user.role.include?('administrator')
       %a{ class: 'item', 'data-tab': 'analytics-file-uploads' }
         Analytics file uploads
@@ -34,7 +32,5 @@
     = render partial: 'experiments/tabs/generated_messages'
   .ui.bottom.attached.tab.segment{ 'data-tab': 'dashboard' }
     = render partial: 'experiments/tabs/dashboard'
-  .ui.bottom.attached.tab.segment{ 'data-tab': 'reports' }
-    = render partial: 'experiments/tabs/reports', locals: { experiment: @experiment }
   .ui.bottom.attached.tab.segment{ 'data-tab': 'analytics-file-uploads' }
     = render partial: 'experiments/tabs/analytics_file_uploads'
