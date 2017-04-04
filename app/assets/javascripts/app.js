@@ -134,7 +134,7 @@ $(document).ready(function() {
   }
 
   function setUpAnalyticsFileImports() {
-    $('.analytics-file-upload-button').click(function() {
+    $('.analytics-file-upload-button').on('click', function() {
       var $fileUploadButton = $(this);
       $fileUploadButton.addClass('loading');
       var analyticsFileId = $(this).data('analytics-file-id');
@@ -174,7 +174,7 @@ $(document).ready(function() {
         function(progress){
         }
       );
-    })
+    });
   }
 
   function setUpPopupInfo() {
@@ -212,39 +212,6 @@ $(document).ready(function() {
   }
 
   function changeExperimentDetails() {
-    var listHtml = '';
-    var mediumCount;
-    var periodInDays = $("#experiment_message_generation_parameter_set_attributes_period_in_days").val();
-    var numberOfMessagesPerSocialNetwork = $("#experiment_message_generation_parameter_set_attributes_number_of_messages_per_social_network").val();
-    var checkedValues = getCheckedValues();
-    var socialNetworkChoices = getRequiredPlatformsAndMediums().socialNetworkChoices;
-    var mediumChoices = getRequiredPlatformsAndMediums().mediumChoices;
-
-    if (socialNetworkChoices.length === 1) {
-      listHtml += '<li>All messages will be generated for distribution on ' + socialNetworkChoices[0];
-    } else {
-      listHtml += '<li>Equal number of messages will be generated per social media platform: ' + socialNetworkChoices.join(", ");
-    }
-
-    if ((mediumChoices).includes('Ad, Organic')) {
-      listHtml += '<li>Half of the generated messages for each platform will be organic (unpaid) and half will be ads (paid).'
-    } else if ((mediumChoices).includes('Ad')) {
-      listHtml += '<li>All messages will be ads (paid).'
-    } else if ((mediumChoices).includes('Organic')) {
-      listHtml += '<li>All messages will be organic (unpaid).'
-    }
-
-    if ((checkedValues).includes('Without')) {
-      listHtml += '<li>All messages will be without images.'
-      $('#experiment_message_generation_parameter_set_attributes_image_present_choices_with').prop('checked', false);
-    } else if ((checkedValues).includes('With')) {
-      listHtml += '<li>Half of the generated messages will have an attached image and half will have no attached image.'
-      $('#experiment_message_generation_parameter_set_attributes_image_present_choices_without').prop('checked', false);
-    }
-
-    $('.list.experiment-details-real-time').html(listHtml);
-
-    calculateMessageCount(socialNetworkChoices.length, mediumChoices.length, periodInDays, numberOfMessagesPerSocialNetwork);
     showSocialMediaProfiles();
   }
 
