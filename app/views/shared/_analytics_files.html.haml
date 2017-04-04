@@ -1,6 +1,4 @@
 - recent_analytics_files = analytics_files.select{ |analytics_file| analytics_file.required_upload_date >= Time.now - 2.days && analytics_file.required_upload_date <= Time.now + 2.days }.sort!{ |x, y| x.required_upload_date <=> y.required_upload_date }
-%h2.ui.header
-  Recent analytics files
 %table.ui.celled.table
   %thead
     %tr
