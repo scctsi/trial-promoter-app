@@ -1,0 +1,2 @@
+class AnalyticsDataParser
+end

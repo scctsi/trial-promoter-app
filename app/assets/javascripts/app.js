@@ -341,7 +341,7 @@ $(document).ready(function() {
         requiredMediums.forEach(function(requiredMedium) {
           var searchString = requiredPlatform + ' [' + requiredMedium + ']';
           if (socialMediaProfileField.textContent.includes(searchString)) {
-            $(socialMediaProfileField).transition('pulse');
+            $(socialMediaProfileField).show();
           }
         });
       });
