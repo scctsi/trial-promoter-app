@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170327222036) do
+ActiveRecord::Schema.define(version: 20170404225744) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,8 +20,8 @@ ActiveRecord::Schema.define(version: 20170327222036) do
     t.integer  "visit_id"
     t.integer  "user_id"
     t.string   "name"
-    t.jsonb    "properties"
     t.datetime "time"
+    t.jsonb    "properties"
   end
 
   add_index "ahoy_events", ["name", "time"], name: "index_ahoy_events_on_name_and_time", using: :btree
@@ -37,6 +37,7 @@ ActiveRecord::Schema.define(version: 20170327222036) do
     t.datetime "required_upload_date"
     t.integer  "message_generating_id"
     t.string   "message_generating_type"
+    t.string   "processing_status"
   end
 
   create_table "buffer_updates", force: :cascade do |t|
