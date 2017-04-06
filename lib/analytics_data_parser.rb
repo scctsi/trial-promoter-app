@@ -8,6 +8,5 @@ class AnalyticsDataParser
     # data.rows.each do |row|
     #   BufferUpdate.where(service_update_id: row[service_update_id_column_index])
     # end
-
   end
 end
