@@ -99,13 +99,13 @@ RSpec.describe BufferClient do
       expect(@message.buffer_update).to be_nil
     end
     
-    it 'raises an error if the message content is too long for Twitter' do
+    it 'exhibits a bug where Buffer cannot identify the URL in the message if a period is all that separates a hashtag from a URL, thus rejecting a longer message' do
       @message.content = 'Smoking can cause cancer almost anywhere in the body. 160,000+ US cancer deaths every year are linked to #smoking.http://go-staging.befreeoftobacco.org/0kn'
       VCR.use_cassette 'buffer/raise_error_length_for_twitter' do
         expect{ BufferClient.create_update(@message) }.to raise_error(MessageTooLongForTwitterError, "Message content for message ID #{@message.id} is too long for Twitter.")
       end
     end
-
+    
     it 'uses the Buffer API to get an update to the status (pending, sent) of a BufferUpdate and simultaneously updates the metrics for the corresponding message' do
       buffer_id = '55f8a111b762b0cf06d79116'
       @message.buffer_update = BufferUpdate.new(:buffer_id => buffer_id)

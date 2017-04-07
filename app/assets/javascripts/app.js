@@ -341,7 +341,7 @@ $(document).ready(function() {
         requiredMediums.forEach(function(requiredMedium) {
           var searchString = requiredPlatform + ' [' + requiredMedium + ']';
           if (socialMediaProfileField.textContent.includes(searchString)) {
-            $(socialMediaProfileField).transition('pulse');
+            $(socialMediaProfileField).show();
           }
         });
       });
@@ -392,10 +392,20 @@ $(document).ready(function() {
     html += '<div class="ui segment filenames-list">Filenames: ';
     html += getFilenames(selectedImages) + '</div>';
 
-    html += '<h3 class="ui block header">Selected images</h3>';
+    if (filenameStartswithRestriction == 'tfl') {
+      html += '<h3 class="ui block header">Selected images from "This Free Life" campaign</h3>';
+    }
+    if (filenameStartswithRestriction == 'fe') {
+      html += '<h3 class="ui block header">Selected images from "Fresh Empire" campaign</h3>';
+    }
     html += getImageCardsHtml(selectedImages, 'remove', filenameStartswithRestriction);
 
-    html += '<h3 class="ui block header">Unselected images</h3>';
+    if (filenameStartswithRestriction == 'tfl') {
+      html += '<h3 class="ui block header">Unselected images from "This Free Life" campaign</h3>';
+    }
+    if (filenameStartswithRestriction == 'fe') {
+      html += '<h3 class="ui block header">Unselected images from "Fresh Empire" campaign</h3>';
+    }
     html += getImageCardsHtml(unselectedImages, 'add', filenameStartswithRestriction);
 
     return html;
@@ -450,7 +460,7 @@ $(document).ready(function() {
           var selectedImages = retdata.selected_images;
           var unselectedImages = retdata.unselected_images;
 
-          html = getImagePoolInterfaceHtml(selectedImages, unselectedImages, messageContent, filenameStartswithRestriction);
+          html = getImagePoolInterfaceHtml(selectedImages, unselectedImages, messageContent, filenameStartswithRestriction.toLowerCase());
 
           $loadingButton.removeClass('loading');
           $('#lightbox .image-list').html(html);

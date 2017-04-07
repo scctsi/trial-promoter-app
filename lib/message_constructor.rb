@@ -32,6 +32,10 @@ class MessageConstructor
     else
       message.content.gsub!('{url}', url)
     end
+    
+    # Add a space at the beginning of the URL if needed.
+    index_of_url = message.content.index(url)
+    message.content.gsub!(url, ' ' + url) if !(index_of_url == 0) && message.content[index_of_url - 1] != ' '
   end
 
   def self.fittable_hashtags(content, hashtags)
