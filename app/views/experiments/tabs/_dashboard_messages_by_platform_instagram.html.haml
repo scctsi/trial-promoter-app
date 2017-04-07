@@ -1,6 +1,6 @@
 .ui.items
-  - @twitter_messages = @messages.select{ |message| message.social_media_profile.platform == :instagram}
-  - @twitter_messages.each do |message|
+  - @instagram_messages = @messages.select{ |message| message.social_media_profile.platform == :instagram}
+  - @instagram_messages.each do |message|
     .item
       .ui.small.image
         -if message.image
@@ -26,7 +26,7 @@
               %td= message.percentage_instagram_clicks_impressions
               %td
                 .ui.label.basic.teal
-                  = message.percentage_twitter_clicks_impressions.to_s + "%"
+                  = message.percentage_instagram_clicks_impressions.to_s + "%"
                   Click rate
               %td= message.metric_instagram_likes
               %td= message.metric_instagram_shares
