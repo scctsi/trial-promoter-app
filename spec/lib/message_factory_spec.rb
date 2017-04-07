@@ -183,7 +183,7 @@ RSpec.describe MessageFactory do
     # Have the correct number of messages been generated?
     expect(messages.count).to eq(expected_generated_message_count)
     # Was every message template used in every cycle (3)?
-    # Basically each message template should have been used 3 * 6 times (number_of_cycles * platform count * medium count)
+    # Basically each message template should have been used 3 * 5 times (number_of_cycles * (platform count * medium count - 1)); -1 accounts for us not generating instagram organic messages
     messages_grouped_by_message_template = messages.group_by { |message| message.message_template.id }
     messages_grouped_by_message_template.each{ |message_template_id, messages_using_message_template| expect(messages_using_message_template.count).to eq(15) }
     # Are the message templates with their platform and medium distributed equally?

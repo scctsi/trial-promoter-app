@@ -10,22 +10,22 @@
     .ui.header
       Details
     %ul.list.experiment-details-real-time
-    = f.input :name, label: 'Name your experiment', hint: 'Give your experiment a good name'
-    = f.input :message_distribution_start_date, as: :string, label: 'Message distribution start date', hint: 'When do you want Trial Promoter to start distributing messages on social media?'
+    = f.input :name, label: 'Name your experiment:', hint: 'Give your experiment a good name'
+    = f.input :message_distribution_start_date, as: :string, label: 'Message distribution start date:', hint: 'When do you want Trial Promoter to start distributing messages on social media?'
     .ui.header
       Specifications
     = f.simple_fields_for :message_generation_parameter_set do |m|
-      = m.input :social_network_choices, as: :check_boxes, wrapper_class: 'inline fields', item_wrapper_class: 'ui field checkbox', collection: { 'Facebook' => :facebook, 'Instagram' => :instagram, 'Twitter' => :twitter }, label: 'Select the social media platform(s) you want to use in your experiment. Check all that apply', required: false
-      = m.input :medium_choices, as: :check_boxes, wrapper_class: 'inline fields', item_wrapper_class: 'ui field checkbox', collection: { 'Ad' => :ad, 'Organic/Unpaid' => :organic }, label: 'Select the type of message(s) you want to use. Check all that apply', required: false
-      = m.input :image_present_choices, as: :radio_buttons, wrapper_class: 'inline fields', item_wrapper_class: 'ui radio checkbox field', collection: { 'All (100%)' => :all_messages, 'Most (75%)' => :all_messages, 'Half (50%)' => :half_of_the_messages, 'Some (25%)' => :half_of_the_messages, 'None' => :no_messages }, label: 'Select whether you want to include images in the messages', required: false
-      =m.input :number_of_cycles, label: 'Number of times a message will be utilized throughout the experiment', hint: 'All messages are distributed once over a single cycle'
-      =m.input :number_of_messages_per_social_network, label: 'Number of messages per day per social network (50% ads and 50% organic messages)'
+      = m.input :social_network_choices, as: :check_boxes, wrapper_class: 'inline fields', item_wrapper_class: 'ui field checkbox', collection: { 'Facebook' => :facebook, 'Instagram' => :instagram, 'Twitter' => :twitter }, label: 'Select the social media platform(s) you want to use in your experiment. Check all that apply:', required: false
+      = m.input :medium_choices, as: :check_boxes, wrapper_class: 'inline fields', item_wrapper_class: 'ui field checkbox', collection: { 'Ad' => :ad, 'Organic/Unpaid' => :organic }, label: 'Select the type of message(s) you want to use. Check all that apply:', required: false
+      = m.input :image_present_choices, as: :radio_buttons, wrapper_class: 'inline fields', item_wrapper_class: 'ui radio checkbox field', collection: { 'All (100%)' => :all_messages, 'Most (75%)' => :half_of_the_messages, 'Half (50%)' => :half_of_the_messages, 'Some (25%)' => :no_messages, 'None' => :no_messages }, label: 'Select whether you want to include images in the messages', required: false
+      =m.input :number_of_cycles, label: 'Number of times a message will be utilized throughout the experiment:', hint: 'All messages are distributed once over a single cycle'
+      =m.input :number_of_messages_per_social_network, label: 'Number of messages (for each ads and organic messages) per day per social network:'
     .ui.header
       Social media profiles
     .ui.message.social-media-profile-details
       You must select at least one platform and medium above before you can select social media profiles to post to.
     %ul.list.social-media-profile-details-real-time
-    = f.association :social_media_profiles, required: true, as: :check_boxes, label_method: :description, value_method: :id, wrapper_class: 'grouped fields', item_wrapper_class: 'ui field checkbox', label: 'Select the social media account(s) you want to use. Check all that apply'
+    = f.association :social_media_profiles, required: true, as: :check_boxes, label_method: :description, value_method: :id, wrapper_class: 'grouped fields', item_wrapper_class: 'ui field checkbox', label: 'Select the social media account(s) you want to use. Check all that apply:'
     .ui.header
       Schedule
     = f.input :facebook_posting_times
