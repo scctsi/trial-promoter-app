@@ -119,6 +119,30 @@ RSpec.describe MessageConstructor do
     expect(message.content).to eq('This is a message containing a http://tracking-url.com variable')
   end
 
+  it 'adds a space at the beginning of a url (for parsing of URLs by Buffer)' do
+    message = build(:message, content: 'This is a message containing a variable #smoking.{url}')
+
+    @message_constructor.replace_url_variable(message, 'http://tracking-url.com')
+    
+    expect(message.content).to eq('This is a message containing a variable #smoking. http://tracking-url.com')
+  end
+
+  it 'adds a space at the beginning and end of a url (for extraction by Twitter, for parsing of URLs by Buffer and readability)' do
+    message = build(:message, content: 'This is a message containing a{url}variable #smoking.')
+
+    @message_constructor.replace_url_variable(message, 'http://tracking-url.com')
+    
+    expect(message.content).to eq('This is a message containing a http://tracking-url.com variable #smoking.')
+  end
+
+  it 'does not add a space at the beginning of a url if the {url} variable is at the very beginning' do
+    message = build(:message, content: '{url} This is a message containing a url variable at the beginning.')
+
+    @message_constructor.replace_url_variable(message, 'http://tracking-url.com')
+    
+    expect(message.content).to eq('http://tracking-url.com This is a message containing a url variable at the beginning.')
+  end
+
   it 'does not add a space if the url variable is at the end' do
     message = build(:message, content: 'This is a message containing a {url}')
 
