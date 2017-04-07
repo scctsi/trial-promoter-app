@@ -1,0 +1,33 @@
+.ui.items
+  - @messages.each do |message|
+    .item
+      .ui.small.image
+        -if message.image
+          = image_tag "#{message.image.url}"
+        -else
+          = image_tag "no-image.png"
+      .content
+        .description
+          .ui.left.basic.label
+            = message.message_template.experiment_variables["theme"]
+          = message.content
+        .extra
+          %table.ui.very.basic.compact.table
+            %thead
+              %th Clicks
+              %th Impressions
+              %th Primary outcome measure
+              %th Likes
+              %th Shares
+              %th Comments
+            %tbody
+              %tr
+                %td= message.send("metric_#{message.platform}_clicks".to_sym)
+                %td= message.send("metric_#{message.platform}_impressions".to_sym)
+                %td
+                  .ui.label.basic.teal
+                    = message.send("percentage_#{message.platform}_clicks_impressions".to_sym)
+                    Click rate
+                %td= message.send("metric_#{message.platform}_likes".to_sym)
+                %td= message.send("metric_#{message.platform}_shares".to_sym)
+                %td= message.send("metric_#{message.platform}_comments".to_sym)

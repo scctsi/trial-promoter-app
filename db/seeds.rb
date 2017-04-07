@@ -28,3 +28,5 @@ user_attributes.each do |attributes|
   user = User.find_by(email: attributes[:email])
   User.create(attributes) if user.nil?
 end
+
+User.create(email: 'admin@sc-ctsi.org', password: 'dic101!!', password_confirmation: 'dic101!!', role: 'administrator')
