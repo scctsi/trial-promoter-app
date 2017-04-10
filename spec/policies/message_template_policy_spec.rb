@@ -60,7 +60,7 @@ RSpec.describe MessageTemplatePolicy, type: :policy do
     it { should_not be_permitted_to(:update) }
     it { should_not be_permitted_to(:import) }
     it { should_not be_permitted_to(:set_message_template) }
-    it { should_not be_permitted_to(:get_image_selections) }
+    it { should be_permitted_to(:get_image_selections) }
     it { should_not be_permitted_to(:add_image_to_image_pool) }
     it { should_not be_permitted_to(:remove_image_from_image_pool) }
   end
