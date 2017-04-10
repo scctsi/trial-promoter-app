@@ -1,6 +1,5 @@
 .ui.items
-  - @facebook_messages = @messages.select{ |message| message.social_media_profile.platform == :facebook}
-  - @facebook_messages.each do |message|
+  - @messages.each do |message|
     .item
       .ui.small.image
         -if message.image
@@ -10,7 +9,7 @@
       .content
         .description
           .ui.left.basic.label
-            = message.medium
+            = message.message_template.experiment_variables["theme"]
           = message.content
         .extra
           %table.ui.very.basic.compact.table
@@ -23,13 +22,12 @@
               %th Comments
             %tbody
               %tr
-                %td= message.metric_facebook_clicks
-                %td= message.percentage_facebook_clicks_impressions
+                %td= message.send("metric_#{message.platform}_clicks".to_sym)
+                %td= message.send("metric_#{message.platform}_impressions".to_sym)
                 %td
                   .ui.label.basic.teal
-                    = message.percentage_facebook_clicks_impressions.to_s + "%"
+                    = message.send("percentage_#{message.platform}_clicks_impressions".to_sym)
                     Click rate
-                %td= message.metric_facebook_likes
-                %td= message.metric_facebook_shares
-                %td= message.metric_facebook_comments
-
+                %td= message.send("metric_#{message.platform}_likes".to_sym)
+                %td= message.send("metric_#{message.platform}_shares".to_sym)
+                %td= message.send("metric_#{message.platform}_comments".to_sym)
