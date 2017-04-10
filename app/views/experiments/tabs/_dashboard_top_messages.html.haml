@@ -19,21 +19,26 @@
           = image_tag "no-image.png"
       .content
         %i.heart.icon
-        = message.metric_likes
+        = message.send("metric_#{message.platform}_likes".to_sym)
         like(s)
         %br
         %i.refresh.icon
-        = message.metric_shares
+        = message.send("metric_#{message.platform}_shares".to_sym)
         shares
         %br
         %i.comment.icon
-        = message.metric_comments
+        = message.send("metric_#{message.platform}_comments".to_sym)
         comments
       .extra.content
         .ui.label.basic.teal
           %i.checkmark.icon
-          = message.percentage_clicks_impressions.to_s + "%"
+          = message.send("percentage_#{message.platform}_clicks_impressions".to_sym)
           Click rate
         %br
-          ( #{message.clicks} clicks / #{message.impressions} impressions )
+          (
+          = message.send("metric_#{message.platform}_clicks".to_sym)
+          clicks /
+          #{message.impressions}
+          = message.send("metric_#{message.platform}_impressions".to_sym)
+          impressions )
 
