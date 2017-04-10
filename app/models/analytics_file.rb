@@ -11,12 +11,16 @@
 #  required_upload_date    :datetime
 #  message_generating_id   :integer
 #  message_generating_type :string
+#  processing_status       :string
 #
 
 class AnalyticsFile < ActiveRecord::Base
+  extend Enumerize
+
   validates :social_media_profile, presence: true
   validates :required_upload_date, presence: true
   validates :message_generating, presence: true
+  enumerize :processing_status, in: [:unprocessed, :processed], default: :unprocessed
 
   belongs_to :social_media_profile
   belongs_to :message_generating, polymorphic: true
