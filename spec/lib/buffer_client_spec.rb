@@ -99,10 +99,17 @@ RSpec.describe BufferClient do
       expect(@message.buffer_update).to be_nil
     end
     
-    it 'exhibits a bug where Buffer cannot identify the URL in the message if a period is all that separates a hashtag from a URL, thus rejecting a longer message' do
+    it 'exhibits a bug where Buffer cannot post a message containing a URL that has no space preceding it, since it cannot verify that the message with the URL shortened would fit on Twitter.' do
       @message.content = 'Smoking can cause cancer almost anywhere in the body. 160,000+ US cancer deaths every year are linked to #smoking.http://go-staging.befreeoftobacco.org/0kn'
       VCR.use_cassette 'buffer/raise_error_length_for_twitter' do
         expect{ BufferClient.create_update(@message) }.to raise_error(MessageTooLongForTwitterError, "Message content for message ID #{@message.id} is too long for Twitter.")
+      end
+    end
+
+    it 'does not exhibit the above bug if there is a space preceding the URL' do
+      @message.content = '#Smoking can cause cancer almost anywhere in the body. 160,000+ US cancer deaths every year are linked to smoking. http://go-staging.befreeoftobacco.org/0kn'
+      VCR.use_cassette 'buffer/dont_raise_error_length_for_twitter' do
+        expect{ BufferClient.create_update(@message) }.not_to raise_error(MessageTooLongForTwitterError, "Message content for message ID #{@message.id} is too long for Twitter.")
       end
     end
     
