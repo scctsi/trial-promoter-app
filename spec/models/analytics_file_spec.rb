@@ -25,11 +25,11 @@ RSpec.describe AnalyticsFile do
   it { is_expected.to enumerize(:processing_status).in(:unprocessed, :processed).with_default(:unprocessed) }
   
   before do
-    @analytics_file = build(:analytics_file)
+    @analytics_file = build(:analytics_file, social_media_profile: build(:social_media_profile))
   end
   
   it 'processes a file located at the URL' do
-    allow(CsvFileReader).to receive(:read).and_return([])
-    allow(AnalyticsDataParser).to receive(:convert_to_parseable_data).with([], socia)
+    # allow(CsvFileReader).to receive(:read).and_return([])
+    # allow(AnalyticsDataParser).to receive(:convert_to_parseable_data).with([], )
   end
 end
