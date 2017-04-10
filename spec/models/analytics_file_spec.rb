@@ -58,5 +58,6 @@ RSpec.describe AnalyticsFile do
     expect(AnalyticsDataParser).not_to have_received(:store).with(@parsed_data, @analytics_file.social_media_profile.platform)
     @analytics_file.reload
     expect(@analytics_file.processing_status.value).to eq("processed")
+    @analytics_file = build(:analytics_file, social_media_profile: build(:social_media_profile))
   end
 end
