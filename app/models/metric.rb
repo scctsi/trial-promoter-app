@@ -14,7 +14,7 @@
 class Metric < ActiveRecord::Base
   extend Enumerize
 
-  serialize :data
+  serialize :data, Hash
 
   validates :data, presence: true
   validates :source, presence: true
