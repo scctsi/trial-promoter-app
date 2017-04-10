@@ -221,18 +221,18 @@ RSpec.describe MessageTemplate do
     end
 
     it 'returns a warning if the content is too long for Twitter (including a URL)' do
-      @message_template.content = "#{'A' * 116}{url}"
+      @message_template.content = "#{'A' * 117}{url}"
 
       expect(@message_template.warnings.count).to eq(1)
-      expect(@message_template.warnings[0]).to eq('Too long for use in Twitter (URL takes up 23 characters and we need two spaces for padding on either side)')
+      expect(@message_template.warnings[0]).to eq('Too long for use in Twitter (URL takes up 23 characters and we need atleast one space preceding the URL)')
     end
 
     it 'does not raise an error if the hashtags are an empty array' do
       @message_template.hashtags = []
-      @message_template.content = "#{'A' * 116}{url}"
+      @message_template.content = "#{'A' * 117}{url}"
 
       expect(@message_template.warnings.count).to eq(1)
-      expect(@message_template.warnings[0]).to eq('Too long for use in Twitter (URL takes up 23 characters and we need two spaces for padding on either side)')
+      expect(@message_template.warnings[0]).to eq('Too long for use in Twitter (URL takes up 23 characters and we need atleast one space preceding the URL)')
     end
 
     it 'returns a warning if the content is too long for Twitter (including a single hashtag)' do
