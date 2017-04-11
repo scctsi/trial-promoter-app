@@ -62,33 +62,37 @@ table.message-generation-parameter-set td.collapsing {
 // Start theme changes for TCORS
 // -----------------------------
 
-//change color of primary buttons to yellow, turquoise for hover
+body {
+  background: #DBFCFF;
+}
+
+// Change color of primary buttons to yellow, turquoise for hover
 .ui.teal.button, .ui.primary.button, .ui.submit.button {
   background-color: #F4E04D;
   color: #000000;
 }
 
 .ui.teal.button:hover, .ui.primary.button:hover, .ui.submit.button:hover {
-  background-color: #F4E000;
+  background-color: lighten(#F4E04D, 5%);
   color: #000000;
 }
 
 .ui.teal.button:active, .ui.primary.button:active, ui.submit.button:active {
-  background-color: #F4E000;
+  background-color: lighten(#F4E04D, 5%);
   color: #000000;
 }
 
 .ui.teal.button:focus, .ui.primary.button:focus, ui.submit.button:focus {
-  background-color: #F4E000;
+  background-color: lighten(#F4E04D, 5%);
   color: #000000;
 }
 
 .ui.teal.button:target, .ui.primary.button:target, ui.submit.button:target {
-  background-color: #F4E000;
+  background-color: lighten(#F4E04D, 5%);
   color: #000000;
 }
 
-//hyperlinks to turquoise
+// Turquoise hyperlinks
 .ui.breadcrumb a, a {
   color: #4b8182;
 }
@@ -97,8 +101,10 @@ table.message-generation-parameter-set td.collapsing {
   color: #88C5C9;
 }
 
-body {
-  background: #DBFCFF;
+// Fix right margin on counts
+.ui.right.floated.segment.object-count {
+  margin-right: 0;
+  margin-top: 0px;
 }
 
 // ---------------------------
