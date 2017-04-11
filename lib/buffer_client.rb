@@ -7,7 +7,7 @@ class BufferClient
     request_body = {
       :profile_ids => message.social_media_profile.buffer_id,
       :text => message.content,
-      :shorten => false,
+      :shorten => true,
       :access_token => Setting[:buffer_access_token]
     }
 
@@ -57,7 +57,7 @@ class BufferClient
       end
     end
 
-    buffer_update = BufferUpdate.new(:buffer_id => response.parsed_response["updates"][0]["id"])
+    buffer_update = BufferUpdate.new(:buffer_id => response.parsed_response["updates"][0]["id"], :published_text => response.parsed_response["updates"][0]["text"])
     message.buffer_update = buffer_update
     message.publish_status = :published_to_buffer
     message.save
