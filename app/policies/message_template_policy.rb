@@ -8,7 +8,7 @@ class MessageTemplatePolicy < ApplicationPolicy
   end
   
   def get_image_selections?
-    user.role.administrator?
+    user.role.administrator? || user.role.read_only?
   end
   
   def add_image_to_image_pool?
