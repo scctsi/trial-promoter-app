@@ -358,8 +358,11 @@ $(document).ready(function() {
     return filenames.join(',');
   }
 
-  function getImageCardsHtml(images, buttonType, filenameStartswithRestriction) {
+  function getImageCardsHtml(images, buttonType, filenameStartswithRestriction, readonly) {
     var html = '';
+    if (readonly) {
+      buttonType = 'readonly';
+    }
     filenameStartswithRestriction = filenameStartswithRestriction || '';
 
     html += '<div class="ui cards">';
@@ -387,7 +390,7 @@ $(document).ready(function() {
     return html;
   }
 
-  function getImagePoolInterfaceHtml(selectedImages, unselectedImages, messageContent, filenameStartswithRestriction) {
+  function getImagePoolInterfaceHtml(selectedImages, unselectedImages, messageContent, filenameStartswithRestriction, readonly) {
     var html = '<div class="ui segment">' + messageContent + '</div>';
     html += '<div class="ui segment filenames-list">Filenames: ';
     html += getFilenames(selectedImages) + '</div>';
@@ -398,7 +401,7 @@ $(document).ready(function() {
     if (filenameStartswithRestriction == 'fe') {
       html += '<h3 class="ui block header">Selected images from "Fresh Empire" campaign</h3>';
     }
-    html += getImageCardsHtml(selectedImages, 'remove', filenameStartswithRestriction);
+    html += getImageCardsHtml(selectedImages, 'remove', filenameStartswithRestriction, readonly);
 
     if (filenameStartswithRestriction == 'tfl') {
       html += '<h3 class="ui block header">Unselected images from "This Free Life" campaign</h3>';
@@ -406,7 +409,7 @@ $(document).ready(function() {
     if (filenameStartswithRestriction == 'fe') {
       html += '<h3 class="ui block header">Unselected images from "Fresh Empire" campaign</h3>';
     }
-    html += getImageCardsHtml(unselectedImages, 'add', filenameStartswithRestriction);
+    html += getImageCardsHtml(unselectedImages, 'add', filenameStartswithRestriction, readonly);
 
     return html;
   }
@@ -448,7 +451,8 @@ $(document).ready(function() {
       var messageContent = $(this).parent().siblings(':first').text();
       var $loadingButton = $(this);
       var filenameStartswithRestriction = $(this).data('filename-startswith-restriction');
-
+      var readonly = $(this).data('role') == 'read_only';
+      
       $loadingButton.addClass('loading');
       $.ajax({
         url : '/message_templates/' + messageTemplateId + '/get_image_selections',
@@ -460,7 +464,7 @@ $(document).ready(function() {
           var selectedImages = retdata.selected_images;
           var unselectedImages = retdata.unselected_images;
 
-          html = getImagePoolInterfaceHtml(selectedImages, unselectedImages, messageContent, filenameStartswithRestriction.toLowerCase());
+          html = getImagePoolInterfaceHtml(selectedImages, unselectedImages, messageContent, filenameStartswithRestriction.toLowerCase(), readonly);
 
           $loadingButton.removeClass('loading');
           $('#lightbox .image-list').html(html);

@@ -18,7 +18,7 @@ RSpec.describe BufferClient do
 
       expect(post_request_body[:profile_ids]).to eq(@message.social_media_profile.buffer_id)
       expect(post_request_body[:text]).to eq(@message.content)
-      expect(post_request_body[:shorten]).to eq(false)
+      expect(post_request_body[:shorten]).to eq(true)
       expect(post_request_body[:access_token]).to eq(Setting[:buffer_access_token])
     end
 
@@ -30,7 +30,7 @@ RSpec.describe BufferClient do
 
       expect(post_request_body[:profile_ids]).to eq(@message.social_media_profile.buffer_id)
       expect(post_request_body[:text]).to eq(@message.content)
-      expect(post_request_body[:shorten]).to eq(false)
+      expect(post_request_body[:shorten]).to eq(true)
       expect(post_request_body[:access_token]).to eq(Setting[:buffer_access_token])
       expect(post_request_body[:media]).to eq({"thumbnail" => @message.image.url, "photo" => @message.image.url})
     end
@@ -83,6 +83,25 @@ RSpec.describe BufferClient do
       expect(@message.buffer_update).not_to be_nil
       # The response returned from Buffer contains a Buffer ID that we need to store in a newly created buffer_update
       expect(@message.buffer_update.buffer_id).not_to be_blank
+      expect(@message.buffer_update.published_text).to eq(@message.content)
+      # The message and the new Buffer update should be persisted
+      expect(@message.publish_status).to eq(:published_to_buffer)
+      expect(@message.persisted?).to be_truthy
+      expect(@message.buffer_update.persisted?).to be_truthy
+    end
+
+    it 'uses the Buffer API to create an update and successfully shortens the link in the message' do
+      @message.content = "Even occasional #smoking can hurt you. If nobody smoked, about 30% of US cancer deaths could be prevented.http://go-staging.befreeoftobacco.org/0ix"
+
+      VCR.use_cassette 'buffer/create_update_and_shorten_link' do
+        BufferClient.create_update(@message)
+      end
+
+      expect(BufferClient).to have_received(:post).with('https://api.bufferapp.com/1/updates/create.json', {:body => BufferClient.post_request_body_for_create(@message)})
+      expect(@message.buffer_update).not_to be_nil
+      # The response returned from Buffer contains a Buffer ID that we need to store in a newly created buffer_update
+      expect(@message.buffer_update.buffer_id).not_to be_blank
+      expect(@message.buffer_update.published_text).to eq('Even occasional #smoking can hurt you. If nobody smoked, about 30% of US cancer deaths could be prevented.http://bit.ly/2o2qK34')
       # The message and the new Buffer update should be persisted
       expect(@message.publish_status).to eq(:published_to_buffer)
       expect(@message.persisted?).to be_truthy
@@ -99,13 +118,30 @@ RSpec.describe BufferClient do
       expect(@message.buffer_update).to be_nil
     end
     
-    it 'exhibits a bug where Buffer cannot identify the URL in the message if a period is all that separates a hashtag from a URL, thus rejecting a longer message' do
+    it 'exhibits a bug where Buffer cannot post a message containing a URL that has no space preceding it and the rest of the message is exactly 117 characters long' do
       @message.content = 'Smoking can cause cancer almost anywhere in the body. 160,000+ US cancer deaths every year are linked to #smoking.http://go-staging.befreeoftobacco.org/0kn'
       VCR.use_cassette 'buffer/raise_error_length_for_twitter' do
         expect{ BufferClient.create_update(@message) }.to raise_error(MessageTooLongForTwitterError, "Message content for message ID #{@message.id} is too long for Twitter.")
       end
     end
-    
+
+    it 'does not exhibit the above bug if the message length is exactly 116 characters, but there is a space preceding the URL' do
+      @message.content = '#Tobacco use causes ~20% of all US deaths-more than AIDS, alcohol, car accidents, homicides & illegal drugs combined http://go-staging.befreeoftobacco.org/0kn'
+      VCR.use_cassette 'buffer/does_not_raise_error_length_for_twitter' do
+        BufferClient.create_update(@message)
+      end
+
+      expect(BufferClient).to have_received(:post).with('https://api.bufferapp.com/1/updates/create.json', {:body => BufferClient.post_request_body_for_create(@message)})
+      expect(@message.buffer_update).not_to be_nil
+      # The response returned from Buffer contains a Buffer ID that we need to store in a newly created buffer_update
+      expect(@message.buffer_update.buffer_id).not_to be_blank
+      expect(@message.buffer_update.published_text).to eq('#Tobacco use causes ~20% of all US deaths-more than AIDS, alcohol, car accidents, homicides & illegal drugs combined http://bit.ly/2p6bvdZ')
+      # The message and the new Buffer update should be persisted
+      expect(@message.publish_status).to eq(:published_to_buffer)
+      expect(@message.persisted?).to be_truthy
+      expect(@message.buffer_update.persisted?).to be_truthy
+    end
+
     it 'uses the Buffer API to get an update to the status (pending, sent) of a BufferUpdate and simultaneously updates the metrics for the corresponding message' do
       buffer_id = '55f8a111b762b0cf06d79116'
       @message.buffer_update = BufferUpdate.new(:buffer_id => buffer_id)

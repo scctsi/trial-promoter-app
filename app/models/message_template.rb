@@ -93,7 +93,7 @@ class MessageTemplate < ActiveRecord::Base
     return [] if !platforms.include?(:twitter)
     
     warnings << 'Too long for use in Twitter' if content.length > 140
-    warnings << 'Too long for use in Twitter (URL takes up 23 characters and we need two spaces for padding on either side)' if content.include?('{url}') and content.length > 115 + '{url}'.length
+    warnings << 'Too long for use in Twitter (URL takes up 23 characters and we need atleast one space preceding the URL)' if content.include?('{url}') and content.length > 116 + '{url}'.length
     
     # Hashtag inclusion checks
     if !hashtags.nil? && !(hashtags.length == 0)
