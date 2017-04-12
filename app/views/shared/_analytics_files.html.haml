@@ -7,6 +7,7 @@
       %th Social media type and username
       %th Medium
       %th
+      %th Database Id
   %tbody
     - recent_analytics_files.each do |analytics_file|
       %tr{ class: [('positive' if !analytics_file.url.nil?)] }
@@ -32,6 +33,8 @@
             %a.ui.labeled.icon.button{:href => "#{analytics_file.url}"}
               %i.download.icon
               Download
+        %td
+          = analytics_file.id.to_s
 %h2.ui.header
   All analytics files
 %table.ui.celled.table
@@ -42,6 +45,7 @@
       %th Social media type and username
       %th Medium
       %th
+      %th Database Id
   %tbody
     - analytics_files.to_a.sort!{ |x, y| x.required_upload_date <=> y.required_upload_date }.each do |analytics_file|
       %tr{ class: [('positive' if !analytics_file.url.nil?)] }
@@ -64,3 +68,5 @@
             %a.ui.labeled.icon.button{:href => "#{analytics_file.url}"}
               %i.download.icon
               Download
+        %td
+          = analytics_file.id.to_s
