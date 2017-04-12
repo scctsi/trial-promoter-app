@@ -1,10 +1,11 @@
-- recent_analytics_files = analytics_files.select{ |analytics_file| analytics_file.required_upload_date >= Time.now - 2.days && analytics_file.required_upload_date <= Time.now + 2.days }.sort!{ |x, y| x.required_upload_date <=> y.required_upload_date }
+- recent_analytics_files = analytics_files.select{ |analytics_file| analytics_file.required_upload_date >= Time.now - 2.days && analytics_file.required_upload_date <= Time.now + 1.day }.sort!{ |x, y| x.required_upload_date <=> y.required_upload_date }
 %table.ui.celled.table
   %thead
     %tr
       %th
       %th Required upload date
       %th Social media type and username
+      %th Medium
       %th
   %tbody
     - recent_analytics_files.each do |analytics_file|
@@ -19,6 +20,8 @@
         %td
           = analytics_file.social_media_profile.platform_icon_and_name 
           (#{analytics_file.social_media_profile.service_username})
+        %td
+          = analytics_file.social_media_profile.allowed_mediums[0].to_s.titleize
         - if analytics_file.url.nil?
           %td.collapsing
             %a.analytics-file-upload-button.ui.labeled.icon.button{'data-analytics-file-id': analytics_file.id, 'data-experiment-id': @experiment.id, 'data-experiment-param': @experiment.to_param}
@@ -37,6 +40,7 @@
       %th
       %th Required upload date
       %th Social media type and username
+      %th Medium
       %th
   %tbody
     - analytics_files.to_a.sort!{ |x, y| x.required_upload_date <=> y.required_upload_date }.each do |analytics_file|
@@ -51,6 +55,8 @@
         %td
           = analytics_file.social_media_profile.platform_icon_and_name 
           (#{analytics_file.social_media_profile.service_username})
+        %td
+          = analytics_file.social_media_profile.allowed_mediums[0].to_s.titleize
         - if analytics_file.url.nil?
           %td.collapsing
         - else
