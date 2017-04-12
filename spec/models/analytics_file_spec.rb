@@ -29,7 +29,9 @@ RSpec.describe AnalyticsFile do
     @csv_content = []
     allow(CsvFileReader).to receive(:read).and_return(@csv_content)
     @parseable_data = []
-    allow(AnalyticsDataParser).to receive(:convert_to_parseable_data).with([], @analytics_file.social_media_profile.platform, @analytics_file.social_media_profile.allowed_mediums[0]).and_return(@parseable_data)
+    allow(AnalyticsDataParser).to receive(:convert_to_parseable_data).and_return(@parseable_data)
+    @transformed_data = []
+    allow(AnalyticsDataParser).to receive(:transform).and_return(@transformed_data)
     @parsed_data = {}
     allow(AnalyticsDataParser).to receive(:parse).and_return(@parsed_data)
     allow(AnalyticsDataParser).to receive(:store)
@@ -58,5 +60,16 @@ RSpec.describe AnalyticsFile do
     expect(AnalyticsDataParser).not_to have_received(:store).with(@parsed_data, @analytics_file.social_media_profile.platform)
     @analytics_file.reload
     expect(@analytics_file.processing_status.value).to eq("processed")
+  end
+  
+  describe 'applying transformations' do
+    it 'applies a transform for files uploaded for organic twitter accounts' do
+      @analytics_file.social_media_profile.allowed_mediums = [:organic]
+      @analytics_file.social_media_profile.platform = :twitter
+
+      @analytics_file.process
+      
+      expect(AnalyticsDataParser).to have_received(:transform).with(@parseable_data, {:operation => :parse_tweet_id_from_permalink, :permalink_column_index => 1})
+    end
   end
 end

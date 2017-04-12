@@ -7,7 +7,7 @@ class AnalyticsDataParser
     
     data
   end
-  
+
   def self.parse(data)
     # Step 1: Find the column which has the service update id
     service_update_id_column_index = data.column_headers.index('service_update_id')
@@ -35,5 +35,16 @@ class AnalyticsDataParser
       message.metrics << Metric.new(source: source, data: metrics)
       message.save
     end
+  end
+  
+  def self.transform(data, options)
+    case options[:operation]
+    when :parse_tweet_id_from_permalink
+      data.rows.each do |row|
+        row[0] = row[1][(row[1].rindex('/') + 1)..-1]
+      end
+    end
+    
+    data
   end
 end

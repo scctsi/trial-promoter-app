@@ -59,6 +59,9 @@ Rails.application.routes.draw do
     member do
       patch 'update', to: 'analytics_files#update', constraints: lambda { |req| req.format == :json }
     end
+    collection do
+      get 'process_all_files', to: 'analytics_files#process_all_files'
+    end
   end
 
   # Social media profiles
