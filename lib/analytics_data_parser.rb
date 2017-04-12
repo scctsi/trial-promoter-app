@@ -17,6 +17,7 @@ class AnalyticsDataParser
     data.rows.each do |row|
       metrics = {}
       buffer_update = BufferUpdate.where(service_update_id: row[service_update_id_column_index])[0]
+      next if buffer_update.nil?
       
       data.column_headers.each.with_index do |column_header, index|
         if !column_header.blank? && !(column_header == 'service_update_id')
