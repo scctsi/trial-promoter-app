@@ -1,8 +1,11 @@
-
 -if !@experiment.analytics_file_todos_created
   .button
     %a.ui.labeled.icon.button{:href  => create_analytics_file_todos_experiment_path(@experiment)}
       %i.checkmark.box.icon
       Generate todo list
+    .or
+    %a.ui.labeled.icon.button{:href => process_all_files_analytics_files_path }
+      %i.server.icon
+      Process all analytics files
 - else
   = render partial: 'shared/analytics_files', locals: { analytics_files: @experiment.analytics_files }

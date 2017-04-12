@@ -13,6 +13,17 @@ RSpec.describe AnalyticsDataParser do
     @data.rows << [@messages[0].buffer_update.service_update_id, '1', '2', '3', '4', '5', '6', '7']
     @data.rows << [@messages[1].buffer_update.service_update_id, '8', '9', '10', '11', '12', '13', '14']
   end
+
+  it 'transforms data from Twitter analytics to parse the Tweet ID from the permalink' do
+    @data.rows = []
+    @data.rows << [@messages[0].buffer_update.service_update_id, 'https://twitter.com/TCORSStgOrg/status/849049020249120769', '2', '3', '4', '5', '6', '7']
+    @data.rows << [@messages[1].buffer_update.service_update_id, 'https://twitter.com/TCORSStgOrg/status/849018827384000512', '9', '10', '11', '12', '13', '14']
+
+    transformed_data = AnalyticsDataParser.transform(@data, {:operation => :parse_tweet_id_from_permalink, :permalink_column_index => 1})
+
+    expect(transformed_data.rows[0]).to eq(["849049020249120769", 'https://twitter.com/TCORSStgOrg/status/849049020249120769', '2', '3', '4', '5', '6', '7'])
+    expect(transformed_data.rows[1]).to eq(["849018827384000512", 'https://twitter.com/TCORSStgOrg/status/849018827384000512', '9', '10', '11', '12', '13', '14'])
+  end
   
   it 'parses data into a format that can be used to add metrics to individual messages' do
     parsed_data = AnalyticsDataParser.parse(@data)
