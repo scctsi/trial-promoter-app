@@ -31,6 +31,14 @@ RSpec.describe AnalyticsDataParser do
     expect(parsed_data).to eq({ @messages[0].to_param => { 'impressions' => 1, 'likes' => 2, 'shares' => 3, 'clicks' => 7}, @messages[1].to_param => { 'ga:sessions' => 2, 'ga:users' => 3}, @messages[1].to_param => { 'impressions' => 8, 'likes' => 9, 'shares' => 10, 'clicks' => 14} })
   end
 
+  it 'ignores rows where a buffer update cannot be found with that particular service update id' do
+    @data.rows << ['missing_service_update_id', 'https://twitter.com/TCORSStgOrg/status/849018827384000512', '9', '10', '11', '12', '13', '14']
+
+    parsed_data = AnalyticsDataParser.parse(@data)
+
+    expect(parsed_data).to eq({ @messages[0].to_param => { 'impressions' => 1, 'likes' => 2, 'shares' => 3, 'clicks' => 7}, @messages[1].to_param => { 'ga:sessions' => 2, 'ga:users' => 3}, @messages[1].to_param => { 'impressions' => 8, 'likes' => 9, 'shares' => 10, 'clicks' => 14} })
+  end
+
   it 'stores parsed data on the respective messages (matched by service_update_id)' do
     parsed_data = { @messages[0].to_param => { 'impressions' => 1, 'likes' => 2, 'shares' => 3, 'clicks' => 7}, @messages[1].to_param => { 'ga:sessions' => 2, 'ga:users' => 3}, @messages[1].to_param => { 'impressions' => 8, 'likes' => 9, 'shares' => 10, 'clicks' => 14} }
 
