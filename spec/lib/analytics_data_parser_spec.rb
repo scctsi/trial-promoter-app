@@ -4,20 +4,20 @@ RSpec.describe AnalyticsDataParser do
   before do
     @messages = create_list(:message, 3, platform: :twitter)
     @messages[0..1].each do |message|
-      message.buffer_update = build(:buffer_update, :service_update_id => "service_update_id_#{message.id}")
-      message.buffer_update.save
+      message.social_network_id = "social_network_id_#{message.id}"
+      message.save
     end
     @data = OpenStruct.new
-    @data.column_headers = ['service_update_id', 'impressions', 'likes', 'shares', '', '', '', 'clicks']
+    @data.column_headers = ['social_network_id', 'impressions', 'likes', 'shares', '', '', '', 'clicks']
     @data.rows = []
-    @data.rows << [@messages[0].buffer_update.service_update_id, '1', '2', '3', '4', '5', '6', '7']
-    @data.rows << [@messages[1].buffer_update.service_update_id, '8', '9', '10', '11', '12', '13', '14']
+    @data.rows << [@messages[0].social_network_id, '1', '2', '3', '4', '5', '6', '7']
+    @data.rows << [@messages[1].social_network_id, '8', '9', '10', '11', '12', '13', '14']
   end
 
   it 'transforms data from Twitter analytics to parse the Tweet ID from the permalink' do
     @data.rows = []
-    @data.rows << [@messages[0].buffer_update.service_update_id, 'https://twitter.com/TCORSStgOrg/status/849049020249120769', '2', '3', '4', '5', '6', '7']
-    @data.rows << [@messages[1].buffer_update.service_update_id, 'https://twitter.com/TCORSStgOrg/status/849018827384000512', '9', '10', '11', '12', '13', '14']
+    @data.rows << [@messages[0].social_network_id, 'https://twitter.com/TCORSStgOrg/status/849049020249120769', '2', '3', '4', '5', '6', '7']
+    @data.rows << [@messages[1].social_network_id, 'https://twitter.com/TCORSStgOrg/status/849018827384000512', '9', '10', '11', '12', '13', '14']
 
     transformed_data = AnalyticsDataParser.transform(@data, {:operation => :parse_tweet_id_from_permalink, :permalink_column_index => 1})
 
@@ -32,7 +32,7 @@ RSpec.describe AnalyticsDataParser do
   end
 
   it 'ignores rows where a buffer update cannot be found with that particular service update id' do
-    @data.rows << ['missing_service_update_id', 'https://twitter.com/TCORSStgOrg/status/849018827384000512', '9', '10', '11', '12', '13', '14']
+    @data.rows << ['missing_social_network_id', 'https://twitter.com/TCORSStgOrg/status/849018827384000512', '9', '10', '11', '12', '13', '14']
 
     parsed_data = AnalyticsDataParser.parse(@data)
 
@@ -59,7 +59,7 @@ RSpec.describe AnalyticsDataParser do
 
     parseable_data = AnalyticsDataParser.convert_to_parseable_data(csv_content, :twitter, :organic)
 
-    expect(parseable_data.column_headers).to eq(['service_update_id', '', '', '', 'impressions', '', '', 'retweets', 'replies', 'likes', '', 'clicks', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''])
+    expect(parseable_data.column_headers).to eq(['social_network_id', '', '', '', 'impressions', '', '', 'retweets', 'replies', 'likes', '', 'clicks', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''])
     expect(parseable_data.rows).to eq(csv_content[1..-1])
   end
 end
