@@ -30,7 +30,21 @@ RSpec.describe ClickMeterClient do
       expect(click_meter_tracking_link.tracking_url).to eq('http://9nl.es/name-unique-to-sc-ctsi')
       expect(click_meter_tracking_link.destination_url).to eq('http://www.sc-ctsi.org')
     end
-    
+
+    it 'updates an existing tracking link' do
+      click_meter_tracking_link = ClickMeterTrackingLink.new
+      click_meter_tracking_link.tracking_url = 'http://9nl.es/name-unique-to-sc-ctsi'
+      click_meter_tracking_link.destination_url = 'http://www.sc-ctsi.org'
+      allow(ClickMeterClient).to receive(:get_tracking_link).and_return(click_meter_tracking_link)
+      click_meter_tracking_link = create(:click_meter_tracking_link)
+      
+      ClickMeterClient.update_tracking_link(click_meter_tracking_link)
+      
+      click_meter_tracking_link.reload
+      expect(click_meter_tracking_link.tracking_url).to eq('http://9nl.es/name-unique-to-sc-ctsi')
+      expect(click_meter_tracking_link.destination_url).to eq('http://www.sc-ctsi.org')
+    end
+
     it 'returns nil if trying to get a non-existent tracking link' do
       click_meter_tracking_link = nil
       
@@ -66,8 +80,6 @@ RSpec.describe ClickMeterClient do
       expect(ClickMeterClient).to have_received(:post).with('http://apiv2.clickmeter.com:80/datapoints', :body => ClickMeterClient.post_request_body_for_create_tracking_link(571973, 1501, 'http://www.sc-ctsi.org', 'SC CTSI', 'name-unique-to-sc-ctsi').to_json, :headers => { 'Content-Type' => 'application/json; charset=UTF-8', 'X-Clickmeter-Authkey' => Setting[:click_meter_api_key] })
       expect(tracking_link.click_meter_id).to eq('9948001')
       expect(tracking_link.click_meter_uri).to eq('/datapoints/9948001')
-      expect(tracking_link.tracking_url).to eq('http://9nl.es/name-unique-to-sc-ctsi')
-      expect(tracking_link.destination_url).to eq('http://www.sc-ctsi.org')
     end
   
     it 'raises an exception when creating a tracking link with a name that already exists on that domain' do
@@ -78,7 +90,7 @@ RSpec.describe ClickMeterClient do
     
     it 'deletes a Click Meter tracking link using the Click Meter API' do
       VCR.use_cassette 'click_meter/delete_tracking_link' do
-        tracking_link = ClickMeterClient.create_tracking_link(571973, 1501, 'http://www.sc-ctsi.org', 'SC CTSI', 'name-unique-to-sc-ctsi-to-be-deleted-2')
+        tracking_link = ClickMeterClient.create_tracking_link(571973, 1501, 'http://www.sc-ctsi.org', 'SC CTSI', 'name-unique-to-sc-ctsi-to-be-deleted-3')
         tracking_link_id = tracking_link.click_meter_id
         ClickMeterClient.delete_tracking_link(tracking_link_id)
         click_meter_tracking_link = ClickMeterClient.get_tracking_link(tracking_link_id)
