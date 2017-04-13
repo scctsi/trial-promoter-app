@@ -6,7 +6,7 @@ RSpec.describe BijectiveFunction do
     # Click Meter does not distinguish between names that differe in case.
     # Example: 9nl.es/name and 9nl.es/NAME are the same!
     # So we restrict the alphabet for the Bijective function to lowercase only
-    expect(BijectiveFunction::ALPHABET).to eq("abcdefghijklmnopqrstuvwxyz0123456789".split(//))
+    expect(BijectiveFunction::ALPHABET).to eq("bcdfghjklmnpqrstvwxyz0123456789".split(//))
   end
   
   it 'encodes an integer' do
