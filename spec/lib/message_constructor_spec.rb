@@ -95,60 +95,70 @@ RSpec.describe MessageConstructor do
     expect(MessageConstructor.fittable_hashtags(message.content, message_template.hashtags).any? {|hashtag| message.content.include?(hashtag)}).to be true
   end
   
-  it 'replaces {url} in the content of a message with a given URL' do
-    message = build(:message, content: 'This is a message containing a {url} variable')
+  describe 'replacing url variable in content' do
+    it 'replaces {url} in the content of a message with a given URL' do
+      message = build(:message, content: 'This is a message containing a {url} variable')
+  
+      @message_constructor.replace_url_variable(message, 'http://tracking-url.com')
+      
+      expect(message.content).to eq('This is a message containing a http://tracking-url.com variable')
+    end
 
-    @message_constructor.replace_url_variable(message, 'http://tracking-url.com')
-    
-    expect(message.content).to eq('This is a message containing a http://tracking-url.com variable')
-  end
-
-  it 'ignores replacing {url} in the content of a message if it does not exist' do
-    message = build(:message, content: 'This is a message containing no variable')
-
-    @message_constructor.replace_url_variable(message, 'http://tracking-url.com')
-    
-    expect(message.content).to eq('This is a message containing no variable')
-  end
-
-  it 'adds a space at the end of a url (for extraction by Twitter and readability)' do
-    message = build(:message, content: 'This is a message containing a {url}variable')
-
-    @message_constructor.replace_url_variable(message, 'http://tracking-url.com')
-    
-    expect(message.content).to eq('This is a message containing a http://tracking-url.com variable')
-  end
-
-  it 'adds a space at the beginning of a url (for parsing of URLs by Buffer)' do
-    message = build(:message, content: 'This is a message containing a variable #smoking.{url}')
-
-    @message_constructor.replace_url_variable(message, 'http://tracking-url.com')
-    
-    expect(message.content).to eq('This is a message containing a variable #smoking. http://tracking-url.com')
-  end
-
-  it 'adds a space at the beginning and end of a url (for extraction by Twitter, for parsing of URLs by Buffer and readability)' do
-    message = build(:message, content: 'This is a message containing a{url}variable #smoking.')
-
-    @message_constructor.replace_url_variable(message, 'http://tracking-url.com')
-    
-    expect(message.content).to eq('This is a message containing a http://tracking-url.com variable #smoking.')
-  end
-
-  it 'does not add a space at the beginning of a url if the {url} variable is at the very beginning' do
-    message = build(:message, content: '{url} This is a message containing a url variable at the beginning.')
-
-    @message_constructor.replace_url_variable(message, 'http://tracking-url.com')
-    
-    expect(message.content).to eq('http://tracking-url.com This is a message containing a url variable at the beginning.')
-  end
-
-  it 'does not add a space if the url variable is at the end' do
-    message = build(:message, content: 'This is a message containing a {url}')
-
-    @message_constructor.replace_url_variable(message, 'http://tracking-url.com')
-    
-    expect(message.content).to eq('This is a message containing a http://tracking-url.com')
+    it 'replaces {url} in the content of a message that is exactly 116 characters long' do
+      message = build(:message, content: '#Tobacco use causes ~20% of all US deaths-more than AIDS, alcohol, car accidents, homicides & illegal drugs combined{url}')
+  
+      @message_constructor.replace_url_variable(message, 'http://tracking-url.com')
+      
+      expect(message.content).to eq('#Tobacco use causes ~20% of all US deaths-more than AIDS, alcohol, car accidents, homicides & illegal drugs combined http://tracking-url.com')
+    end
+  
+    it 'ignores replacing {url} in the content of a message if it does not exist' do
+      message = build(:message, content: 'This is a message containing no variable')
+  
+      @message_constructor.replace_url_variable(message, 'http://tracking-url.com')
+      
+      expect(message.content).to eq('This is a message containing no variable')
+    end
+  
+    it 'adds a space at the end of a url (for extraction by Twitter and readability)' do
+      message = build(:message, content: 'This is a message containing a {url}variable')
+  
+      @message_constructor.replace_url_variable(message, 'http://tracking-url.com')
+      
+      expect(message.content).to eq('This is a message containing a http://tracking-url.com variable')
+    end
+  
+    it 'adds a space at the beginning of a url (for parsing of URLs by Buffer)' do
+      message = build(:message, content: 'This is a message containing a variable #smoking.{url}')
+  
+      @message_constructor.replace_url_variable(message, 'http://tracking-url.com')
+      
+      expect(message.content).to eq('This is a message containing a variable #smoking. http://tracking-url.com')
+    end
+  
+    it 'adds a space at the beginning and end of a url (for extraction by Twitter, for parsing of URLs by Buffer and readability)' do
+      message = build(:message, content: 'This is a message containing a{url}variable #smoking.')
+  
+      @message_constructor.replace_url_variable(message, 'http://tracking-url.com')
+      
+      expect(message.content).to eq('This is a message containing a http://tracking-url.com variable #smoking.')
+    end
+  
+    it 'does not add a space at the beginning of a url if the {url} variable is at the very beginning' do
+      message = build(:message, content: '{url} This is a message containing a url variable at the beginning.')
+  
+      @message_constructor.replace_url_variable(message, 'http://tracking-url.com')
+      
+      expect(message.content).to eq('http://tracking-url.com This is a message containing a url variable at the beginning.')
+    end
+  
+    it 'does not add a space if the url variable is at the end' do
+      message = build(:message, content: 'This is a message containing a {url}')
+  
+      @message_constructor.replace_url_variable(message, 'http://tracking-url.com')
+      
+      expect(message.content).to eq('This is a message containing a http://tracking-url.com')
+    end
   end
   
   it 'does not append a hashtag if there are no allowed hashtags (empty array)' do
