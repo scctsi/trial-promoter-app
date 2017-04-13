@@ -41,6 +41,7 @@ class BufferClient
     message.social_network_id = message.buffer_update.service_update_id
     message.metrics << Metric.new(source: :buffer, data: response.parsed_response["statistics"])
     message.publish_status = :published_to_social_network
+    message.buffer_update.save
     message.save
   end
 
