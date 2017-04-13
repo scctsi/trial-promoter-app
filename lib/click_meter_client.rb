@@ -35,6 +35,8 @@ class ClickMeterClient
     click_meter_tracking_link.destination_url = response.parsed_response["typetL"]["url"] if !response.parsed_response["typetL"].nil?
     click_meter_tracking_link.destination_url = response.parsed_response["typeTl"]["url"] if !response.parsed_response["typeTl"].nil?
     click_meter_tracking_link.destination_url = response.parsed_response["typetl"]["url"] if !response.parsed_response["typetl"].nil?
+    
+    p response.parsed_response if click_meter_tracking_link.destination_url.nil? || click_meter_tracking_link.tracking_url.nil?
 
     click_meter_tracking_link
   end
