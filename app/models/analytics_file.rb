@@ -28,9 +28,25 @@ class AnalyticsFile < ActiveRecord::Base
   def process
     return if processing_status == :processed
     
+    # Step 1: Read CSV file from a URL
     csv_content = CsvFileReader.read(url)
+    
+    # Step 2: Convert this to parseable data (An OpenStruct with an array of column headers and an array of rows with the metric data)
     parseable_data = AnalyticsDataParser.convert_to_parseable_data(csv_content, social_media_profile.platform, social_media_profile.allowed_mediums[0])
+
+    # Step 3: Apply any transforms needed to the parseable data based on platform and medium
+    case social_media_profile.platform
+    when :twitter
+      case social_media_profile.allowed_mediums[0]
+      when :organic
+        AnalyticsDataParser.transform(parseable_data, {:operation => :parse_tweet_id_from_permalink, :permalink_column_index => 1})
+      end
+    end
+    
+    # Step 4: Parse the data (into a hash that uses the message params as the keys and the values as the metrics for that message in a hash)
     parsed_data = AnalyticsDataParser.parse(parseable_data)
+    
+    # Step 5: Persist the metrics data
     AnalyticsDataParser.store(parsed_data, social_media_profile.platform)
     self.processing_status = :processed
     save
