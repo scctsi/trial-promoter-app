@@ -114,7 +114,7 @@ RSpec.describe MessageFactory do
     # Were the pusher events triggered?
     expect(@pusher_channel).to have_received(:trigger).exactly(expected_generated_message_count).times.with('progress', {:value => an_instance_of(Fixnum), :total => expected_generated_message_count, :event => 'Message generated'})
     # Was the message generation throttled (limit of 10 req/sec for Click Meter)
-    expect(@message_factory).to have_received(:throttle).with(5).exactly(expected_generated_message_count).times
+    expect(@message_factory).to have_received(:throttle).with(4).exactly(expected_generated_message_count).times
 
     # Has the scheduled date and time been set correctly?
     publish_date_time = @experiment.message_distribution_start_date
@@ -241,7 +241,7 @@ RSpec.describe MessageFactory do
     # Were the pusher events triggered?
     expect(@pusher_channel).to have_received(:trigger).exactly(expected_generated_message_count).times.with('progress', {:value => an_instance_of(Fixnum), :total => expected_generated_message_count, :event => 'Message generated'})
     # Was the message generation throttled (limit of 10 req/sec for Click Meter)
-    expect(@message_factory).to have_received(:throttle).with(5).exactly(expected_generated_message_count).times
+    expect(@message_factory).to have_received(:throttle).with(4).exactly(expected_generated_message_count).times
 
     # # Has the scheduled date and time been set correctly?
     # TODO: Not sure how I can test this efficiently.
