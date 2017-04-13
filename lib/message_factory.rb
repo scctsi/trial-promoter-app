@@ -42,7 +42,7 @@ class MessageFactory
                 ClickMeterClient.create_click_meter_tracking_link(message, experiment.click_meter_group_id, experiment.click_meter_domain_id)
                 parameters[:message_constructor].replace_url_variable(message, message.click_meter_tracking_link.tracking_url)
                 message.save
-                throttle(5)
+                throttle(4)
                 Pusher['progress'].trigger('progress', {:value => message_index, :total => parameters[:total_count], :event => 'Message generated'})
                 message_index += 1
               end
