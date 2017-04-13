@@ -10,10 +10,10 @@ RSpec.describe BijectiveFunction do
   end
   
   it 'encodes an integer' do
-    expect(BijectiveFunction.encode(1250000000)).to eq('uyh4gi')
+    expect(BijectiveFunction.encode(1250000000)).to eq('cqzt9qz')
   end
   
   it 'decodes a string' do
-    expect(BijectiveFunction.decode('uyh4gi')).to eq(1250000000)
+    expect(BijectiveFunction.decode('cqzt9qz')).to eq(1250000000)
   end
 end
