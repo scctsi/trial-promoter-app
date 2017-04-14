@@ -76,5 +76,28 @@ RSpec.describe CorrectnessAnalyzer do
 
       expect(@correctness_analyzer.analyze(@experiment, :hashtag_included_if_applicable)).to eq(0.7)
     end
+    
+    it 'ignores checking for hashtags if the message template has a nil or blank array of hashtags' do
+      @messages[0..2].each do |message|
+        message.message_template = build(:message_template)
+        message.message_template.hashtags = nil
+        message.content = 'Content without hashtag!'
+        message.save
+      end
+      @messages[3..3].each do |message|
+        message.message_template = build(:message_template)
+        message.message_template.hashtags = []
+        message.content = 'Content without hashtag!'
+        message.save
+      end
+      @messages[4..9].each do |message|
+        message.message_template = build(:message_template)
+        message.message_template.hashtags = ['#hashtag1', '#hashtag2']
+        message.content = 'Content with #hashtag2'
+        message.save
+      end
+
+      expect(@correctness_analyzer.analyze(@experiment, :hashtag_included_if_applicable)).to eq(1.0)
+    end
   end
 end
