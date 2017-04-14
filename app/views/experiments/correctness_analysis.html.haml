@@ -20,3 +20,5 @@
       Tracking URL present for messages: #{number_to_percentage(correctness_analyzer.analyze(@experiment, :tracking_url_present) * 100)}
     .item
       Hashtag included (if applicable) for messages: #{number_to_percentage(correctness_analyzer.analyze(@experiment, :hashtag_included_if_applicable) * 100)}
+    .item
+      Correct URL linked (based on message template used to construct message) for messages: #{number_to_percentage(correctness_analyzer.analyze(@experiment, :correct_destination_url) * 100)}
