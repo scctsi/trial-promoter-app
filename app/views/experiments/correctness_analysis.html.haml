@@ -1,0 +1,22 @@
+.ui.breadcrumb
+  %a{:href => root_path}
+    Home
+  %i.right.angle.icon.divider
+  .active.section
+    #{@experiment.name} Pilot Project Workspace
+.ui.divider
+%h2.ui.center.aligned.header
+  #{@experiment.name} Pilot Project Workspace
+.ui.segment
+  %h2.ui.header
+    Correctness
+  - correctness_analyzer = CorrectnessAnalyzer.new
+  .ui.list
+    .item
+      {url} variable replaced for messages: #{number_to_percentage(correctness_analyzer.analyze(@experiment, :url_variable_replaced) * 100)}
+    .item
+      Image present for messages: #{number_to_percentage(correctness_analyzer.analyze(@experiment, :image_present) * 100)}
+    .item
+      Tracking URL present for messages: #{number_to_percentage(correctness_analyzer.analyze(@experiment, :tracking_url_present) * 100)}
+    .item
+      Hashtag included (if applicable) for messages: #{number_to_percentage(correctness_analyzer.analyze(@experiment, :hashtag_included_if_applicable) * 100)}
