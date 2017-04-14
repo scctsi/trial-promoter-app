@@ -99,6 +99,5 @@ RSpec.describe CorrectnessAnalyzer do
 
       expect(@correctness_analyzer.analyze(@experiment, :hashtag_included_if_applicable)).to eq(1.0)
     end
-
   end
 end
