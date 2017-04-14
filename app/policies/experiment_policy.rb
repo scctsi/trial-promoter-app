@@ -22,4 +22,8 @@ class ExperimentPolicy < ApplicationPolicy
   def calculate_message_count?
     user.role.administrator?
   end
+
+  def correctness_analysis?
+    user.role.administrator?
+  end
 end
