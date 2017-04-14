@@ -1,7 +1,7 @@
 class ExperimentsController < ApplicationController
-  before_action :set_experiment, only: [:show, :edit, :update, :parameterized_slug, :send_to_buffer, :create_messages, :create_analytics_file_todos]
+  before_action :set_experiment, only: [:show, :edit, :update, :parameterized_slug, :send_to_buffer, :create_messages, :create_analytics_file_todos, :correctness_analysis]
   before_action :set_click_meter_groups_and_domains, only: [:new, :edit]
-  layout "workspace", only: [:show]
+  layout "workspace", only: [:show, :correctness_analysis]
 
   def index
     authorize Experiment
@@ -19,6 +19,9 @@ class ExperimentsController < ApplicationController
     @messages = Message.where(:message_generating_id => @experiment.id).page(params[:page]).order('scheduled_date_time ASC')
   end
 
+  def correctness_analysis
+  end
+  
   def new
     @experiment = Experiment.new
     authorize @experiment

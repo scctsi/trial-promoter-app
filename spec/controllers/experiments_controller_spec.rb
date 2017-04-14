@@ -88,6 +88,33 @@ RSpec.describe ExperimentsController, type: :controller do
     end
   end
 
+  describe 'GET #correctness_analysis' do
+    before do
+      @experiment = create(:experiment)
+      get :correctness_analysis, id: @experiment
+    end
+
+    it 'assigns the requested experiment to @experiment' do
+      expect(assigns(:experiment)).to eq(@experiment)
+    end
+
+    it 'uses the workspace layout' do
+      expect(response).to render_template :workspace
+    end
+
+    it 'renders the correctness_analysis template' do
+      expect(response).to render_template :correctness_analysis
+    end
+
+    it 'redirects unauthenticated user to sign-in page' do
+        sign_out(:user)
+
+        get :correctness_analysis, id: @experiment
+
+        expect(response).to redirect_to :new_user_session
+    end
+  end
+
   describe 'GET #parameterized_slug' do
     before do
       @experiment = create(:experiment)
