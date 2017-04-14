@@ -99,5 +99,30 @@ RSpec.describe CorrectnessAnalyzer do
 
       expect(@correctness_analyzer.analyze(@experiment, :hashtag_included_if_applicable)).to eq(1.0)
     end
+    
+    it 'calculates the percentage of messages that linked to the correct website' do
+      @messages[0..0].each do |message| # Incorrect #anchor link
+        message.promoted_website_url = 'http://staging.befreeoftobacco.org/#death'
+        message.click_meter_tracking_link = ClickMeterTrackingLink.new(:destination_url => 'http://staging.befreeoftobacco.org/?utm_source=instagram&utm_campaign=1-tcors-staging&utm_medium=ad&utm_term=&utm_content=1-tcors-staging-message-34007#every-smoke-counts')
+        message.save
+      end
+      @messages[1..1].each do |message| # Incorrect website
+        message.promoted_website_url = 'http://staging.befreeoftobacco.org/#death'
+        message.click_meter_tracking_link = ClickMeterTrackingLink.new(:destination_url => 'http://befreeoftobacco.org/?utm_source=instagram&utm_campaign=1-tcors-staging&utm_medium=ad&utm_term=&utm_content=1-tcors-staging-message-34007#death')
+        message.save
+      end
+      @messages[2..2].each do |message| # Incorrect website AND anchor link
+        message.promoted_website_url = 'http://staging.befreeoftobacco.org/#death'
+        message.click_meter_tracking_link = ClickMeterTrackingLink.new(:destination_url => 'http://befreeoftobacco.org/?utm_source=instagram&utm_campaign=1-tcors-staging&utm_medium=ad&utm_term=&utm_content=1-tcors-staging-message-34007#every-smoke-counts')
+        message.save
+      end
+      @messages[3..9].each do |message|
+        message.promoted_website_url = 'http://staging.befreeoftobacco.org/#death'
+        message.click_meter_tracking_link = ClickMeterTrackingLink.new(:destination_url => 'http://staging.befreeoftobacco.org/?utm_source=instagram&utm_campaign=1-tcors-staging&utm_medium=ad&utm_term=&utm_content=1-tcors-staging-message-34007#death')
+        message.save
+      end
+
+      expect(@correctness_analyzer.analyze(@experiment, :correct_destination_url)).to eq(0.7)
+    end
   end
 end
