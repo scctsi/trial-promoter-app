@@ -5,6 +5,36 @@ RSpec.describe ImagesController, type: :controller do
     sign_in create(:administrator)
   end
   
+  describe 'GET #check_validity_for_instagram_ads' do
+    before do
+      allow(CheckValidityForInstagramAdsJob).to receive(:perform_later)
+    end
+
+    before do
+      get :check_validity_for_instagram_ads
+    end
+
+    it 'enqueues a job to check the validity of images for instagram ads' do
+      expect(CheckValidityForInstagramAdsJob).to have_received(:perform_later)
+    end
+    
+    it 'sets a notice' do
+      expect(flash[:notice]).to eq('Images are being checked for validity in Instagram ads')
+    end
+
+    it 'redirects to the root url' do
+      expect(response).to redirect_to root_url
+    end
+
+    it 'redirects unauthenticated user to sign-in page' do
+      sign_out(:user)
+
+      get :check_validity_for_instagram_ads
+
+      expect(response).to redirect_to :new_user_session
+    end
+  end
+
   describe 'POST #import' do
     it 'imports multiple images uploaded to cloud storage' do
       experiment = create(:experiment)

@@ -9,4 +9,12 @@ class ImagesController < ApplicationController
 
     render json: { success: true, imported_count: params[:image_urls].length }
   end
+  
+  def check_validity_for_instagram_ads
+    authorize Image
+    CheckValidityForInstagramAdsJob.perform_later
+    flash[:notice] = 'Images are being checked for validity in Instagram ads'
+    redirect_to root_url
+  end
 end
+

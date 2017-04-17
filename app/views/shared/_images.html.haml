@@ -1,12 +1,35 @@
+- invalid_image_count = 0
+- uncalculated_image_size_count = 0
 %table.ui.celled.striped.table
   %form#image-tagging-form
     %thead
       %tr
+        %th Database ID
         %th.center.aligned Image
         %th.center.aligned Filename
+        %th.center.aligned Size
     %tbody
       - images.each do |image|
-        %tr.center.aligned
+        - row_class = ''
+        - if image.meets_instagram_ad_requirements == false
+          - invalid_image_count += 1
+          - row_class = 'negative'
+        %tr.center.aligned{ :class => "#{row_class}" }
+          %td= image.id
           %td
             = image_tag "#{image.url}", width: '150', height: '150', lazy: true
           %td= image.original_filename
+          %td
+            - if image.width.nil? || image.height.nil?
+              - uncalculated_image_size_count += 1
+              Not calculated
+            - else
+              #{image.width} x #{image.height}
+    %tfoot
+      %tr
+        %th{ :colspan => "4" }
+          Number of invalid images (for instagram ads): #{invalid_image_count}
+          %br
+          Number of uncalculated image sizes: #{uncalculated_image_size_count}
+
+    
