@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170411224138) do
+ActiveRecord::Schema.define(version: 20170417194909) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -146,10 +146,13 @@ ActiveRecord::Schema.define(version: 20170411224138) do
   end
 
   create_table "images", force: :cascade do |t|
-    t.string   "url",               limit: 2000
+    t.string   "url",                             limit: 2000
     t.string   "original_filename"
-    t.datetime "created_at",                     null: false
-    t.datetime "updated_at",                     null: false
+    t.datetime "created_at",                                   null: false
+    t.datetime "updated_at",                                   null: false
+    t.integer  "width"
+    t.integer  "height"
+    t.boolean  "meets_instagram_ad_requirements"
   end
 
   create_table "message_generation_parameter_sets", force: :cascade do |t|
