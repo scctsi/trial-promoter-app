@@ -99,7 +99,7 @@ RSpec.describe CorrectnessAnalyzer do
 
       expect(@correctness_analyzer.analyze(@experiment, :hashtag_included_if_applicable)).to eq(1.0)
     end
-    
+
     it 'calculates the percentage of messages that linked to the correct website' do
       @messages[0..0].each do |message| # Incorrect #anchor link
         message.promoted_website_url = 'http://staging.befreeoftobacco.org/#death'
