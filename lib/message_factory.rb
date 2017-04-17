@@ -6,6 +6,8 @@ class MessageFactory
   end
 
   def create(experiment)
+    generated_messages = []
+    
     # Destroy all existing messages for this experiment
     experiment.reload
     experiment.messages.destroy_all
@@ -40,17 +42,27 @@ class MessageFactory
                 message.save
                 message.reload
                 ClickMeterClient.create_click_meter_tracking_link(message, experiment.click_meter_group_id, experiment.click_meter_domain_id)
-                parameters[:message_constructor].replace_url_variable(message, message.click_meter_tracking_link.tracking_url)
                 message.save
-                throttle(5)
-                Pusher['progress'].trigger('progress', {:value => message_index, :total => parameters[:total_count], :event => 'Message generated'})
+                throttle(9)
+                Pusher['progress'].trigger('progress', {:value => message_index / 2, :total => parameters[:total_count], :event => 'Message generated'})
                 message_index += 1
+                generated_messages << message
               end
             end
           end
         end
         publish_date += 1.day
       end
+    end
+    
+    # Update {url} variables in all the messages
+    generated_messages.each do |message|
+      ClickMeterClient.update_tracking_link(message.click_meter_tracking_link)
+      throttle(9)
+      parameters[:message_constructor].replace_url_variable(message, message.click_meter_tracking_link.tracking_url)
+      message.save
+      Pusher['progress'].trigger('progress', {:value => message_index / 2, :total => parameters[:total_count], :event => 'Message generated'})
+      message_index += 1
     end
   end
 

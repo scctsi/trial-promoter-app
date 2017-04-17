@@ -28,17 +28,20 @@ class ClickMeterClient
     
     click_meter_tracking_link = ClickMeterTrackingLink.new
     click_meter_tracking_link.click_meter_id = response.parsed_response["id"]
-    # This code needs testing. Is the Click Meter response sometimes inconsistent in case?
     click_meter_tracking_link.tracking_url = response.parsed_response["trackingCode"] if !response.parsed_response["trackingCode"].nil?
-    click_meter_tracking_link.tracking_url = response.parsed_response["trackingcode"] if !response.parsed_response["trackingcode"].nil?
     click_meter_tracking_link.destination_url = response.parsed_response["typeTL"]["url"] if !response.parsed_response["typeTL"].nil?
-    click_meter_tracking_link.destination_url = response.parsed_response["typetL"]["url"] if !response.parsed_response["typetL"].nil?
-    click_meter_tracking_link.destination_url = response.parsed_response["typeTl"]["url"] if !response.parsed_response["typeTl"].nil?
-    click_meter_tracking_link.destination_url = response.parsed_response["typetl"]["url"] if !response.parsed_response["typetl"].nil?
 
     click_meter_tracking_link
   end
   
+  def self.update_tracking_link(tracking_link)
+    click_meter_tracking_link = get_tracking_link(tracking_link.click_meter_id)
+    
+    tracking_link.tracking_url = click_meter_tracking_link.tracking_url
+    tracking_link.destination_url = click_meter_tracking_link.destination_url
+    tracking_link.save
+  end
+
   def self.create_tracking_link(group_id, domain_id, url, title, name)
     response = post('http://apiv2.clickmeter.com:80/datapoints', :body => post_request_body_for_create_tracking_link(group_id, domain_id, url, title, name).to_json, :headers => { 'Content-Type' => 'application/json; charset=UTF-8', 'X-Clickmeter-Authkey' => Setting[:click_meter_api_key]} )
     
@@ -49,7 +52,9 @@ class ClickMeterClient
       end
     end
     
-    click_meter_tracking_link = get_tracking_link(response.parsed_response["id"])
+    # click_meter_tracking_link = get_tracking_link(response.parsed_response["id"])
+    click_meter_tracking_link = ClickMeterTrackingLink.new
+    click_meter_tracking_link.click_meter_id = response.parsed_response["id"]
     click_meter_tracking_link.click_meter_uri = response.parsed_response["uri"]
     
     click_meter_tracking_link

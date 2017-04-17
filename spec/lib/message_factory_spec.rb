@@ -46,6 +46,12 @@ RSpec.describe MessageFactory do
     allow(@pusher_channel).to receive(:trigger)
     # Set up click tracking
     allow(ClickMeterClient).to receive(:create_click_meter_tracking_link).and_call_original
+    click_meter_tracking_link = ClickMeterTrackingLink.new
+    click_meter_tracking_link.click_meter_id = "100"
+    click_meter_tracking_link.click_meter_uri = "/datapoints/100"
+    click_meter_tracking_link.tracking_url = 'http://tracking-url.com'
+    click_meter_tracking_link.destination_url = 'http://destination-url.com'
+    allow(ClickMeterClient).to receive(:get_tracking_link).and_return(click_meter_tracking_link)
     allow(ClickMeterClient).to receive(:delete_tracking_link)
     # Set up action throttling
     allow(@message_factory).to receive(:throttle).and_call_original
@@ -112,10 +118,10 @@ RSpec.describe MessageFactory do
       expect(message.social_media_profile).to eq(@suitable_social_media_profiles[1])
     end
     # Were the pusher events triggered?
-    expect(@pusher_channel).to have_received(:trigger).exactly(expected_generated_message_count).times.with('progress', {:value => an_instance_of(Fixnum), :total => expected_generated_message_count, :event => 'Message generated'})
+    expect(@pusher_channel).to have_received(:trigger).exactly(expected_generated_message_count * 2).times.with('progress', {:value => an_instance_of(Fixnum), :total => expected_generated_message_count, :event => 'Message generated'})
     # Was the message generation throttled (limit of 10 req/sec for Click Meter)
-    expect(@message_factory).to have_received(:throttle).with(5).exactly(expected_generated_message_count).times
-
+    expect(@message_factory).to have_received(:throttle).with(9).exactly(expected_generated_message_count * 2).times
+ 
     # Has the scheduled date and time been set correctly?
     publish_date_time = @experiment.message_distribution_start_date
     messages.each do |message|
@@ -143,8 +149,8 @@ RSpec.describe MessageFactory do
       # These next 4 lines are really only useful to ensure that on development machines we are getting back fake ClickMeter links.
       expect(message.click_meter_tracking_link.click_meter_id).to eq(message.id.to_s)
       expect(message.click_meter_tracking_link.click_meter_uri).to eq("/datapoints/#{message.id.to_s}")
-      expect(message.click_meter_tracking_link.tracking_url).to eq("http://development.tracking-domain.com/#{BijectiveFunction.encode(message.id)}")
-      expect(message.click_meter_tracking_link.destination_url).to eq(TrackingUrl.campaign_url(message))
+      expect(message.click_meter_tracking_link.tracking_url).to eq("http://tracking-url.com")
+      expect(message.click_meter_tracking_link.destination_url).to eq("http://destination-url.com")
       # Was the tracking URL (code) used in place of the {url} variable?
       expect(message.content.index(message.click_meter_tracking_link.tracking_url)).not_to be nil
     end
@@ -239,9 +245,9 @@ RSpec.describe MessageFactory do
     # Does every message have a promoted_website_url?
     expect((messages.select{ |message| message.promoted_website_url.nil? }).count).to eq(0)
     # Were the pusher events triggered?
-    expect(@pusher_channel).to have_received(:trigger).exactly(expected_generated_message_count).times.with('progress', {:value => an_instance_of(Fixnum), :total => expected_generated_message_count, :event => 'Message generated'})
+    expect(@pusher_channel).to have_received(:trigger).exactly(expected_generated_message_count * 2).times.with('progress', {:value => an_instance_of(Fixnum), :total => expected_generated_message_count, :event => 'Message generated'})
     # Was the message generation throttled (limit of 10 req/sec for Click Meter)
-    expect(@message_factory).to have_received(:throttle).with(5).exactly(expected_generated_message_count).times
+    expect(@message_factory).to have_received(:throttle).with(9).exactly(expected_generated_message_count * 2).times
 
     # # Has the scheduled date and time been set correctly?
     # TODO: Not sure how I can test this efficiently.

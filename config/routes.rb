@@ -15,6 +15,7 @@ Rails.application.routes.draw do
       get 'create_messages(.:format)', to: 'experiments#create_messages'
       get 'send_to_buffer', to: 'experiments#send_to_buffer'
       get 'create_analytics_file_todos', to: 'experiments#create_analytics_file_todos'
+      get 'correctness_analysis', to: 'experiments#correctness_analysis'
     end
     resources :message_generation_parameter_sets
   end
@@ -51,6 +52,7 @@ Rails.application.routes.draw do
   resources :images do
     collection do
       post :import
+      get :check_validity_for_instagram_ads
     end
   end
 
