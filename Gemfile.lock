@@ -120,6 +120,7 @@ GEM
       i18n (~> 0.5)
     faraday (0.10.1)
       multipart-post (>= 1.2, < 3)
+    fastimage (2.1.0)
     ffi (1.9.17)
     fit-commit (3.7.0)
       swearjar (~> 1.0)
@@ -416,6 +417,7 @@ DEPENDENCIES
   enumerize
   factory_girl_rails (~> 4.0)
   faker
+  fastimage
   fit-commit
   google-api-client (~> 0.9)
   guard-rspec

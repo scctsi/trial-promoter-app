@@ -1,6 +1,10 @@
 FactoryGirl.define do
   factory :image do
-    url 'http://www.image.com'
-    original_filename 'smoking.jpg'
+    sequence :url do |n|
+      "http://www.image-#{n}.com"
+    end
+    sequence :original_filename do |n|
+      "http://www.filename-#{n}.com"
+    end
   end
 end

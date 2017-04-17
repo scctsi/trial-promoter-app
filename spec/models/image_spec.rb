@@ -15,6 +15,7 @@ RSpec.describe Image do
   it { is_expected.to validate_presence_of :url }
   it { is_expected.to validate_presence_of :original_filename }
   it { is_expected.to have_many :messages }
+  it { is_expected.to serialize(:image_size).as(Array) }
 
   it 'is taggable on experiments with a single tag' do
     image = create(:image)
