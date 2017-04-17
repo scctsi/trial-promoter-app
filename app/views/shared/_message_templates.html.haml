@@ -1,3 +1,4 @@
+- image_ids_not_meeting_instagram_ad_requirements = Image.where("meets_instagram_ad_requirements = ?", false).pluck(:id)
 %table.ui.sortable.celled.striped.table
   %thead
     %tr
@@ -24,9 +25,14 @@
         %td
           = render partial: 'shared/hash', locals: { hash: message_template.experiment_variables }
         %td.collapsing
-          %a.choose-images-button.ui.labeled.icon.button{ 'data-experiment-id': "#{experiment.id}", 'data-message-template-id': "#{message_template.id}", 'data-filename-startswith-restriction': "#{message_template.experiment_variables['fda_campaign']}", 'data-role': "#{current_user.role}" }
-            %i.image.icon
-            Edit images (#{message_template.image_pool.count})
+          - if image_ids_not_meeting_instagram_ad_requirements.any?{ |invalid_image_id| message_template.image_pool.include?(invalid_image_id)}
+            %a.choose-images-button.negative.ui.labeled.icon.button{ 'data-experiment-id': "#{experiment.id}", 'data-message-template-id': "#{message_template.id}", 'data-filename-startswith-restriction': "#{message_template.experiment_variables['fda_campaign']}", 'data-role': "#{current_user.role}" }
+              %i.image.icon
+              Edit images (#{message_template.image_pool.count})
+          - else
+            %a.choose-images-button.ui.labeled.icon.button{ 'data-experiment-id': "#{experiment.id}", 'data-message-template-id': "#{message_template.id}", 'data-filename-startswith-restriction': "#{message_template.experiment_variables['fda_campaign']}", 'data-role': "#{current_user.role}" }
+              %i.image.icon
+              Edit images (#{message_template.image_pool.count})
       - if message_template.warnings.count > 0
         %tr.negative
           %td{ :colspan => 5 }
