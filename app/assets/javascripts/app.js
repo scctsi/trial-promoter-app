@@ -377,11 +377,18 @@ $(document).ready(function() {
       html += '<div class="description">' + image.original_filename + '</div>';
       html += '</div>';
       html += '</div>';
-      if (buttonType == 'add') {
+      console.log(image);
+      if (buttonType == 'add' && image.meets_instagram_ad_requirements) {
         html += '<div class="extra content"><div class="ui labeled icon fluid tiny button add-image-to-image-pool-button" data-image-id="' + image.id + '"><i class="checkmark icon"></i>Add</div></div>';
-      }
-      if (buttonType == 'remove') {
+      } 
+      if (buttonType == 'add' && !image.meets_instagram_ad_requirements) {
+        html += '<div class="extra content"><div class="ui disabled fluid tiny negative button add-image-to-image-pool-button" data-image-id="' + image.id + '">Invalid (for Instagram)</div></div>';
+      } 
+      if (buttonType == 'remove' && image.meets_instagram_ad_requirements) {
         html += '<div class="extra content"><div class="ui labeled icon fluid tiny button remove-image-from-image-pool-button" data-image-id="' + image.id + '"><i class="remove icon"></i>Remove</div></div>';
+      }
+      if (buttonType == 'remove' && !image.meets_instagram_ad_requirements) {
+        html += '<div class="extra content"><div class="ui labeled icon fluid tiny negative button remove-image-from-image-pool-button" data-image-id="' + image.id + '"><i class="remove icon"></i>Remove</div></div>';
       }
       html += '</div>';
     });

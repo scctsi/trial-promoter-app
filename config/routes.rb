@@ -52,6 +52,7 @@ Rails.application.routes.draw do
   resources :images do
     collection do
       post :import
+      get :check_validity_for_instagram_ads
     end
   end
 
