@@ -5,13 +5,15 @@ RSpec.describe InstagramAdImageRequirementsChecker do
     @images = create_list(:image, 3)
     allow(FastImage).to receive(:size).with(an_instance_of(String), :raise_on_failure => false, :timeout => 2.0).and_return([100, 200])
     allow(Throttler).to receive(:throttle)
+    @images[0].url = 'http://www.example/com/ive got spaces.jpg'
+    @images[0].save
   end
   
   it 'sets the image size of all images' do
     InstagramAdImageRequirementsChecker.set_image_sizes
     
     @images.each do |image|
-      expect(FastImage).to have_received(:size).with(image.url, :raise_on_failure => false, :timeout => 2.0)
+      expect(FastImage).to have_received(:size).with(URI.escape(image.url), :raise_on_failure => false, :timeout => 2.0)
       image.reload
       expect(image.width).to eq(100)
       expect(image.height).to eq(200)
@@ -29,9 +31,9 @@ RSpec.describe InstagramAdImageRequirementsChecker do
     
     InstagramAdImageRequirementsChecker.set_image_sizes
 
-    expect(FastImage).not_to have_received(:size).with(@images[0].url, :raise_on_failure => false, :timeout => 2.0)
-    expect(FastImage).to have_received(:size).with(@images[1].url, :raise_on_failure => false, :timeout => 2.0)
-    expect(FastImage).not_to have_received(:size).with(@images[2].url, :raise_on_failure => false, :timeout => 2.0)
+    expect(FastImage).not_to have_received(:size).with(URI.escape(@images[0].url), :raise_on_failure => false, :timeout => 2.0)
+    expect(FastImage).to have_received(:size).with(URI.escape(@images[1].url), :raise_on_failure => false, :timeout => 2.0)
+    expect(FastImage).not_to have_received(:size).with(URI.escape(@images[2].url), :raise_on_failure => false, :timeout => 2.0)
   end
 
   it 'ignores images for which FastImage cannot get the size' do

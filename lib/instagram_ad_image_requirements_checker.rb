@@ -2,7 +2,7 @@ class InstagramAdImageRequirementsChecker
   def self.set_image_sizes
     Image.all.each do |image|
       next if !(image.width.nil?) && !(image.height.nil?)
-      image_size = FastImage.size(image.url, :raise_on_failure => false, :timeout => 2.0)
+      image_size = FastImage.size(URI.encode(image.url), :raise_on_failure => false, :timeout => 2.0)
       if image_size.nil?
         image.width = nil
         image.height = nil

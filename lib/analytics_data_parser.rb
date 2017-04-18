@@ -1,9 +1,18 @@
 class AnalyticsDataParser
-  def self.convert_to_parseable_data(csv_content, platform, medium)
+  def self.convert_to_parseable_data(content, platform, medium)
     data = OpenStruct.new
-    
-    data.column_headers = ['social_network_id', '', '', '', 'impressions', '', '', 'retweets', 'replies', 'likes', '', 'clicks', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
-    data.rows = csv_content[1..-1]
+
+    case platform
+    when :twitter
+      case medium
+      when :organic
+        data.column_headers = ['social_network_id', '', '', '', 'impressions', '', '', 'retweets', 'replies', 'likes', '', 'clicks', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
+      when :ad
+        data.column_headers = ['', '', '', '', '', '', 'social_network_id', '', 'impressions', '', 'likes', 'retweets', 'replies', 'clicks']
+      end
+    end
+
+    data.rows = content[1..-1]
     
     data
   end
