@@ -54,12 +54,23 @@ RSpec.describe AnalyticsDataParser do
     expect(@messages[1].metrics[0].source).to eq(:twitter)
   end
   
-  it 'converts the contents of a CSV file exported from analytics.twitter.com (organic Twitter data) to parseable data' do
-    csv_content = CSV.read("#{Rails.root}/spec/fixtures/tweet_activity_metrics_TCORSStgOrg_20170401_20170408_en.csv")
-
-    parseable_data = AnalyticsDataParser.convert_to_parseable_data(csv_content, :twitter, :organic)
-
-    expect(parseable_data.column_headers).to eq(['social_network_id', '', '', '', 'impressions', '', '', 'retweets', 'replies', 'likes', '', 'clicks', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''])
-    expect(parseable_data.rows).to eq(csv_content[1..-1])
+  describe 'converting downloaded analytics files to parseable data' do
+    it 'converts a CSV file exported from analytics.twitter.com (organic Twitter data) to parseable data' do
+      csv_content = CSV.read("#{Rails.root}/spec/fixtures/tweet_activity_metrics_TCORSStgOrg_20170401_20170408_en.csv")
+  
+      parseable_data = AnalyticsDataParser.convert_to_parseable_data(csv_content, :twitter, :organic)
+  
+      expect(parseable_data.column_headers).to eq(['social_network_id', '', '', '', 'impressions', '', '', 'retweets', 'replies', 'likes', '', 'clicks', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''])
+      expect(parseable_data.rows).to eq(csv_content[1..-1])
+    end
+    
+    it 'converts a .xlsx file exported from analytics.twitter.com (ad Twitter data) to parseable data' do
+      excel_content = ExcelFileReader.new.read("#{Rails.root}/spec/fixtures/2017-04-01-to-2017-04-30-6hm1atwrnaio.xlsx")
+  
+      parseable_data = AnalyticsDataParser.convert_to_parseable_data(excel_content, :twitter, :ad)
+  
+      expect(parseable_data.column_headers).to eq(['', '', '', '', '', '', 'social_network_id', '', 'impressions', '', 'likes', 'retweets', 'replies', 'clicks'])
+      expect(parseable_data.rows).to eq(excel_content[1..-1])
+    end
   end
 end
