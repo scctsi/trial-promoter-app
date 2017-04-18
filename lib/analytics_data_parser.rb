@@ -7,13 +7,19 @@ class AnalyticsDataParser
       case medium
       when :organic
         data.column_headers = ['social_network_id', '', '', '', 'impressions', '', '', 'retweets', 'replies', 'likes', '', 'clicks', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
+        data.rows = content[1..-1]
       when :ad
         data.column_headers = ['', '', '', '', '', '', 'social_network_id', '', 'impressions', '', 'likes', 'retweets', 'replies', 'clicks']
+        data.rows = content[1..-1]
+      end
+    when :facebook
+      case medium
+      when :organic
+        data.column_headers = ['social_network_id', '', '', '', '', '', '', '', '', '', '', 'impressions', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'comments', 'likes', 'shares', '', 'clicks']
+        data.rows = content[2..-1]
       end
     end
 
-    data.rows = content[1..-1]
-    
     data
   end
 
