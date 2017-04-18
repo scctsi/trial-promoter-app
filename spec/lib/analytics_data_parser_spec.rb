@@ -14,7 +14,7 @@ RSpec.describe AnalyticsDataParser do
     @data.rows << [@messages[1].social_network_id, '8', '9', '10', '11', '12', '13', '14']
   end
 
-  it 'transforms data from Twitter analytics to parse the Tweet ID from the permalink' do
+  it 'transforms data from Twitter analytics (organic), by parsing the out the Tweet ID from the permalink' do
     @data.rows = []
     @data.rows << [@messages[0].social_network_id, 'https://twitter.com/TCORSStgOrg/status/849049020249120769', '2', '3', '4', '5', '6', '7']
     @data.rows << [@messages[1].social_network_id, 'https://twitter.com/TCORSStgOrg/status/849018827384000512', '9', '10', '11', '12', '13', '14']
