@@ -28,11 +28,12 @@ class AnalyticsFile < ActiveRecord::Base
   def process
     return if processing_status == :processed
     
-    # Step 1: Read CSV file from a URL
-    csv_content = CsvFileReader.read(url)
-    
+    # Step 1: Read file from the file's URL. Based on the filename, read in CSV or Excel data.
+    content = CsvFileReader.read(url) if url.ends_with?('.csv')
+    content = ExcelFileReader.new.read(url) if url.ends_with?('.xlsx')
+
     # Step 2: Convert this to parseable data (An OpenStruct with an array of column headers and an array of rows with the metric data)
-    parseable_data = AnalyticsDataParser.convert_to_parseable_data(csv_content, social_media_profile.platform, social_media_profile.allowed_mediums[0])
+    parseable_data = AnalyticsDataParser.convert_to_parseable_data(content, social_media_profile.platform, social_media_profile.allowed_mediums[0])
 
     # Step 3: Apply any transforms needed to the parseable data based on platform and medium
     case social_media_profile.platform
