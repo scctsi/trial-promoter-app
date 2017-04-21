@@ -7,7 +7,6 @@ class AnalyticsDataParser
       case medium
       when :organic
         data.column_headers = ['social_network_id', '', '', '', 'impressions', '', '', 'retweets', 'replies', 'likes', '', 'clicks', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
-<<<<<<< HEAD
         data.rows = content[1..-1]
       when :ad
         data.column_headers = ['', '', '', '', '', '', 'social_network_id', '', 'impressions', '', 'likes', 'retweets', 'replies', 'clicks']
@@ -21,15 +20,6 @@ class AnalyticsDataParser
       end
     end
 
-=======
-      when :ad
-        data.column_headers = ['', '', '', '', '', '', 'social_network_id', '', 'impressions', '', 'likes', 'retweets', 'replies', 'clicks']
-      end
-    end
-
-    data.rows = content[1..-1]
-    
->>>>>>> 62ef29ce15fe24d62ffc1184f31e7691e9bd878b
     data
   end
 
