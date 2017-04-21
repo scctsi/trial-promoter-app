@@ -64,7 +64,11 @@ RSpec.describe AnalyticsDataParser do
       expect(parseable_data.rows).to eq(csv_content[1..-1])
     end
     
+<<<<<<< HEAD
     it 'converts an Excel (.xlsx) file exported from ads.twitter.com (ad Twitter data) to parseable data' do
+=======
+    it 'converts a .xlsx file exported from analytics.twitter.com (ad Twitter data) to parseable data' do
+>>>>>>> 62ef29ce15fe24d62ffc1184f31e7691e9bd878b
       excel_content = ExcelFileReader.new.read("#{Rails.root}/spec/fixtures/2017-04-01-to-2017-04-30-6hm1atwrnaio.xlsx")
   
       parseable_data = AnalyticsDataParser.convert_to_parseable_data(excel_content, :twitter, :ad)
@@ -72,6 +76,7 @@ RSpec.describe AnalyticsDataParser do
       expect(parseable_data.column_headers).to eq(['', '', '', '', '', '', 'social_network_id', '', 'impressions', '', 'likes', 'retweets', 'replies', 'clicks'])
       expect(parseable_data.rows).to eq(excel_content[1..-1])
     end
+<<<<<<< HEAD
 
     it 'converts a CSV file exported from Facebook Insights (organic Facebook data) to parseable data' do
       quote_chars = %w(" | ~ ^ & *)
@@ -87,5 +92,7 @@ RSpec.describe AnalyticsDataParser do
       # NOTE: Facebook has an extra row in the header which gives a definition of each column.
       expect(parseable_data.rows).to eq(csv_content[2..-1])
     end
+=======
+>>>>>>> 62ef29ce15fe24d62ffc1184f31e7691e9bd878b
   end
 end
