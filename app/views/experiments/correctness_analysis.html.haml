@@ -13,12 +13,12 @@
   - correctness_analyzer = CorrectnessAnalyzer.new
   .ui.list
     .item
-      {url} variable replaced for messages: #{'%g' % (correctness_analyzer.analyze(@experiment, :url_variable_replaced) * 100) + '%'}
+      {url} variable replaced for messages: #{'%.4g' % (correctness_analyzer.analyze(@experiment, :url_variable_replaced) * 100) + '%'}
     .item
-      Image present for messages: #{'%g' % (correctness_analyzer.analyze(@experiment, :image_present) * 100) + '%'}
+      Image present for messages: #{'%.4g' % (correctness_analyzer.analyze(@experiment, :image_present) * 100) + '%'}
     .item
-      Tracking URL present for messages: #{'%g' % (correctness_analyzer.analyze(@experiment, :tracking_url_present) * 100) + '%'}
+      Tracking URL present for messages: #{'%.4g' % (correctness_analyzer.analyze(@experiment, :tracking_url_present) * 100) + '%'}
     .item
-      Hashtag included (if applicable) for messages: #{'%g' % (correctness_analyzer.analyze(@experiment, :hashtag_included_if_applicable) * 100) + '%'}
+      Hashtag included (if applicable) for messages: #{'%.4g' % (correctness_analyzer.analyze(@experiment, :hashtag_included_if_applicable) * 100) + '%'}
     .item
-      Correct URL linked (based on message template used to construct message) for messages: #{'%g' % (correctness_analyzer.analyze(@experiment, :correct_destination_url) * 100) + '%'}
+      Correct URL linked (based on message template used to construct message) for messages: #{'%.4g' % (correctness_analyzer.analyze(@experiment, :correct_destination_url) * 100) + '%'}
