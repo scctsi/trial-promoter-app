@@ -15,6 +15,7 @@
 class ClickMeterTrackingLink < ActiveRecord::Base
   belongs_to :message
   validates :message, presence: true
+  has_many :clicks
   
   before_destroy :delete_click_meter_tracking_link
   

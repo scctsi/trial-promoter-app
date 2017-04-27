@@ -188,5 +188,17 @@ RSpec.describe ClickMeterClient do
       expect(message.persisted?).to be_truthy
       expect(message.click_meter_tracking_link.persisted?).to be_truthy
     end
+
+    it 'gets all clicks given a tracking link id' do
+      VCR.use_cassette 'click_meter/get_clicks' do
+        clicks = ClickMeterClient.get_clicks('12691042')
+        expect(clicks.count).to eq(12)
+        expect(clicks[0].click_meter_event_id).to eq('012691042@20170425161329316400930')
+        expect(clicks[0].click_time).to eq(DateTime.parse('20170425161329'))
+        expect(clicks[0].spider).to be true
+        expect(clicks[0].unique).to be false
+        expect(clicks[11].unique).to be true
+      end
+    end
   end
 end
