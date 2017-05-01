@@ -3,19 +3,25 @@ FactoryGirl.define do
     click_meter_tracking_link
 
     trait :wednesday_clicks do
-      click_time "26 April 2017 19:21"
+      click_time
     end
 
     trait :tuesday_clicks do
-      click_time "25 April 2017 17:38"
+      sequence :click_time do |n|
+        "25 April 2017 21:#{n}5"
+      end
     end
 
     trait :monday_clicks do
-      click_time "24 April 2017 00:01"
+      sequence :click_time do |n|
+        "24 April 2017 00:#{n}1"
+      end
     end
 
     trait :sunday_clicks do
-      click_time "23 April 2017"
+      sequence :click_time do |n|
+        "23 April 2017 04:5#{n}"
+      end
     end
   end
 end
