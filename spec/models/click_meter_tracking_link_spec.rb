@@ -12,11 +12,12 @@
 #  updated_at      :datetime         not null
 #
 
-require 'rails_helper'
+require 'rails_helper' 
 
 RSpec.describe ClickMeterTrackingLink, type: :model do
   it { is_expected.to belong_to(:message) }
   it { is_expected.to validate_presence_of(:message) }
+  it { is_expected.to have_many(:clicks) }
   
   before do
     @click_meter_tracking_link = create(:click_meter_tracking_link, :click_meter_id => '101')
@@ -83,7 +84,26 @@ RSpec.describe ClickMeterTrackingLink, type: :model do
     allow(ClickMeterClient).to receive(:delete_tracking_link)
     
     @click_meter_tracking_link.delete_click_meter_tracking_link
-    
+      
     expect(Kernel).not_to have_received(:sleep).with(0.1)
+  end
+ 
+  describe " #get_clicks_by_date" do
+    before do
+      @click_meter_tracking_link.clicks << create_list(:click, 3, :sunday_clicks) 
+      @click_meter_tracking_link.clicks << create_list(:click, 13, :monday_clicks) 
+      @click_meter_tracking_link.clicks << create_list(:click, 23, :tuesday_clicks) 
+      @click_meter_tracking_link.clicks << create_list(:click, 0, :wednesday_clicks) 
+    end
+
+    it 'returns the number of clicks on a link for a given date' do
+      expect((@click_meter_tracking_link.get_clicks_by_date(("25 April 2017").to_date)).count).to eq(23)
+      expect((@click_meter_tracking_link.get_clicks_by_date(("24 April 2017").to_date)).count).to eq(13)
+      expect((@click_meter_tracking_link.get_clicks_by_date(("23 April 2017").to_date)).count).to eq(3)
+    end
+
+    it 'returns 0 for a given date in which there are no clicks' do
+      expect((@click_meter_tracking_link.get_clicks_by_date(("26 April 2017").to_date)).count).to eq(0)
+    end
   end
 end

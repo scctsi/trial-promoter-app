@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170426235358) do
+ActiveRecord::Schema.define(version: 20170427213331) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -71,12 +71,15 @@ ActiveRecord::Schema.define(version: 20170426235358) do
 
   create_table "clicks", force: :cascade do |t|
     t.datetime "click_time"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
     t.string   "click_meter_event_id"
     t.boolean  "spider"
     t.boolean  "unique"
+    t.integer  "click_meter_tracking_link_id"
   end
+
+  add_index "clicks", ["click_meter_tracking_link_id"], name: "index_clicks_on_click_meter_tracking_link_id", using: :btree
 
   create_table "clinical_trials", force: :cascade do |t|
     t.string   "title",            limit: 1000
@@ -325,5 +328,6 @@ ActiveRecord::Schema.define(version: 20170426235358) do
   add_index "visits", ["user_id"], name: "index_visits_on_user_id", using: :btree
   add_index "visits", ["visit_token"], name: "index_visits_on_visit_token", unique: true, using: :btree
 
+  add_foreign_key "clicks", "click_meter_tracking_links"
   add_foreign_key "messages", "social_media_profiles"
 end

@@ -118,17 +118,19 @@ class ClickMeterClient
     message.click_meter_tracking_link.save
   end
 
-  def self.get_clicks(tracking_link_id)
+  def self.get_clicks(tracking_link)
+    response = get("http://apiv2.clickmeter.com:80/clickstream?datapoint=#{tracking_link.click_meter_id}", :headers => { 'Content-Type' => 'application/json; charset=UTF-8', 'X-Clickmeter-Authkey' => Setting[:click_meter_api_key]} )
     clicks = []
-
-    response = get("http://apiv2.clickmeter.com:80/clickstream?datapoint=#{tracking_link_id}", :headers => { 'Content-Type' => 'application/json; charset=UTF-8', 'X-Clickmeter-Authkey' => Setting[:click_meter_api_key]} )
-
-    response["rows"].each do |row| 
-  p row
-      click_time = DateTime.parse(row["accessTime"])
-      clicks << Click.create(click_meter_event_id: row["id"], click_time: click_time, spider: row["isSpider"] == '1', unique: row["isUnique"] == '1')
+    response["rows"].each do |row|
+      clicks << Click.find_or_create_by(click_meter_event_id: row["id"]) do |click|
+        click.click_meter_event_id = row["id"]
+        click_time = DateTime.parse(row["accessTime"])
+        click.click_time = click_time
+        click.spider = row["isSpider"] == '1'
+        click.unique = row["isUnique"] == '1'
+        click.click_meter_tracking_link_id = tracking_link.id
+      end
     end
-      cmtl = ClickMeterTrackingLink.where(click_meter_id: tracking_link_id)
     return clicks
   end
 end 
