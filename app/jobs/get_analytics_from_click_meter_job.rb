@@ -3,5 +3,5 @@ class GetAnalyticsFromClickMeterJob < ActiveJob::Base
  
   def perform(tracking_link)
     ClickMeterClient.get_clicks(tracking_link)
-  end
+  end 
 end
