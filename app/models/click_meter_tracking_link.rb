@@ -27,7 +27,7 @@ class ClickMeterTrackingLink < ActiveRecord::Base
   end
 
   def get_clicks_by_date(requested_date) 
-    clicks = Click.where(click_meter_tracking_link_id: self) 
-    return clicks.select{ |click| ( click.click_time.to_date == requested_date.to_date) if !click.click_time.nil? }
+    clicks = Click.where(click_meter_tracking_link_id: self)
+    clicks.select{ |click| (click.click_time.to_date == (requested_date).to_date) if !click.click_time.nil? }
   end
 end
