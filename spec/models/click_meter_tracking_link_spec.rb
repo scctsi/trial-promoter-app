@@ -107,7 +107,7 @@ RSpec.describe ClickMeterTrackingLink, type: :model do
     end 
 
     it 'returns 0 for a given date in which there are no clicks' do
-      expect((@click_meter_tracking_link.get_clicks_by_date("26 April 2017"))).to eq(nil)
+      expect((@click_meter_tracking_link.get_clicks_by_date("26 April 2017")).count).to eq(0)
     end 
   end
 end
