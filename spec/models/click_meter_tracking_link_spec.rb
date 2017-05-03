@@ -96,14 +96,18 @@ RSpec.describe ClickMeterTrackingLink, type: :model do
       @click_meter_tracking_link.clicks << create_list(:click, 0, :wednesday_clicks) 
     end
 
-    it 'returns the number of clicks on a link for a given date' do
+    it 'returns the clicks on a link for a given date' do
+      expect((@click_meter_tracking_link.get_clicks_by_date("25 April 2017")).first).to be_instance_of(Click)
+    end
+
+    it 'returns the clicks on a link for a given date' do
       expect((@click_meter_tracking_link.get_clicks_by_date("25 April 2017")).count).to eq(2)
       expect((@click_meter_tracking_link.get_clicks_by_date("24 April 2017")).count).to eq(1)
       expect((@click_meter_tracking_link.get_clicks_by_date("23 April 2017")).count).to eq(3)
     end
 
     it 'returns 0 for a given date in which there are no clicks' do
-      expect((@click_meter_tracking_link.get_clicks_by_date("26 April 2017")).count).to eq(0) 
+      expect((@click_meter_tracking_link.get_clicks_by_date("26 April 2017")).count).to eq(0)
     end 
   end
-end 
+end
