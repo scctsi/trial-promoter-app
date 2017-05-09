@@ -90,10 +90,10 @@ RSpec.describe ClickMeterTrackingLink, type: :model do
  
   describe " #get_clicks_by_date" do
     before do
-      @click_meter_tracking_link.clicks << create_list(:click, 3, :sunday_clicks) 
-      @click_meter_tracking_link.clicks << create_list(:click, 1, :monday_clicks) 
-      @click_meter_tracking_link.clicks << create_list(:click, 2, :tuesday_clicks) 
-      @click_meter_tracking_link.clicks << create_list(:click, 0, :wednesday_clicks) 
+      @click_meter_tracking_link.clicks << create_list(:click, 3, :click_time => "23 April 2017") 
+      @click_meter_tracking_link.clicks << create_list(:click, 1, :click_time => "24 April 2017") 
+      @click_meter_tracking_link.clicks << create_list(:click, 2, :click_time => "25 April 2017") 
+      @click_meter_tracking_link.clicks << create_list(:click, 0, :click_time => "26 April 2017") 
     end
 
     it 'returns clicks' do
@@ -108,6 +108,6 @@ RSpec.describe ClickMeterTrackingLink, type: :model do
 
     it 'returns 0 for a given date in which there are no clicks' do
       expect((@click_meter_tracking_link.get_clicks_by_date("26 April 2017")).count).to eq(0)
-    end 
+    end
   end
 end
