@@ -118,10 +118,6 @@ class ClickMeterClient
     message.click_meter_tracking_link.save
   end
 
-  def self.message_valid?(message)
-    message.publish_status == :published_to_social_network
-  end
-
   def self.get_clicks(tracking_link)
     response = get("http://apiv2.clickmeter.com:80/clickstream?datapoint=#{tracking_link.click_meter_id}", :headers => { 'Content-Type' => 'application/json; charset=UTF-8', 'X-Clickmeter-Authkey' => Setting[:click_meter_api_key]} )
     clicks = []
