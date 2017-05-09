@@ -117,4 +117,24 @@ class ClickMeterClient
     message.save
     message.click_meter_tracking_link.save
   end
-end
+
+  def self.message_valid?(message)
+    message.publish_status == :published_to_social_network
+  end
+
+  def self.get_clicks(tracking_link)
+    response = get("http://apiv2.clickmeter.com:80/clickstream?datapoint=#{tracking_link.click_meter_id}", :headers => { 'Content-Type' => 'application/json; charset=UTF-8', 'X-Clickmeter-Authkey' => Setting[:click_meter_api_key]} )
+    clicks = []
+    response["rows"].each do |row|
+      clicks << Click.find_or_create_by(click_meter_event_id: row["id"]) do |click|
+        click.click_meter_event_id = row["id"]
+        click_time = DateTime.parse(row["accessTime"])
+        click.click_time = click_time
+        click.spider = row["isSpider"] == '1'
+        click.unique = row["isUnique"] == '1'
+        click.click_meter_tracking_link_id = tracking_link.id
+      end
+    end
+    return clicks
+  end
+end 
