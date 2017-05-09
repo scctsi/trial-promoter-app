@@ -3,8 +3,7 @@ task :get_updates_from_buffer => :environment do
 end
 
 task :publish_messages => :environment do
-  experiment = Experiment.first
-  PublishMessagesJob.perform_later(experiment)
+  PublishMessagesJob.perform_later
 end
 
 task :process_analytics_files => :environment do
