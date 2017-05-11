@@ -10,6 +10,7 @@
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
 #  sent_from_date_time :datetime
+#  published_text      :text
 #
 
 require 'rails_helper'

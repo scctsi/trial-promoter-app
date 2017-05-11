@@ -2,11 +2,14 @@
 #
 # Table name: images
 #
-#  id                :integer          not null, primary key
-#  url               :string(2000)
-#  original_filename :string
-#  created_at        :datetime         not null
-#  updated_at        :datetime         not null
+#  id                              :integer          not null, primary key
+#  url                             :string(2000)
+#  original_filename               :string
+#  created_at                      :datetime         not null
+#  updated_at                      :datetime         not null
+#  width                           :integer
+#  height                          :integer
+#  meets_instagram_ad_requirements :boolean
 #
 
 require 'rails_helper'
