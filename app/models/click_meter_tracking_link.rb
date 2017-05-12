@@ -15,6 +15,7 @@
 class ClickMeterTrackingLink < ActiveRecord::Base
   belongs_to :message
   validates :message, presence: true
+  has_many :clicks, dependent: :destroy
   
   before_destroy :delete_click_meter_tracking_link
   
@@ -23,5 +24,10 @@ class ClickMeterTrackingLink < ActiveRecord::Base
       ClickMeterClient.delete_tracking_link(click_meter_id)
       Kernel.sleep(0.1) 
     end
+  end
+
+  def get_clicks_by_date(requested_date) 
+    clicks = Click.where(click_meter_tracking_link_id: self)
+    clicks.select{ |click| (click.click_time.to_date == (requested_date).to_date) }
   end
 end
