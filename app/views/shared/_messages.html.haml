@@ -40,7 +40,17 @@
               .ui.basic.small.label
                 Database Id:
                 = message.id.to_s
-              - if !message.buffer_update.nil? 
+              - if current_user.role != :read_only
+                - if message.edit_campaign_id?
+                  .ui.input.small.edit-id
+                    %input{:placeholder => "Add campaign id", :type => "text", :name => "campaign_id", remote: true }
+                    %button.ui.button{'message-id': message.id} save
+                - elsif message.show_campaign_id?
+                  .ui.basic.small.label.edit-id
+                    Campaign Id:
+                    = message.campaign_id.to_s
+                  %button.ui.small.button{'message-id': message.id} edit
+              - if !message.buffer_update.nil?
                 - if !message.buffer_update.sent_from_date_time.nil?
                   .ui.basic.grey.small.label
                     %i.rocket.icon
