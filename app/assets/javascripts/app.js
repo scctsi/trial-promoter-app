@@ -489,12 +489,12 @@ $(document).ready(function() {
     $('.button.save-id').click(function(event){
       var $inputForm = $(this).parent();
       var campaignId = $(this).parent().find('input').val();
-      console.log(campaignId);
       var messageId = $(this).data('message-id');
-      console.log(messageId);
+      var $this = $(this);
       event.preventDefault();
       $.ajax({
         url:  '/messages/' + messageId + '/edit_campaign_id',
+        context: document.body,
         type: 'POST',
         data: { campaign_id: campaignId },
         success: function(retdata) {
@@ -504,19 +504,21 @@ $(document).ready(function() {
     });
   }
 
-  function editCampaignId() {
+  function setUpEditInterfaceCampaignId() {
     //Edit campaign id for fb and instagram ads
     $('.edit-id').click(function(event){
       var messageId = event.target.getAttribute('message-id');
-      console.log(messageId);
+      $inputForm = $(this);
       event.preventDefault();
       $.ajax({
         url: '/messages/' + messageId + '/new_campaign_id',
         type: 'GET',
         data: {}
       }).done(function(retdata) {
-        console.log(retdata);
-          $(this).replaceWith(retdata);
+          $inputForm.replaceWith(retdata);
+          $body.on('click', '.save-id', function() {
+            console.log('clicked');
+          })
         })
     });
   }
@@ -527,7 +529,7 @@ $(document).ready(function() {
 
   // Initialize
   setUpCampaignId();
-  editCampaignId();
+  setUpEditInterfaceCampaignId();
   setUpPostingTimeInputs();
   showSocialMediaProfiles();
   setUpExperimentRealTime();
