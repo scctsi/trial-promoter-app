@@ -494,11 +494,13 @@ $(document).ready(function() {
       event.preventDefault();
       $.ajax({
         url:  '/messages/' + messageId + '/edit_campaign_id',
-        context: document.body,
         type: 'POST',
         data: { campaign_id: campaignId },
         success: function(retdata) {
           $inputForm.replaceWith(retdata);
+          $('.edit-id').on('click', function() {
+            setUpEditInterfaceCampaignId();
+          })
         }
       });
     });
@@ -507,26 +509,22 @@ $(document).ready(function() {
   function setUpEditInterfaceCampaignId() {
     //Edit campaign id for fb and instagram ads
     $('.edit-id').click(function(event){
-      var messageId = event.target.getAttribute('message-id');
+      var messageId = $(this).data('message-id');
       $inputForm = $(this);
       event.preventDefault();
       $.ajax({
         url: '/messages/' + messageId + '/new_campaign_id',
         type: 'GET',
-        data: {}
-      }).done(function(retdata) {
+        data: {},
+        success: function(retdata) {
           $inputForm.replaceWith(retdata);
-          $body.on('click', '.save-id', function() {
-            console.log('clicked');
+          $('.save-id').on('click', function() {
+            setUpCampaignId();
           })
-        })
+        }
+      });
     });
   }
-
-  function setupCampaignIdEditing() {
-
-  }
-
   // Initialize
   setUpCampaignId();
   setUpEditInterfaceCampaignId();
