@@ -484,50 +484,54 @@ $(document).ready(function() {
     });
   }
 
-  function setUpCampaignId() {
+  function setUpSaveCampaignIdFormEvents() {
     //Add campaign id to fb and instagram ads
     $('.button.save-id').click(function(event){
       var $inputForm = $(this).parent();
       var campaignId = $(this).parent().find('input').val();
       var messageId = $(this).data('message-id');
-      var $this = $(this);
+      editCampaignId(messageId, campaignId, $inputForm);
       event.preventDefault();
-      $.ajax({
-        url:  '/messages/' + messageId + '/edit_campaign_id',
-        type: 'POST',
-        data: { campaign_id: campaignId },
-        success: function(retdata) {
-          $inputForm.replaceWith(retdata);
-          $('.edit-id').on('click', function() {
-            setUpEditInterfaceCampaignId();
-          })
-        }
-      });
     });
   }
 
-  function setUpEditInterfaceCampaignId() {
+  function setUpEditCampainIdLabelEvents() {
     //Edit campaign id for fb and instagram ads
     $('.edit-id').click(function(event){
       var messageId = $(this).data('message-id');
-      $inputForm = $(this);
+      var $inputForm = $(this);
+      getCampaignIdInputForm(messageId, $inputForm);
       event.preventDefault();
-      $.ajax({
-        url: '/messages/' + messageId + '/new_campaign_id',
-        type: 'GET',
-        data: {},
-        success: function(retdata) {
-          $inputForm.replaceWith(retdata);
-          $('.save-id').on('click', function() {
-            setUpCampaignId();
-          })
-        }
-      });
     });
   }
+
+  function editCampaignId(messageId, campaignId, $inputForm) {
+    $.ajax({
+      url:  '/messages/' + messageId + '/edit_campaign_id',
+      type: 'POST',
+      data: { campaign_id: campaignId },
+      success: function(campaignIdLabelHtml) {
+        $inputForm.replaceWith(campaignIdLabelHtml);
+        setUpEditCampainIdLabelEvents();
+      }
+    });
+  }
+
+  function getCampaignIdInputForm(messageId, $inputForm) {
+    $.ajax({
+      url: '/messages/' + messageId + '/new_campaign_id',
+      type: 'GET',
+      data: {},
+      success: function(campaignIdFormHtml) {
+        $inputForm.replaceWith(campaignIdFormHtml);
+        setUpSaveCampaignIdFormEvents();
+      }
+    });
+  }
+
   // Initialize
-  setUpCampaignId();
-  setUpEditInterfaceCampaignId();
+  setUpSaveCampaignIdFormEvents();
+  setUpEditCampainIdLabelEvents();
   setUpPostingTimeInputs();
   showSocialMediaProfiles();
   setUpExperimentRealTime();

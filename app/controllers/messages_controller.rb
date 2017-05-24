@@ -6,7 +6,8 @@ class MessagesController < ApplicationController
     message.save
     if request.xhr?
       render 'shared/_message_campaign_id.html.haml', layout: false, locals: { message: message }
-    else redirect_to root_path
+    else
+      redirect_to root_path
     end
   end
 
@@ -15,7 +16,8 @@ class MessagesController < ApplicationController
     authorize message
     if request.xhr?
       render 'shared/forms/_input_message_campaign_id.html.haml', layout: false, locals: { message: message }
-    else redirect_to root_path
+    else
+      redirect_to root_path
     end
   end
 end
