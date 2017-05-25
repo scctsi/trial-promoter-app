@@ -254,6 +254,13 @@ describe Message do
     end
 
     describe '#edit_campaign_id' do
+      before do
+        @messages[0].campaign_id = nil
+        @messages[1].campaign_id = nil
+        @messages[2].campaign_id = nil
+        @messages[3].campaign_id = nil
+        @messages[4].campaign_id = nil
+      end
 
       it "only allows editing the campaign_id form for Facebook or Instagram Ad accounts" do
         expect(@messages[0].edit_campaign_id?).to eq(false)
@@ -266,6 +273,20 @@ describe Message do
       it 'does not allow editing campaign_id field for an organic message' do
         expect(@messages[2].edit_campaign_id?).to eq(false)
         expect(@messages[4].edit_campaign_id?).to eq(false)
+      end
+    end
+
+    describe '#exists' do
+      before do
+        @messages[3].campaign_id = nil
+      end
+
+      it 'returns false if there is no campaign_id' do
+        expect(@messages[3].exists).to eq(false)
+      end
+
+      it 'returns true if there is a campaign_id' do
+        expect(@messages[1].exists).to eq(true)
       end
     end
   end
