@@ -51,7 +51,7 @@ describe Message do
 
     expect(message.medium).to be :ad
   end
-  
+
   it 'returns the platform as a symbol' do
     message = build(:message, platform: 'twitter')
 
@@ -91,7 +91,7 @@ describe Message do
       expect(@messages[3].events.count).to eq(0)
     end
   end
-  
+
   it 'always updates existing metrics from a particular source' do
     message = build(:message)
 
@@ -171,12 +171,12 @@ describe Message do
       expect(@message.delayed?).to be(false)
     end
   end
-  
+
   describe 'metric helpers' do
     before do
       @message = create(:message)
     end
-    
+
     it 'returns N/A if asked to retrieve a metric for a missing source' do
       expect(@message.metric_facebook_likes).to eq('N/A')
     end
@@ -208,10 +208,65 @@ describe Message do
       @message.metrics << Metric.new(source: :facebook, data: {"shares" => 100})
       expect(@message.percentage_facebook_clicks_impressions).to eq('N/A')
     end
-    
+
     it 'returns a percentage given two metric names (first metric / second metric accurate to two decimal places)' do
       @message.metrics << Metric.new(source: :facebook, data: {"clicks" => 5, "impressions" => 100})
       expect(@message.percentage_facebook_clicks_impressions).to eq(5.0)
+    end
+  end
+
+  describe 'campaign_id helper methods do' do
+    before do
+      @messages = build_list(:message, 5)
+      @messages[0].platform = 'twitter'
+      @messages[1].platform = 'facebook'
+      @messages[2].platform = 'facebook'
+      @messages[3].platform = 'instagram'
+      @messages[4].platform = 'twitter'
+
+      @messages[0].medium = :ad
+      @messages[1].medium = :ad
+      @messages[2].medium = :organic
+      @messages[3].medium = :ad
+      @messages[4].medium = :organic
+
+      @messages[0].campaign_id = '123456'
+      @messages[1].campaign_id = '123456'
+      @messages[2].campaign_id = '123456'
+      @messages[3].campaign_id = '123456'
+      @messages[4].campaign_id = '123456'
+    end
+
+    describe '#show_campaign_id' do
+
+      it "only shows the campaign_id field for Facebook or Instagram Ad accounts" do
+        expect(@messages[0].show_campaign_id?).to eq(false)
+        expect(@messages[1].show_campaign_id?).to eq(true)
+        expect(@messages[2].show_campaign_id?).to eq(false)
+        expect(@messages[3].show_campaign_id?).to eq(true)
+        expect(@messages[4].show_campaign_id?).to eq(false)
+      end
+
+      it 'does not show campaign_id for an organic message' do
+        expect(@messages[2].show_campaign_id?).to eq(false)
+        expect(@messages[4].show_campaign_id?).to eq(false)
+      end
+    end
+
+    describe '#edit_campaign_id' do
+
+      it "only allows editing the campaign_id form for Facebook or Instagram Ad accounts" do
+        expect(@messages[0].edit_campaign_id?).to eq(false)
+        expect(@messages[1].edit_campaign_id?).to eq(true)
+        expect(@messages[2].edit_campaign_id?).to eq(false)
+        expect(@messages[3].edit_campaign_id?).to eq(true)
+        expect(@messages[4].edit_campaign_id?).to eq(false)
+      end
+
+      it 'does not allow editing campaign_id field for an organic message' do
+        expect(@messages[2].edit_campaign_id?).to eq(false)
+        expect(@messages[4].edit_campaign_id?).to eq(false)
+      end
     end
   end
 end

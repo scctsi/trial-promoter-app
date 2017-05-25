@@ -6,7 +6,7 @@ module CampaignId
   end
 
   def edit_campaign_id?
-    !exists && self.platform != :twitter && self.medium == :ad
+    exists && self.platform != :twitter && self.medium == :ad
   end
 
   def exists
