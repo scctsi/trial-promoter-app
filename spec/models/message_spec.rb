@@ -276,17 +276,17 @@ describe Message do
       end
     end
 
-    describe '#exists' do
+    describe '#exists?' do
       before do
         @messages[3].campaign_id = nil
       end
 
       it 'returns false if there is no campaign_id' do
-        expect(@messages[3].exists).to eq(false)
+        expect(@messages[3].exists?).to eq(false)
       end
 
       it 'returns true if there is a campaign_id' do
-        expect(@messages[1].exists).to eq(true)
+        expect(@messages[1].exists?).to eq(true)
       end
     end
   end
