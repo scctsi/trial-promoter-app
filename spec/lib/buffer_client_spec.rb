@@ -44,7 +44,7 @@ RSpec.describe BufferClient do
     end
 
     describe 'synchronizing the list of social profiles' do
-      it 'uses the Buffer API to get an initial of social media profiles' do
+      it 'uses the Buffer API to get an initial list of social media profiles' do
         VCR.use_cassette 'buffer/get_social_media_profiles' do
           BufferClient.get_social_media_profiles
         end
@@ -88,6 +88,16 @@ RSpec.describe BufferClient do
       expect(@message.publish_status).to eq(:published_to_buffer)
       expect(@message.persisted?).to be_truthy
       expect(@message.buffer_update.persisted?).to be_truthy
+    end
+
+    it 'uses the Buffer API to delete an update' do
+      @message.buffer_update = build(:buffer_update)
+      @message.buffer_update.buffer_id = '58e53b3bc31add100acef2ff'
+      allow(BufferClient).to receive(:post).with("https://api.bufferapp.com/1/updates/#{@message.buffer_update.buffer_id}/destroy.json")
+
+      BufferClient.delete_update('58e53b3bc31add100acef2ff')
+      
+      expect(BufferClient).to have_received(:post).with("https://api.bufferapp.com/1/updates/58e53b3bc31add100acef2ff/destroy.json")
     end
 
     it 'uses the Buffer API to create an update and successfully shortens the link in the message' do
