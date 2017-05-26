@@ -217,7 +217,7 @@ describe Message do
     before do
       allow(Throttler).to receive(:throttle)
     end
-    
+
     # Backdating is a process that we included for the TCORS pilot project.
     # Twitter ads starting from 05/31 were scheduled for publishing 5 days in advance. 
     # This was done to give Twitter support enough time to approve the tweets in scheduled campaigns.
