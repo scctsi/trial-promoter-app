@@ -212,4 +212,105 @@ describe Message do
       expect(@message.percentage_facebook_clicks_impressions).to eq(5.0)
     end
   end
+  
+  describe 'backdating' do
+    # Backdating is a process that we included for the TCORS pilot project.
+    # Twitter ads starting from 05/31 were scheduled for publishing 5 days in advance. 
+    # This was done to give Twitter support enough time to approve the tweets in scheduled campaigns.
+    it 'backdates a Twitter ad message' do
+      message_scheduled_date_time = DateTime.new(2017, 6, 10, 15, 0, 0)
+      message = create(:message, :platform => :twitter, :medium => :ad, :scheduled_date_time => message_scheduled_date_time)
+      
+      message.backdate(5)
+
+      expect_backdated(message, message_scheduled_date_time)
+    end
+
+    it 'only backdates a message once' do
+      message_scheduled_date_time = DateTime.new(2017, 6, 10, 15, 0, 0)
+      message = create(:message, :platform => :twitter, :medium => :ad, :scheduled_date_time => message_scheduled_date_time)
+      
+      message.backdate(5)
+      message.backdate(5)
+      
+      expect_backdated(message, message_scheduled_date_time)
+    end
+
+    it 'only backdates any Twitter ad messages scheduled on or after May 31st' do
+      message_scheduled_date_time = DateTime.new(2017, 5, 31, 15, 0, 0)
+      message = create(:message, :platform => :twitter, :medium => :ad, :scheduled_date_time => message_scheduled_date_time)
+      
+      message.backdate(5)
+
+      expect_backdated(message, message_scheduled_date_time)
+    end
+    
+    it 'deletes any associated buffer update' do
+      message_scheduled_date_time = DateTime.new(2017, 5, 31, 15, 0, 0)
+      message = create(:message, :platform => :twitter, :medium => :ad, :scheduled_date_time => message_scheduled_date_time)
+      buffer_update = create(:buffer_update)
+      allow(buffer_update).to receive(:destroy)
+      message.buffer_update = buffer_update
+      message.publish_status = :published_to_buffer
+      message.save
+
+      message.backdate(5)
+
+      expect_backdated(message, message_scheduled_date_time)
+      expect(buffer_update).to have_received(:destroy)
+      expect(message.buffer_update).to be nil
+      expect(message.publish_status).to eq(:pending)
+    end
+
+    it 'does not backdate any Twitter ad messages scheduled before May 31st' do
+      message_scheduled_date_time = DateTime.new(2017, 5, 30, 15, 0, 0)
+      message = create(:message, :platform => :twitter, :medium => :ad, :scheduled_date_time => message_scheduled_date_time)
+      
+      message.backdate(5)
+
+      expect_not_backdated(message, message_scheduled_date_time)
+    end
+    
+    it 'does not backdate any organic Twitter messages' do
+      message_scheduled_date_time = DateTime.new(2017, 6, 10, 15, 0, 0)
+      message = create(:message, :platform => :twitter, :medium => :organic, :scheduled_date_time => message_scheduled_date_time)
+      
+      message.backdate(5)
+
+      expect_not_backdated(message, message_scheduled_date_time)
+    end
+
+    it 'does not backdate any Facebook' do
+      message_scheduled_date_time = DateTime.new(2017, 6, 10, 15, 0, 0)
+      message = create(:message, :platform => :facebook, :medium => :organic, :scheduled_date_time => message_scheduled_date_time)
+      
+      message.backdate(5)
+
+      expect_not_backdated(message, message_scheduled_date_time)
+    end
+
+    it 'does not backdate any Instagram messages' do
+      message_scheduled_date_time = DateTime.new(2017, 6, 10, 15, 0, 0)
+      message = create(:message, :platform => :instagram, :medium => :organic, :scheduled_date_time => message_scheduled_date_time)
+      
+      message.backdate(5)
+
+      expect_not_backdated(message, message_scheduled_date_time)
+    end
+  end
+  
+  private
+  def expect_backdated(message, message_scheduled_date_time)
+    message.reload
+    expect(message.scheduled_date_time).to eq(message_scheduled_date_time - 5.days)
+    expect(message.backdated).to be true
+    expect(message.original_scheduled_date_time).to eq(message_scheduled_date_time)
+  end
+  
+  def expect_not_backdated(message, message_scheduled_date_time)
+      message.reload
+      expect(message.scheduled_date_time).to eq(message_scheduled_date_time)
+      expect(message.backdated).to be nil
+      expect(message.original_scheduled_date_time).to be nil
+  end
 end
