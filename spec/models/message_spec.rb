@@ -214,6 +214,10 @@ describe Message do
   end
   
   describe 'backdating' do
+    before do
+      allow(Throttler).to receive(:throttle)
+    end
+    
     # Backdating is a process that we included for the TCORS pilot project.
     # Twitter ads starting from 05/31 were scheduled for publishing 5 days in advance. 
     # This was done to give Twitter support enough time to approve the tweets in scheduled campaigns.
@@ -305,6 +309,9 @@ describe Message do
     expect(message.scheduled_date_time).to eq(message_scheduled_date_time - 5.days)
     expect(message.backdated).to be true
     expect(message.original_scheduled_date_time).to eq(message_scheduled_date_time)
+    if !message.buffer_update.nil?
+      expect(Throttler).to have_received(:throttle).with(1)
+    end
   end
   
   def expect_not_backdated(message, message_scheduled_date_time)
