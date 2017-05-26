@@ -105,6 +105,7 @@ class Message < ActiveRecord::Base
     self.scheduled_date_time -= number_of_days.days
     if !buffer_update.nil?
       buffer_update.destroy
+      Throttler.throttle(1)
       self.buffer_update = nil
       self.publish_status = :pending
     end
