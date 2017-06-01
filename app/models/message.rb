@@ -95,6 +95,26 @@ class Message < ActiveRecord::Base
     return scheduled_date_time + 5.minutes < buffer_update.sent_from_date_time
   end
 
+  def backdate(number_of_days)
+    # Only backdate twitter ads (we need to allow time for Twitter support to approve the ads)
+    return if !(platform == :twitter && medium == :ad)
+    # Only backdate once
+    return if backdated
+    # Only backdate tweets scheduled on May 31st or later
+    return if scheduled_date_time.month <= 5 && scheduled_date_time.day <= 30
+
+    self.backdated = true
+    self.original_scheduled_date_time = scheduled_date_time
+    self.scheduled_date_time -= number_of_days.days
+    if !buffer_update.nil?
+      buffer_update.destroy
+      Throttler.throttle(1)
+      self.buffer_update = nil
+      self.publish_status = :pending
+    end
+    save
+  end
+
   def method_missing(name, *args, &block)
     name = name.to_s
 

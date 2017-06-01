@@ -20,4 +20,10 @@ class BufferUpdate < ActiveRecord::Base
   enumerize :status, in: [:pending, :sent], default: :pending, predicates: true
   
   belongs_to :message
+
+  before_destroy :delete_buffer_update
+  
+  def delete_buffer_update
+    BufferClient.delete_update(buffer_id)
+  end
 end

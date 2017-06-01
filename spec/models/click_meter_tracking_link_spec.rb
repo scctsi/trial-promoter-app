@@ -88,7 +88,7 @@ RSpec.describe ClickMeterTrackingLink, type: :model do
     expect(Kernel).not_to have_received(:sleep).with(0.1)
   end
  
-  describe " #get_clicks_by_date" do
+  describe "#get_clicks_by_date" do
     before do
       @click_meter_tracking_link.clicks << create_list(:click, 3, :click_time => "23 April 2017") 
       @click_meter_tracking_link.clicks << create_list(:click, 1, :click_time => "24 April 2017") 
