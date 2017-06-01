@@ -47,7 +47,7 @@ class BufferClient
 
   def self.create_update(message)
     response = post('https://api.bufferapp.com/1/updates/create.json', {:body => BufferClient.post_request_body_for_create(message)})
-    
+
     # Handle failures
     if response.parsed_response['success'] == false
       case response.parsed_response['code']
@@ -62,5 +62,9 @@ class BufferClient
     message.buffer_update = buffer_update
     message.publish_status = :published_to_buffer
     message.save
+  end
+
+  def self.delete_update(buffer_id)
+    post("https://api.bufferapp.com/1/updates/#{buffer_id}/destroy.json")
   end
 end
