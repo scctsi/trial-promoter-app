@@ -40,7 +40,13 @@
               .ui.basic.small.label
                 Database Id:
                 = message.id.to_s
-              - if !message.buffer_update.nil? 
+              .ui.basic.small.label
+                Lin_meth_factor:
+                = message.message_template.experiment_variables['lin_meth_factor']
+              .ui.basic.small.label
+                Lin_meth_level:
+                = message.message_template.experiment_variables['lin_meth_level']
+              - if !message.buffer_update.nil?
                 - if !message.buffer_update.sent_from_date_time.nil?
                   .ui.basic.grey.small.label
                     %i.rocket.icon
