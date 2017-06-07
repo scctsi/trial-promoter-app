@@ -40,6 +40,11 @@
               .ui.basic.small.label
                 Database Id:
                 = message.id.to_s
+              - if current_user.role != :read_only
+                - if message.edit_campaign_id?
+                  = render partial: 'shared/forms/input_message_campaign_id.html.haml', locals: { message: message }
+                -elsif message.show_campaign_id?
+                  = render partial: 'shared/message_campaign_id.html.haml', locals: { message: message }
               .ui.basic.small.label
                 Lin_meth_factor:
                 = message.message_template.experiment_variables['lin_meth_factor']
