@@ -22,10 +22,13 @@
 #  social_media_profile_id :integer
 #  platform                :string
 #  promoted_website_url    :string(2000)
+#  campaign_id             :string
 #
+
 
 class Message < ActiveRecord::Base
   extend Enumerize
+  include CampaignId
   acts_as_ordered_taggable_on :experiments
 
   validates :content, presence: true
@@ -91,7 +94,7 @@ class Message < ActiveRecord::Base
   def delayed?
     return scheduled_date_time + 5.minutes < buffer_update.sent_from_date_time
   end
-  
+
   def backdate(number_of_days)
     # Only backdate twitter ads (we need to allow time for Twitter support to approve the ads)
     return if !(platform == :twitter && medium == :ad)
@@ -99,7 +102,7 @@ class Message < ActiveRecord::Base
     return if backdated
     # Only backdate tweets scheduled on May 31st or later
     return if scheduled_date_time.month <= 5 && scheduled_date_time.day <= 30
-    
+
     self.backdated = true
     self.original_scheduled_date_time = scheduled_date_time
     self.scheduled_date_time -= number_of_days.days
@@ -111,25 +114,25 @@ class Message < ActiveRecord::Base
     end
     save
   end
-  
+
   def method_missing(name, *args, &block)
     name = name.to_s
-    
+
     if name.start_with?('metric')
       source = name[7..-1].split('_')[0]
-      metric_name = name[7..-1].split('_')[1] 
+      metric_name = name[7..-1].split('_')[1]
       metrics_from_source = metrics.select{ |metric| metric.source.to_s == source }
       return 'N/A' if metrics_from_source.count == 0
       return 'N/A' if metrics_from_source[0].data[metric_name].nil?
       return metrics_from_source[0].data[metric_name]
     end
-    
+
     if name.start_with?('percentage')
       source = name[11..-1].split('_')[0]
       metrics_from_source = metrics.select{ |metric| metric.source.to_s == source }
       return 'N/A' if metrics_from_source.count == 0
       metric_1_name = name[11..-1].split('_')[1]
-      metric_2_name = name[11..-1].split('_')[2] 
+      metric_2_name = name[11..-1].split('_')[2]
       return 'N/A' if metrics_from_source[0].data[metric_1_name].nil? || metrics_from_source[0].data[metric_2_name].nil?
       return (metrics_from_source[0].data[metric_1_name].to_f / metrics_from_source[0].data[metric_2_name].to_f) * 100
     end
