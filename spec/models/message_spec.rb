@@ -22,7 +22,9 @@
 #  social_media_profile_id :integer
 #  platform                :string
 #  promoted_website_url    :string(2000)
+#  campaign_id             :string
 #
+
 
 require 'rails_helper'
 
@@ -49,7 +51,7 @@ describe Message do
 
     expect(message.medium).to be :ad
   end
-  
+
   it 'returns the platform as a symbol' do
     message = build(:message, platform: 'twitter')
 
@@ -89,7 +91,7 @@ describe Message do
       expect(@messages[3].events.count).to eq(0)
     end
   end
-  
+
   it 'always updates existing metrics from a particular source' do
     message = build(:message)
 
@@ -169,12 +171,12 @@ describe Message do
       expect(@message.delayed?).to be(false)
     end
   end
-  
+
   describe 'metric helpers' do
     before do
       @message = create(:message)
     end
-    
+
     it 'returns N/A if asked to retrieve a metric for a missing source' do
       expect(@message.metric_facebook_likes).to eq('N/A')
     end
@@ -206,25 +208,98 @@ describe Message do
       @message.metrics << Metric.new(source: :facebook, data: {"shares" => 100})
       expect(@message.percentage_facebook_clicks_impressions).to eq('N/A')
     end
-    
+
     it 'returns a percentage given two metric names (first metric / second metric accurate to two decimal places)' do
       @message.metrics << Metric.new(source: :facebook, data: {"clicks" => 5, "impressions" => 100})
       expect(@message.percentage_facebook_clicks_impressions).to eq(5.0)
     end
   end
-  
+
+  describe 'campaign_id helper methods do' do
+    before do
+      @messages = build_list(:message, 5)
+      @messages[0].platform = 'twitter'
+      @messages[1].platform = 'facebook'
+      @messages[2].platform = 'facebook'
+      @messages[3].platform = 'instagram'
+      @messages[4].platform = 'twitter'
+
+      @messages[0].medium = :ad
+      @messages[1].medium = :ad
+      @messages[2].medium = :organic
+      @messages[3].medium = :ad
+      @messages[4].medium = :organic
+
+      @messages[0].campaign_id = '123456'
+      @messages[1].campaign_id = '123456'
+      @messages[2].campaign_id = '123456'
+      @messages[3].campaign_id = '123456'
+      @messages[4].campaign_id = '123456'
+    end
+
+    describe '#show_campaign_id' do
+
+      it "only shows the campaign_id field for Facebook or Instagram Ad accounts" do
+        expect(@messages[0].show_campaign_id?).to eq(false)
+        expect(@messages[1].show_campaign_id?).to eq(true)
+        expect(@messages[2].show_campaign_id?).to eq(false)
+        expect(@messages[3].show_campaign_id?).to eq(true)
+        expect(@messages[4].show_campaign_id?).to eq(false)
+      end
+
+      it 'does not show campaign_id for an organic message' do
+        expect(@messages[2].show_campaign_id?).to eq(false)
+        expect(@messages[4].show_campaign_id?).to eq(false)
+      end
+    end
+
+    describe '#campaign_id_editable' do
+      before do
+        @messages[0].campaign_id = nil
+        @messages[1].campaign_id = nil
+        @messages[2].campaign_id = nil
+        @messages[3].campaign_id = nil
+        @messages[4].campaign_id = nil
+      end
+
+      it "only allows editing the campaign_id form for Facebook or Instagram Ad accounts" do
+        expect(@messages[0].campaign_id_editable?).to eq(false)
+        expect(@messages[1].campaign_id_editable?).to eq(true)
+        expect(@messages[2].campaign_id_editable?).to eq(false)
+        expect(@messages[3].campaign_id_editable?).to eq(true)
+        expect(@messages[4].campaign_id_editable?).to eq(false)
+      end
+
+      it 'does not allow editing campaign_id field for an organic message' do
+        expect(@messages[2].campaign_id_editable?).to eq(false)
+        expect(@messages[4].campaign_id_editable?).to eq(false)
+      end
+    end
+
+    describe '#campaign_id_exists?' do
+      it 'returns false if there is no campaign_id' do
+        @messages[3].campaign_id = nil
+        expect(@messages[3].campaign_id_exists?).to eq(false)
+      end
+
+      it 'returns true if there is a campaign_id' do
+        expect(@messages[1].campaign_id_exists?).to eq(true)
+      end
+    end
+  end
+
   describe 'backdating' do
     before do
       allow(Throttler).to receive(:throttle)
     end
 
     # Backdating is a process that we included for the TCORS pilot project.
-    # Twitter ads starting from 05/31 were scheduled for publishing 5 days in advance. 
+    # Twitter ads starting from 05/31 were scheduled for publishing 5 days in advance.
     # This was done to give Twitter support enough time to approve the tweets in scheduled campaigns.
     it 'backdates a Twitter ad message' do
       message_scheduled_date_time = DateTime.new(2017, 6, 10, 15, 0, 0)
       message = create(:message, :platform => :twitter, :medium => :ad, :scheduled_date_time => message_scheduled_date_time)
-      
+
       message.backdate(5)
 
       expect_backdated(message, message_scheduled_date_time)
@@ -233,22 +308,22 @@ describe Message do
     it 'only backdates a message once' do
       message_scheduled_date_time = DateTime.new(2017, 6, 10, 15, 0, 0)
       message = create(:message, :platform => :twitter, :medium => :ad, :scheduled_date_time => message_scheduled_date_time)
-      
+
       message.backdate(5)
       message.backdate(5)
-      
+
       expect_backdated(message, message_scheduled_date_time)
     end
 
     it 'only backdates any Twitter ad messages scheduled on or after May 31st' do
       message_scheduled_date_time = DateTime.new(2017, 5, 31, 15, 0, 0)
       message = create(:message, :platform => :twitter, :medium => :ad, :scheduled_date_time => message_scheduled_date_time)
-      
+
       message.backdate(5)
 
       expect_backdated(message, message_scheduled_date_time)
     end
-    
+
     it 'deletes any associated buffer update' do
       message_scheduled_date_time = DateTime.new(2017, 5, 31, 15, 0, 0)
       message = create(:message, :platform => :twitter, :medium => :ad, :scheduled_date_time => message_scheduled_date_time)
@@ -269,16 +344,16 @@ describe Message do
     it 'does not backdate any Twitter ad messages scheduled before May 31st' do
       message_scheduled_date_time = DateTime.new(2017, 5, 30, 15, 0, 0)
       message = create(:message, :platform => :twitter, :medium => :ad, :scheduled_date_time => message_scheduled_date_time)
-      
+
       message.backdate(5)
 
       expect_not_backdated(message, message_scheduled_date_time)
     end
-    
+
     it 'does not backdate any organic Twitter messages' do
       message_scheduled_date_time = DateTime.new(2017, 6, 10, 15, 0, 0)
       message = create(:message, :platform => :twitter, :medium => :organic, :scheduled_date_time => message_scheduled_date_time)
-      
+
       message.backdate(5)
 
       expect_not_backdated(message, message_scheduled_date_time)
@@ -287,7 +362,7 @@ describe Message do
     it 'does not backdate any Facebook' do
       message_scheduled_date_time = DateTime.new(2017, 6, 10, 15, 0, 0)
       message = create(:message, :platform => :facebook, :medium => :organic, :scheduled_date_time => message_scheduled_date_time)
-      
+
       message.backdate(5)
 
       expect_not_backdated(message, message_scheduled_date_time)
@@ -296,13 +371,13 @@ describe Message do
     it 'does not backdate any Instagram messages' do
       message_scheduled_date_time = DateTime.new(2017, 6, 10, 15, 0, 0)
       message = create(:message, :platform => :instagram, :medium => :organic, :scheduled_date_time => message_scheduled_date_time)
-      
+
       message.backdate(5)
 
       expect_not_backdated(message, message_scheduled_date_time)
     end
   end
-  
+
   private
   def expect_backdated(message, message_scheduled_date_time)
     message.reload
@@ -313,7 +388,7 @@ describe Message do
       expect(Throttler).to have_received(:throttle).with(1)
     end
   end
-  
+
   def expect_not_backdated(message, message_scheduled_date_time)
       message.reload
       expect(message.scheduled_date_time).to eq(message_scheduled_date_time)
