@@ -235,6 +235,7 @@ describe Message do
       @messages[2].campaign_id = '123456'
       @messages[3].campaign_id = '123456'
       @messages[4].campaign_id = '123456'
+      @messages.save
     end
 
     describe '#show_campaign_id' do
