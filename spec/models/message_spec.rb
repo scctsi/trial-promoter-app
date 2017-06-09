@@ -277,11 +277,8 @@ describe Message do
     end
 
     describe '#campaign_id_exists?' do
-      before do
-        @messages[3].campaign_id = nil
-      end
-
       it 'returns false if there is no campaign_id' do
+        @messages[3].campaign_id = nil
         expect(@messages[3].campaign_id_exists?).to eq(false)
       end
 
