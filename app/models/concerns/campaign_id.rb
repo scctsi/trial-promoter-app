@@ -2,14 +2,14 @@ module CampaignId
   extend ActiveSupport::Concern
 
   def show_campaign_id?
-    self.platform != :twitter && self.medium == :ad && exists?
+    self.platform != :twitter && self.medium == :ad && campaign_id_exists?
   end
 
-  def edit_campaign_id?
-    !exists? && self.platform != :twitter && self.medium == :ad
+  def campaign_id_editable?
+    !campaign_id_exists? && self.platform != :twitter && self.medium == :ad
   end
 
-  def exists?
+  def campaign_id_exists?
     !self.campaign_id.nil?
   end
 end
