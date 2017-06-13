@@ -1,5 +1,5 @@
 class ExperimentsController < ApplicationController
-  before_action :set_experiment, only: [:show, :edit, :update, :parameterized_slug, :send_to_buffer, :create_messages, :create_analytics_file_todos, :correctness_analysis]
+  before_action :set_experiment, only: [:show, :edit, :update, :parameterized_slug, :send_to_buffer, :create_messages, :create_analytics_file_todos, :correctness_analysis, :messages_page]
   before_action :set_click_meter_groups_and_domains, only: [:new, :edit]
   layout "workspace", only: [:show, :correctness_analysis]
 
@@ -17,11 +17,16 @@ class ExperimentsController < ApplicationController
     @message_templates = MessageTemplate.belonging_to(@experiment)
     @images = Image.belonging_to(@experiment)
     @messages = Message.where(:message_generating_id => @experiment.id).page(params[:page]).order('scheduled_date_time ASC')
+
+    respond_to do |format|
+      format.html
+      format.json { render :layout => false }
+    end
   end
 
   def correctness_analysis
   end
-  
+
   def new
     @experiment = Experiment.new
     authorize @experiment
@@ -52,7 +57,7 @@ class ExperimentsController < ApplicationController
       render :edit
     end
   end
-  
+
   def send_to_buffer
     PublishMessagesJob.perform_later
     flash[:notice] = 'Messages scheduled for the next 7 days have been pushed to Buffer'
@@ -70,6 +75,16 @@ class ExperimentsController < ApplicationController
   def create_analytics_file_todos
     @experiment.create_analytics_file_todos
     redirect_to experiment_url(@experiment)
+  end
+
+  def messages_page
+    authorize @experiment
+    messages = Message.where(:message_generating_id => @experiment.id).page(params[:page]).order('scheduled_date_time ASC')
+
+    respond_to do |format|
+      format.json
+      format.html { render :partial => 'shared/messages_page', locals: { messages: messages } }
+    end
   end
 
   private
