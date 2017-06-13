@@ -10,7 +10,7 @@ class ExperimentPolicy < ApplicationPolicy
   def create_analytics_file_todos?
     user.role.administrator?
   end
-  
+
   def set_experiment?
     user.role.administrator?
   end
@@ -24,6 +24,10 @@ class ExperimentPolicy < ApplicationPolicy
   end
 
   def correctness_analysis?
+    user.role.administrator?
+  end
+
+  def messages_page?
     user.role.administrator?
   end
 end
