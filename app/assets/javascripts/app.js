@@ -498,7 +498,6 @@ $(document).ready(function() {
         url: '/experiments/' + experimentId + '/messages_page.html',
         data: { page: page },
         success: function(res){
-          console.log(res);
           $('.paginated-content').html(res);
           setUpAjaxPagination();
         }

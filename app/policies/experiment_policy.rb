@@ -28,6 +28,6 @@ class ExperimentPolicy < ApplicationPolicy
   end
 
   def messages_page?
-    user.role.administrator?
+    user.role.administrator? || user.role.statistician? || user.role.read_only?
   end
 end
