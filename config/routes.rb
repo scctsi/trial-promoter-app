@@ -16,6 +16,7 @@ Rails.application.routes.draw do
       get 'send_to_buffer', to: 'experiments#send_to_buffer'
       get 'create_analytics_file_todos', to: 'experiments#create_analytics_file_todos'
       get 'correctness_analysis', to: 'experiments#correctness_analysis'
+      get 'messages_page', to: 'experiments#messages_page'
     end
     resources :message_generation_parameter_sets
   end

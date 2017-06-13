@@ -19,6 +19,7 @@ RSpec.describe ExperimentPolicy, type: :policy do
     it { should_not be_permitted_to(:create_analytics_file_todos) }
     it { should_not be_permitted_to(:set_experiment) }
     it { should_not be_permitted_to(:calculate_message_count) }
+    it { should_not be_permitted_to(:messages_page) }
   end
 
   context "for a administrator" do
@@ -35,6 +36,7 @@ RSpec.describe ExperimentPolicy, type: :policy do
     it { should be_permitted_to(:create_analytics_file_todos) }
     it { should be_permitted_to(:set_experiment) }
     it { should be_permitted_to(:calculate_message_count) }
+    it { should be_permitted_to(:messages_page) }
   end
 
   context "for a statistician" do
@@ -51,6 +53,7 @@ RSpec.describe ExperimentPolicy, type: :policy do
     it { should_not be_permitted_to(:create_analytics_file_todos) }
     it { should_not be_permitted_to(:set_experiment) }
     it { should_not be_permitted_to(:calculate_message_count) }
+    it { should be_permitted_to(:messages_page) }
   end
 
   context "for a read_only" do
@@ -67,5 +70,6 @@ RSpec.describe ExperimentPolicy, type: :policy do
     it { should_not be_permitted_to(:create_analytics_file_todos) }
     it { should_not be_permitted_to(:set_experiment) }
     it { should_not be_permitted_to(:calculate_message_count) }
+    it { should be_permitted_to(:messages_page) }
   end
 end

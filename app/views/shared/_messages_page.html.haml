@@ -1,0 +1,71 @@
+.ui.header
+  .content
+    = paginate messages, :remote => true
+  = render partial: 'shared/object_count', locals: { count: messages.count.to_s + " out of " + messages.total_count.to_s, object_name: 'messages' }
+  - grouped_messages = messages.group_by{ |message| message.scheduled_date_time.to_date }
+  - grouped_messages.each do |scheduled_date, messages_by_scheduled_date|
+    %h3.ui.dividing.header
+      = scheduled_date.strftime("%b #{scheduled_date.day.ordinalize}")
+    - grouped_messages_by_platform = messages_by_scheduled_date.group_by(&:platform)
+    - grouped_messages_by_platform.each do |platform, messages_by_platform|
+      %h4.ui.header
+        %i{ :class => "#{platform.to_s} icon"}
+        .content
+          = platform.to_s.titleize
+      .ui.items
+        - messages_by_platform.each do |message|
+          - show_label = false
+          - if !message.buffer_update.nil? && !message.buffer_update.sent_from_date_time.nil?
+            - if message.delayed?
+              - show_label = true
+          .item
+            .ui.tiny.image
+              -if message.image
+                = image_tag "#{message.image.url}"
+              -else
+                = image_tag "no-image.png"
+            .content
+              = message.content
+              - if show_label
+                .ui.left.pointing.red.basic.label
+                  The message was delayed
+              .extra
+                .ui.basic.small.label
+                  %i.clock.outline.icon
+                  #{message.scheduled_date_time.strftime("%I:%M %p")}
+                .ui.basic.small.label
+                  = message.medium.to_s.titleize
+                .ui.basic.small.label
+                  = message.social_media_profile.service_username
+                .ui.basic.small.label
+                  Database Id:
+                  = message.id.to_s
+                - if current_user.role != :read_only
+                  - if message.edit_campaign_id?
+                    = render partial: 'shared/forms/input_message_campaign_id.html.haml', locals: { message: message }
+                  -elsif message.show_campaign_id?
+                    = render partial: 'shared/message_campaign_id.html.haml', locals: { message: message }
+                .ui.basic.small.label
+                  Lin_meth_factor:
+                  = message.message_template.experiment_variables['lin_meth_factor']
+                .ui.basic.small.label
+                  Lin_meth_level:
+                  = message.message_template.experiment_variables['lin_meth_level']
+                - if !message.buffer_update.nil?
+                  - if !message.buffer_update.sent_from_date_time.nil?
+                    .ui.basic.grey.small.label
+                      %i.rocket.icon
+                      Published from Buffer on #{message.social_media_profile.platform_icon_and_name} at #{message.buffer_update.sent_from_date_time.strftime("%I:%M %P, %b %d, %Y")}
+                  - else
+                    .ui.basic.grey.small.label
+                      %i.rocket.icon
+                      Sent to Buffer on #{message.buffer_update.created_at.strftime("%b %d, %Y")}
+              - if message.click_meter_tracking_link
+                .extra
+                  .ui.small.basic.labels
+                    .ui.url.label{ "data-content" => "#{message.click_meter_tracking_link.tracking_url}" }
+                      %i.linkify.icon
+                      Tracking URL
+                    .ui.url.label{ "data-content" => "#{message.click_meter_tracking_link.destination_url}" }
+                      %i.linkify.icon
+                      Destination URL

@@ -529,9 +529,31 @@ $(document).ready(function() {
     });
   }
 
+  function setUpAjaxPagination() {
+    $('.ui .pagination a').click(function(e){
+      e.preventDefault();
+      var targetUrl = $(this).attr('href');
+      var experimentId = $('.paginated-content').data('experiment-id');
+      var page = '';
+      if (targetUrl.includes("page=")){
+        page = targetUrl.match(/page=(\d+)/)[1];
+      }
+
+      $.ajax({
+        url: '/experiments/' + experimentId + '/messages_page.html',
+        data: { page: page },
+        success: function(res){
+          $('.paginated-content').html(res);
+          setUpAjaxPagination();
+        }
+      });
+    });
+  }
+
   // Initialize
   setUpSaveCampaignIdFormEvents();
   setUpEditCampainIdLabelEvents();
+  setUpAjaxPagination();
   setUpPostingTimeInputs();
   showSocialMediaProfiles();
   setUpExperimentRealTime();
