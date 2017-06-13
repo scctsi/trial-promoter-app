@@ -545,6 +545,8 @@ $(document).ready(function() {
         success: function(res){
           $('.paginated-content').html(res);
           setUpAjaxPagination();
+          setUpSaveCampaignIdFormEvents();
+          setUpEditCampainIdLabelEvents();
         }
       });
     });
