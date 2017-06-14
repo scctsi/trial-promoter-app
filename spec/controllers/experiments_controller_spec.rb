@@ -149,7 +149,7 @@ RSpec.describe ExperimentsController, type: :controller do
       it 'enqueues a job to generate the messages' do
         expect(GenerateMessagesJob).to have_received(:perform_later).with(@experiment)
       end
-      
+
       it 'redirects to the experiment workspace' do
         expect(response).to redirect_to experiment_url(Experiment.first)
       end
@@ -205,7 +205,7 @@ RSpec.describe ExperimentsController, type: :controller do
     it 'enqueues a job to generate the messages' do
       expect(PublishMessagesJob).to have_received(:perform_later)
     end
-    
+
     it 'sets a notice' do
       expect(flash[:notice]).to eq('Messages scheduled for the next 7 days have been pushed to Buffer')
     end
@@ -262,7 +262,7 @@ RSpec.describe ExperimentsController, type: :controller do
     it 'assigns a new experiment to @experiment' do
       expect(assigns(:experiment)).to be_a_new(Experiment)
     end
-    
+
     it 'assigns the groups available through Click Meter' do
       expect(assigns(:click_meter_groups)).to eq(@click_meter_groups)
     end
@@ -345,7 +345,7 @@ RSpec.describe ExperimentsController, type: :controller do
         }.to change(MessageGenerationParameterSet, :count).by(1)
         expect(MessageGenerationParameterSet.first.message_generating).not_to be_nil
       end
-      
+
       it 'creates an empty data dictionary' do
         post :create, experiment: attributes_for(:experiment, message_generation_parameter_set_attributes: attributes_for(:message_generation_parameter_set), posting_times: '4:09 PM', social_media_profile_ids: [@social_media_profiles[0].id])
 
@@ -437,6 +437,42 @@ RSpec.describe ExperimentsController, type: :controller do
       patch :update, id: @experiment
 
       expect(response).to redirect_to :new_user_session
+    end
+  end
+
+  describe 'GET #messages_page' do
+    before do
+      @messages = create_list(:message, 3)
+      @experiment = create(:experiment)
+      @experiment_messages = double('experiment_messages')
+      @ordered_messages = []
+      @paged_messages = double('paged_messages')
+      allow(Message).to receive(:where).with(:message_generating_id => @experiment.id).and_return(@experiment_messages)
+      allow(@experiment_messages).to receive(:page).and_return(@paged_messages)
+      allow(@paged_messages).to receive(:order).and_return(@ordered_messages)
+    end
+
+    it 'renders generated messages' do
+
+      get :messages_page, id: @experiment.id, page: '2'
+
+      expect(response).to render_template("shared/_messages_page")
+    end
+
+    it 'redirects an unauthorized user' do
+      sign_out(:user)
+
+      get :messages_page, id: @experiment.id
+
+      expect(response).to redirect_to :new_user_session
+    end
+
+    it 'assigns all messages to @messages' do
+      get :messages_page, id: @experiment, page: '2'
+
+      expect(Message).to have_received(:where).with(:message_generating_id => @experiment.id)
+      expect(@experiment_messages).to have_received(:page).with('2')
+      expect(@paged_messages).to have_received(:order).with('scheduled_date_time ASC')
     end
   end
 end
