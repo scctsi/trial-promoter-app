@@ -167,7 +167,7 @@ $(document).ready(function() {
               $fileUploadButton.html('<i class="download icon"></i>Download');
             }
           });
-          
+
         },
         function(error){
         },
@@ -285,11 +285,11 @@ $(document).ready(function() {
 
     return false;
   }
-  
+
   function setUpAsyncMessageGeneration() {
     $('#generate-messages-button').click(function() {
-      $('#message-generation-confirmation').modal('setting', 'transition', 'Vertical Flip').modal({ 
-          blurring: true, 
+      $('#message-generation-confirmation').modal('setting', 'transition', 'Vertical Flip').modal({
+          blurring: true,
           onApprove: function() { generateMessages($(this).data('experiment-id'), $(this).data('total')) }
         }).modal('show');
     });
@@ -380,10 +380,10 @@ $(document).ready(function() {
       console.log(image);
       if (buttonType == 'add' && image.meets_instagram_ad_requirements) {
         html += '<div class="extra content"><div class="ui labeled icon fluid tiny button add-image-to-image-pool-button" data-image-id="' + image.id + '"><i class="checkmark icon"></i>Add</div></div>';
-      } 
+      }
       if (buttonType == 'add' && !image.meets_instagram_ad_requirements) {
         html += '<div class="extra content"><div class="ui disabled fluid tiny negative button add-image-to-image-pool-button" data-image-id="' + image.id + '">Invalid (for Instagram)</div></div>';
-      } 
+      }
       if (buttonType == 'remove' && image.meets_instagram_ad_requirements) {
         html += '<div class="extra content"><div class="ui labeled icon fluid tiny button remove-image-from-image-pool-button" data-image-id="' + image.id + '"><i class="remove icon"></i>Remove</div></div>';
       }
@@ -459,7 +459,7 @@ $(document).ready(function() {
       var $loadingButton = $(this);
       var filenameStartswithRestriction = $(this).data('filename-startswith-restriction');
       var readonly = $(this).data('role') == 'read_only';
-      
+
       $loadingButton.addClass('loading');
       $.ajax({
         url : '/message_templates/' + messageTemplateId + '/get_image_selections',
@@ -484,7 +484,29 @@ $(document).ready(function() {
     });
   }
 
+  function setUpAjaxPagination() {
+    $('.ui .pagination a').click(function(e){
+      e.preventDefault();
+      var targetUrl = $(this).attr('href');
+      var experimentId = $('.paginated-content').data('experiment-id');
+      var page = '';
+      if (targetUrl.includes("page=")){
+        page = targetUrl.match(/page=(\d+)/)[1];
+      }
+
+      $.ajax({
+        url: '/experiments/' + experimentId + '/messages_page.html',
+        data: { page: page },
+        success: function(res){
+          $('.paginated-content').html(res);
+          setUpAjaxPagination();
+        }
+      });
+    });
+  }
+
   // Initialize
+  setUpAjaxPagination();
   setUpPostingTimeInputs();
   showSocialMediaProfiles();
   setUpExperimentRealTime();
