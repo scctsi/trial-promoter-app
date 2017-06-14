@@ -10,6 +10,6 @@ module CampaignId
   end
 
   def exists?
-    !(self.campaign_id == '')
+    !(self.campaign_id == '' || self.campaign_id == nil)
   end
 end

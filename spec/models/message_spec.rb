@@ -217,7 +217,7 @@ describe Message do
 
   describe 'campaign_id helper methods do' do
     before do
-      @messages = build_list(:message, 5)
+      @messages = create_list(:message, 5)
       @messages[0].platform = 'twitter'
       @messages[1].platform = 'facebook'
       @messages[2].platform = 'facebook'
@@ -278,7 +278,8 @@ describe Message do
 
     describe '#exists?' do
       before do
-        @messages[3].campaign_id = nil
+        @messages[3].campaign_id = ''
+        @messages[1].campaign_id = '123456'
       end
 
       it 'returns false if there is no campaign_id' do
