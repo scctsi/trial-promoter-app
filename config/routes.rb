@@ -42,6 +42,10 @@ Rails.application.routes.draw do
     collection do
       get :generate
     end
+    member do
+      post 'edit_campaign_id', to: 'messages#edit_campaign_id'
+      get 'new_campaign_id', to: 'messages#new_campaign_id'
+    end
   end
 
   # App settings
