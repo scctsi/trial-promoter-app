@@ -2,14 +2,11 @@ module CampaignId
   extend ActiveSupport::Concern
 
   def show_campaign_id?
-    self.platform != :twitter && self.medium == :ad && exists?
+    # Only facebook and instagram ads need manual entry of campaign IDs
+    self.platform != :twitter && self.medium == :ad && !self.campaign_id.blank?
   end
 
   def edit_campaign_id?
-    !exists? && self.platform != :twitter && self.medium == :ad
-  end
-
-  def exists?
-    !(self.campaign_id == '' || self.campaign_id == nil)
+    self.campaign_id.blank? && self.platform != :twitter && self.medium == :ad
   end
 end

@@ -275,21 +275,6 @@ describe Message do
         expect(@messages[4].edit_campaign_id?).to eq(false)
       end
     end
-
-    describe '#exists?' do
-      before do
-        @messages[3].campaign_id = ''
-        @messages[1].campaign_id = '123456'
-      end
-
-      it 'returns false if there is no campaign_id' do
-        expect(@messages[3].exists?).to eq(false)
-      end
-
-      it 'returns true if there is a campaign_id' do
-        expect(@messages[1].exists?).to eq(true)
-      end
-    end
   end
 
   describe 'backdating' do
