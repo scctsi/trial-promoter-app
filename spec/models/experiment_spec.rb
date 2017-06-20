@@ -58,7 +58,7 @@ RSpec.describe Experiment, type: :model do
     experiment = create(:experiment, message_distribution_start_date: Time.new(2017, 01, 01, 0, 0, 0,  "+00:00") )
     experiment.messages << build(:message)
     experiment.save
-    
+
     expect(experiment.disable_import?).to be true
   end
 
@@ -162,19 +162,19 @@ RSpec.describe Experiment, type: :model do
       expect(experiment.analytics_file_todos_created).to be true
     end
   end
-  
+
   describe 'returning posting times' do
     before do
       @experiment = build(:experiment)
     end
 
     it 'returns a hash with platform key and an array of hashes containing the hour and minute values' do
-      @experiment.twitter_posting_times = '12:30 AM,12:30 PM,05:10 AM,05:20 PM' 
-      @experiment.facebook_posting_times = '12:30 AM,12:30 PM,05:10 AM' 
-      @experiment.instagram_posting_times = '12:30 AM,12:30 PM,05:10 AM' 
-      
+      @experiment.twitter_posting_times = '12:30 AM,12:30 PM,05:10 AM,05:20 PM'
+      @experiment.facebook_posting_times = '12:30 AM,12:30 PM,05:10 AM'
+      @experiment.instagram_posting_times = '12:30 AM,12:30 PM,05:10 AM'
+
       posting_times = @experiment.posting_times
-      
+
       expect(posting_times.keys.count).to eq(3)
       twitter_posting_times = posting_times[:twitter]
       expect(twitter_posting_times.count).to eq(4)
@@ -187,32 +187,32 @@ RSpec.describe Experiment, type: :model do
       expect(twitter_posting_times[3][:hour]).to eq(17)
       expect(twitter_posting_times[3][:minute]).to eq(20)
     end
-    
+
     it 'returns a hash with platform key and an empty array for missing platform times' do
-      @experiment.twitter_posting_times = '12:30 AM,12:30 PM,05:10 AM' 
-      @experiment.facebook_posting_times = '' 
+      @experiment.twitter_posting_times = '12:30 AM,12:30 PM,05:10 AM'
+      @experiment.facebook_posting_times = ''
       @experiment.instagram_posting_times = nil
-      
+
       posting_times = @experiment.posting_times
-      
+
       expect(posting_times.keys.count).to eq(3)
       expect(posting_times[:facebook]).to eq([])
       expect(posting_times[:instagram]).to eq([])
     end
   end
-  
+
   it 'calculates the end date for the experiment' do
     experiment = build(:experiment)
     experiment.message_generation_parameter_set = build(:message_generation_parameter_set)
     allow(experiment.message_generation_parameter_set).to receive(:length_of_experiment_in_days).and_return(10)
-    
+
     expect(experiment.end_date).to eq(experiment.message_distribution_start_date + experiment.message_generation_parameter_set.length_of_experiment_in_days(10).days)
   end
-  
+
   it 'returns a default timeline' do
     experiment = build(:experiment)
     allow(experiment).to receive(:end_date).and_return(experiment.message_distribution_start_date + 10.days)
-    
+
     expect(experiment.timeline.events).to eq(Timeline.build_default_timeline(experiment).events)
   end
 end

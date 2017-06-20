@@ -109,7 +109,7 @@ describe MessageGenerationParameterSet do
       # Number of social networks (1) * Number of mediums (1) * Number of message templates (5) * Number of cycles (1)
       expect(message_generation_parameter_set.expected_generated_message_count(5)).to eq(1 * 1 * 5 * 1)
     end
-    
+
     it 'is calculated correctly for nine message templates, 1 social network, 1 medium, with half of the messages having images, 1 cycle and 3 messages per network per day' do
       message_generation_parameter_set = MessageGenerationParameterSet.new do |m|
         m.social_network_choices = ['facebook']
@@ -173,14 +173,14 @@ describe MessageGenerationParameterSet do
 
       expect(MessageGenerationParameterSet.calculate_message_count(calculation_parameters)).to eq('Noncalculable')
     end
-    
+
     it 'calculates the length of the experiment in days' do
       message_generation_parameter_set = MessageGenerationParameterSet.new do |m|
         m.number_of_cycles = 2
         m.number_of_messages_per_social_network = 3
       end
 
-      # Length of experiment in days = Number of cycles (2) * Number of message templates (6) / Messages per social network per day (3) 
+      # Length of experiment in days = Number of cycles (2) * Number of message templates (6) / Messages per social network per day (3)
       expect(message_generation_parameter_set.length_of_experiment_in_days(6)).to eq(2 * 6 / 3)
     end
   end

@@ -24,10 +24,10 @@ class AnalyticsFile < ActiveRecord::Base
 
   belongs_to :social_media_profile
   belongs_to :message_generating, polymorphic: true
-  
+
   def process
     return if processing_status == :processed
-    
+
     # Step 1: Read file from the file's URL. Based on the filename, read in CSV or Excel data.
     content = CsvFileReader.read(url) if url.ends_with?('.csv')
     content = ExcelFileReader.new.read(url) if url.ends_with?('.xlsx')
@@ -43,10 +43,10 @@ class AnalyticsFile < ActiveRecord::Base
         AnalyticsDataParser.transform(parseable_data, {:operation => :parse_tweet_id_from_permalink, :permalink_column_index => 1})
       end
     end
-    
+
     # Step 4: Parse the data (into a hash that uses the message params as the keys and the values as the metrics for that message in a hash)
     parsed_data = AnalyticsDataParser.parse(parseable_data)
-    
+
     # Step 5: Persist the metrics data
     AnalyticsDataParser.store(parsed_data, social_media_profile.platform)
     self.processing_status = :processed
