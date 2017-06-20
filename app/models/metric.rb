@@ -11,7 +11,6 @@
 #
 
 
-
 class Metric < ActiveRecord::Base
   extend Enumerize
 

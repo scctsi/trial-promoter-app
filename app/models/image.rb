@@ -12,7 +12,6 @@
 #  meets_instagram_ad_requirements :boolean
 #
 
-
 class Image < ActiveRecord::Base
   acts_as_ordered_taggable_on :experiments
 

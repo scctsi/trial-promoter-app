@@ -15,7 +15,6 @@
 #  number_of_cycles                      :integer
 #
 
-
 class MessageGenerationParameterSet < ActiveRecord::Base
   extend Enumerize
   serialize :social_network_choices, Array

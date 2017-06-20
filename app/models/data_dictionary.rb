@@ -9,11 +9,10 @@
 #
 
 
-
 class DataDictionary < ActiveRecord::Base
   belongs_to :experiment
   validates :experiment, presence: true
-  
+
   has_many :data_dictionary_entries
   accepts_nested_attributes_for :data_dictionary_entries
 
@@ -24,14 +23,14 @@ class DataDictionary < ActiveRecord::Base
     :trial_promoter => ['ordinal_day', 'date_sent', 'day_of_week_sent', 'time_sent', 'platform', 'medium', 'image_used', 'tags', 'link_clicks', 'click_time'].sort,
     :twitter => ['impressions', 'retweets', 'replies', 'likes'].sort
   }
-  
+
   ALLOWED_VALUES = {
     :trial_promoter_day_of_week_sent => ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
     :trial_promoter_platform => ['Twitter', 'Facebook', 'Instagram'],
     :trial_promoter_medium => ['Ad', 'Organic'],
     :trial_promoter_image_used => ['Yes', 'No']
   }
-  
+
   def self.create_data_dictionary(experiment)
     experiment.create_data_dictionary if experiment.data_dictionary.nil?
 

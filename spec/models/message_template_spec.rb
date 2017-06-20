@@ -14,7 +14,6 @@
 #  promoted_website_url     :string(2000)
 #
 
-
 require 'rails_helper'
 
 RSpec.describe MessageTemplate do
@@ -169,7 +168,7 @@ RSpec.describe MessageTemplate do
 
       expect(@message_template.hashtags).to eq([])
     end
-    
+
     it 'stores comma separated strings as an array of hashtags' do
       @message_template.hashtags = "#bcsm, #cancer"
       @message_template.save
@@ -194,7 +193,7 @@ RSpec.describe MessageTemplate do
       expect(@message_template.hashtags).to eq(["#bcsm", "#cancer"])
     end
   end
-  
+
   describe 'warning messages' do
     before do
       @message_template = build(:message_template)
@@ -203,20 +202,20 @@ RSpec.describe MessageTemplate do
 
     it "returns an empty array if the message template's content is nil" do
       @message_template.content = nil
-      
+
       expect(@message_template.warnings).to eq([])
     end
 
     it 'only returns warning messages if the platforms for the message template includes Twitter' do
       @message_template.platforms = [:facebook, :instagram]
       @message_template.content = 'A' * 141
-      
+
       expect(@message_template.warnings.count).to eq(0)
     end
 
     it 'returns a warning if the content is too long for Twitter' do
       @message_template.content = 'A' * 141
-      
+
       expect(@message_template.warnings.count).to eq(1)
       expect(@message_template.warnings[0]).to eq('Too long for use in Twitter')
     end
@@ -260,48 +259,48 @@ RSpec.describe MessageTemplate do
       expect(@message_template.warnings[0]).to eq('Too long for use in Twitter (At least one of the hashtags will never be included)')
     end
   end
-  
+
   describe 'storing promoted website URLs in a canonical format' do
     it 'removes www' do
       message_template = build(:message_template)
       message_template.promoted_website_url = 'http://www.url.com'
-      
+
       message_template.save
       message_template.reload
-      
+
       expect(message_template.promoted_website_url).to eq('http://url.com')
     end
 
     it 'lowercases the URL' do
       message_template = build(:message_template)
       message_template.promoted_website_url = 'http://URL.com'
-      
+
       message_template.save
       message_template.reload
-      
+
       expect(message_template.promoted_website_url).to eq('http://url.com')
     end
-    
+
     it 'adds a scheme' do
       message_template = build(:message_template)
       message_template.promoted_website_url = 'url.com'
-      
+
       message_template.save
       message_template.reload
-      
+
       expect(message_template.promoted_website_url).to eq('http://url.com')
     end
-    
+
     it 'keeps anchor links at the end of a URL (even if this is not according to the standards)' do
       message_template = build(:message_template)
       message_template.promoted_website_url = 'http://url.com/#anchor'
-      
+
       message_template.save
       message_template.reload
-      
+
       expect(message_template.promoted_website_url).to eq('http://url.com/#anchor')
     end
 
   end
-  
+
 end

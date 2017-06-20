@@ -16,7 +16,6 @@
 #  click_meter_domain_id           :integer
 #
 
-
 class Experiment < ActiveRecord::Base
   include ActionView::Helpers::DateHelper
   include ActiveModel::Validations
@@ -40,9 +39,9 @@ class Experiment < ActiveRecord::Base
   def disable_message_generation?
     (self.message_distribution_start_date - Time.now) <= 0
   end
-  
+
   def disable_import?
-    messages.count > 0 
+    messages.count > 0
   end
 
   def create_messages
@@ -96,13 +95,13 @@ class Experiment < ActiveRecord::Base
 
     allowed_times
   end
-  
+
   def posting_times
     hash_of_posting_times = {}
-    
+
     {:facebook => facebook_posting_times, :instagram => instagram_posting_times, :twitter => twitter_posting_times}.each do |platform, platform_posting_times|
       array_of_posting_times = []
-      
+
       if !platform_posting_times.blank?
         platform_posting_times.split(',').each do |posting_time|
           parsed_posting_time = {}
@@ -118,17 +117,17 @@ class Experiment < ActiveRecord::Base
           array_of_posting_times << parsed_posting_time
         end
       end
-      
+
       hash_of_posting_times[platform] = array_of_posting_times
     end
 
     hash_of_posting_times
   end
-  
+
   def timeline
     Timeline.build_default_timeline(self)
   end
-  
+
   def end_date
     message_distribution_start_date + message_generation_parameter_set.length_of_experiment_in_days(MessageTemplate.belonging_to(self).count).days
   end

@@ -29,7 +29,6 @@
 #
 
 
-
 class Message < ActiveRecord::Base
   extend Enumerize
   include CampaignId

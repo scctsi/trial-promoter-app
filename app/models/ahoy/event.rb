@@ -10,7 +10,6 @@
 #  time       :datetime
 #
 
-
 module Ahoy
   class Event < ActiveRecord::Base
     include Ahoy::Properties

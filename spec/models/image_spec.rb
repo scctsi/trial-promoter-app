@@ -12,7 +12,6 @@
 #  meets_instagram_ad_requirements :boolean
 #
 
-
 require 'rails_helper'
 
 RSpec.describe Image do
