@@ -12,6 +12,7 @@
 #  click_meter_tracking_link_id :integer
 #
 
+
 class Click < ActiveRecord::Base
 
   belongs_to :click_meter_tracking_link

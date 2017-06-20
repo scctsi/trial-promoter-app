@@ -14,6 +14,7 @@
 #  processing_status       :string
 #
 
+
 require 'rails_helper'
 
 RSpec.describe AnalyticsFile do

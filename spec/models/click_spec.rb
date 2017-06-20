@@ -12,6 +12,7 @@
 #  click_meter_tracking_link_id :integer
 #
 
+
 require 'rails_helper'
 require 'yaml'
 

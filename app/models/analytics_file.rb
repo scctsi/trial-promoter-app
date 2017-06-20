@@ -14,6 +14,7 @@
 #  processing_status       :string
 #
 
+
 class AnalyticsFile < ActiveRecord::Base
   extend Enumerize
 

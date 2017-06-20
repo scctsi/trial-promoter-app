@@ -16,6 +16,7 @@
 #  click_meter_domain_id           :integer
 #
 
+
 require 'rails_helper'
 
 RSpec.describe Experiment, type: :model do
