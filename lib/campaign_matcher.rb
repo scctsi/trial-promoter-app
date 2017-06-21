@@ -3,7 +3,7 @@ class CampaignMatcher
   def self.match_campaign_id(messages, campaigns)
     campaign_name_repeats = campaigns.group_by{|campaign| campaign.name}.select{|key,value| key if value.count > 1 }
     campaign_name_rejects = []
-    campaign_name_repeats.each do |key, value|
+    campaign_name_repeats.each do |key, _value|
       campaign_name_rejects << campaigns.select{|campaign| campaign.name.include?(key)}
       campaigns.reject!{|campaign| campaign.name.include?(key)}
     end
@@ -40,5 +40,5 @@ def instagram?(message)
     return true
   else
     return false
-   end
+  end
 end
