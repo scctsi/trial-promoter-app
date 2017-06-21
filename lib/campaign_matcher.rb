@@ -1,5 +1,4 @@
 class CampaignMatcher
-
   def self.match_campaign_id(messages, campaigns)
     campaign_name_repeats = campaigns.group_by{|campaign| campaign.name}.select{|key,value| key if value.count > 1 }
     campaign_name_rejects = []
@@ -9,13 +8,11 @@ class CampaignMatcher
     end
     campaigns.each do |campaign|
       campaign.name = clean_ad_name(campaign.name)
-
       messages.each do |message|
         next if !message.matchable? || instagram?(message)
         message.campaign_id = campaign.id if message.content.include?(campaign.name)
       end
     end
-
     messages.each do |message|
       set_unmatchable(message)
       message.save
