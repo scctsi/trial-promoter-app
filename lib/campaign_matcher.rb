@@ -27,7 +27,7 @@ end
 def clean_ad_name(campaign_name)
   campaign_name.gsub!("...", "")
   campaign_name.gsub!("Post: ", "")
-  campaign_name.gsub!('"', "")
+  campaign_name.delete!('"')
 end
 
 def set_unmatchable(message)
