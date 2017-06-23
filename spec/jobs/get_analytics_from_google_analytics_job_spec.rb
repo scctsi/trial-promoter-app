@@ -5,8 +5,6 @@ RSpec.describe GetAnalyticsFromGoogleAnalyticsJob, type: :job do
 
   before do
     ActiveJob::Base.queue_adapter = :test
-    secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
-    allow(Setting).to receive(:[]).with(:google_auth_json_file).and_return(secrets['google_auth_json_file'])
     @google_analytics_client = double('google_analytics')
     allow(GoogleAnalyticsClient).to receive(:new).and_return(@google_analytics_client)
     @data = []
