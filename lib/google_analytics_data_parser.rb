@@ -9,7 +9,7 @@ class GoogleAnalyticsDataParser
     raise MissingAdContentDimensionError if ad_content_column_index.nil?
     # Step 2: Get the metric column names
     metric_column_names = column_headers.select{ |column_header| column_header.column_type == 'METRIC' }.map(&:name)
-    # Step 3: Get the indices (zero-based) of the metric columns 
+    # Step 3: Get the indices (zero-based) of the metric columns
     metric_column_indices = column_headers.each_index.select{|column_header| column_headers[column_header].column_type == 'METRIC'}
     # Step 4: Construct the parsed hash
     parsed_data = {}
@@ -20,7 +20,16 @@ class GoogleAnalyticsDataParser
       end
       parsed_data[data_row[ad_content_column_index]] = metric_hash
     end
-    
+
     parsed_data
+  end
+
+  def self.store(parsed_data)
+    parsed_data.each do |row|
+      message = Message.find_by(id: row[0].split('-').last)
+      metric = Metric.new(source: :google_analytics, data: row[1])
+      message.metrics << metric
+      message.save
+    end
   end
 end
