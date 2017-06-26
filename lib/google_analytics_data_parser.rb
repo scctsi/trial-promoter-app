@@ -26,7 +26,7 @@ class GoogleAnalyticsDataParser
 
   def self.store(parsed_data)
     parsed_data.each do |row|
-      message = Message.find_by(id: row[0].split('-').last)
+      message = Message.find_by_param(row[0])
       metric = Metric.new(source: :google_analytics, data: row[1])
       message.metrics << metric
       message.save

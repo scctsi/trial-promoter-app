@@ -43,6 +43,7 @@ RSpec.describe GoogleAnalyticsDataParser do
     ga_metrics = GoogleAnalyticsDataParser.parse(@ga_data)
 
     GoogleAnalyticsDataParser.store(ga_metrics)
+    @messages.each{ |message| message.reload }
 
     expect(@messages[0].metrics[0].data).to eq(ga_metrics[@messages[0].to_param])
     expect(@messages[1].metrics[0].data).to eq(ga_metrics[@messages[1].to_param])
