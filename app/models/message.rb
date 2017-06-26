@@ -22,10 +22,13 @@
 #  social_media_profile_id :integer
 #  platform                :string
 #  promoted_website_url    :string(2000)
+#  campaign_id             :string
 #
+
 
 class Message < ActiveRecord::Base
   extend Enumerize
+  include CampaignId
   acts_as_ordered_taggable_on :experiments
 
   validates :content, presence: true
