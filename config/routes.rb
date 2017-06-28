@@ -16,6 +16,7 @@ Rails.application.routes.draw do
       get 'send_to_buffer', to: 'experiments#send_to_buffer'
       get 'create_analytics_file_todos', to: 'experiments#create_analytics_file_todos'
       get 'correctness_analysis', to: 'experiments#correctness_analysis'
+      get 'messages_page', to: 'experiments#messages_page'
     end
     resources :message_generation_parameter_sets
   end
@@ -40,6 +41,10 @@ Rails.application.routes.draw do
   resources :messages do
     collection do
       get :generate
+    end
+    member do
+      post 'edit_campaign_id', to: 'messages#edit_campaign_id'
+      get 'new_campaign_id', to: 'messages#new_campaign_id'
     end
   end
 
@@ -69,7 +74,7 @@ Rails.application.routes.draw do
   # Social media profiles
   resources :social_media_profiles do
   end
-  
+
   # Data dictionaries
   resources :data_dictionaries do
   end
