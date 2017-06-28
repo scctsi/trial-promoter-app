@@ -2,28 +2,36 @@
 #
 # Table name: messages
 #
-#  id                      :integer          not null, primary key
-#  message_template_id     :integer
-#  content                 :text
-#  tracking_url            :string(2000)
-#  created_at              :datetime         not null
-#  updated_at              :datetime         not null
-#  website_id              :integer
-#  message_generating_id   :integer
-#  message_generating_type :string
-#  promotable_id           :integer
-#  promotable_type         :string
-#  medium                  :string
-#  image_present           :string
-#  image_id                :integer
-#  publish_status          :string
-#  scheduled_date_time     :datetime
-#  social_network_id       :string
-#  social_media_profile_id :integer
-#  platform                :string
-#  promoted_website_url    :string(2000)
-#  campaign_id             :string
+#  id                           :integer          not null, primary key
+#  message_template_id          :integer
+#  content                      :text
+#  tracking_url                 :string(2000)
+#  created_at                   :datetime         not null
+#  updated_at                   :datetime         not null
+#  website_id                   :integer
+#  message_generating_id        :integer
+#  message_generating_type      :string
+#  promotable_id                :integer
+#  promotable_type              :string
+#  medium                       :string
+#  image_present                :string
+#  image_id                     :integer
+#  publish_status               :string
+#  scheduled_date_time          :datetime
+#  social_network_id            :string
+#  social_media_profile_id      :integer
+#  platform                     :string
+#  promoted_website_url         :string(2000)
+#  campaign_id                  :string
+#  backdated                    :boolean
+#  original_scheduled_date_time :datetime
+#  campaign_unmatchable         :boolean          default(FALSE)
+#  click_rate                   :float
+#  website_goal_rate            :float
 #
+
+
+
 
 
 class Message < ActiveRecord::Base
@@ -136,5 +144,35 @@ class Message < ActiveRecord::Base
       return 'N/A' if metrics_from_source[0].data[metric_1_name].nil? || metrics_from_source[0].data[metric_2_name].nil?
       return (metrics_from_source[0].data[metric_1_name].to_f / metrics_from_source[0].data[metric_2_name].to_f) * 100
     end
+  end
+
+  def calculate_click_rate
+    case platform
+    when :facebook
+      calculated_rate = percentage_facebook_clicks_impressions
+    when :twitter
+      calculated_rate = percentage_twitter_clicks_impressions
+    when :instagram
+      calculated_rate = percentage_instagram_clicks_impressions
+    end
+    calculated_rate = nil if calculated_rate == 'N/A'
+    self.click_rate = calculated_rate
+
+    save
+  end
+
+  def calculate_goal_rate
+    sessions = Visit.where(utm_content: to_param)
+    events = []
+    sessions.each do |session|
+      events << Ahoy::Event.where(visit_id: session).find_by(name:"Converted")
+    end
+    if sessions.count == 0
+      self.website_goal_rate = nil
+    else
+      self.website_goal_rate = (events.compact.count.to_f/sessions.count.to_f).round(2)
+    end
+
+    save
   end
 end
