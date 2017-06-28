@@ -42,6 +42,6 @@
         <sup><a href="http://dl.acm.org/citation.cfm?doid=364520.364540" target="_blank">1</a></sup> Durstenfeld, R. "Algorithm 235: Random Permutation." Communications of the ACM. ACM, 1 July 1964. Web. 29 Mar. 2017.
       .item
         <sup><a href="https://ruby-doc.org/core-2.2.0/Array.html#method-i-sample" target="_blank">2</a></sup> "Class: Array (Ruby 2.2.0)." Ruby Language Documentation, n.d. Web. 29 Mar. 2017.
-  = render partial: 'shared/messages', locals: { messages: @messages }
+  = render partial: 'shared/messages', locals: { messages: @messages, experiment_id: @experiment.id }
 = render partial: 'message_generation_confirmation_modal', locals: { total: @experiment.message_generation_parameter_set.expected_generated_message_count(MessageTemplate.belonging_to(@experiment).count), experiment_id: @experiment.id }
 = render partial: 'message_generation_progress_modal', locals: { total: @experiment.message_generation_parameter_set.expected_generated_message_count(MessageTemplate.belonging_to(@experiment).count), experiment_id: @experiment.id }
