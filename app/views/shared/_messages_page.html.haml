@@ -1,7 +1,9 @@
 .ui.header
   .content
     = paginate messages, :remote => true
-  = render partial: 'shared/object_count', locals: { count: messages.count.to_s + " out of " + messages.total_count.to_s, object_name: 'messages' }
+  .ui.right.floated.segment.object-count
+    %h3.ui.header
+      = page_entries_info messages
   - grouped_messages = messages.group_by{ |message| message.scheduled_date_time.to_date }
   - grouped_messages.each do |scheduled_date, messages_by_scheduled_date|
     %h3.ui.dividing.header

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170616211330) do
+ActiveRecord::Schema.define(version: 20170626193408) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -227,6 +227,8 @@ ActiveRecord::Schema.define(version: 20170616211330) do
     t.boolean  "backdated"
     t.datetime "original_scheduled_date_time"
     t.boolean  "campaign_unmatchable",                      default: false
+    t.float    "click_rate"
+    t.float    "website_goal_rate"
   end
 
   add_index "messages", ["message_generating_type", "message_generating_id"], name: "index_on_message_generating_for_analytics_files", using: :btree

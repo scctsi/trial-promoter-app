@@ -26,8 +26,9 @@
 #  backdated                    :boolean
 #  original_scheduled_date_time :datetime
 #  campaign_unmatchable         :boolean          default(FALSE)
+#  click_rate                   :float
+#  website_goal_rate            :float
 #
-
 
 require 'rails_helper'
 
@@ -215,6 +216,40 @@ describe Message do
     it 'returns a percentage given two metric names (first metric / second metric accurate to two decimal places)' do
       @message.metrics << Metric.new(source: :facebook, data: {"clicks" => 5, "impressions" => 100})
       expect(@message.percentage_facebook_clicks_impressions).to eq(5.0)
+    end
+
+    it 'saves a click rate percentage (first metric / second metric accurate to two decimal places)' do
+      @message.metrics << Metric.new(source: :twitter, data: {"clicks" => 6, "impressions" => 100})
+
+      @message.calculate_click_rate
+      @message.reload
+
+    end
+
+    it 'saves a nil value if there are no clicks or impressions' do
+      @message.metrics << Metric.new(source: :twitter, data: {"clicks" => nil, "impressions" => nil})
+
+      @message.calculate_click_rate
+      @message.reload
+
+      expect(@message.click_rate).to eq(nil)
+    end
+
+    it 'saves a goal rate percentage from Ahoy (goals / visits)' do
+      visits = create_list(:visit, 3, utm_content: @message.to_param)
+      event = Ahoy::Event.create(visit_id: visits[0].id, name: "Converted")
+
+      @message.calculate_website_goal_rate
+      @message.reload
+
+      expect(@message.website_goal_rate).to eq(0.33)
+    end
+
+    it 'saves a nil value if there are no impressions' do
+      @message.calculate_website_goal_rate
+      @message.reload
+
+      expect(@message.website_goal_rate).to eq(nil)
     end
   end
 
