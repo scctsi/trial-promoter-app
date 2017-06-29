@@ -239,7 +239,7 @@ describe Message do
       expect(@message.click_rate).to eq(nil)
     end
 
-    it 'saves a goal rate percentage from Ahoy (converted events / visits)' do
+    it 'saves a goal rate percentage from Ahoy (goals / visits)' do
       visits = create_list(:visit, 3, utm_content: @message.to_param)
       event = Ahoy::Event.create(visit_id: visits[0].id, name: "Converted")
 
