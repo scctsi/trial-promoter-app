@@ -161,16 +161,19 @@ class Message < ActiveRecord::Base
     save
   end
 
-  def calculate_goal_rate
+  def calculate_website_goal_rate
     sessions = Visit.where(utm_content: to_param)
-    events = []
+    goal_count = 0
+    # Converted event is in the Ahoy code.
+    # For the TCORS experiment, the 'Converted' event occurs in main.js file of website (Fresh Empire or This Free Life)
+    # when user scrolls or clicks on navigation bar
     sessions.each do |session|
-      events << Ahoy::Event.where(visit_id: session).find_by(name:"Converted")
+      goal_count += 1 if Ahoy::Event.where(visit_id: session.id).where(name: "Converted").count > 0
     end
     if sessions.count == 0
       self.website_goal_rate = nil
     else
-      self.website_goal_rate = (events.compact.count.to_f/sessions.count.to_f).round(2)
+      self.website_goal_rate = (goal_count.to_f/sessions.count.to_f).round(2)
     end
 
     save

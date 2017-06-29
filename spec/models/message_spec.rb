@@ -243,14 +243,14 @@ describe Message do
       visits = create_list(:visit, 3, utm_content: @message.to_param)
       event = Ahoy::Event.create(visit_id: visits[0].id, name: "Converted")
 
-      @message.calculate_goal_rate
+      @message.calculate_website_goal_rate
       @message.reload
 
       expect(@message.website_goal_rate).to eq(0.33)
     end
 
     it 'saves a nil value if there are no impressions' do
-      @message.calculate_goal_rate
+      @message.calculate_website_goal_rate
       @message.reload
 
       expect(@message.website_goal_rate).to eq(nil)

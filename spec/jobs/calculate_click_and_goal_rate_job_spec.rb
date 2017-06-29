@@ -15,7 +15,7 @@ RSpec.describe CalculateClickAndGoalRateJob, type: :job do
     end
     @messages.each do |message|
       allow(message).to receive(:calculate_click_rate)
-      allow(message).to receive(:calculate_goal_rate)
+      allow(message).to receive(:calculate_website_goal_rate)
     end
     allow(Message).to receive(:where).and_return([@messages[2], @messages[3], @messages[4]])
   end
@@ -34,7 +34,7 @@ RSpec.describe CalculateClickAndGoalRateJob, type: :job do
     expect(Message).to have_received(:where).with(publish_status: :published_to_social_network)
     (2..4).each do |index|
       expect(@messages[index]).to have_received(:calculate_click_rate)
-      expect(@messages[index]).to have_received(:calculate_goal_rate)
+      expect(@messages[index]).to have_received(:calculate_website_goal_rate)
     end
   end
 
