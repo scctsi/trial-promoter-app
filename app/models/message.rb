@@ -155,7 +155,7 @@ class Message < ActiveRecord::Base
     when :instagram
       calculated_rate = percentage_instagram_clicks_impressions
     end
-    calculated_rate = nil if calculated_rate == 'N/A'
+    calculated_rate = 0.0 if calculated_rate == 'N/A'
     self.click_rate = calculated_rate
 
     save
@@ -171,7 +171,7 @@ class Message < ActiveRecord::Base
       goal_count += 1 if Ahoy::Event.where(visit_id: session.id).where(name: "Converted").count > 0
     end
     if sessions.count == 0
-      self.website_goal_rate = nil
+      self.website_goal_rate = 0.0
     else
       self.website_goal_rate = (goal_count.to_f/sessions.count.to_f).round(2)
     end
