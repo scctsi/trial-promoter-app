@@ -46,13 +46,13 @@ RSpec.describe ExperimentsController, type: :controller do
       allow(@experiment_messages).to receive(:page).and_return(@paged_messages)
       allow(@paged_messages).to receive(:order).with('scheduled_date_time ASC').and_return(@ordered_messages)
 
-      # test set up for calculating the top 5 messages by click rate
+      # Test set up for calculating the top 5 messages by click rate
       @top_messages_by_click_rate_double = double('top_messages_by_click_rate_double')
       allow(Message).to receive(:where).with('message_generating_id = ? AND click_rate is not null', @experiment.id).and_return(@top_messages_by_click_rate_double)
       @ordered_top_messages_by_click_rate_double = double('ordered_top_messages_by_click_rate_double')
       allow(@top_messages_by_click_rate_double).to receive(:order).with('click_rate desc').and_return(@ordered_top_messages_by_click_rate_double)
 
-      # test set up for calculating the top 5 messages by goal rate
+      # Test set up for calculating the top 5 messages by goal rate
       @top_messages_by_website_goal_rate_double = double('top_messages_by_website_goal_rate_double')
       allow(Message).to receive(:where).with('message_generating_id = ? AND website_goal_rate is not null', @experiment.id).and_return(@top_messages_by_website_goal_rate_double)
       @ordered_top_messages_by_website_goal_rate_double = double('ordered_top_messages_by_website_goal_rate_double')
