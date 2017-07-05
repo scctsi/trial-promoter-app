@@ -9,3 +9,7 @@ end
 task :process_analytics_files => :environment do
   ProcessAnalyticsFilesJob.perform_later
 end
+
+task :calculate_click_and_goal_rate => :environment do
+  CalculateClickAndGoalRateJob.perform_later
+end
