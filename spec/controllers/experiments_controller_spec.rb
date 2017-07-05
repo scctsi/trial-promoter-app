@@ -44,9 +44,20 @@ RSpec.describe ExperimentsController, type: :controller do
       @paged_messages = double('paged_messages')
       allow(Message).to receive(:where).with(:message_generating_id => @experiment.id).and_return(@experiment_messages)
       allow(@experiment_messages).to receive(:page).and_return(@paged_messages)
-      allow(@paged_messages).to receive(:order).and_return(@ordered_messages)
-      @tag_list = ['tag-1', 'tag-2']
-      @tag_matcher = double('tag_matcher')
+      allow(@paged_messages).to receive(:order).with('scheduled_date_time ASC').and_return(@ordered_messages)
+
+      # Test set up for calculating the top 5 messages by click rate
+      @top_messages_by_click_rate_double = double('top_messages_by_click_rate_double')
+      allow(Message).to receive(:where).with('message_generating_id = ? AND click_rate is not null', @experiment.id).and_return(@top_messages_by_click_rate_double)
+      @ordered_top_messages_by_click_rate_double = double('ordered_top_messages_by_click_rate_double')
+      allow(@top_messages_by_click_rate_double).to receive(:order).with('click_rate desc').and_return(@ordered_top_messages_by_click_rate_double)
+
+      # Test set up for calculating the top 5 messages by goal rate
+      @top_messages_by_website_goal_rate_double = double('top_messages_by_website_goal_rate_double')
+      allow(Message).to receive(:where).with('message_generating_id = ? AND website_goal_rate is not null', @experiment.id).and_return(@top_messages_by_website_goal_rate_double)
+      @ordered_top_messages_by_website_goal_rate_double = double('ordered_top_messages_by_website_goal_rate_double')
+      allow(@top_messages_by_website_goal_rate_double).to receive(:order).with('website_goal_rate desc').and_return(@ordered_top_messages_by_website_goal_rate_double)
+
       get :show, id: @experiment, page: '2'
     end
 
@@ -69,6 +80,18 @@ RSpec.describe ExperimentsController, type: :controller do
       expect(@experiment_messages).to have_received(:page).with('2')
       expect(@paged_messages).to have_received(:order).with('scheduled_date_time ASC')
       expect(assigns(:messages)).to eq(@ordered_messages)
+    end
+
+    it 'assigns the ordered messages with the highest click rate to @top_messages_by_click_rate' do
+      expect(Message).to have_received(:where).with('message_generating_id = ? AND click_rate is not null', @experiment.id)
+      expect(@top_messages_by_click_rate_double).to have_received(:order).with('click_rate desc')
+      expect(assigns(:top_messages_by_click_rate)).to eq(@ordered_top_messages_by_click_rate_double)
+    end
+
+    it 'assigns the ordered messages with the highest goal rate to @top_messages_by_website_goal_rate' do
+      expect(Message).to have_received(:where).with('message_generating_id = ? AND website_goal_rate is not null', @experiment.id)
+      expect(@top_messages_by_website_goal_rate_double).to have_received(:order).with('website_goal_rate desc')
+      expect(assigns(:top_messages_by_website_goal_rate)).to eq(@ordered_top_messages_by_website_goal_rate_double)
     end
 
     it 'uses the workspace layout' do
