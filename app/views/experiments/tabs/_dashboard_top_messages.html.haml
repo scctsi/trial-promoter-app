@@ -2,7 +2,7 @@
   %br
   .ui.horizontal.divider.header
     Most effective messages (by click rate)
-  - @messages[0..4].each do |message|
+  - @top_messages_by_click_rate[0..4].each do |message|
     .card
       .content
         .header
@@ -31,13 +31,59 @@
         comments
       .extra.content
         .ui.label.basic.teal
-          %i.checkmark.icon
-          = message.send("percentage_#{message.platform}_clicks_impressions".to_sym)
-          Click rate
+          -if message.click_rate.nil?
+            = 'N/A'
+          -else
+            = message.click_rate
+          \% click rate
         %br
           (
           = message.send("metric_#{message.platform}_clicks".to_sym)
           clicks /
+          #{message.impressions}
+          = message.send("metric_#{message.platform}_impressions".to_sym)
+          impressions )
+  %br
+  .ui.horizontal.divider.header
+    Most effective messages (by goal rate)
+  - @top_messages_by_website_goal_rate[0..4].each do |message|
+    .card
+      .content
+        .header
+          .left.floated
+            = message.social_media_profile.platform_icon
+          .right.floated.meta
+            02:35 pm, Sep 17, 2015
+      .content
+        = message.content
+      .ui.medium.image
+        -if message.image
+          = image_tag "#{message.image.url}"
+        -else
+          = image_tag "no-image.png"
+      .content
+        %i.heart.icon
+        = message.send("metric_#{message.platform}_likes".to_sym)
+        like(s)
+        %br
+        %i.refresh.icon
+        = message.send("metric_#{message.platform}_shares".to_sym)
+        shares
+        %br
+        %i.comment.icon
+        = message.send("metric_#{message.platform}_comments".to_sym)
+        comments
+      .extra.content
+        .ui.label.basic.teal
+          -if message.website_goal_rate.nil?
+            = 'N/A'
+          -else
+            = message.website_goal_rate
+          \% goal rate
+        %br
+          (
+          = message.send("metric_#{message.platform}_goals".to_sym)
+          goals /
           #{message.impressions}
           = message.send("metric_#{message.platform}_impressions".to_sym)
           impressions )
