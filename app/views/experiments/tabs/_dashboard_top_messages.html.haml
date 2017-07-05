@@ -31,12 +31,11 @@
         comments
       .extra.content
         .ui.label.basic.teal
-          %i.checkmark.icon
           -if message.click_rate.nil?
             = 'N/A'
           -else
             = message.click_rate
-          Click rate
+          \% click rate
         %br
           (
           = message.send("metric_#{message.platform}_clicks".to_sym)
@@ -76,12 +75,11 @@
         comments
       .extra.content
         .ui.label.basic.teal
-          %i.checkmark.icon
           -if message.website_goal_rate.nil?
             = 'N/A'
           -else
             = message.website_goal_rate
-          Goal rate
+          \% goal rate
         %br
           (
           = message.send("metric_#{message.platform}_goals".to_sym)

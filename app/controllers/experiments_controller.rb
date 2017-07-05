@@ -17,8 +17,8 @@ class ExperimentsController < ApplicationController
     @message_templates = MessageTemplate.belonging_to(@experiment)
     @images = Image.belonging_to(@experiment)
     @messages = Message.where(:message_generating_id => @experiment.id).page(params[:page]).order('scheduled_date_time ASC')
-    @top_messages_by_click_rate = Message.where(':message_generating_id => ? AND click_rate is not null', @experiment.id).order('click_rate desc')
-    @top_messages_by_website_goal_rate = Message.where(':message_generating_id => ? AND website_goal_rate is not null', @experiment.id).order('website_goal_rate desc')
+    @top_messages_by_click_rate = Message.where('message_generating_id = ? AND click_rate is not null', @experiment.id).order('click_rate desc')
+    @top_messages_by_website_goal_rate = Message.where('message_generating_id = ? AND website_goal_rate is not null', @experiment.id).order('website_goal_rate desc')
 
     respond_to do |format|
       format.html
