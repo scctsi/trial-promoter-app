@@ -8,7 +8,6 @@
 #  message_distribution_start_date :datetime
 #  created_at                      :datetime         not null
 #  updated_at                      :datetime         not null
-#  analytics_file_todos_created    :boolean
 #  twitter_posting_times           :text
 #  facebook_posting_times          :text
 #  instagram_posting_times         :text
@@ -100,69 +99,6 @@ RSpec.describe Experiment, type: :model do
     expect(number_of_days).to be(11)
   end
 
-  describe 'creating a todo list for analytics uploads' do
-    before do
-      @social_media_profiles = create_list(:social_media_profile, 5)
-      @social_media_profiles[0].platform = :twitter
-      @social_media_profiles[0].allowed_mediums = [:ad]
-      @social_media_profiles[1].platform = :twitter
-      @social_media_profiles[1].allowed_mediums = [:organic]
-      @social_media_profiles[2].platform = :facebook
-      @social_media_profiles[2].allowed_mediums = [:ad]
-      @social_media_profiles[3].platform = :facebook
-      @social_media_profiles[3].allowed_mediums = [:organic]
-      @social_media_profiles[4].platform = :instagram
-      @social_media_profiles[4].allowed_mediums = [:ad]
-      @social_media_profiles.each { |social_media_profile| social_media_profile.save }
-    end
-
-    it 'retrieves a list of all associated social media profiles that need analytics uploads' do
-      experiment = build(:experiment)
-      @social_media_profiles.each { |social_media_profile| experiment.social_media_profiles << social_media_profile }
-      experiment.save
-
-      profiles = experiment.social_media_profiles_needing_analytics_uploads
-
-      # ALL social media profiles (for now) need an analytics file upload.
-      expect(profiles.count).to eq(5)
-    end
-
-    it 'does not create todos if no social media profiles require analytics uploads' do
-      experiment = build(:experiment)
-      allow(experiment).to receive(:social_media_profiles_needing_analytics_uploads).and_return([])
-
-      experiment.create_analytics_file_todos
-
-      expect(AnalyticsFile.count).to eq(0)
-      expect(experiment.analytics_file_todos_created).to be true
-    end
-
-    it 'creates todos (one for each day of the experiment and social media profile plus one additional day) if any social media profiles require analytics uploads' do
-      experiment = build(:experiment, message_distribution_start_date: Time.new(2017, 01, 01, 0, 0, 0, "+00:00"))
-      allow(experiment).to receive(:end_date).and_return(experiment.message_distribution_start_date + 1.days)
-      allow(experiment).to receive(:social_media_profiles_needing_analytics_uploads).and_return([@social_media_profiles[0], @social_media_profiles[1]])
-
-      experiment.create_analytics_file_todos
-
-      analytics_files = AnalyticsFile.all
-      expect(analytics_files.count).to eq(6)
-      analytics_files.each { |analytics_file| expect(analytics_file.message_generating).to eq(experiment)}
-      expect(analytics_files[0].social_media_profile).to eq(@social_media_profiles[0])
-      expect(analytics_files[0].required_upload_date).to eq(experiment.message_distribution_start_date)
-      expect(analytics_files[1].social_media_profile).to eq(@social_media_profiles[1])
-      expect(analytics_files[1].required_upload_date).to eq(experiment.message_distribution_start_date)
-      expect(analytics_files[2].social_media_profile).to eq(@social_media_profiles[0])
-      expect(analytics_files[2].required_upload_date).to eq(experiment.end_date)
-      expect(analytics_files[3].social_media_profile).to eq(@social_media_profiles[1])
-      expect(analytics_files[3].required_upload_date).to eq(experiment.end_date)
-      expect(analytics_files[4].social_media_profile).to eq(@social_media_profiles[0])
-      expect(analytics_files[4].required_upload_date).to eq(experiment.end_date + 1.day)
-      expect(analytics_files[5].social_media_profile).to eq(@social_media_profiles[1])
-      expect(analytics_files[5].required_upload_date).to eq(experiment.end_date + 1.day)
-      expect(experiment.analytics_file_todos_created).to be true
-    end
-  end
-  
   describe 'returning posting times' do
     before do
       @experiment = build(:experiment)

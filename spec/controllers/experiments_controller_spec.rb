@@ -223,31 +223,6 @@ RSpec.describe ExperimentsController, type: :controller do
     end
   end
 
-  describe 'GET #create_analytics_file_todos' do
-    before do
-      @experiment = create(:experiment)
-      allow(Experiment).to receive(:find).and_return(@experiment)
-      allow(@experiment).to receive(:create_analytics_file_todos)
-      get :create_analytics_file_todos, id: @experiment
-    end
-
-    it 'asks the experiment to create analytics file todos' do
-      expect(@experiment).to have_received(:create_analytics_file_todos)
-    end
-
-    it 'redirects to the experiment workspace' do
-      expect(response).to redirect_to experiment_url(Experiment.first)
-    end
-
-    it 'redirects unauthenticated user to sign-in page' do
-        sign_out(:user)
-
-        get :create_analytics_file_todos, id: @experiment
-
-        expect(response).to redirect_to :new_user_session
-    end
-  end
-
   describe 'GET #new' do
     before do
       @experiment = Experiment.new
