@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170707190620) do
+ActiveRecord::Schema.define(version: 20170707193750) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,6 +43,7 @@ ActiveRecord::Schema.define(version: 20170707190620) do
     t.integer  "message_generating_id"
     t.string   "message_generating_type"
     t.string   "processing_status"
+    t.integer  "analytics_file_set_id"
   end
 
   create_table "buffer_updates", force: :cascade do |t|
