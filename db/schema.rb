@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170526201131) do
+ActiveRecord::Schema.define(version: 20170707190620) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,19 +20,15 @@ ActiveRecord::Schema.define(version: 20170526201131) do
     t.integer  "visit_id"
     t.integer  "user_id"
     t.string   "name"
-    t.jsonb    "properties"
     t.datetime "time"
+    t.jsonb    "properties"
   end
 
   add_index "ahoy_events", ["name", "time"], name: "index_ahoy_events_on_name_and_time", using: :btree
   add_index "ahoy_events", ["user_id", "name"], name: "index_ahoy_events_on_user_id_and_name", using: :btree
   add_index "ahoy_events", ["visit_id", "name"], name: "index_ahoy_events_on_visit_id_and_name", using: :btree
 
-  create_table "amplitude_conversion_trackers", force: :cascade do |t|
-    t.string   "user"
-    t.integer  "visit"
-    t.integer  "event"
-    t.string   "message"
+  create_table "analytics_file_sets", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -145,7 +141,6 @@ ActiveRecord::Schema.define(version: 20170526201131) do
     t.datetime "message_distribution_start_date"
     t.datetime "created_at",                                   null: false
     t.datetime "updated_at",                                   null: false
-    t.boolean  "analytics_file_todos_created"
     t.text     "twitter_posting_times"
     t.text     "facebook_posting_times"
     t.text     "instagram_posting_times"
@@ -223,9 +218,9 @@ ActiveRecord::Schema.define(version: 20170526201131) do
     t.integer  "social_media_profile_id"
     t.string   "platform"
     t.string   "promoted_website_url",         limit: 2000
-    t.string   "campaign_id"
     t.boolean  "backdated"
     t.datetime "original_scheduled_date_time"
+    t.string   "campaign_id"
   end
 
   add_index "messages", ["message_generating_type", "message_generating_id"], name: "index_on_message_generating_for_analytics_files", using: :btree
