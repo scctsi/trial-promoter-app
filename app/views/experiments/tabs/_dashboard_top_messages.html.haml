@@ -9,7 +9,7 @@
           .left.floated
             = message.social_media_profile.platform_icon
           .right.floated.meta
-            02:35 pm, Sep 17, 2015
+            = message.scheduled_date_time.strftime("%B %-d, %Y @ %l:%M %p")
       .content
         = message.content
       .ui.medium.image
@@ -18,23 +18,15 @@
         -else
           = image_tag "no-image.png"
       .content
-        %i.heart.icon
-        = message.send("metric_#{message.platform}_likes".to_sym)
-        like(s)
-        %br
-        %i.refresh.icon
-        = message.send("metric_#{message.platform}_shares".to_sym)
-        shares
-        %br
-        %i.comment.icon
-        = message.send("metric_#{message.platform}_comments".to_sym)
-        comments
+        = render partial: 'shared/hash', locals: { hash: message.message_template.experiment_variables.reject{|k,v| k == 'stem_id'} }
       .extra.content
         .ui.label.basic.teal
           -if message.click_rate.nil?
             = 'N/A'
+          -elsif message.click_rate == 0.0
+            = "0 %"
           -else
-            = message.click_rate
+            = number_with_precision(message.click_rate, precision: 3, significant: true)
           \% click rate
         %br
           (
@@ -53,7 +45,7 @@
           .left.floated
             = message.social_media_profile.platform_icon
           .right.floated.meta
-            02:35 pm, Sep 17, 2015
+            = message.scheduled_date_time.strftime("%B %-d, %Y @ %l:%M %p")
       .content
         = message.content
       .ui.medium.image
@@ -62,29 +54,26 @@
         -else
           = image_tag "no-image.png"
       .content
-        %i.heart.icon
-        = message.send("metric_#{message.platform}_likes".to_sym)
-        like(s)
-        %br
-        %i.refresh.icon
-        = message.send("metric_#{message.platform}_shares".to_sym)
-        shares
-        %br
-        %i.comment.icon
-        = message.send("metric_#{message.platform}_comments".to_sym)
-        comments
+        = render partial: 'shared/hash', locals: { hash: message.message_template.experiment_variables.reject{|k,v| k == 'stem_id'} }
       .extra.content
         .ui.label.basic.teal
           -if message.website_goal_rate.nil?
             = 'N/A'
+          -elsif message.website_goal_rate == 0.0
+            = "0 "
           -else
-            = message.website_goal_rate
+            = number_with_precision(message.website_goal_rate, precision: 3, significant: true)
           \% goal rate
         %br
           (
-          = message.send("metric_#{message.platform}_goals".to_sym)
+          -if message.website_goal_count.nil?
+            = 0
+          -else
+            = message.website_goal_count
           goals /
-          #{message.impressions}
-          = message.send("metric_#{message.platform}_impressions".to_sym)
-          impressions )
+          -if message.website_session_count.nil?
+            = 'N/A'
+          -else
+            = message.website_session_count
+          sessions )
 

@@ -28,7 +28,11 @@
 #  campaign_unmatchable         :boolean          default(FALSE)
 #  click_rate                   :float
 #  website_goal_rate            :float
+#  website_goal_count           :integer
+#  website_session_count        :integer
 #
+
+
 
 
 
@@ -183,7 +187,13 @@ describe Message do
   describe 'metric helpers' do
     before do
       @message = create(:message)
-    end
+      visits = create_list(:visit, 3, utm_content: @message.to_param)
+      event = Ahoy::Event.create(visit_id: visits[0].id, name: "Converted")
+
+      @message_null = create(:message)
+      @message_null.metrics << Metric.new(source: :twitter, data: {"clicks" => nil, "impressions" => nil})
+      @message_null.save
+  end
 
     it 'returns N/A if asked to retrieve a metric for a missing source' do
       expect(@message.metric_facebook_likes).to eq('N/A')
@@ -232,6 +242,7 @@ describe Message do
 
     it 'saves a nil value if there are no clicks or impressions' do
       @message.metrics << Metric.new(source: :twitter, data: {"clicks" => nil, "impressions" => nil})
+      @message.save
 
       @message.calculate_click_rate
       @message.reload
@@ -239,21 +250,46 @@ describe Message do
       expect(@message.click_rate).to eq(nil)
     end
 
-    it 'saves a goal rate percentage from Ahoy (goals / visits)' do
-      visits = create_list(:visit, 3, utm_content: @message.to_param)
-      event = Ahoy::Event.create(visit_id: visits[0].id, name: "Converted")
+    it 'saves the number of goals for a given message' do
+      @message.calculate_goal_count
+      @message.reload
 
+      expect(@message.website_goal_count).to eq(1)
+    end
+
+    it 'saves the sessions (Ahoy visits) for a given message' do
+      @message.calculate_session_count
+      @message.reload
+
+      expect(@message.website_session_count).to eq(3)
+    end
+
+    it 'saves a goal rate percentage from Ahoy (goals / visits)' do
       @message.calculate_website_goal_rate
       @message.reload
 
-      expect(@message.website_goal_rate).to eq(0.33)
+      expect(@message.website_goal_rate).to eq(33.33)
     end
 
     it 'saves a nil value if there are no impressions' do
-      @message.calculate_website_goal_rate
-      @message.reload
+      @message_null.calculate_website_goal_rate
+      @message_null.reload
 
-      expect(@message.website_goal_rate).to eq(nil)
+      expect(@message_null.website_goal_rate).to eq(nil)
+    end
+
+    it 'saves nil value if there are no sessions' do
+      @message_null.calculate_session_count
+      @message_null.reload
+
+      expect(@message_null.website_session_count).to eq(nil)
+    end
+
+    it 'saves nil value if there are no goals' do
+      @message_null.calculate_goal_count
+      @message_null.reload
+
+      expect(@message_null.website_goal_count).to eq(nil)
     end
   end
 
