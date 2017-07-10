@@ -28,11 +28,6 @@
 #  campaign_unmatchable         :boolean          default(FALSE)
 #  click_rate                   :float
 #  website_goal_rate            :float
-#
-
-
-
-
 
 class Message < ActiveRecord::Base
   extend Enumerize

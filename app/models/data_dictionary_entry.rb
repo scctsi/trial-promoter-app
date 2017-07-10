@@ -23,10 +23,10 @@ class DataDictionaryEntry < ActiveRecord::Base
   validates :variable_name, presence: true
   validates :source, presence: true
   enumerize :source, in: [:buffer, :experiment, :facebook, :instagram, :google_analytics, :trial_promoter, :twitter]
-  
+
   belongs_to :data_dictionary
   validates :data_dictionary, presence: true
-  
+
   serialize :allowed_values
   serialize :value_mapping
 end

@@ -23,7 +23,7 @@ RSpec.describe AnalyticsFile do
   it { is_expected.to belong_to :social_media_profile }
   it { is_expected.to belong_to :message_generating }
   it { is_expected.to enumerize(:processing_status).in(:unprocessed, :processed).with_default(:unprocessed) }
-  
+
   before do
     @excel_file_reader = double('excel_file_reader')
     allow(ExcelFileReader).to receive(:new).and_return(@excel_file_reader)
@@ -40,11 +40,11 @@ RSpec.describe AnalyticsFile do
     allow(AnalyticsDataParser).to receive(:parse).and_return(@parsed_data)
     allow(AnalyticsDataParser).to receive(:store)
   end
-  
+
   it "processes a file (in CSV format) located at the file's URL" do
     @analytics_file.url = 'http://www.example.com/file.csv'
     @analytics_file.process
-    
+
     expect(CsvFileReader).to have_received(:read).with(@analytics_file.url)
     expect(AnalyticsDataParser).to have_received(:convert_to_parseable_data).with(@csv_content, @analytics_file.social_media_profile.platform, @analytics_file.social_media_profile.allowed_mediums[0])
     expect(AnalyticsDataParser).to have_received(:parse).with(@parseable_data)
@@ -56,7 +56,7 @@ RSpec.describe AnalyticsFile do
   it "processes a file (in Excel (.xslx) format) located at the file's URL" do
     @analytics_file.url = 'http://www.example.com/file.xlsx'
     @analytics_file.process
-    
+
     expect(@excel_file_reader).to have_received(:read).with(@analytics_file.url)
     expect(AnalyticsDataParser).to have_received(:convert_to_parseable_data).with(@csv_content, @analytics_file.social_media_profile.platform, @analytics_file.social_media_profile.allowed_mediums[0])
     expect(AnalyticsDataParser).to have_received(:parse).with(@parseable_data)
@@ -70,7 +70,7 @@ RSpec.describe AnalyticsFile do
     @analytics_file.save
 
     @analytics_file.process
-    
+
     expect(CsvFileReader).not_to have_received(:read).with(@analytics_file.url)
     expect(AnalyticsDataParser).not_to have_received(:convert_to_parseable_data).with(@csv_content, @analytics_file.social_media_profile.platform, @analytics_file.social_media_profile.allowed_mediums[0])
     expect(AnalyticsDataParser).not_to have_received(:parse).with(@parseable_data)
@@ -78,14 +78,14 @@ RSpec.describe AnalyticsFile do
     @analytics_file.reload
     expect(@analytics_file.processing_status.value).to eq("processed")
   end
-  
+
   describe 'applying transformations' do
     it 'applies a transform for files uploaded for organic twitter accounts' do
       @analytics_file.social_media_profile.allowed_mediums = [:organic]
       @analytics_file.social_media_profile.platform = :twitter
 
       @analytics_file.process
-      
+
       expect(AnalyticsDataParser).to have_received(:transform).with(@parseable_data, {:operation => :parse_tweet_id_from_permalink, :permalink_column_index => 1})
     end
   end

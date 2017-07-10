@@ -24,7 +24,7 @@ RSpec.describe Click do
 
     expect(unique_spider_click.human?).to be false
   end
-    
+
   it 'determines if click was a unique human visit' do
     unique_human_click = Click.new(spider: '0', unique: '1')
 
@@ -33,14 +33,14 @@ RSpec.describe Click do
 
   it 'determines if click was a returning human visit' do
     returning_human_click = Click.new(spider: '0', unique: '0')
-    
+
     expect(returning_human_click.human?).to be true
   end
 
-  it 'determines if click was a returning spider' do  
+  it 'determines if click was a returning spider' do
     returning_spider_click = Click.new(spider: '1', unique: '0')
-    
+
     expect(returning_spider_click.human?).to be false
   end
 end
- 
+

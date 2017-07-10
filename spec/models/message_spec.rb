@@ -30,10 +30,6 @@
 #  website_goal_rate            :float
 #
 
-
-
-
-
 require 'rails_helper'
 
 describe Message do
@@ -279,23 +275,23 @@ describe Message do
       @messages[4].campaign_id = '123456'
     end
 
-    describe '#show_campaign_id' do
+    describe '#showable' do
 
       it "only shows the campaign_id field for Facebook or Instagram Ad accounts" do
-        expect(@messages[0].show_campaign_id?).to eq(false)
-        expect(@messages[1].show_campaign_id?).to eq(true)
-        expect(@messages[2].show_campaign_id?).to eq(false)
-        expect(@messages[3].show_campaign_id?).to eq(true)
-        expect(@messages[4].show_campaign_id?).to eq(false)
+        expect(@messages[0].showable?).to eq(false)
+        expect(@messages[1].showable?).to eq(true)
+        expect(@messages[2].showable?).to eq(false)
+        expect(@messages[3].showable?).to eq(true)
+        expect(@messages[4].showable?).to eq(false)
       end
 
       it 'does not show campaign_id for an organic message' do
-        expect(@messages[2].show_campaign_id?).to eq(false)
-        expect(@messages[4].show_campaign_id?).to eq(false)
+        expect(@messages[2].showable?).to eq(false)
+        expect(@messages[4].showable?).to eq(false)
       end
     end
 
-    describe '#edit_campaign_id' do
+    describe '#editable' do
       before do
         @messages[0].campaign_id = nil
         @messages[1].campaign_id = nil
@@ -305,16 +301,39 @@ describe Message do
       end
 
       it "only allows editing the campaign_id form for Facebook or Instagram Ad accounts" do
-        expect(@messages[0].edit_campaign_id?).to eq(false)
-        expect(@messages[1].edit_campaign_id?).to eq(true)
-        expect(@messages[2].edit_campaign_id?).to eq(false)
-        expect(@messages[3].edit_campaign_id?).to eq(true)
-        expect(@messages[4].edit_campaign_id?).to eq(false)
+        expect(@messages[0].editable?).to eq(false)
+        expect(@messages[1].editable?).to eq(true)
+        expect(@messages[2].editable?).to eq(false)
+        expect(@messages[3].editable?).to eq(true)
+        expect(@messages[4].editable?).to eq(false)
       end
 
       it 'does not allow editing campaign_id field for an organic message' do
-        expect(@messages[2].edit_campaign_id?).to eq(false)
-        expect(@messages[4].edit_campaign_id?).to eq(false)
+        expect(@messages[2].editable?).to eq(false)
+        expect(@messages[4].editable?).to eq(false)
+      end
+    end
+
+    describe '#matchable' do
+      before do
+        @messages[0].campaign_id = nil
+        @messages[0].publish_status = 'published_to_social_network'
+        @messages[1].campaign_id = '123456'
+        @messages[1].publish_status = 'published_to_social_network'
+        @messages[2].campaign_id = '123456'
+        @messages[2].publish_status = 'published_to_buffer'
+        @messages[3].campaign_id = ''
+        @messages[3].publish_status = 'published_to_buffer'
+        @messages[4].campaign_id = ''
+        @messages[4].publish_status = 'published_to_social_network'
+      end
+
+      it 'determines if a message can be matched to a facebook campaign id' do
+        expect(@messages[0].matchable?).to eq(true)
+        expect(@messages[1].matchable?).to eq(false)
+        expect(@messages[2].matchable?).to eq(false)
+        expect(@messages[3].matchable?).to eq(false)
+        expect(@messages[4].matchable?).to eq(true)
       end
     end
   end
