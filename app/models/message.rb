@@ -28,7 +28,11 @@
 #  campaign_unmatchable         :boolean          default(FALSE)
 #  click_rate                   :float
 #  website_goal_rate            :float
+#  website_goal_count           :integer
+#  website_session_count        :integer
 #
+
+
 
 
 
@@ -156,26 +160,57 @@ class Message < ActiveRecord::Base
       calculated_rate = percentage_instagram_clicks_impressions
     end
     calculated_rate = nil if calculated_rate == 'N/A'
+    calculated_rate *= 100 if calculated_rate != nil
     self.click_rate = calculated_rate
 
     save
   end
 
   def calculate_website_goal_rate
-    sessions = Visit.where(utm_content: to_param)
+    sessions = get_sessions
+    if sessions.count == 0
+      self.website_goal_rate = nil
+    else
+      calculate_goal_count
+      self.website_goal_rate = (self.website_goal_count/sessions.count.to_f * 100).round(2)
+    end
+
+    save
+  end
+
+  def calculate_goal_count
     goal_count = 0
+    sessions = get_sessions
     # Converted event is in the Ahoy code.
     # For the TCORS experiment, the 'Converted' event occurs in main.js file of website (Fresh Empire or This Free Life)
     # when user scrolls or clicks on navigation bar
     sessions.each do |session|
       goal_count += 1 if Ahoy::Event.where(visit_id: session.id).where(name: "Converted").count > 0
     end
-    if sessions.count == 0
-      self.website_goal_rate = nil
+
+    if goal_count == 0
+      self.website_goal_count = nil
     else
-      self.website_goal_rate = (goal_count.to_f/sessions.count.to_f).round(2)
+      self.website_goal_count = goal_count
     end
 
     save
+  end
+
+  def calculate_session_count
+    sessions = get_sessions
+    if sessions.count == 0
+      self.website_session_count = nil
+    else
+      self.website_session_count = sessions.count
+    end
+
+    save
+  end
+
+private
+
+  def get_sessions
+    Visit.where(utm_content: to_param)
   end
 end
