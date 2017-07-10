@@ -49,8 +49,7 @@ class BufferClient
 
   def self.create_update(message)
     response = post('https://api.bufferapp.com/1/updates/create.json', {:body => BufferClient.post_request_body_for_create(message)})
-    p response.parsed_response
-    
+
     # Handle failures
     if response.parsed_response['success'] == false
       case response.parsed_response['code']
