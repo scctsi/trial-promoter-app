@@ -167,12 +167,13 @@ class Message < ActiveRecord::Base
   end
 
   def calculate_website_goal_rate
-    sessions = get_sessions
-    if sessions.count == 0
+    calculate_goal_count
+    calculate_session_count
+
+    if website_session_count == 0
       self.website_goal_rate = nil
     else
-      calculate_goal_count
-      self.website_goal_rate = (self.website_goal_count/sessions.count.to_f * 100).round(2)
+      self.website_goal_rate = (website_goal_count / website_session_count.to_f * 100).round(2)
     end
 
     save
@@ -188,22 +189,13 @@ class Message < ActiveRecord::Base
       goal_count += 1 if Ahoy::Event.where(visit_id: session.id).where(name: "Converted").count > 0
     end
 
-    if goal_count == 0
-      self.website_goal_count = nil
-    else
-      self.website_goal_count = goal_count
-    end
-
+    self.website_goal_count = goal_count
     save
   end
 
   def calculate_session_count
     sessions = get_sessions
-    if sessions.count == 0
-      self.website_session_count = nil
-    else
-      self.website_session_count = sessions.count
-    end
+    self.website_session_count = sessions.count
 
     save
   end
