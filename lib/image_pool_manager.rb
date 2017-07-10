@@ -18,6 +18,12 @@ class ImagePoolManager
     message_template.image_pool.delete(image_id)
     message_template.save
   end
+
+  def remove_images(image_ids = nil, message_template)
+    image_ids = set_of_images_to_remove if !set_of_images_to_remove.nil?
+    message_template.image_pool.delete_if { |id| image_ids.include?(id) }
+    message_template.save
+  end
   
   def add_images_by_filename(experiment, original_filenames, message_template)
     image_ids = Image.belonging_to(experiment).where('original_filename in (?)', original_filenames).map(&:id).to_a
