@@ -1,9 +1,16 @@
 class ImagePoolManager
+  attr_accessor :set_of_images_to_remove
+  
   def add_images(image_ids, message_template)
     image_ids = [image_ids] if image_ids.is_a?(Fixnum)
     image_ids = [image_ids.to_i] if image_ids.is_a?(String)
     message_template.image_pool = message_template.image_pool.concat(image_ids).uniq
     message_template.save
+  end
+  
+  def remaining_images_count(image_ids = nil, message_template)
+    image_ids = set_of_images_to_remove if !set_of_images_to_remove.nil?
+    (message_template.image_pool - image_ids).count
   end
   
   def remove_image(image_id, message_template)
