@@ -190,9 +190,9 @@ describe Message do
       visits = create_list(:visit, 3, utm_content: @message.to_param)
       event = Ahoy::Event.create(visit_id: visits[0].id, name: "Converted")
 
-      @message_null = create(:message)
-      @message_null.metrics << Metric.new(source: :twitter, data: {"clicks" => nil, "impressions" => nil})
-      @message_null.save
+      @message_with_no_sessions_or_goals = create(:message)
+      @message_with_no_sessions_or_goals.metrics << Metric.new(source: :twitter, data: {"clicks" => nil, "impressions" => nil})
+      @message_with_no_sessions_or_goals.save
   end
 
     it 'returns N/A if asked to retrieve a metric for a missing source' do
@@ -272,24 +272,24 @@ describe Message do
     end
 
     it 'saves a nil value if there are no impressions' do
-      @message_null.calculate_website_goal_rate
-      @message_null.reload
+      @message_with_no_sessions_or_goals.calculate_website_goal_rate
+      @message_with_no_sessions_or_goals.reload
 
-      expect(@message_null.website_goal_rate).to eq(nil)
+      expect(@message_with_no_sessions_or_goals.website_goal_rate).to eq(nil)
     end
 
     it 'saves nil value if there are no sessions' do
-      @message_null.calculate_session_count
-      @message_null.reload
+      @message_with_no_sessions_or_goals.calculate_session_count
+      @message_with_no_sessions_or_goals.reload
 
-      expect(@message_null.website_session_count).to eq(nil)
+      expect(@message_with_no_sessions_or_goals.website_session_count).to eq(nil)
     end
 
     it 'saves nil value if there are no goals' do
-      @message_null.calculate_goal_count
-      @message_null.reload
+      @message_with_no_sessions_or_goals.calculate_goal_count
+      @message_with_no_sessions_or_goals.reload
 
-      expect(@message_null.website_goal_count).to eq(nil)
+      expect(@message_with_no_sessions_or_goals.website_goal_count).to eq(nil)
     end
   end
 
