@@ -187,7 +187,13 @@ describe Message do
   describe 'metric helpers' do
     before do
       @message = create(:message)
-    end
+      visits = create_list(:visit, 3, utm_content: @message.to_param)
+      event = Ahoy::Event.create(visit_id: visits[0].id, name: "Converted")
+
+      @message_with_no_sessions_or_goals = create(:message)
+      @message_with_no_sessions_or_goals.metrics << Metric.new(source: :twitter, data: {"clicks" => nil, "impressions" => nil})
+      @message_with_no_sessions_or_goals.save
+  end
 
     it 'returns N/A if asked to retrieve a metric for a missing source' do
       expect(@message.metric_facebook_likes).to eq('N/A')
