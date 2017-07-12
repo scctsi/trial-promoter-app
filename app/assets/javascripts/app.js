@@ -131,6 +131,46 @@ $(document).ready(function() {
         }
       );
     });
+
+    $('#images-add-button').click(function() {
+      var experimentId = $(this).data('experiment-id');
+      var experimentParam = $(this).data('experiment-param');
+
+      filepicker.pickAndStore({
+          mimetype: 'image/*',
+          multiple: true,
+          container: 'modal',
+          services: ['COMPUTER', 'GOOGLE_DRIVE', 'DROPBOX']
+        },
+        {
+          location: 'S3',
+          path: '/' + experimentParam + '/images/',
+          container: s3BucketContainer(),
+          access: 'public'
+        },
+        function(Blobs) {
+          var imageUrls = createS3BucketUrls(Blobs);
+          var filenames = [];
+          for (var i = 0; i < Blobs.length; i++) {
+            filenames.push(Blobs[i].filename);
+          }
+
+          $.ajax({
+            url : '/images/add',
+            type: 'POST',
+            data: {image_urls: imageUrls, original_filenames: filenames, experiment_id: experimentId.toString()},
+            dataType: 'json',
+            success: function(retdata) {
+              $('.ui.success.message.hidden.ask-refresh-page').removeClass('hidden');
+            }
+          });
+        },
+        function(error){
+        },
+        function(progress){
+        }
+      );
+    });
   }
 
   function setUpAnalyticsFileImports() {
