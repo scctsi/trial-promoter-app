@@ -1,7 +1,9 @@
 class ImageImporter < Importer
   def pre_import
-    # Delete any previously associated images
-    Image.tagged_with(@experiment_tag, on: :experiments).each{ |image| image.destroy }
+    # Delete any previously associated images unless otherwise specified
+    if import_options[:delete_existing_images].nil?
+      Image.tagged_with(@experiment_tag, on: :experiments).each{ |image| image.destroy } 
+    end
   end
 
   def pre_import_prepare(image_urls_and_original_filenames)
