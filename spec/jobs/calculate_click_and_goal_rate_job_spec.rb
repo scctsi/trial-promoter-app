@@ -16,6 +16,8 @@ RSpec.describe CalculateClickAndGoalRateJob, type: :job do
     @messages.each do |message|
       allow(message).to receive(:calculate_click_rate)
       allow(message).to receive(:calculate_website_goal_rate)
+      allow(message).to receive(:calculate_session_count)
+      allow(message).to receive(:calculate_goal_count)
     end
     allow(Message).to receive(:where).and_return([@messages[2], @messages[3], @messages[4]])
   end
@@ -35,6 +37,8 @@ RSpec.describe CalculateClickAndGoalRateJob, type: :job do
     (2..4).each do |index|
       expect(@messages[index]).to have_received(:calculate_click_rate)
       expect(@messages[index]).to have_received(:calculate_website_goal_rate)
+      expect(@messages[index]).to have_received(:calculate_session_count)
+      expect(@messages[index]).to have_received(:calculate_goal_count)
     end
   end
 
