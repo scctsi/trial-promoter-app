@@ -1,10 +1,11 @@
 # TODO: This class is only unit tested via its subclasses.
 class Importer
-  attr_accessor :import_class, :parsed_csv_content, :column_index_attribute_mapping, :experiment_tag
+  attr_accessor :import_class, :parsed_csv_content, :column_index_attribute_mapping, :experiment_tag, :import_options
 
-  def initialize(parsed_csv_content, experiment_tag)
+  def initialize(parsed_csv_content, experiment_tag, import_options = {})
     self.parsed_csv_content = parsed_csv_content
     self.experiment_tag = experiment_tag
+    self.import_options = import_options
 
     post_initialize
   end

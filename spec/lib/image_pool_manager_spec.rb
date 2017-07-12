@@ -113,6 +113,25 @@ RSpec.describe ImagePoolManager do
     @message_templates[1].reload
     expect(@message_templates[1].image_pool).to eq([@images[1].id])
   end
+
+  it 'removes multiple images from an existing image pool' do
+    @image_pool_manager.add_images([@images[0].id, @images[1].id, @images[2].id], @message_templates[1])
+
+    @image_pool_manager.remove_images([@images[0].id, @images[2].id], @message_templates[1])
+
+    @message_templates[1].reload
+    expect(@message_templates[1].image_pool).to match_array([@images[1].id])
+  end
+
+  it 'can store a set of images to remove and use that by default for the remove_images method' do
+    @image_pool_manager.add_images([@images[0].id, @images[1].id, @images[2].id], @message_templates[1])
+    
+    @image_pool_manager.set_of_images_to_remove = [@images[0].id, @images[2].id, @images[3].id]
+    @image_pool_manager.remove_images(@message_templates[1])
+
+    @message_templates[1].reload
+    expect(@message_templates[1].image_pool).to match_array([@images[1].id])
+  end
   
   it 'returns all selected and unselected images for a message template' do
     @image_pool_manager.add_images([@images[0].id, @images[1].id], @message_templates[1])
