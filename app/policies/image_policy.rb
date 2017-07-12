@@ -1,4 +1,8 @@
 class ImagePolicy < ApplicationPolicy
+  def add?
+    user.role.administrator?
+  end
+
   def import?
     user.role.administrator?
   end
