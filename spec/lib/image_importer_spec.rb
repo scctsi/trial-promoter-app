@@ -18,11 +18,22 @@ RSpec.describe ImageImporter do
   it 'defines a pre_import method which deletes all the images associated with the experiment' do
     s3_client_double = double('s3_client').as_null_object
     allow(S3Client).to receive(:new).and_return(s3_client_double)
-    images = create_list(:image, 2, experiment_list: [@experiment.to_param])
+    create_list(:image, 2, experiment_list: [@experiment.to_param])
 
     @image_importer.pre_import
 
     expect(Image.belonging_to(@experiment).count).to eq(0)
+  end
+
+  it 'does not delete all the images in the pre_import method if the importer is asked to add images instead' do
+    s3_client_double = double('s3_client').as_null_object
+    allow(S3Client).to receive(:new).and_return(s3_client_double)
+    create_list(:image, 2, experiment_list: [@experiment.to_param])
+
+    @image_importer = ImageImporter.new([@image_urls, @original_filenames], @experiment_tag, {delete_existing_images: false})
+    @image_importer.pre_import
+
+    expect(Image.belonging_to(@experiment).count).to eq(2)
   end
 
   it 'defines a pre_import_prepare method which converts the image URLs and original filenames to parsable CSV content' do
