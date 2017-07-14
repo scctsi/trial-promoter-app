@@ -25,8 +25,7 @@ class ImageReplacer
     ids_of_images_to_replace.each.with_index do |id_of_image_to_replace, index| 
       random_image_replacement_mapping[id_of_image_to_replace] = shuffled_ids_of_replacement_images[index]
     end
-    ids_of_replacement_images.shuffle
-    
+
     random_image_replacement_mapping
   end
   
