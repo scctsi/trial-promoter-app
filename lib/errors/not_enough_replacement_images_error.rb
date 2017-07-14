@@ -1,0 +1,2 @@
+class NotEnoughReplacementImagesError < StandardError
+end
