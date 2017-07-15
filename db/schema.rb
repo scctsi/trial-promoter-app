@@ -11,6 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+
 ActiveRecord::Schema.define(version: 20170714221557) do
 
   # These are extensions that must be enabled in order to support this database
@@ -177,6 +178,14 @@ ActiveRecord::Schema.define(version: 20170714221557) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "image_replacements", force: :cascade do |t|
+    t.integer  "message_id"
+    t.integer  "previous_image_id"
+    t.integer  "replacement_image_id"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
   create_table "images", force: :cascade do |t|
     t.string   "url",                             limit: 2000
     t.string   "original_filename"
@@ -254,6 +263,14 @@ ActiveRecord::Schema.define(version: 20170714221557) do
     t.integer  "message_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "modifications", force: :cascade do |t|
+    t.integer  "experiment_id"
+    t.string   "description"
+    t.text     "details"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
   end
 
   create_table "settings", force: :cascade do |t|

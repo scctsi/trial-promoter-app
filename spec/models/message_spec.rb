@@ -32,12 +32,6 @@
 #  website_session_count        :integer
 #
 
-
-
-
-
-
-
 require 'rails_helper'
 
 describe Message do
@@ -46,6 +40,7 @@ describe Message do
   it { is_expected.to have_one :buffer_update }
   it { is_expected.to have_one(:click_meter_tracking_link).dependent(:destroy) }
   it { is_expected.to have_many :metrics }
+  it { is_expected.to have_many :image_replacements }
   it { is_expected.to belong_to(:message_generating) }
   it { is_expected.to enumerize(:platform).in(:twitter, :facebook, :instagram) }
   it { is_expected.to enumerize(:medium).in(:ad, :organic).with_default(:organic) }
@@ -188,7 +183,7 @@ describe Message do
     before do
       @message = create(:message)
       visits = create_list(:visit, 3, utm_content: @message.to_param)
-      event = Ahoy::Event.create(visit_id: visits[0].id, name: "Converted")
+      Ahoy::Event.create(visit_id: visits[0].id, name: "Converted")
 
       @message_with_no_sessions_or_goals = create(:message)
       @message_with_no_sessions_or_goals.metrics << Metric.new(source: :twitter, data: {"clicks" => nil, "impressions" => nil})
@@ -237,7 +232,7 @@ describe Message do
     before do
       @message = create(:message)
       visits = create_list(:visit, 3, utm_content: @message.to_param)
-      event = Ahoy::Event.create(visit_id: visits[0].id, name: "Converted")
+      Ahoy::Event.create(visit_id: visits[0].id, name: "Converted")
 
       @message_with_no_sessions_or_goals = create(:message)
     end
