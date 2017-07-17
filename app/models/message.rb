@@ -32,6 +32,7 @@
 #  website_session_count        :integer
 #
 
+
 class Message < ActiveRecord::Base
   extend Enumerize
   include CampaignId
@@ -53,6 +54,7 @@ class Message < ActiveRecord::Base
   has_one :buffer_update
   has_one :click_meter_tracking_link, dependent: :destroy
   has_many :image_replacements
+  has_many :comments
   has_many :metrics do
     def << (value)
       source_metrics_exists = false
@@ -69,7 +71,7 @@ class Message < ActiveRecord::Base
       super value if !source_metrics_exists
     end
   end
-  
+
 
   def medium
     return self[:medium].to_sym if !self[:medium].nil?

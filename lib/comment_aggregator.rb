@@ -13,6 +13,6 @@ class CommentAggregator
     comment_set.each do |comment|
       message.comments << Comment.find_or_create_by(comment_text: comment["message"], message_id: message)
     end
-    return message.comments
+    message.save
   end
 end
