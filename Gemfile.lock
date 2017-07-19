@@ -5,6 +5,16 @@ GIT
     semantic-ui-sass (2.2.10.1)
       sass (>= 3.2)
 
+GIT
+  remote: git://github.com/scctsi/zuck.git
+  revision: c1df99e3b49f861dd216a1f19e52f943e0d38169
+  specs:
+    zuck (3.5.1)
+      activesupport
+      bundler
+      koala
+      rvm
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -196,6 +206,10 @@ GEM
       activerecord
       kaminari-core (= 1.0.1)
     kaminari-core (1.0.1)
+    koala (3.0.0)
+      addressable
+      faraday
+      json (>= 1.8)
     lazyload-rails (0.3.1)
       nokogiri (~> 1.5)
     listen (3.1.5)
@@ -333,6 +347,7 @@ GEM
     ruby_parser (3.9.0)
       sexp_processor (~> 4.1)
     rubyzip (1.2.1)
+    rvm (1.11.3.9)
     safe_yaml (1.0.4)
     safely_block (0.2.0)
       errbase
@@ -428,6 +443,7 @@ DEPENDENCIES
   httparty
   jquery-rails
   kaminari
+  koala
   lazyload-rails
   pg
   puma
@@ -451,6 +467,7 @@ DEPENDENCIES
   vcr
   web-console (~> 2.0)
   webmock
+  zuck (= 3.5.1)!
 
 RUBY VERSION
    ruby 2.3.3p222
