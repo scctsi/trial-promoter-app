@@ -1,0 +1,2 @@
+class DuplicateImageToReplaceIdError < StandardError
+end
