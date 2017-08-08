@@ -197,7 +197,17 @@ RSpec.describe ClickMeterClient do
         expect(clicks[0].click_meter_event_id).to eq('012691042@20170426212421792704001')
         expect(clicks[0].click_time).to eq(DateTime.parse('20170426212421'))
         expect(clicks[0].spider).to be true
+        expect(clicks[0].ip_address).to eq('66.220.145.244')
         expect(clicks[0].unique).to be true
+      end
+    end
+
+    it 'gets no clicks given a blacklisted ip address' do
+      exclude_ip_address_list = ["54.82.29.147", "173.252.88.87", "66.220.145.245", "66.220.145.244", "185.20.6.14", "52.202.49.192", "192.241.206.112"]
+      click_meter_tracking_link = create(:click_meter_tracking_link, click_meter_id: '12691042')
+      VCR.use_cassette 'click_meter/get_no_clicks_blacklisted_ip' do
+        clicks = ClickMeterClient.get_clicks(click_meter_tracking_link, exclude_ip_address_list)
+        expect(clicks.count).to eq(1)
       end
     end
 

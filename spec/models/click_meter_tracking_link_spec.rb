@@ -90,9 +90,9 @@ RSpec.describe ClickMeterTrackingLink, type: :model do
 
   describe "#get_clicks_by_date" do
     before do
-      @click_meter_tracking_link.clicks << create_list(:click, 3, :click_time => "23 April 2017")
-      @click_meter_tracking_link.clicks << create_list(:click, 1, :click_time => "24 April 2017")
-      @click_meter_tracking_link.clicks << create_list(:click, 2, :click_time => "25 April 2017")
+      @click_meter_tracking_link.clicks << create_list(:click, 3, :click_time => "23 April 2017", :unique => '1')
+      @click_meter_tracking_link.clicks << create_list(:click, 1, :click_time => "24 April 2017", :unique => '1')
+      @click_meter_tracking_link.clicks << create_list(:click, 2, :click_time => "25 April 2017", :unique => '1')
       @click_meter_tracking_link.clicks << create_list(:click, 0, :click_time => "26 April 2017")
     end
 
@@ -114,10 +114,10 @@ RSpec.describe ClickMeterTrackingLink, type: :model do
   describe "methods that get number of clicks" do
     before do
       @click_meter_tracking_link.message.scheduled_date_time = "23 April 2017"
+      @click_meter_tracking_link.clicks << create_list(:click, 3, :click_time => "23 April 2017", :unique => '1')
+      @click_meter_tracking_link.clicks << create_list(:click, 1, :click_time => "24 April 2017", :unique => '1')
+      @click_meter_tracking_link.clicks << create_list(:click, 2, :click_time => "25 April 2017", :unique => '1')
       @click_meter_tracking_link.message.save
-      @click_meter_tracking_link.clicks << create_list(:click, 3, :click_time => "23 April 2017")
-      @click_meter_tracking_link.clicks << create_list(:click, 1, :click_time => "24 April 2017")
-      @click_meter_tracking_link.clicks << create_list(:click, 2, :click_time => "25 April 2017")
     end
 
     it 'get the total clicks for each of the 3 days after the message is published' do
