@@ -33,7 +33,7 @@ class ClickMeterTrackingLink < ActiveRecord::Base
 
   def get_daily_click_totals
     click_totals = []
-    message = Message.where(id: self.message_id)[0]
+    message = Message.find(self.message_id)
     start_date = message.scheduled_date_time
     3.times do
       click_totals << self.get_clicks_by_date(start_date).count

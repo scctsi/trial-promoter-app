@@ -1,4 +1,6 @@
 class TcorsDataReportMapper
+  IP_EXCLUSION_LIST = ['128.125.77.139', '128.125.132.141', '207.151.120.4', '128.125.98.4', '128.125.109.224', '128.125.98.2', '68.181.124.25', '162.225.230.188', '216.4.202.66', '68.181.207.160', '2605:e000:8681:4900:a5c8:66d1:4753:fcc0', '68.101.127.18', '2602:306:80c8:88a0:89a:a5f6:7641:321c' ]
+
   def self.stem(message)
     return message.message_template.experiment_variables['stem_id']
   end
@@ -9,7 +11,7 @@ class TcorsDataReportMapper
   end
 
   def self.theme(message)
-    theme_mapping = { '1' => 'Health', '2' => 'Community', '3' => 'Money', '4' => 'Family', '5' => 'Addiction' }
+    theme_mapping = { '1' => 'Health', '2' => 'Appearance', '3' => 'Money', '4' => 'Love of Family', '5' => 'Addiction', '6' => 'Health + Community', '7' => 'Health + Family' }
     themes = []
     message.message_template.experiment_variables['theme'].each do |theme|
       themes << theme_mapping[theme]
@@ -32,8 +34,8 @@ class TcorsDataReportMapper
   end
 
   def self.sm_type(message)
-    platform_mapping = {:twitter => 'T', :facebook => 'F', :instagram => 'I'}
-    return platform_mapping[message.platform]
+    platform_mapper = {:twitter => 'T', :facebook => 'F', :instagram => 'I'}
+    return platform_mapper[message.platform]
   end
 
   def self.day_experiment(message)
@@ -48,6 +50,14 @@ class TcorsDataReportMapper
     return message.scheduled_date_time.strftime("%A")
   end
 
+  def self.time_sent(message)
+    if message.medium == :ad
+      return 'N/A'
+    else
+      return message.scheduled_date_time.strftime("%I:%M%p")
+    end
+  end
+
   def self.medium(message)
     return message.medium
   end
@@ -57,15 +67,15 @@ class TcorsDataReportMapper
     return image_mapper[message.image_present]
   end
 
-  def self.total_clicks_day1(message)
+  def self.total_clicks_day_1(message)
     return message.click_meter_tracking_link.get_daily_click_totals.first
   end
 
-  def self.total_clicks_day2(message)
+  def self.total_clicks_day_2(message)
     return message.click_meter_tracking_link.get_daily_click_totals.second
   end
 
-  def self.total_clicks_day3(message)
+  def self.total_clicks_day_3(message)
     return message.click_meter_tracking_link.get_daily_click_totals.third
   end
 
@@ -79,12 +89,123 @@ class TcorsDataReportMapper
     return click_times
   end
 
-  def self.total_impressions_day1
+  def self.total_impressions_day_1(message)
+    return message.impressions_by_day[0]
   end
 
-  def self.total_impressions_day2
+  def self.total_impressions_day_2(message)
+    if message.medium == :organic
+      message.impressions_by_day = parse_organic_impressions(message)
+    else
+      message.impressions_by_day = message.get_total_impressions
+    end
+
+    return message.impressions_by_day[1]
   end
 
-  def self.total_impressions_day3
+  def self.total_impressions_day_3(message)
+    if message.medium == :organic
+      message.impressions_by_day = parse_organic_impressions(message)
+    else
+      message.impressions_by_day = message.get_total_impressions
+    end
+    return message.impressions_by_day[2]
   end
+
+  def self.total_impressions_experiment(message)
+    return message.get_total_impressions.last
+  end
+
+  def self.retweet_twitter(message)
+  end
+
+  def self.share_facebook(message)
+  end
+
+  def self.share_instagram(message)
+  end
+
+  def self.reply_twitter(message)
+  end
+
+  def self.comment_facebook(message)
+  end
+
+  def self.comment_instagram(message)
+  end
+
+  def self.likes_twitter(message)
+  end
+
+  def self.likes_facebook(message)
+  end
+
+  def self.likes_instagram(message)
+  end
+
+  def self.total_sessions_day_1(message)
+    sessions = message.get_sessions(IP_EXCLUSION_LIST)
+    return sessions.select{|session| session.started_at.between?(message.scheduled_date_time, message.scheduled_date_time + 1.day)}.count
+  end
+
+  def self.total_sessions_day_2(message)
+    sessions = message.get_sessions(IP_EXCLUSION_LIST)
+    return sessions.select{|session| session.started_at.between?(message.scheduled_date_time + 1.day, message.scheduled_date_time + 2.day)}.count
+  end
+
+  def self.total_sessions_day_3(message)
+    sessions = message.get_sessions(IP_EXCLUSION_LIST)
+    return sessions.select{|session| session.started_at.between?(message.scheduled_date_time + 2.day, message.scheduled_date_time + 3.day)}.count
+  end
+
+  def self.total_sessions_experiment(message)
+    return message.website_session_count
+  end
+
+  def self.sessions(message)
+    return message.metrics[0].data["ga:sessions"]
+  end
+
+  def self.clicks(message)
+    clicks = []
+    sessions = message.get_sessions(IP_EXCLUSION_LIST)
+    sessions.each do |session|
+      clicks << Ahoy::Event.where(visit_id: session.id)
+    end
+    return clicks.count
+  end
+
+  def self.users(message)
+    return message.metrics[0].data['ga:users']
+  end
+
+  def self.exits(message)
+    exits = message.metrics[0].data['ga:exits']
+    users = self.users(message)
+    if exits == users
+      return exits
+    else
+      return "Exits (#{exits}) does not match users (#{users})"
+    end
+  end
+
+  def self.session_duration(message)
+    return message.metrics[0].data['ga:sessionDuration']
+  end
+
+  def self.time_on_page(message)
+    return message.metrics[0].data['ga:timeOnPage']
+  end
+
+  def self.pageviews(message)
+    return message.metrics[0].data['ga:pageviews']
+  end
+
+  private
+    def self.parse_organic_impressions(message)
+      organic_impressions = message.get_total_impressions
+      organic_impressions[1] = organic_impressions[1] - organic_impressions[0]
+      organic_impressions[2] = organic_impressions[2] - organic_impressions[1]
+      return organic_impressions
+    end
 end

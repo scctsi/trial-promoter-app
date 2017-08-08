@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170714221557) do
+ActiveRecord::Schema.define(version: 20170803165652) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -86,6 +86,7 @@ ActiveRecord::Schema.define(version: 20170714221557) do
     t.boolean  "spider"
     t.boolean  "unique"
     t.integer  "click_meter_tracking_link_id"
+    t.text     "ip_address"
   end
 
   add_index "clicks", ["click_meter_tracking_link_id"], name: "index_clicks_on_click_meter_tracking_link_id", using: :btree
@@ -250,6 +251,7 @@ ActiveRecord::Schema.define(version: 20170714221557) do
     t.float    "website_goal_rate"
     t.integer  "website_goal_count"
     t.integer  "website_session_count"
+    t.text     "impressions_by_day"
   end
 
   add_index "messages", ["message_generating_type", "message_generating_id"], name: "index_on_message_generating_for_analytics_files", using: :btree

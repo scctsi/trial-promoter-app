@@ -9,6 +9,7 @@
 #
 
 
+
 class DataDictionary < ActiveRecord::Base
   belongs_to :experiment
   validates :experiment, presence: true
