@@ -4,7 +4,7 @@ require 'google/apis/analytics_v3'
 RSpec.describe TcorsDataReportMapper do
   before do
     @message = create(:message)
-    @message.scheduled_date_time = "2017-04-30 12:00:00 UTC"
+    @message.scheduled_date_time = '30 April 2017 12:00:00 PDT -07:00'
     visits_1 = create_list(:visit, 3, utm_content: @message.to_param, started_at: @message.scheduled_date_time + 1.hour)
     visits_2 = create_list(:visit, 2, utm_content: @message.to_param, started_at: @message.scheduled_date_time + 1.day + 1.hour)
     visits_3 = create_list(:visit, 1, utm_content: @message.to_param, started_at: @message.scheduled_date_time + 2.day + 1.hour, ip: '128.125.77.139')
@@ -101,7 +101,7 @@ RSpec.describe TcorsDataReportMapper do
   end
 
   it 'maps the date the message was published to the date sent' do
-    expect(TcorsDataReportMapper.date_sent(@message)).to eq('2017-04-30 12:00:00 UTC')
+    expect(TcorsDataReportMapper.date_sent(@message)).to eq('2017-04-30 19:00:00 UTC')
   end
 
   it 'maps the date the message was published to the day of the week' do
@@ -122,7 +122,7 @@ RSpec.describe TcorsDataReportMapper do
   end
 
   it 'maps the time the message was sent to time sent' do
-    expect(TcorsDataReportMapper.time_sent(@message)).to eq('12:00PM')
+    expect(TcorsDataReportMapper.time_sent(@message)).to eq('07:00PM')
     @message.medium = :ad
     expect(TcorsDataReportMapper.time_sent(@message)).to eq('N/A')
   end
