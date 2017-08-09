@@ -165,8 +165,8 @@ RSpec.describe TcorsDataReportMapper do
   end
 
   it 'maps the times of each human click per tracking link to click_time' do
-    expect(TcorsDataReportMapper.click_time(@message)).to eq(['2017-04-30 00:23:13.000000000', '2017-04-30 00:23:13.000000000', '2017-04-30 00:23:13.000000000','2017-05-01 13:44:56.000000000',
-      '2017-05-02 19:26:01.000000000','2017-05-02 19:26:01.000000000'])
+    expect(TcorsDataReportMapper.click_time(@message)).to eq(['2017-04-30 00:23:13.000000000 +0000', '2017-04-30 00:23:13.000000000 +0000', '2017-04-30 00:23:13.000000000 +0000','2017-05-01 13:44:56.000000000 +0000',
+      '2017-05-02 19:26:01.000000000 +0000','2017-05-02 19:26:01.000000000 +0000'])
     expect(TcorsDataReportMapper.click_time(@message)).to_not eq([ '2017-05-01 12:34:57.000000000'])
   end
 
