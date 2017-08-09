@@ -180,7 +180,7 @@ class Message < ActiveRecord::Base
     save
   end
 
-  def calculate_goal_count
+  def calculate_goal_count(exclude_ip_address_list = [])
     goal_count = 0
     sessions = get_sessions(exclude_ip_address_list)
     # Converted event is in the Ahoy code.
