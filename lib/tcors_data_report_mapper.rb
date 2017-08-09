@@ -39,18 +39,20 @@ class TcorsDataReportMapper
   end
 
   def self.date_sent(message)
-    return message.scheduled_date_time
+    return message.scheduled_date_time.strftime("%m/%d/%Y")
   end
 
   def self.day_sent(message)
-    return message.scheduled_date_time.strftime("%A")
+    #Ruby maps Sunday as 0, so mapper just follows data dictionary
+    day_of_week_mapper = {'Sunday' => '7', 'Monday' => '1', 'Tuesday' => '2', 'Wednesday' => '3', 'Thursday' => '4', 'Friday' => '5', 'Saturday' => '6'}
+    return day_of_week_mapper[message.scheduled_date_time.strftime("%A")]
   end
 
   def self.time_sent(message)
     if message.medium == :ad
       return 'N/A'
     else
-      return message.scheduled_date_time.strftime("%I:%M%p")
+      return message.scheduled_date_time.strftime("%H:%M:%S")
     end
   end
 
@@ -81,7 +83,7 @@ class TcorsDataReportMapper
 
   def self.click_time(message)
     unique_clicks = message.click_meter_tracking_link.clicks.select{|click| click.unique}
-    click_times = unique_clicks.map{|click| click.click_time}
+    click_times = unique_clicks.map{|click| click.click_time.strftime("%H:%M:%S")}
     return click_times
   end
 
@@ -199,8 +201,10 @@ class TcorsDataReportMapper
 
   private
     def self.parse_organic_impressions(message)
+      #check if organic impressions have been calulated for each day yet
       organic_impressions = message.get_total_impressions
       return organic_impressions if organic_impressions[4] == true
+
       organic_impressions[2] = organic_impressions[2] - organic_impressions[1]
       organic_impressions[1] = organic_impressions[1] - organic_impressions[0]
       organic_impressions[4] = true
