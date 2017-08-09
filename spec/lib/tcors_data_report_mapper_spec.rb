@@ -4,7 +4,7 @@ require 'google/apis/analytics_v3'
 RSpec.describe TcorsDataReportMapper do
   before do
     @message = create(:message)
-    @message.scheduled_date_time = '30 April 2017 12:00:00 PDT -07:00'
+    @message.scheduled_date_time = '30 April 2017 12:00:00'
     visits_1 = create_list(:visit, 3, utm_content: @message.to_param, started_at: @message.scheduled_date_time + 1.hour)
     visits_2 = create_list(:visit, 2, utm_content: @message.to_param, started_at: @message.scheduled_date_time + 1.day + 1.hour)
     visits_3 = create_list(:visit, 1, utm_content: @message.to_param, started_at: @message.scheduled_date_time + 2.day + 1.hour, ip: '128.125.77.139')
@@ -101,28 +101,28 @@ RSpec.describe TcorsDataReportMapper do
   end
 
   it 'maps the date the message was published to the date sent' do
-    expect(TcorsDataReportMapper.date_sent(@message)).to eq('2017-04-30 19:00:00')
+    expect(TcorsDataReportMapper.date_sent(@message)).to eq('04/30/2017')
   end
 
   it 'maps the date the message was published to the day of the week' do
-    expect(TcorsDataReportMapper.day_sent(@message)).to eq('Sunday')
+    expect(TcorsDataReportMapper.day_sent(@message)).to eq('7')
     @message.scheduled_date_time = '29 April 2017 12:00:00'
     @message.click_meter_tracking_link.clicks.each{|click| click.unique = true }
-    expect(TcorsDataReportMapper.day_sent(@message)).to eq('Saturday')
+    expect(TcorsDataReportMapper.day_sent(@message)).to eq('6')
     @message.scheduled_date_time = '28 April 2017 12:00:00'
-    expect(TcorsDataReportMapper.day_sent(@message)).to eq('Friday')
+    expect(TcorsDataReportMapper.day_sent(@message)).to eq('5')
     @message.scheduled_date_time = '27 April 2017 12:00:00'
-    expect(TcorsDataReportMapper.day_sent(@message)).to eq('Thursday')
+    expect(TcorsDataReportMapper.day_sent(@message)).to eq('4')
     @message.scheduled_date_time = '26 April 2017 12:00:00'
-    expect(TcorsDataReportMapper.day_sent(@message)).to eq('Wednesday')
+    expect(TcorsDataReportMapper.day_sent(@message)).to eq('3')
     @message.scheduled_date_time = '25 April 2017 12:00:00'
-    expect(TcorsDataReportMapper.day_sent(@message)).to eq('Tuesday')
+    expect(TcorsDataReportMapper.day_sent(@message)).to eq('2')
     @message.scheduled_date_time = '24 April 2017 12:00:00'
-    expect(TcorsDataReportMapper.day_sent(@message)).to eq('Monday')
+    expect(TcorsDataReportMapper.day_sent(@message)).to eq('1')
   end
 
   it 'maps the time the message was sent to time sent' do
-    expect(TcorsDataReportMapper.time_sent(@message)).to eq('07:00PM')
+    expect(TcorsDataReportMapper.time_sent(@message)).to eq('12:00:00')
     @message.medium = :ad
     expect(TcorsDataReportMapper.time_sent(@message)).to eq('N/A')
   end
@@ -165,8 +165,7 @@ RSpec.describe TcorsDataReportMapper do
   end
 
   it 'maps the times of each human click per tracking link to click_time' do
-    expect(TcorsDataReportMapper.click_time(@message)).to eq(['2017-04-30 00:23:13.000000000 +0000', '2017-04-30 00:23:13.000000000 +0000', '2017-04-30 00:23:13.000000000 +0000','2017-05-01 13:44:56.000000000 +0000',
-      '2017-05-02 19:26:01.000000000 +0000','2017-05-02 19:26:01.000000000 +0000'])
+    expect(TcorsDataReportMapper.click_time(@message)).to eq(['00:23:13', '00:23:13', '00:23:13', '13:44:56', '19:26:01', '19:26:01'])
     expect(TcorsDataReportMapper.click_time(@message)).to_not eq([ '2017-05-01 12:34:57.000000000'])
   end
 
