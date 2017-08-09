@@ -31,6 +31,7 @@ RSpec.describe Experiment, type: :model do
   it { is_expected.to have_one(:data_dictionary) }
   it { is_expected.to have_many(:messages) }
   it { is_expected.to have_many(:analytics_files) }
+  it { is_expected.to have_many(:modifications) }
   it { is_expected.to have_and_belong_to_many :social_media_profiles }
 
   it 'returns an array of all possible times in a day' do

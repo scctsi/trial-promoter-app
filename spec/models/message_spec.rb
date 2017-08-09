@@ -22,9 +22,20 @@
 #  social_media_profile_id      :integer
 #  platform                     :string
 #  promoted_website_url         :string(2000)
+<<<<<<< HEAD
 #  backdated                    :boolean
 #  original_scheduled_date_time :datetime
 #  campaign_id                  :string
+=======
+#  campaign_id                  :string
+#  backdated                    :boolean
+#  original_scheduled_date_time :datetime
+#  campaign_unmatchable         :boolean          default(FALSE)
+#  click_rate                   :float
+#  website_goal_rate            :float
+#  website_goal_count           :integer
+#  website_session_count        :integer
+>>>>>>> development
 #
 
 require 'rails_helper'
@@ -35,6 +46,7 @@ describe Message do
   it { is_expected.to have_one :buffer_update }
   it { is_expected.to have_one(:click_meter_tracking_link).dependent(:destroy) }
   it { is_expected.to have_many :metrics }
+  it { is_expected.to have_many :image_replacements }
   it { is_expected.to belong_to(:message_generating) }
   it { is_expected.to enumerize(:platform).in(:twitter, :facebook, :instagram) }
   it { is_expected.to enumerize(:medium).in(:ad, :organic).with_default(:organic) }
@@ -176,7 +188,13 @@ describe Message do
   describe 'metric helpers' do
     before do
       @message = create(:message)
-    end
+      visits = create_list(:visit, 3, utm_content: @message.to_param)
+      Ahoy::Event.create(visit_id: visits[0].id, name: "Converted")
+
+      @message_with_no_sessions_or_goals = create(:message)
+      @message_with_no_sessions_or_goals.metrics << Metric.new(source: :twitter, data: {"clicks" => nil, "impressions" => nil})
+      @message_with_no_sessions_or_goals.save
+  end
 
     it 'returns N/A if asked to retrieve a metric for a missing source' do
       expect(@message.metric_facebook_likes).to eq('N/A')
@@ -213,6 +231,68 @@ describe Message do
     it 'returns a percentage given two metric names (first metric / second metric accurate to two decimal places)' do
       @message.metrics << Metric.new(source: :facebook, data: {"clicks" => 5, "impressions" => 100})
       expect(@message.percentage_facebook_clicks_impressions).to eq(5.0)
+    end
+  end
+
+  describe 'message click rate and website goal rate calculations' do
+    before do
+      @message = create(:message)
+      visits = create_list(:visit, 3, utm_content: @message.to_param)
+      Ahoy::Event.create(visit_id: visits[0].id, name: "Converted")
+
+      @message_with_no_sessions_or_goals = create(:message)
+    end
+
+    it 'saves a nil value if there are no clicks or sessions' do
+      @message.metrics << Metric.new(source: :twitter, data: {"clicks" => nil, "impressions" => nil})
+      @message.save
+
+      @message.calculate_click_rate
+      @message.reload
+
+      expect(@message.click_rate).to eq(nil)
+    end
+
+    it 'saves the number of goals for a given message' do
+      @message.calculate_goal_count
+      @message.reload
+
+      expect(@message.website_goal_count).to eq(1)
+    end
+
+    it 'saves the sessions (Ahoy visits) for a given message' do
+      @message.calculate_session_count
+      @message.reload
+
+      expect(@message.website_session_count).to eq(3)
+    end
+
+    it 'saves a goal rate percentage from Ahoy (goals / visits)' do
+      @message.calculate_website_goal_rate
+      @message.reload
+
+      expect(@message.website_goal_rate).to eq(33.33)
+    end
+
+    it 'saves a nil value in website_goal_rate if there are no sessions and no goals' do
+      @message_with_no_sessions_or_goals.calculate_website_goal_rate
+      @message_with_no_sessions_or_goals.reload
+
+      expect(@message_with_no_sessions_or_goals.website_goal_rate).to eq(nil)
+    end
+
+    it 'saves 0 in website_session_count if there are no sessions' do
+      @message_with_no_sessions_or_goals.calculate_session_count
+      @message_with_no_sessions_or_goals.reload
+
+      expect(@message_with_no_sessions_or_goals.website_session_count).to eq(0)
+    end
+
+    it 'saves 0 in website_goal_count if there are no goals' do
+      @message_with_no_sessions_or_goals.calculate_goal_count
+      @message_with_no_sessions_or_goals.reload
+
+      expect(@message_with_no_sessions_or_goals.website_goal_count).to eq(0)
     end
   end
 

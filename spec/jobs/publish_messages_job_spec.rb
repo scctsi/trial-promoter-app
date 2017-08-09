@@ -60,7 +60,7 @@ RSpec.describe PublishMessagesJob, type: :job do
     perform_enqueued_jobs { PublishMessagesJob.perform_later }
   end
 
-  it 'executes perform and publishes pending messages that need to be published to social networks in the next 7 days' do
+  it 'executes perform and publishes pending messages that need to be published to social networks in the next 7 days (by default)' do
     @messages[0].scheduled_date_time = Time.new(2010, 1, 1, 0, 0, 0)
     @messages[1].scheduled_date_time = Time.new(2010, 1, 6, 0, 0, 0)
     @messages[2].scheduled_date_time = Time.new(2010, 1, 8, 0, 0, 0)
@@ -78,6 +78,24 @@ RSpec.describe PublishMessagesJob, type: :job do
     end
 
     perform_enqueued_jobs { PublishMessagesJob.perform_later }
+  end
+
+  it 'executes perform and publishes pending messages that need to be published to social networks in the next day (by specifying 1 as a parameter to the job)' do
+    @messages[0].scheduled_date_time = Time.new(2010, 1, 1, 0, 0, 0)
+    @messages[1].scheduled_date_time = Time.new(2010, 1, 6, 0, 0, 0)
+    @messages[2].scheduled_date_time = Time.new(2010, 1, 8, 0, 0, 0)
+    @messages[3].scheduled_date_time = Time.new(2010, 1, 9, 0, 0, 0)
+    @messages[4].scheduled_date_time = Time.new(2010, 1, 10, 0, 0, 0)
+    (0..4).each { |index| @messages[index].save }
+
+    # Only publish pending messages to Buffer up to a day in advance (social_network_publish_date <= 1 day from today)
+    expect(BufferClient).to receive(:create_update).with(@messages[0])
+    # Ignore pending messages that are scheduled more than a day ahead
+    (1..4).each do |index|
+      expect(BufferClient).not_to receive(:create_update).with(@messages[index])
+    end
+
+    perform_enqueued_jobs { PublishMessagesJob.perform_later(1) }
   end
 
   after do
