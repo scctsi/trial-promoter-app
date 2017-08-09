@@ -22,9 +22,20 @@
 #  social_media_profile_id      :integer
 #  platform                     :string
 #  promoted_website_url         :string(2000)
+<<<<<<< HEAD
 #  backdated                    :boolean
 #  original_scheduled_date_time :datetime
 #  campaign_id                  :string
+=======
+#  campaign_id                  :string
+#  backdated                    :boolean
+#  original_scheduled_date_time :datetime
+#  campaign_unmatchable         :boolean          default(FALSE)
+#  click_rate                   :float
+#  website_goal_rate            :float
+#  website_goal_count           :integer
+#  website_session_count        :integer
+>>>>>>> development
 #
 
 class Message < ActiveRecord::Base
@@ -47,6 +58,7 @@ class Message < ActiveRecord::Base
   belongs_to :social_media_profile
   has_one :buffer_update
   has_one :click_meter_tracking_link, dependent: :destroy
+  has_many :image_replacements
   has_many :metrics do
     def << (value)
       source_metrics_exists = false
@@ -63,6 +75,7 @@ class Message < ActiveRecord::Base
       super value if !source_metrics_exists
     end
   end
+  
 
   def medium
     return self[:medium].to_sym if !self[:medium].nil?
@@ -137,5 +150,61 @@ class Message < ActiveRecord::Base
       return 'N/A' if metrics_from_source[0].data[metric_1_name].nil? || metrics_from_source[0].data[metric_2_name].nil?
       return (metrics_from_source[0].data[metric_1_name].to_f / metrics_from_source[0].data[metric_2_name].to_f) * 100
     end
+  end
+
+  def calculate_click_rate
+    case platform
+    when :facebook
+      calculated_rate = percentage_facebook_clicks_impressions
+    when :twitter
+      calculated_rate = percentage_twitter_clicks_impressions
+    when :instagram
+      calculated_rate = percentage_instagram_clicks_impressions
+    end
+    calculated_rate = nil if calculated_rate == 'N/A'
+    calculated_rate *= 100 if calculated_rate != nil
+    self.click_rate = calculated_rate
+
+    save
+  end
+
+  def calculate_website_goal_rate
+    calculate_goal_count
+    calculate_session_count
+
+    if website_session_count == 0
+      self.website_goal_rate = nil
+    else
+      self.website_goal_rate = (website_goal_count / website_session_count.to_f * 100).round(2)
+    end
+
+    save
+  end
+
+  def calculate_goal_count
+    goal_count = 0
+    sessions = get_sessions
+    # Converted event is in the Ahoy code.
+    # For the TCORS experiment, the 'Converted' event occurs in main.js file of website (Fresh Empire or This Free Life)
+    # when user scrolls or clicks on navigation bar
+    sessions.each do |session|
+      goal_count += 1 if Ahoy::Event.where(visit_id: session.id).where(name: "Converted").count > 0
+    end
+
+    self.website_goal_count = goal_count
+    save
+  end
+
+  def calculate_session_count
+    sessions = get_sessions
+    self.website_session_count = sessions.count
+
+    save
+  end
+
+private
+
+  def get_sessions
+    Visit.where(utm_content: to_param)
   end
 end

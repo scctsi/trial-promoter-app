@@ -11,7 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20170707193750) do
+=======
+ActiveRecord::Schema.define(version: 20170713230242) do
+>>>>>>> development
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -162,6 +166,14 @@ ActiveRecord::Schema.define(version: 20170707193750) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "image_replacements", force: :cascade do |t|
+    t.integer  "message_id"
+    t.integer  "previous_image_id"
+    t.integer  "replacement_image_id"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
   create_table "images", force: :cascade do |t|
     t.string   "url",                             limit: 2000
     t.string   "original_filename"
@@ -222,6 +234,13 @@ ActiveRecord::Schema.define(version: 20170707193750) do
     t.boolean  "backdated"
     t.datetime "original_scheduled_date_time"
     t.string   "campaign_id"
+<<<<<<< HEAD
+=======
+    t.float    "click_rate"
+    t.float    "website_goal_rate"
+    t.integer  "website_goal_count"
+    t.integer  "website_session_count"
+>>>>>>> development
   end
 
   add_index "messages", ["message_generating_type", "message_generating_id"], name: "index_on_message_generating_for_analytics_files", using: :btree
@@ -234,6 +253,14 @@ ActiveRecord::Schema.define(version: 20170707193750) do
     t.integer  "message_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "modifications", force: :cascade do |t|
+    t.integer  "experiment_id"
+    t.string   "description"
+    t.text     "details"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
   end
 
   create_table "settings", force: :cascade do |t|
