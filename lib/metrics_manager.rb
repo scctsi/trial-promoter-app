@@ -1,7 +1,15 @@
 class MetricsManager
   def self.get_metric_value(message, source, metric_name)
     message.metrics.each do |metric|
+<<<<<<< HEAD:lib/metrics_manager.rb
       return metric.data[metric_name] if metric.source == source && !metric.data[metric_name].nil?
+=======
+      if metric.source == source && !metric.data[metric_name].nil?
+        return metric.data[metric_name] 
+      else
+        return 'N/A'
+      end
+>>>>>>> b99a0d13e58cfe1a695fece277dc7d49528382b2:lib/metrics_manager.rb
     end
     
     return 'N/A'
