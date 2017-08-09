@@ -12,11 +12,7 @@ class TcorsDataReportMapper
 
   def self.theme(message)
     theme_mapping = { '1' => 'Health', '2' => 'Appearance', '3' => 'Money', '4' => 'Love of Family', '5' => 'Addiction', '6' => 'Health + Community', '7' => 'Health + Family' }
-    themes = []
-    message.message_template.experiment_variables['theme'].each do |theme|
-      themes << theme_mapping[theme]
-    end
-    return themes.join(', ')
+    return theme_mapping[message.message_template.experiment_variables['theme']]
   end
 
   def self.lin_meth_factor(message)
@@ -94,21 +90,12 @@ class TcorsDataReportMapper
   end
 
   def self.total_impressions_day_2(message)
-    if message.medium == :organic
-      message.impressions_by_day = parse_organic_impressions(message)
-    else
-      message.impressions_by_day = message.get_total_impressions
-    end
-
+    message.impressions_by_day = parse_organic_impressions(message) if message.medium == :organic
     return message.impressions_by_day[1]
   end
 
   def self.total_impressions_day_3(message)
-    if message.medium == :organic
-      message.impressions_by_day = parse_organic_impressions(message)
-    else
-      message.impressions_by_day = message.get_total_impressions
-    end
+    message.impressions_by_day = parse_organic_impressions(message) if message.medium == :organic
     return message.impressions_by_day[2]
   end
 
@@ -117,30 +104,39 @@ class TcorsDataReportMapper
   end
 
   def self.retweet_twitter(message)
+    return ""
   end
 
   def self.share_facebook(message)
+    return ""
   end
 
   def self.share_instagram(message)
+    return ""
   end
 
   def self.reply_twitter(message)
+    return ""
   end
 
   def self.comment_facebook(message)
+    return ""
   end
 
   def self.comment_instagram(message)
+    return ""
   end
 
   def self.likes_twitter(message)
+    return ""
   end
 
   def self.likes_facebook(message)
+    return ""
   end
 
   def self.likes_instagram(message)
+    return ""
   end
 
   def self.total_sessions_day_1(message)
@@ -204,8 +200,10 @@ class TcorsDataReportMapper
   private
     def self.parse_organic_impressions(message)
       organic_impressions = message.get_total_impressions
-      organic_impressions[1] = organic_impressions[1] - organic_impressions[0]
+      return organic_impressions if organic_impressions[4] == true
       organic_impressions[2] = organic_impressions[2] - organic_impressions[1]
+      organic_impressions[1] = organic_impressions[1] - organic_impressions[0]
+      organic_impressions[4] = true
       return organic_impressions
     end
 end
