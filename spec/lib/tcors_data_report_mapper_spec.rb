@@ -101,7 +101,7 @@ RSpec.describe TcorsDataReportMapper do
   end
 
   it 'maps the date the message was published to the date sent' do
-    expect(TcorsDataReportMapper.date_sent(@message)).to eq('2017-04-30 19:00:00 UTC')
+    expect(TcorsDataReportMapper.date_sent(@message)).to eq('2017-04-30 19:00:00')
   end
 
   it 'maps the date the message was published to the day of the week' do

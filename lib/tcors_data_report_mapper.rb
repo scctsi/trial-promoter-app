@@ -39,7 +39,7 @@ class TcorsDataReportMapper
   end
 
   def self.date_sent(message)
-    return message.scheduled_date_time.to_s
+    return message.scheduled_date_time
   end
 
   def self.day_sent(message)
