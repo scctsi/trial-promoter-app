@@ -39,19 +39,19 @@ RSpec.describe TcorsDataReportMapper do
     end
 
     it 'maps the message theme to theme' do
-      @message.message_template.experiment_variables['theme'] = ['1']
+      @message.message_template.experiment_variables['theme'] = '1'
       expect(TcorsDataReportMapper.theme(@message)).to eq('Health')
-      @message.message_template.experiment_variables['theme'] = ['2']
+      @message.message_template.experiment_variables['theme'] = '2'
       expect(TcorsDataReportMapper.theme(@message)).to eq('Appearance')
-      @message.message_template.experiment_variables['theme'] = ['3']
+      @message.message_template.experiment_variables['theme'] = '3'
       expect(TcorsDataReportMapper.theme(@message)).to eq('Money')
-      @message.message_template.experiment_variables['theme'] = ['4']
+      @message.message_template.experiment_variables['theme'] = '4'
       expect(TcorsDataReportMapper.theme(@message)).to eq('Love of Family')
-      @message.message_template.experiment_variables['theme'] = ['5']
+      @message.message_template.experiment_variables['theme'] = '5'
       expect(TcorsDataReportMapper.theme(@message)).to eq('Addiction')
-      @message.message_template.experiment_variables['theme'] = ['6']
+      @message.message_template.experiment_variables['theme'] = '6'
       expect(TcorsDataReportMapper.theme(@message)).to eq('Health + Community')
-      @message.message_template.experiment_variables['theme'] = ['7']
+      @message.message_template.experiment_variables['theme'] = '7'
       expect(TcorsDataReportMapper.theme(@message)).to eq('Health + Family')
     end
 
@@ -184,7 +184,7 @@ RSpec.describe TcorsDataReportMapper do
   end
 
   it 'maps the total impressions for each day to total_impressions_day_3' do
-    expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq(900)
+    expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq(600)
     @message.medium = :ad
     @message.impressions_by_day = [300, 800, 1400, 10000]
     expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq(1400)
