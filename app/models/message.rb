@@ -22,11 +22,6 @@
 #  social_media_profile_id      :integer
 #  platform                     :string
 #  promoted_website_url         :string(2000)
-<<<<<<< HEAD
-#  backdated                    :boolean
-#  original_scheduled_date_time :datetime
-#  campaign_id                  :string
-=======
 #  campaign_id                  :string
 #  backdated                    :boolean
 #  original_scheduled_date_time :datetime
@@ -35,7 +30,6 @@
 #  website_goal_rate            :float
 #  website_goal_count           :integer
 #  website_session_count        :integer
->>>>>>> development
 #
 
 class Message < ActiveRecord::Base
