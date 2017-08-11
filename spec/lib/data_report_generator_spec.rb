@@ -32,7 +32,7 @@ RSpec.describe DataReportGenerator do
       end
     end
     it 'creates a new data report file' do
-      column_names = ['stem', 'fda_campaign', 'theme', 'variant', 'lin_meth_factor', 'lin_meth_level', 'day_experiment', 'date_sent', 'day_sent', 'time_sent', 'sm_type', 'medium', 'image_included', 'total_clicks_day_1', 'total_clicks_day_2', 'total_clicks_day_3', 'total_clicks_experiment', 'click_time', 'total_impressions_day_1', 'total_impressions_day_2', 'total_impressions_day_3', 'total_impressions_experiment', 'retweet_twitter', 'share_facebook', 'share_instagram', 'reply_twitter', 'comment_facebook', 'comment_instagram', 'likes_twitter', 'likes_facebook', 'likes_instagram', 'total_sessions_day_1', 'total_sessions_day_2', 'total_sessions_day_3', 'total_sessions_experiment', 'sessions', 'clicks', 'users', 'exits', 'session_duration', 'time_on_page', 'pageviews']
+      column_names = ['stem', 'fda_campaign', 'theme', 'variant', 'lin_meth_factor', 'lin_meth_level', 'day_experiment', 'date_sent', 'day_sent', 'time_sent', 'sm_type', 'medium', 'image_included', 'total_clicks_day_1', 'total_clicks_day_2', 'total_clicks_day_3', 'total_clicks_experiment', 'click_time', 'total_impressions_day_1', 'total_impressions_day_2', 'total_impressions_day_3', 'total_impressions_experiment', 'retweets_twitter', 'shares_facebook', 'shares_instagram', 'replies_twitter', 'comments_facebook', 'comments_instagram', 'likes_twitter', 'likes_facebook', 'likes_instagram', 'total_sessions_day_1', 'total_sessions_day_2', 'total_sessions_day_3', 'total_sessions_experiment', 'sessions', 'clicks', 'users', 'exits', 'session_duration', 'time_on_page', 'pageviews']
 
       DataReportGenerator.generate_report(@messages, column_names)
 
