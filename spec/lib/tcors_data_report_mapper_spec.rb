@@ -18,8 +18,7 @@ RSpec.describe TcorsDataReportMapper do
     @message.click_meter_tracking_link.clicks << create_list(:click, 2, :unique => '1', :click_time => "2 May 2017 19:26:01")
     @message.impressions_by_day = [300, 800, 1400, 10000]
 
-    metric = Metric.new(source: :google_analytics, data: {'ga:sessions'=>2, 'ga:users'=>2, 'ga:exits' =>2, 'ga:sessionDuration' => [42, 18], 'ga:timeOnPage' => [42, 18], 'ga:pageviews' => 2})
-    @message.metrics << metric
+    @message.metrics << Metric.new(source: :google_analytics, data: {'ga:sessions'=>2, 'ga:users'=>2, 'ga:exits' =>2, 'ga:sessionDuration' => [42, 18], 'ga:timeOnPage' => [42, 18], 'ga:pageviews' => 2})
 
     @message.website_session_count = 34
     @message.save
@@ -193,40 +192,61 @@ RSpec.describe TcorsDataReportMapper do
     expect(TcorsDataReportMapper.total_impressions_experiment(@message)).to eq(10000)
   end
 
-  xit 'maps the number of twitter shares to retweet_twitter' do
-    expect(TcorsDataReportMapper.retweet_twitter(@message)).to eq(3)
+  describe 'twitter metrics' do
+    before do
+      @message.metrics << Metric.new(source: :twitter, data: { 'retweets' => 12 , 'replies'=> 3, 'likes'=> 14 })
+      @message.save
+    end
+
+    it 'maps the number of twitter shares to retweets_twitter' do
+      expect(TcorsDataReportMapper.retweets_twitter(@message)).to eq(12)
+    end
+
+    it 'maps the number of twitter likes to likes_twitter' do
+      expect(TcorsDataReportMapper.likes_twitter(@message)).to eq(14)
+    end
+
+    it 'maps the number of twitter replies to replies_twitter' do
+      expect(TcorsDataReportMapper.replies_twitter(@message)).to eq(3)
+    end
   end
 
-  xit 'maps the number of facebook shares to share_facebook' do
-    expect(TcorsDataReportMapper.retweet_twitter(@message)).to eq(3)
+  describe 'facebook metrics' do
+    before do
+      @message.metrics << Metric.new(source: :facebook, data: {'shares' => 1 , 'comments'=> 4, 'likes'=> 14 })
+      @message.save
+    end
+
+    it 'maps the number of facebook shares to share_facebook' do
+      expect(TcorsDataReportMapper.shares_facebook(@message)).to eq(1)
+    end
+
+    it 'maps the number of facebook likes to likes_facebook' do
+      expect(TcorsDataReportMapper.likes_facebook(@message)).to eq(14)
+    end
+
+    it 'maps the number of facebook comments to comment_facebook' do
+      expect(TcorsDataReportMapper.comments_facebook(@message)).to eq(4)
+    end
   end
 
-  xit 'maps the number of instagram shares to share_instagram' do
-    expect(TcorsDataReportMapper.retweet_twitter(@message)).to eq(3)
-  end
+  describe 'instagram metrics' do
+    before do
+      @message.metrics << Metric.new(source: :instagram, data: { 'shares' => 0 , 'comments'=> 1, 'likes'=> 24 })
+      @message.save
+    end
 
-  xit 'maps the number of twitter replies to reply_twitter' do
-    expect(TcorsDataReportMapper.retweet_twitter(@message)).to eq(3)
-  end
+    it 'maps the number of instagram shares to shares_instagram' do
+      expect(TcorsDataReportMapper.shares_instagram(@message)).to eq(0)
+    end
 
-  xit 'maps the number of facebook comments to comment_facebook' do
-    expect(TcorsDataReportMapper.retweet_twitter(@message)).to eq(3)
-  end
+    it 'maps the number of instagram comments to comments_instagram' do
+      expect(TcorsDataReportMapper.comments_instagram(@message)).to eq(1)
+    end
 
-  xit 'maps the number of instagram comments to comment_instagram' do
-    expect(TcorsDataReportMapper.retweet_twitter(@message)).to eq(3)
-  end
-
-  xit 'maps the number of twitter likes to likes_twitter' do
-    expect(TcorsDataReportMapper.retweet_twitter(@message)).to eq(3)
-  end
-
-  xit 'maps the number of facebook likes to likes_facebook' do
-    expect(TcorsDataReportMapper.retweet_twitter(@message)).to eq(3)
-  end
-
-  xit 'maps the number of instagram likes to likes_instagram' do
-    expect(TcorsDataReportMapper.retweet_twitter(@message)).to eq(3)
+    it 'maps the number of instagram likes to likes_instagram' do
+      expect(TcorsDataReportMapper.likes_instagram(@message)).to eq(24)
+    end
   end
 
   it 'maps the number of sessions on day 1 to total_sessions_day_1' do
@@ -267,8 +287,6 @@ RSpec.describe TcorsDataReportMapper do
 
   it 'maps the number of website exits for each website to exits' do
     expect(TcorsDataReportMapper.exits(@message)).to eq(2)
-    @message.metrics[0].data['ga:exits'] = 3
-    expect(TcorsDataReportMapper.exits(@message)).to eq('Exits (3) does not match users (2)')
   end
 
   it 'maps the duration of the user sessions for each website to session_duration' do

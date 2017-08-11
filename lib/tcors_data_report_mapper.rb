@@ -105,40 +105,40 @@ class TcorsDataReportMapper
     return message.get_total_impressions.last
   end
 
-  def self.retweet_twitter(message)
-    return ""
+  def self.retweets_twitter(message)
+    return MetricsManager.get_metric_value(message, :twitter, 'retweets')
   end
 
-  def self.share_facebook(message)
-    return ""
+  def self.shares_facebook(message)
+    return MetricsManager.get_metric_value(message, :facebook, 'shares')
   end
 
-  def self.share_instagram(message)
-    return ""
+  def self.shares_instagram(message)
+    return MetricsManager.get_metric_value(message, :instagram, 'shares')
   end
 
-  def self.reply_twitter(message)
-    return ""
+  def self.replies_twitter(message)
+    return MetricsManager.get_metric_value(message, :twitter, 'replies')
   end
 
-  def self.comment_facebook(message)
-    return ""
+  def self.comments_facebook(message)
+    return MetricsManager.get_metric_value(message, :facebook, 'comments')
   end
 
-  def self.comment_instagram(message)
-    return ""
+  def self.comments_instagram(message)
+    return MetricsManager.get_metric_value(message, :instagram, 'comments')
   end
 
   def self.likes_twitter(message)
-    return ""
+    return MetricsManager.get_metric_value(message, :twitter, 'likes')
   end
 
   def self.likes_facebook(message)
-    return ""
+    return MetricsManager.get_metric_value(message, :facebook, 'likes')
   end
 
   def self.likes_instagram(message)
-    return ""
+    return MetricsManager.get_metric_value(message, :instagram, 'likes')
   end
 
   def self.total_sessions_day_1(message)
@@ -161,7 +161,7 @@ class TcorsDataReportMapper
   end
 
   def self.sessions(message)
-    return message.metrics[0].data["ga:sessions"]
+    return MetricsManager.get_metric_value(message, :google_analytics, "ga:sessions")
   end
 
   def self.clicks(message)
@@ -174,29 +174,23 @@ class TcorsDataReportMapper
   end
 
   def self.users(message)
-    return message.metrics[0].data['ga:users']
+    return MetricsManager.get_metric_value(message, :google_analytics, 'ga:users')
   end
 
   def self.exits(message)
-    exits = message.metrics[0].data['ga:exits']
-    users = self.users(message)
-    if exits == users
-      return exits
-    else
-      return "Exits (#{exits}) does not match users (#{users})"
-    end
+    return MetricsManager.get_metric_value(message, :google_analytics, 'ga:exits')
   end
 
   def self.session_duration(message)
-    return message.metrics[0].data['ga:sessionDuration']
+    return MetricsManager.get_metric_value(message, :google_analytics, 'ga:sessionDuration')
   end
 
   def self.time_on_page(message)
-    return message.metrics[0].data['ga:timeOnPage']
+    return MetricsManager.get_metric_value(message, :google_analytics, 'ga:timeOnPage')
   end
 
   def self.pageviews(message)
-    return message.metrics[0].data['ga:pageviews']
+    return MetricsManager.get_metric_value(message, :google_analytics, 'ga:pageviews')
   end
 
   private
