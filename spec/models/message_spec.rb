@@ -313,7 +313,6 @@ describe Message do
     end
 
     describe '#show_campaign_id' do
-
       it "only shows the campaign_id field for Facebook or Instagram Ad accounts" do
         expect(@messages[0].show_campaign_id?).to eq(false)
         expect(@messages[1].show_campaign_id?).to eq(true)
@@ -439,6 +438,69 @@ describe Message do
       message.backdate(5)
 
       expect_not_backdated(message, message_scheduled_date_time)
+    end
+  end
+  
+  describe 'finding messages by alternative identifier' do
+    before do
+      @messages = create_list(:message, 6)
+      @messages[0].platform = 'twitter'
+      @messages[1].platform = 'facebook'
+      @messages[2].platform = 'facebook'
+      @messages[3].platform = 'instagram'
+      @messages[4].platform = 'twitter'
+      @messages[5].platform = 'twitter'
+
+      @messages[0].medium = :ad
+      @messages[1].medium = :ad
+      @messages[2].medium = :organic
+      @messages[3].medium = :ad
+      @messages[4].medium = :organic
+      @messages[5].medium = :organic
+
+      @messages[0].social_network_id = '114749583439036416'
+      @messages[1].campaign_id = '12345678'
+      @messages[2].social_network_id = '1605839243031680_1867404650208470'
+      @messages[3].campaign_id = '23456789'
+      @messages[4].social_network_id = '104749583439036410'
+      @messages[5].buffer_update = create(:buffer_update, :published_text => 'Some text unique to this message')
+      
+      @messages.each { |message| message.save }
+    end
+    
+    it 'finds a Twitter (ad or organic) message by its social_network_id' do
+      message = Message.find_by_alternative_identifier('114749583439036416')
+      
+      expect(message).not_to be_nil
+      expect(message.social_network_id).to eq('114749583439036416')
+    end
+
+    it 'finds a Facebook (organic) message by its social_network_id' do
+      message = Message.find_by_alternative_identifier('1605839243031680_1867404650208470')
+      
+      expect(message).not_to be_nil
+      expect(message.social_network_id).to eq('1605839243031680_1867404650208470')
+    end
+    
+    it 'finds a Facebook (ad) message by its campaign_id' do
+      message = Message.find_by_alternative_identifier('12345678')
+      
+      expect(message).not_to be_nil
+      expect(message.campaign_id).to eq('12345678')
+    end
+
+    it 'finds an Instagram (ad) message by its campaign_id' do
+      message = Message.find_by_alternative_identifier('23456789')
+      
+      expect(message).not_to be_nil
+      expect(message.campaign_id).to eq('23456789')
+    end
+    
+    it 'finds a message by the published_text in the associated buffer_update' do
+      message = Message.find_by_alternative_identifier('Some text unique to this message')
+      
+      expect(message).not_to be_nil
+      expect(message.buffer_update.published_text).to eq('Some text unique to this message')
     end
   end
 

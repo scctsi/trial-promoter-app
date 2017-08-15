@@ -12,4 +12,8 @@ RSpec.describe DailyMetricParser do
     expect(date.month).to eq(4)
     expect(date.day).to eq(19)
   end
+  
+  it 'extracts all the values from two columns in a file given the column indices as a hash' do
+    
+  end
 end
