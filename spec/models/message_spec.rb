@@ -30,7 +30,10 @@
 #  website_goal_rate            :float
 #  website_goal_count           :integer
 #  website_session_count        :integer
+#  impressions_by_day           :text
 #
+
+
 
 require 'rails_helper'
 
@@ -40,6 +43,7 @@ describe Message do
   it { is_expected.to have_one :buffer_update }
   it { is_expected.to have_one(:click_meter_tracking_link).dependent(:destroy) }
   it { is_expected.to have_many :metrics }
+  it { is_expected.to have_many :comments }
   it { is_expected.to have_many :image_replacements }
   it { is_expected.to belong_to(:message_generating) }
   it { is_expected.to enumerize(:platform).in(:twitter, :facebook, :instagram) }

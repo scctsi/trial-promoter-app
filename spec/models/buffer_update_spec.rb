@@ -13,6 +13,7 @@
 #  published_text      :text
 #
 
+
 require 'rails_helper'
 
 RSpec.describe BufferUpdate, type: :model do
