@@ -24,7 +24,7 @@ RSpec.describe GetAnalyticsFromGoogleAnalyticsJob, type: :job do
   it 'executes perform' do
     perform_enqueued_jobs { GetAnalyticsFromGoogleAnalyticsJob.perform_later }
 
-    expect(@google_analytics_client).to have_received(:get_data).with(Date.new(2017,4,19).to_s, DateTime.now.to_date)
+    expect(@google_analytics_client).to have_received(:get_data).with(Date.new(2017,4,19).to_s, DateTime.now.to_date.to_s)
     expect(GoogleAnalyticsDataParser).to have_received(:parse).with(@data)
     expect(GoogleAnalyticsDataParser).to have_received(:store).with(@data)
   end
