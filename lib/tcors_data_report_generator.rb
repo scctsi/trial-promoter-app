@@ -1,6 +1,6 @@
 require 'csv'
 
-class DataReportGenerator
+class TcorsDataReportGenerator
   def self.generate_report(messages, column_names)
     CSV.open("#{Rails.root}/public/data_report.csv", "w", :write_headers => true, :headers => column_names) do |csv|
       messages.each do |message|
