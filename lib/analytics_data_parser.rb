@@ -18,8 +18,8 @@ class AnalyticsDataParser
         data.column_headers = ['social_network_id', '', '', '', '', '', '', '', '', '', '', 'impressions', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'comments', 'likes', 'shares', '', 'clicks']
         data.rows = content[2..-1]
       when :ad
-        data.column_headers = []
-        data.rows = content[]
+        data.column_headers = ['', '', 'campaign_id', 'impressions', '', 'shares', 'comments', '', 'reactions', '', '', '', '']
+        data.rows = content[1..-1]
       end
     end
 
