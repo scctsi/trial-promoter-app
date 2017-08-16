@@ -69,7 +69,7 @@ class Message < ActiveRecord::Base
       super value if !source_metrics_exists
     end
   end
-  
+
 
   def medium
     return self[:medium].to_sym if !self[:medium].nil?
@@ -87,7 +87,11 @@ class Message < ActiveRecord::Base
 
   def self.find_by_param(param)
     id = param[(param.rindex('-') + 1)..-1]
-    Message.find(id)
+    begin
+      Message.find(id)
+    rescue ActiveRecord::RecordNotFound => e
+      return nil
+    end
   end
 
   def visits

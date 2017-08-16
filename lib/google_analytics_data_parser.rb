@@ -26,10 +26,13 @@ class GoogleAnalyticsDataParser
 
   def self.store(parsed_data)
     parsed_data.each do |row|
-      message = Message.find_by_param(row[0])
-      metric = Metric.new(source: :google_analytics, data: row[1])
-      message.metrics << metric
-      message.save
+      if !(row[0].rindex('-').nil?)
+        message = Message.find_by_param(row[0])
+        break if message.nil?
+        metric = Metric.new(source: :google_analytics, data: row[1])
+        message.metrics << metric
+        message.save
+      end
     end
   end
 end

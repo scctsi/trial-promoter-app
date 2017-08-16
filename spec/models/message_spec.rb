@@ -123,8 +123,12 @@ describe Message do
     expect(message).to eq(Message.first)
   end
 
-  it 'raises an exception if a message cannot be found with a certain param' do
-    expect { Message.find_by_param('unknown-param') }.to raise_error(ActiveRecord::RecordNotFound)
+  it 'returns nil if message cannot be found by the param' do
+    create(:message)
+
+    message = Message.find_by_param('1-tcors-message-0')
+
+    expect(message).to be_nil
   end
 
   describe 'pagination' do
