@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe DataReportGenerator do
+RSpec.describe TcorsDataReportGenerator do
   describe "(development only tests)", :development_only_tests => true do
     before do
         @messages = create_list(:message, 3)

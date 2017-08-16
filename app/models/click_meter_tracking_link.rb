@@ -26,9 +26,9 @@ class ClickMeterTrackingLink < ActiveRecord::Base
     end
   end
 
-  def get_clicks_by_date(requested_date)
+  def get_clicks_by_date(date)
     clicks = Click.where(click_meter_tracking_link_id: self)
-    clicks.select{ |click| (click.click_time.to_date == (requested_date).to_date) && click.unique == true }
+    clicks.select{ |click| (click.click_time.to_date == date.to_date) && click.unique == true }
   end
 
   def get_daily_click_totals

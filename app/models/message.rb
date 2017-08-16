@@ -33,8 +33,6 @@
 #  impressions_by_day           :text
 #
 
-
-
 class Message < ActiveRecord::Base
   extend Enumerize
   include CampaignId
@@ -74,7 +72,6 @@ class Message < ActiveRecord::Base
       super value if !source_metrics_exists
     end
   end
-
 
   def medium
     return self[:medium].to_sym if !self[:medium].nil?
