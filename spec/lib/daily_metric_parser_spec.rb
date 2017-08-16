@@ -13,7 +13,13 @@ RSpec.describe DailyMetricParser do
     expect(date.day).to eq(19)
   end
   
-  it 'extracts all the values from two columns in a file given the column indices as a hash' do
-    
+  it 'determines whether an analytics file for TCORS shoule be ignored based on the file name' do
+    # For TCORS, we ignore the files that contain the organic data for the ad accounts
+    expect(@daily_metric_parser.ignore_file?('2017-04-19-to-2017-04-19-6hu9ou4xpw5c.xlsx')).to be false
+    expect(@daily_metric_parser.ignore_file?('Facebook Insights Data Export (Post Level) - B Free of Tobacco - 2017-04-20')).to be true
+    expect(@daily_metric_parser.ignore_file?('Facebook Insights Data Export (Post Level) - Be Free of Tobacco - 2017-04-20')).to be false
+    expect(@daily_metric_parser.ignore_file?('Tommy-Trogan-All-Campaigns-Apr-19-2017-_-Apr-20-2017')).to be false
+    expect(@daily_metric_parser.ignore_file?('tweet_activity_metrics_BeFreeOfTobacco_20170419_20170421_en')).to be false
+    expect(@daily_metric_parser.ignore_file?('tweet_activity_metrics_BFreeOfTobacco_20170319_20170421_en_04-19-2017')).to be true
   end
 end
