@@ -13,11 +13,6 @@ RSpec.describe GetAnalyticsFromClickMeterJob, type: :job do
     (0..5).each do |index|
       @messages[index].publish_status = :published_to_social_network
     end
-    (0..4).each do |index|
-      @messages[index].click_meter_tracking_link = create(:click_meter_tracking_link, click_meter_id: '12691042')
-      @messages[index].click_meter_tracking_link.clicks << create_list(:click, 3, :click_time => '23 April 2017')
-      @messages[index].buffer_update = build(:buffer_update, message: @messages[index])
-    end
     @messages.each{ |msg| msg.save }
   end
 
@@ -30,7 +25,7 @@ RSpec.describe GetAnalyticsFromClickMeterJob, type: :job do
   end
 
   it 'executes perform only on messages that have a buffer_update' do
-    (0..4).each do |index|
+    (0..5).each do |index|
       expect(ClickMeterClient).to receive(:get_clicks).with(@messages[index].click_meter_tracking_link)
     end
 
