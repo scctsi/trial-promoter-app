@@ -14,6 +14,7 @@
 #  promoted_website_url     :string(2000)
 #
 
+
 require 'rails_helper'
 
 RSpec.describe MessageTemplate do
