@@ -27,8 +27,11 @@ class GoogleAnalyticsDataParser
   def self.store(parsed_data)
     parsed_data.each do |row|
       if !(row[0].rindex('-').nil?)
-        message = Message.find_by_param(row[0])
-        break if message.nil?
+        begin
+          message = Message.find_by_param(row[0])
+        rescue ActiveRecord::RecordNotFound => e
+          break
+        end
         metric = Metric.new(source: :google_analytics, data: row[1])
         message.metrics << metric
         message.save

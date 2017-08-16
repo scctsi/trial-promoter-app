@@ -87,11 +87,7 @@ class Message < ActiveRecord::Base
 
   def self.find_by_param(param)
     id = param[(param.rindex('-') + 1)..-1]
-    begin
-      Message.find(id)
-    rescue ActiveRecord::RecordNotFound => e
-      return nil
-    end
+    Message.find(id)
   end
 
   def visits

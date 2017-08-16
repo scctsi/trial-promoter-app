@@ -123,14 +123,6 @@ describe Message do
     expect(message).to eq(Message.first)
   end
 
-  it 'returns nil if message cannot be found by the param' do
-    create(:message)
-
-    message = Message.find_by_param('1-tcors-message-0')
-
-    expect(message).to be_nil
-  end
-
   describe 'pagination' do
     before do
       create_list(:message, 100)
