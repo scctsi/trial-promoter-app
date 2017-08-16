@@ -30,12 +30,15 @@
 #  website_goal_rate            :float
 #  website_goal_count           :integer
 #  website_session_count        :integer
+#  impressions_by_day           :text
 #
 
 class Message < ActiveRecord::Base
   extend Enumerize
   include CampaignId
   acts_as_ordered_taggable_on :experiments
+
+  serialize :impressions_by_day, Array
 
   validates :content, presence: true
   validates :platform, presence: true
@@ -69,7 +72,6 @@ class Message < ActiveRecord::Base
       super value if !source_metrics_exists
     end
   end
-
 
   def medium
     return self[:medium].to_sym if !self[:medium].nil?
@@ -162,9 +164,9 @@ class Message < ActiveRecord::Base
     save
   end
 
-  def calculate_website_goal_rate
+  def calculate_website_goal_rate(exclude_ip_address_list = [])
     calculate_goal_count
-    calculate_session_count
+    calculate_session_count(exclude_ip_address_list)
 
     if website_session_count == 0
       self.website_goal_rate = nil
@@ -175,9 +177,9 @@ class Message < ActiveRecord::Base
     save
   end
 
-  def calculate_goal_count
+  def calculate_goal_count(exclude_ip_address_list = [])
     goal_count = 0
-    sessions = get_sessions
+    sessions = get_sessions(exclude_ip_address_list)
     # Converted event is in the Ahoy code.
     # For the TCORS experiment, the 'Converted' event occurs in main.js file of website (Fresh Empire or This Free Life)
     # when user scrolls or clicks on navigation bar
@@ -189,16 +191,20 @@ class Message < ActiveRecord::Base
     save
   end
 
-  def calculate_session_count
-    sessions = get_sessions
+  def calculate_session_count(exclude_ip_address_list = [])
+    sessions = get_sessions(exclude_ip_address_list)
     self.website_session_count = sessions.count
 
     save
   end
 
-private
+  def get_total_impressions
+    return self.impressions_by_day
+  end
 
-  def get_sessions
-    Visit.where(utm_content: to_param)
+  def get_sessions(exclude_ip_address_list = [])
+    visits = Visit.where(utm_content: to_param).to_a
+    visits.reject!{ |visit| exclude_ip_address_list.include?(visit.ip) }
+    return visits
   end
 end

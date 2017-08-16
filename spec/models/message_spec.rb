@@ -30,7 +30,9 @@
 #  website_goal_rate            :float
 #  website_goal_count           :integer
 #  website_session_count        :integer
+#  impressions_by_day           :text
 #
+
 
 require 'rails_helper'
 
