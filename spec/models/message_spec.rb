@@ -33,7 +33,6 @@
 #  impressions_by_day           :text
 #
 
-
 require 'rails_helper'
 
 describe Message do
@@ -53,6 +52,7 @@ describe Message do
   it { is_expected.to validate_presence_of :platform }
   it { is_expected.to validate_presence_of :promoted_website_url }
   it { is_expected.to validate_presence_of :content }
+  it { is_expected.to serialize(:impressions_by_day).as(Hash) }
 
   it 'returns the medium as a symbol' do
     message = build(:message)
