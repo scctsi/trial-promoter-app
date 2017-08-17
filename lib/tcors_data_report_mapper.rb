@@ -21,8 +21,7 @@ class TcorsDataReportMapper
   end
 
   def self.lin_meth_level(message)
-    lin_meth_level_mapping = { '1' => 'You', '2' => 'We', '3' => 'Everyone/Anyone', '4' => 'Specific new information mentioned first', '5' => 'Specific new information mentioned last', '6' => 'Raw numbers', '7' => 'Percentage', '8' =>'Specific new information mentioned first and raw numbers', '9' => 'Specific new information mentioned first and percentage', '10' => 'Specific new information mentioned last and raw numbers', '11' => 'Specific new information mentioned last and percentage' }
-    return lin_meth_level_mapping[message.message_template.experiment_variables['lin_meth_level']]
+    return message.message_template.experiment_variables['lin_meth_level'].to_s
   end
 
   def self.variant(message)
