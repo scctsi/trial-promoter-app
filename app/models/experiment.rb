@@ -15,6 +15,7 @@
 #  click_meter_domain_id           :integer
 #
 
+
 class Experiment < ActiveRecord::Base
   include ActionView::Helpers::DateHelper
   include ActiveModel::Validations

@@ -13,6 +13,7 @@
 #  published_text      :text
 #
 
+
 class BufferUpdate < ActiveRecord::Base
   extend Enumerize
 

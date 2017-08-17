@@ -1,0 +1,11 @@
+require 'csv'
+
+class TcorsDataReportGenerator
+  def self.generate_report(messages, column_names)
+    CSV.open("#{Rails.root}/public/data_report.csv", "w", :write_headers => true, :headers => column_names) do |csv|
+      messages.each do |message|
+        csv << [TcorsDataReportMapper.stem(message), TcorsDataReportMapper.fda_campaign(message), TcorsDataReportMapper.theme(message), TcorsDataReportMapper.variant(message), TcorsDataReportMapper.lin_meth_factor(message), TcorsDataReportMapper.lin_meth_level(message), TcorsDataReportMapper.day_experiment(message), TcorsDataReportMapper.date_sent(message), TcorsDataReportMapper.day_sent(message), TcorsDataReportMapper.time_sent(message), TcorsDataReportMapper.sm_type(message), TcorsDataReportMapper.medium(message), TcorsDataReportMapper.image_included(message), TcorsDataReportMapper.total_clicks_day_1(message), TcorsDataReportMapper.total_clicks_day_2(message), TcorsDataReportMapper.total_clicks_day_3(message), TcorsDataReportMapper.total_clicks_experiment(message), TcorsDataReportMapper.click_time(message), TcorsDataReportMapper.total_impressions_day_1(message), TcorsDataReportMapper.total_impressions_day_2(message), TcorsDataReportMapper.total_impressions_day_3(message), TcorsDataReportMapper.total_impressions_experiment(message), TcorsDataReportMapper.retweets_twitter(message), TcorsDataReportMapper.shares_facebook(message), TcorsDataReportMapper.shares_instagram(message), TcorsDataReportMapper.replies_twitter(message), TcorsDataReportMapper.comments_facebook(message), TcorsDataReportMapper.comments_instagram(message), TcorsDataReportMapper.likes_twitter(message), TcorsDataReportMapper.likes_facebook(message), TcorsDataReportMapper.likes_instagram(message), TcorsDataReportMapper.total_sessions_day_1(message), TcorsDataReportMapper.total_sessions_day_2(message), TcorsDataReportMapper.total_sessions_day_3(message), TcorsDataReportMapper.total_sessions_experiment(message), TcorsDataReportMapper.sessions(message), TcorsDataReportMapper.clicks(message), TcorsDataReportMapper.users(message), TcorsDataReportMapper.exits(message), TcorsDataReportMapper.session_duration(message), TcorsDataReportMapper.time_on_page(message), TcorsDataReportMapper.pageviews(message)]
+      end
+    end
+  end
+end
