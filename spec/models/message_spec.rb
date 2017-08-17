@@ -30,7 +30,9 @@
 #  website_goal_rate            :float
 #  website_goal_count           :integer
 #  website_session_count        :integer
+#  impressions_by_day           :text
 #
+
 
 require 'rails_helper'
 
@@ -121,10 +123,6 @@ describe Message do
     message = Message.find_by_param(Message.first.to_param)
 
     expect(message).to eq(Message.first)
-  end
-
-  it 'raises an exception if a message cannot be found with a certain param' do
-    expect { Message.find_by_param('unknown-param') }.to raise_error(ActiveRecord::RecordNotFound)
   end
 
   describe 'pagination' do

@@ -17,6 +17,7 @@
 #
 
 
+
 class DataDictionaryEntry < ActiveRecord::Base
   extend Enumerize
 
