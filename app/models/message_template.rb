@@ -14,6 +14,7 @@
 #  promoted_website_url     :string(2000)
 #
 
+
 class MessageTemplate < ActiveRecord::Base
   MAXIMUM_TWEET_LENGTH = 140
 

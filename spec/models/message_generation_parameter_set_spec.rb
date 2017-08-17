@@ -15,6 +15,7 @@
 #  number_of_cycles                      :integer
 #
 
+
 require 'rails_helper'
 
 describe MessageGenerationParameterSet do
