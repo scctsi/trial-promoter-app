@@ -10,7 +10,9 @@
 #  spider                       :boolean
 #  unique                       :boolean
 #  click_meter_tracking_link_id :integer
+#  ip_address                   :text
 #
+
 
 require 'rails_helper'
 require 'yaml'
