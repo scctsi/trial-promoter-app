@@ -38,7 +38,7 @@ class Message < ActiveRecord::Base
   include CampaignId
   acts_as_ordered_taggable_on :experiments
 
-  serialize :impressions_by_day, Array
+  serialize :impressions_by_day, Hash
 
   validates :content, presence: true
   validates :platform, presence: true
