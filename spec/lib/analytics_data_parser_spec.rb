@@ -15,7 +15,7 @@ RSpec.describe AnalyticsDataParser do
       @data.rows << [@messages[1].social_network_id, '8', '9', '10', '11', '12', '13', '14']
     end
 
-    it 'transforms data from Twitter analytics (organic), by parsing the out the Tweet ID from the permalink' do
+    it 'transforms data from Twitter analytics (organic), by parsing out the Tweet ID from the permalink' do
       @data.rows = []
       @data.rows << [@messages[0].social_network_id, 'https://twitter.com/TCORSStgOrg/status/849049020249120769', '2', '3', '4', '5', '6', '7']
       @data.rows << [@messages[1].social_network_id, 'https://twitter.com/TCORSStgOrg/status/849018827384000512', '9', '10', '11', '12', '13', '14']
@@ -130,8 +130,22 @@ RSpec.describe AnalyticsDataParser do
       parseable_data = AnalyticsDataParser.convert_to_parseable_data(csv_content, :facebook, :organic)
 
       expect(parseable_data.column_headers).to eq(['social_network_id', '', '', '', '', '', '', '', '', '', '', 'impressions', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'comments', 'likes', 'shares', '', 'clicks'])
-      # NOTE: Facebook has an extra row in the header which gives a definition of each column.
+      # NOTE: Facebook (for organic data alone) has an extra row in the header which gives a definition of each column.
       expect(parseable_data.rows).to eq(csv_content[2..-1])
+    end
+
+    it 'converts a CSV file exported from Facebook Ads Manager (Instagram and Facebook ads) to parseable data' do
+      quote_chars = %w(" | ~ ^ & *)
+      begin
+        csv_content = CSV.read("#{Rails.root}/spec/fixtures/facebook_ads_manager.csv", headers: false, quote_char: quote_chars.shift)
+      rescue CSV::MalformedCSVError
+        quote_chars.empty? ? raise : retry
+      end
+
+      parseable_data = AnalyticsDataParser.convert_to_parseable_data(csv_content, :facebook, :ad)
+
+      expect(parseable_data.column_headers).to eq(['', '', 'campaign_id', 'impressions', '', 'shares', 'comments', '', 'reactions', '', '', '', ''])
+      expect(parseable_data.rows).to eq(csv_content[1..-1])
     end
   end
 end

@@ -16,7 +16,6 @@ RSpec.describe TcorsDataReportMapper do
     @message.click_meter_tracking_link.clicks << create_list(:click, 1, :spider => '1', :click_time => "1 May 2017 12:34:57")
     @message.click_meter_tracking_link.clicks << create_list(:click, 1, :unique => '1', :click_time => "1 May 2017 13:44:56")
     @message.click_meter_tracking_link.clicks << create_list(:click, 2, :unique => '1', :click_time => "2 May 2017 19:26:01")
-    @message.impressions_by_day = [300, 800, 1400, 10000]
 
     @message.metrics << Metric.new(source: :google_analytics, data: {'ga:sessions'=>2, 'ga:users'=>2, 'ga:exits' =>2, 'ga:sessionDuration' => [42, 18], 'ga:timeOnPage' => [42, 18], 'ga:pageviews' => 2})
 
@@ -31,63 +30,31 @@ RSpec.describe TcorsDataReportMapper do
     end
 
     it 'maps the message fda_campaign to fda_campaign' do
-      @message.message_template.experiment_variables['fda_campaign'] = '1'
-      expect(TcorsDataReportMapper.fda_campaign(@message)).to eq('Fresh Empire')
-      @message.message_template.experiment_variables['fda_campaign'] = '2'
-      expect(TcorsDataReportMapper.fda_campaign(@message)).to eq('This Free Life')
+      (1..2).each do |fda_campaign|
+        @message.message_template.experiment_variables['fda_campaign'] = fda_campaign.to_s
+        expect(TcorsDataReportMapper.fda_campaign(@message)).to eq(fda_campaign.to_s)
+      end
     end
 
     it 'maps the message theme to theme' do
-      @message.message_template.experiment_variables['theme'] = '1'
-      expect(TcorsDataReportMapper.theme(@message)).to eq('Health')
-      @message.message_template.experiment_variables['theme'] = '2'
-      expect(TcorsDataReportMapper.theme(@message)).to eq('Appearance')
-      @message.message_template.experiment_variables['theme'] = '3'
-      expect(TcorsDataReportMapper.theme(@message)).to eq('Money')
-      @message.message_template.experiment_variables['theme'] = '4'
-      expect(TcorsDataReportMapper.theme(@message)).to eq('Love of Family')
-      @message.message_template.experiment_variables['theme'] = '5'
-      expect(TcorsDataReportMapper.theme(@message)).to eq('Addiction')
-      @message.message_template.experiment_variables['theme'] = '6'
-      expect(TcorsDataReportMapper.theme(@message)).to eq('Health + Community')
-      @message.message_template.experiment_variables['theme'] = '7'
-      expect(TcorsDataReportMapper.theme(@message)).to eq('Health + Family')
+      (1..7).each do |theme|
+        @message.message_template.experiment_variables['theme'] = theme.to_s
+        expect(TcorsDataReportMapper.theme(@message)).to eq(theme.to_s)
+      end
     end
 
     it 'maps the message experiment variable to lin_meth_factor' do
-      @message.message_template.experiment_variables['lin_meth_factor'] = '1'
-      expect(TcorsDataReportMapper.lin_meth_factor(@message)).to eq('Perspective taking')
-      @message.message_template.experiment_variables['lin_meth_factor'] = '2'
-      expect(TcorsDataReportMapper.lin_meth_factor(@message)).to eq('Information packaging')
-      @message.message_template.experiment_variables['lin_meth_factor'] = '3'
-      expect(TcorsDataReportMapper.lin_meth_factor(@message)).to eq('Numeracy')
-      @message.message_template.experiment_variables['lin_meth_factor'] = '4'
-      expect(TcorsDataReportMapper.lin_meth_factor(@message)).to eq('Information packaging x Numeracy')
+      (1..4).each do |lin_meth_factor|
+        @message.message_template.experiment_variables['lin_meth_factor'] = lin_meth_factor.to_s
+        expect(TcorsDataReportMapper.lin_meth_factor(@message)).to eq(lin_meth_factor.to_s)
+      end
     end
 
     it 'maps the message experiment variable to lin_meth_level' do
-      @message.message_template.experiment_variables['lin_meth_level'] = '1'
-      expect(TcorsDataReportMapper.lin_meth_level(@message)).to eq('You')
-      @message.message_template.experiment_variables['lin_meth_level'] = '2'
-      expect(TcorsDataReportMapper.lin_meth_level(@message)).to eq('We')
-      @message.message_template.experiment_variables['lin_meth_level'] = '3'
-      expect(TcorsDataReportMapper.lin_meth_level(@message)).to eq('Everyone/Anyone')
-      @message.message_template.experiment_variables['lin_meth_level'] = '4'
-      expect(TcorsDataReportMapper.lin_meth_level(@message)).to eq('Specific new information mentioned first')
-      @message.message_template.experiment_variables['lin_meth_level'] = '5'
-      expect(TcorsDataReportMapper.lin_meth_level(@message)).to eq('Specific new information mentioned last')
-      @message.message_template.experiment_variables['lin_meth_level'] = '6'
-      expect(TcorsDataReportMapper.lin_meth_level(@message)).to eq('Raw numbers')
-      @message.message_template.experiment_variables['lin_meth_level'] = '7'
-      expect(TcorsDataReportMapper.lin_meth_level(@message)).to eq('Percentage')
-      @message.message_template.experiment_variables['lin_meth_level'] = '8'
-      expect(TcorsDataReportMapper.lin_meth_level(@message)).to eq('Specific new information mentioned first and raw numbers')
-      @message.message_template.experiment_variables['lin_meth_level'] = '9'
-      expect(TcorsDataReportMapper.lin_meth_level(@message)).to eq('Specific new information mentioned first and percentage')
-      @message.message_template.experiment_variables['lin_meth_level'] = '10'
-      expect(TcorsDataReportMapper.lin_meth_level(@message)).to eq('Specific new information mentioned last and raw numbers')
-      @message.message_template.experiment_variables['lin_meth_level'] = '11'
-      expect(TcorsDataReportMapper.lin_meth_level(@message)).to eq('Specific new information mentioned last and percentage')
+      (1..11).each do |lin_meth_level|
+        @message.message_template.experiment_variables['lin_meth_level'] = lin_meth_level.to_s
+        expect(TcorsDataReportMapper.lin_meth_level(@message)).to eq(lin_meth_level.to_s)
+      end
     end
   end
 
@@ -100,13 +67,13 @@ RSpec.describe TcorsDataReportMapper do
   end
 
   it 'maps the date the message was published to the date sent' do
-    expect(TcorsDataReportMapper.date_sent(@message)).to eq('04/30/2017')
+    expect(TcorsDataReportMapper.date_sent(@message)).to eq("2017-04-30")
   end
 
   it 'maps the date the message was published to the day of the week' do
     expect(TcorsDataReportMapper.day_sent(@message)).to eq('7')
     @message.scheduled_date_time = '29 April 2017 12:00:00'
-    @message.click_meter_tracking_link.clicks.each{|click| click.unique = true }
+    # @message.click_meter_tracking_link.clicks.each{|click| click.unique = true }
     expect(TcorsDataReportMapper.day_sent(@message)).to eq('6')
     @message.scheduled_date_time = '28 April 2017 12:00:00'
     expect(TcorsDataReportMapper.day_sent(@message)).to eq('5')
@@ -168,28 +135,65 @@ RSpec.describe TcorsDataReportMapper do
     expect(TcorsDataReportMapper.click_time(@message)).to_not eq([ '2017-05-01 12:34:57.000000000'])
   end
 
-  it 'maps the total impressions for each day to total_impressions_day_1' do
-    expect(TcorsDataReportMapper.total_impressions_day_1(@message)).to eq(300)
-    @message.medium = :ad
-    expect(TcorsDataReportMapper.total_impressions_day_1(@message)).to eq(300)
-  end
+  describe 'impressions by date' do
+    before do
+      @message.impressions_by_day = { @message.scheduled_date_time => 100, (@message.scheduled_date_time + 1.day) => 115, (@message.scheduled_date_time + 2.day) => 120 }
+      @message.save
+    end
 
-  it 'maps the total impressions for each day to total_impressions_day_2' do
-    expect(TcorsDataReportMapper.total_impressions_day_2(@message)).to eq(500)
-    @message.medium = :ad
-    @message.impressions_by_day = [300, 800, 1400, 10000]
-    expect(TcorsDataReportMapper.total_impressions_day_2(@message)).to eq(800)
-  end
+    it 'maps the total impressions for day 1 to total_impressions_day_1' do
+      expect(TcorsDataReportMapper.total_impressions_day_1(@message)).to eq(100)
+      @message.medium = :ad
+      expect(TcorsDataReportMapper.total_impressions_day_1(@message)).to eq(100)
+    end
 
-  it 'maps the total impressions for each day to total_impressions_day_3' do
-    expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq(600)
-    @message.medium = :ad
-    @message.impressions_by_day = [300, 800, 1400, 10000]
-    expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq(1400)
-  end
+    it 'returns zero for data that is missing' do
+      @message.impressions_by_day = {}
 
-  it 'maps the total impressions for the entire experiment to total_impressions_experiment' do
-    expect(TcorsDataReportMapper.total_impressions_experiment(@message)).to eq(10000)
+      expect(TcorsDataReportMapper.total_impressions_day_1(@message)).to eq(0)
+      @message.medium = :ad
+      expect(TcorsDataReportMapper.total_impressions_day_1(@message)).to eq(0)
+    end
+
+    it 'maps the total impressions to day 2 to total_impressions_day_2' do
+      expect(TcorsDataReportMapper.total_impressions_day_2(@message)).to eq(15)
+      @message.medium = :ad
+      expect(TcorsDataReportMapper.total_impressions_day_2(@message)).to eq(115)
+    end
+
+    it 'returns zero for data that is missing for either day 1 or day 2' do
+      @message.impressions_by_day = { }
+      expect(TcorsDataReportMapper.total_impressions_day_2(@message)).to eq(0)
+      @message.medium = :ad
+      expect(TcorsDataReportMapper.total_impressions_day_2(@message)).to eq(0)
+
+      @message.impressions_by_day = {(@message.scheduled_date_time + 1.day) => 1 }
+
+      expect(TcorsDataReportMapper.total_impressions_day_2(@message)).to eq(1)
+      @message.medium = :ad
+      expect(TcorsDataReportMapper.total_impressions_day_2(@message)).to eq(1)
+    end
+
+    it 'maps the total impressions for each day to total_impressions_day_3' do
+      @message.medium = :organic
+      expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq(5)
+      @message.medium = :ad
+      expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq(120)
+    end
+
+    it 'returns zero for data that is missing for either day 2 or day 3' do
+      @message.impressions_by_day = { }
+      expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq(0)
+      @message.medium = :ad
+      expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq(0)
+
+      @message.medium = :organic
+      @message.impressions_by_day = { (@message.scheduled_date_time + 2.day) => 1 }
+
+      expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq(1)
+      @message.medium = :ad
+      expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq(1)
+    end
   end
 
   describe 'twitter metrics' do

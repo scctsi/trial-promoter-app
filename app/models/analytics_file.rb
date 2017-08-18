@@ -31,10 +31,10 @@ class AnalyticsFile < ActiveRecord::Base
 
     # Step 1: Read file from the file's URL. Based on the filename, read in CSV or Excel data.
     # For Facebook organic data (Facebook Insights), the file has two headers rows.
-    # In order to process the file successfully, we need to skip the first header row.
+    # In order to process the file successfully, we need to skip the first row.
     if url.ends_with?('.csv')
       if social_media_profile.platform == :facebook && social_media_profile.allowed_mediums == [:organic]
-        content = CsvFileReader.read(url, true)
+        content = CsvFileReader.read(url, {:skip_first_row => true})
       else
         content = CsvFileReader.read(url)
       end

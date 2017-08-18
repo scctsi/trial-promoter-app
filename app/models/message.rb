@@ -40,7 +40,7 @@ class Message < ActiveRecord::Base
   include CampaignId
   acts_as_ordered_taggable_on :experiments
 
-  serialize :impressions_by_day, Array
+  serialize :impressions_by_day, Hash
 
   validates :content, presence: true
   validates :platform, presence: true
@@ -74,7 +74,6 @@ class Message < ActiveRecord::Base
       super value if !source_metrics_exists
     end
   end
-
 
   def medium
     return self[:medium].to_sym if !self[:medium].nil?
@@ -199,10 +198,6 @@ class Message < ActiveRecord::Base
     self.website_session_count = sessions.count
 
     save
-  end
-
-  def get_total_impressions
-    return self.impressions_by_day
   end
 
   def get_sessions(exclude_ip_address_list = [])

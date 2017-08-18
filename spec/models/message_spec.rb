@@ -53,6 +53,7 @@ describe Message do
   it { is_expected.to validate_presence_of :platform }
   it { is_expected.to validate_presence_of :promoted_website_url }
   it { is_expected.to validate_presence_of :content }
+  it { is_expected.to serialize(:impressions_by_day).as(Hash) }
 
   it 'returns the medium as a symbol' do
     message = build(:message)
@@ -123,10 +124,6 @@ describe Message do
     message = Message.find_by_param(Message.first.to_param)
 
     expect(message).to eq(Message.first)
-  end
-
-  it 'raises an exception if a message cannot be found with a certain param' do
-    expect { Message.find_by_param('unknown-param') }.to raise_error(ActiveRecord::RecordNotFound)
   end
 
   describe 'pagination' do

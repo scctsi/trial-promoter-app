@@ -72,7 +72,7 @@ RSpec.describe AnalyticsFile do
     @analytics_file.url = 'http://www.example.com/file.csv'
     @analytics_file.process
 
-    expect(CsvFileReader).to have_received(:read).with(@analytics_file.url, true)
+    expect(CsvFileReader).to have_received(:read).with(@analytics_file.url, {:skip_first_row => true})
     expect(AnalyticsDataParser).to have_received(:convert_to_parseable_data).with(@csv_content, @analytics_file.social_media_profile.platform, @analytics_file.social_media_profile.allowed_mediums[0])
     expect(AnalyticsDataParser).to have_received(:parse).with(@parseable_data)
     expect(AnalyticsDataParser).to have_received(:store).with(@parsed_data, @analytics_file.social_media_profile.platform)
