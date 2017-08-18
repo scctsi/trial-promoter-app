@@ -33,6 +33,8 @@
 #  impressions_by_day           :text
 #
 
+
+
 class Message < ActiveRecord::Base
   extend Enumerize
   include CampaignId
@@ -196,10 +198,6 @@ class Message < ActiveRecord::Base
     self.website_session_count = sessions.count
 
     save
-  end
-
-  def get_total_impressions
-    return self.impressions_by_day
   end
 
   def get_sessions(exclude_ip_address_list = [])
