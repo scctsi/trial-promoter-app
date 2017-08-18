@@ -133,7 +133,7 @@ RSpec.describe AnalyticsDataParser do
       # NOTE: Facebook (for organic data alone) has an extra row in the header which gives a definition of each column.
       expect(parseable_data.rows).to eq(csv_content[2..-1])
     end
-    
+
     it 'converts a CSV file exported from Facebook Ads Manager (Instagram and Facebook ads) to parseable data' do
       quote_chars = %w(" | ~ ^ & *)
       begin
