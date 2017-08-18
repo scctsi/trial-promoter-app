@@ -17,6 +17,7 @@
 #
 
 
+
 require 'rails_helper'
 
 RSpec.describe DataDictionaryEntry do
