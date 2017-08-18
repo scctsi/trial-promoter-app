@@ -1,7 +1,6 @@
 require 'open-uri'
 
 class CsvFileReader
-
   def self.read(url, options = {})
     parsed_csv_content = []
     

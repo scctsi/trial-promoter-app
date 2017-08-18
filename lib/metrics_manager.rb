@@ -12,9 +12,17 @@ class MetricsManager
       if source == :google_analytics
         message = Message.find_by_param(key)
       else
-        message = Message.find_by(social_network_id: key)
+        message = Message.find_by_alternative_identifier(key)
       end
       message.metrics << Metric.new(source: source, data: value)
+      message.save
+    end
+  end
+  
+  def self.update_impressions_by_day(date, data)
+    data.each do |key, value|
+      message = Message.find_by_alternative_identifier(key)
+      message.impressions_by_day[date] = value
       message.save
     end
   end
