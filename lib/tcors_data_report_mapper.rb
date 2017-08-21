@@ -6,18 +6,15 @@ class TcorsDataReportMapper
   end
 
   def self.fda_campaign(message)
-    fda_campaign_mapping = { '1' => 'Fresh Empire', '2' => 'This Free Life'}
-    return fda_campaign_mapping[message.message_template.experiment_variables['fda_campaign']]
+    return message.message_template.experiment_variables['fda_campaign']
   end
 
   def self.theme(message)
-    theme_mapping = { '1' => 'Health', '2' => 'Appearance', '3' => 'Money', '4' => 'Love of Family', '5' => 'Addiction', '6' => 'Health + Community', '7' => 'Health + Family' }
-    return theme_mapping[message.message_template.experiment_variables['theme']]
+    return message.message_template.experiment_variables['theme']
   end
 
   def self.lin_meth_factor(message)
-    lin_meth_factor_mapping = { '1' => 'Perspective taking', '2' => 'Information packaging', '3' => 'Numeracy', '4' => 'Information packaging x Numeracy' }
-    return lin_meth_factor_mapping[message.message_template.experiment_variables['lin_meth_factor']]
+    return message.message_template.experiment_variables['lin_meth_factor'].to_s
   end
 
   def self.lin_meth_level(message)
@@ -38,7 +35,7 @@ class TcorsDataReportMapper
   end
 
   def self.date_sent(message)
-    return message.scheduled_date_time.strftime("%m/%d/%Y")
+    return message.scheduled_date_time.strftime("%Y-%m-%d")
   end
 
   def self.day_sent(message)
@@ -87,21 +84,33 @@ class TcorsDataReportMapper
   end
 
   def self.total_impressions_day_1(message)
-    return message.impressions_by_day[0]
+    if message.impressions_by_day[message.scheduled_date_time].nil?
+      return 0
+    else
+      return message.impressions_by_day[message.scheduled_date_time]
+    end
   end
 
   def self.total_impressions_day_2(message)
-    message.impressions_by_day = parse_organic_impressions(message) if message.medium == :organic
-    return message.impressions_by_day[1]
+    return 0 if message.impressions_by_day[message.scheduled_date_time + 1.day].nil?
+    if message.medium == :organic
+      return message.impressions_by_day[message.scheduled_date_time + 1.day] - self.total_impressions_day_1(message)
+    else
+      return message.impressions_by_day[message.scheduled_date_time + 1.day]
+    end
   end
 
   def self.total_impressions_day_3(message)
-    message.impressions_by_day = parse_organic_impressions(message) if message.medium == :organic
-    return message.impressions_by_day[2]
+    return 0 if message.impressions_by_day[message.scheduled_date_time + 2.day].nil?
+    if message.medium == :organic
+      return message.impressions_by_day[message.scheduled_date_time + 2.day] - self.total_impressions_day_2(message) - self.total_impressions_day_1(message)
+    else
+      return message.impressions_by_day[message.scheduled_date_time + 2.day]
+    end
   end
 
   def self.total_impressions_experiment(message)
-    return message.get_total_impressions.last
+    return MetricsManager.get_metric_value(message, message.platform, 'impressions')
   end
 
   def self.retweets_twitter(message)
@@ -191,16 +200,4 @@ class TcorsDataReportMapper
   def self.pageviews(message)
     return MetricsManager.get_metric_value(message, :google_analytics, 'ga:pageviews')
   end
-
-  private
-    def self.parse_organic_impressions(message)
-      #check if organic impressions have been calulated for each day yet
-      organic_impressions = message.get_total_impressions
-      return organic_impressions if organic_impressions[4] == true
-
-      organic_impressions[2] = organic_impressions[2] - organic_impressions[1]
-      organic_impressions[1] = organic_impressions[1] - organic_impressions[0]
-      organic_impressions[4] = true
-      return organic_impressions
-    end
 end
