@@ -56,5 +56,20 @@ RSpec.describe DropboxClient do
       expect(file.name).to eq("2017-04-19-to-2017-04-19-6hu9ou4xpw5c.xlsx")
       expect(file.path_lower).to eq('/tcors/analytics_files/04-19-2017/2017-04-19-to-2017-04-19-6hu9ou4xpw5c.xlsx')
     end
+    
+    it 'stores a file' do
+      file = nil
+      body = nil
+      file_body = IO.read("#{Rails.root}/tmp/data_report_2017_1_1_0_0_0.csv")
+      dropbox_file_path = '/TCORS/data_reports/data_report_2017_1_1_0_0_0.csv'
+
+      VCR.use_cassette 'dropbox_client/store_file' do
+        @dropbox_client.store_file(dropbox_file_path, file_body)
+        file, body = @dropbox_client.get_file(dropbox_file_path)
+      end
+      
+      expect(file.path_lower).to eq(dropbox_file_path.downcase)
+      expect(body.to_s).to eq(file_body)
+    end
   end
 end
