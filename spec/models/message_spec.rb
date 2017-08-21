@@ -33,7 +33,6 @@
 #  impressions_by_day           :text
 #
 
-
 require 'rails_helper'
 
 describe Message do
