@@ -20,4 +20,17 @@ RSpec.describe ExcelFileReader do
 
     expect(excel_content).to eq(sample_excel_content)
   end
+
+  describe "(development only tests)", :development_only_tests => true do
+    it 'successfully reads an Excel (.xlsx) file from a private Dropbox file path' do
+      dropbox_file_path = '/tcors/analytics_files/04-19-2017/2017-04-19-to-2017-04-19-6hu9ou4xpw5c.xlsx'
+      parsed_excel_content = ''
+      
+      VCR.use_cassette 'excel_file_reader/read_from_dropbox' do
+        parsed_excel_content = ExcelFileReader.read_from_dropbox(dropbox_file_path)
+      end
+  
+      expect(parsed_excel_content.size).to eq(4)
+    end
+  end
 end
