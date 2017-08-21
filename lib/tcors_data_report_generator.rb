@@ -6,7 +6,7 @@ class TcorsDataReportGenerator
 
   def self.generate_report
     messages = Message.where('scheduled_date_time >= ? AND scheduled_date_time <= ?', Date.new(2017, 4, 19), Date.new(2017, 7, 12))
-    file_name = "data_report_#{Time.now.year}_#{Time.now.month}_#{Time.now.day}_#{Time.now.hour}_#{Time.now.minute}_#{Time.now.second}.csv"
+    file_name = "data_report_#{Time.now.year}_#{Time.now.month}_#{Time.now.day}_#{Time.now.hour}_#{Time.now.min}_#{Time.now.sec}.csv"
 
     CSV.open("#{Rails.root}/tmp/#{file_name}", "w", :write_headers => true, :headers => COLUMN_NAMES) do |csv|
       messages.each do |message|
