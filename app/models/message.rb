@@ -33,6 +33,8 @@
 #  impressions_by_day           :text
 #
 
+
+
 class Message < ActiveRecord::Base
   extend Enumerize
   include CampaignId
@@ -197,9 +199,23 @@ class Message < ActiveRecord::Base
 
     save
   end
+  
+  def self.find_by_alternative_identifier(alternative_identifier_value)
+    # When parsing analytics files and other data files, messages need to be found by their
+    # social_network_id, campaign_id and sometime the published_text of their buffer_update.
+    # This helper method allow a string to be passed in and it searches the above three
+    # attributes till it finds a match.
+    message = Message.where(:social_network_id => alternative_identifier_value)[0]
+    
+    if message.nil?
+      message = Message.where(:campaign_id => alternative_identifier_value)[0]
+    end
+    
+    if message.nil?
+      message = Message.joins(:buffer_update).where(:buffer_updates => { :published_text => alternative_identifier_value})[0]
+    end
 
-  def get_total_impressions
-    return self.impressions_by_day
+    message
   end
 
   def get_sessions(exclude_ip_address_list = [])

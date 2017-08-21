@@ -8,6 +8,7 @@ defaults: &defaults
   enable_data_sharing: true
   aws_access_key_id: ""
   aws_secret_access_key: ""
+  dropbox_access_token: ""
 
 development:
   <<: *defaults

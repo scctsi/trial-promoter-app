@@ -157,7 +157,7 @@ ActiveRecord::Schema.define(version: 20170803165652) do
     t.datetime "message_distribution_start_date"
     t.datetime "created_at",                                   null: false
     t.datetime "updated_at",                                   null: false
-    t.boolean  "analytics_file_todos_created"
+    t.boolean  "gianalytics_file_todos_created"
     t.text     "twitter_posting_times"
     t.text     "facebook_posting_times"
     t.text     "instagram_posting_times"
