@@ -24,4 +24,8 @@ class DropboxClient
   def get_file(path)
     @dropbox_client.download(path)
   end
+  
+  def store_file(dropbox_file_path, body)
+     @dropbox_client.upload(dropbox_file_path, body)
+  end
 end
