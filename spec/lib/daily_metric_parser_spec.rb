@@ -3,9 +3,6 @@ require 'rails_helper'
 RSpec.describe DailyMetricParser do
   before do
     @daily_metric_parser = DailyMetricParser.new
-    secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
-    allow(Setting).to receive(:[]).with(:dropbox_access_token).and_return(secrets['dropbox_access_token'])
-    @dropbox_client = DropboxClient.new
   end
 
   it 'converts the name of a folder to a date' do
@@ -27,6 +24,12 @@ RSpec.describe DailyMetricParser do
   end
 
   describe "(development only tests)", :development_only_tests => true do
+    before do
+      secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
+      allow(Setting).to receive(:[]).with(:dropbox_access_token).and_return(secrets['dropbox_access_token'])
+      @dropbox_client = DropboxClient.new
+    end
+    
     it 'converts a hierarchical list of folders and files to a processable list by converting folder names to dates and removing files it should ignore' do
       folders_and_files = nil
       VCR.use_cassette 'daily_metric_parser/convert_to_processable_list' do
@@ -69,16 +72,16 @@ RSpec.describe DailyMetricParser do
         expect(value).to be_an_instance_of(Fixnum)
       end
     end
-  end
-  
-  it 'parses out and stores metrics from all files in the processable_list' do
-    parsed_metrics = {}
-    filtered_folders_and_files = nil
-     VCR.use_cassette 'daily_metric_parser/convert_to_processable_list' do
-      folders_and_files = @dropbox_client.recursively_list_folder('/TCORS/analytics_files/')
-    end
-    filtered_folders_and_files = @daily_metric_parser.convert_to_processable_list(folders_and_files)
 
-    @daily_metric_parser.parse_and_store_impressions('/TCORS/analytics_files/')
+    it 'parses out and stores metrics from all files in the processable_list' do
+      # parsed_metrics = {}
+      # filtered_folders_and_files = nil
+      # VCR.use_cassette 'daily_metric_parser/convert_to_processable_list' do
+      #   folders_and_files = @dropbox_client.recursively_list_folder('/TCORS/analytics_files/')
+      # end
+      # filtered_folders_and_files = @daily_metric_parser.convert_to_processable_list(folders_and_files)
+  
+      # @daily_metric_parser.parse_and_store_impressions('/TCORS/analytics_files/')
+    end
   end
 end
