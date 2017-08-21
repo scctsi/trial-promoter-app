@@ -1,5 +1,5 @@
 class ExperimentsController < ApplicationController
-  before_action :set_experiment, only: [:show, :edit, :update, :parameterized_slug, :send_to_buffer, :create_messages, :create_analytics_file_todos, :correctness_analysis, :messages_page]
+  before_action :set_experiment, only: [:show, :edit, :update, :parameterized_slug, :send_to_buffer, :create_messages, :correctness_analysis, :messages_page]
   before_action :set_click_meter_groups_and_domains, only: [:new, :edit]
   layout "workspace", only: [:show, :correctness_analysis]
 
@@ -72,11 +72,6 @@ class ExperimentsController < ApplicationController
       format.html { redirect_to experiment_url(@experiment) }
       format.json { render json: { success: true } }
     end
-  end
-
-  def create_analytics_file_todos
-    @experiment.create_analytics_file_todos
-    redirect_to experiment_url(@experiment)
   end
 
   def messages_page
