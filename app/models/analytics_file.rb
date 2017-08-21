@@ -23,6 +23,7 @@ class AnalyticsFile < ActiveRecord::Base
   validates :message_generating, presence: true
   enumerize :processing_status, in: [:unprocessed, :processed], default: :unprocessed
 
+  belongs_to :analytics_file_set
   belongs_to :social_media_profile
   belongs_to :message_generating, polymorphic: true
 
