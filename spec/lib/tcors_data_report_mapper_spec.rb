@@ -16,11 +16,6 @@ RSpec.describe TcorsDataReportMapper do
     @message.click_meter_tracking_link.clicks << create_list(:click, 1, :spider => '1', :click_time => "1 May 2017 12:34:57")
     @message.click_meter_tracking_link.clicks << create_list(:click, 1, :unique => '1', :click_time => "1 May 2017 13:44:56")
     @message.click_meter_tracking_link.clicks << create_list(:click, 2, :unique => '1', :click_time => "2 May 2017 19:26:01")
-<<<<<<< HEAD
-    # @message.impressions_by_day = [300, 800, 1400, 10000]
-=======
->>>>>>> 90c7f2f5e11f5d19bafd5f461d602d848637f4e3
-
     @message.metrics << Metric.new(source: :google_analytics, data: {'ga:sessions'=>2, 'ga:users'=>2, 'ga:exits' =>2, 'ga:sessionDuration' => [42, 18], 'ga:timeOnPage' => [42, 18], 'ga:pageviews' => 2})
 
     @message.website_session_count = 34
@@ -139,31 +134,6 @@ RSpec.describe TcorsDataReportMapper do
     expect(TcorsDataReportMapper.click_time(@message)).to_not eq([ '2017-05-01 12:34:57.000000000'])
   end
 
-<<<<<<< HEAD
-  # it 'maps the total impressions for each day to total_impressions_day_1' do
-  #   expect(TcorsDataReportMapper.total_impressions_day_1(@message)).to eq(300)
-  #   @message.medium = :ad
-  #   expect(TcorsDataReportMapper.total_impressions_day_1(@message)).to eq(300)
-  # end
-
-  # it 'maps the total impressions for each day to total_impressions_day_2' do
-  #   expect(TcorsDataReportMapper.total_impressions_day_2(@message)).to eq(500)
-  #   @message.medium = :ad
-  #   @message.impressions_by_day = [300, 800, 1400, 10000]
-  #   expect(TcorsDataReportMapper.total_impressions_day_2(@message)).to eq(800)
-  # end
-
-  # it 'maps the total impressions for each day to total_impressions_day_3' do
-  #   expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq(600)
-  #   @message.medium = :ad
-  #   @message.impressions_by_day = [300, 800, 1400, 10000]
-  #   expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq(1400)
-  # end
-
-  # it 'maps the total impressions for the entire experiment to total_impressions_experiment' do
-  #   expect(TcorsDataReportMapper.total_impressions_experiment(@message)).to eq(10000)
-  # end
-=======
   describe 'impressions by date' do
     before do
       @message.impressions_by_day = { @message.scheduled_date_time => 100, (@message.scheduled_date_time + 1.day) => 115, (@message.scheduled_date_time + 2.day) => 120 }
@@ -224,7 +194,6 @@ RSpec.describe TcorsDataReportMapper do
       expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq(1)
     end
   end
->>>>>>> 90c7f2f5e11f5d19bafd5f461d602d848637f4e3
 
   describe 'twitter metrics' do
     before do
