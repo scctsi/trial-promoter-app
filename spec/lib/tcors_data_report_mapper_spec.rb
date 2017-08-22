@@ -16,13 +16,17 @@ RSpec.describe TcorsDataReportMapper do
     @message.click_meter_tracking_link.clicks << create_list(:click, 1, :spider => '1', :click_time => "1 May 2017 12:34:57")
     @message.click_meter_tracking_link.clicks << create_list(:click, 1, :unique => '1', :click_time => "1 May 2017 13:44:56")
     @message.click_meter_tracking_link.clicks << create_list(:click, 2, :unique => '1', :click_time => "2 May 2017 19:26:01")
-    @message.metrics << Metric.new(source: :google_analytics, data: {'ga:sessions'=>2, 'ga:users'=>2, 'ga:exits' =>2, 'ga:sessionDuration' => [42, 18], 'ga:timeOnPage' => [42, 18], 'ga:pageviews' => 2})
+    @message.metrics << Metric.new(source: :google_analytics, data: {'ga:sessions'=>2, 'ga:users'=>2, 'ga:exits' =>2, 'ga:sessionDuration' => 42, 'ga:timeOnPage' => 42, 'ga:pageviews' => 2})
 
-    @message.website_session_count = 34
+    @message.website_session_count = 2
     @message.save
   end
 
   describe 'experiment variables mapping methods' do
+    it 'maps the message id to database_id' do
+      expect(TcorsDataReportMapper.database_id(@message)).to eq(@message.id)
+    end
+    
     it 'maps the message stem_id to stem' do
       @message.message_template.experiment_variables['stem_id'] = 'FE51'
       expect(TcorsDataReportMapper.stem(@message)).to eq('FE51')
@@ -273,10 +277,6 @@ RSpec.describe TcorsDataReportMapper do
     expect(TcorsDataReportMapper.total_sessions_experiment(@message)).to eq(34)
   end
 
-  it 'maps the number of google analytics sessions for each website to sessions' do
-    expect(TcorsDataReportMapper.sessions(@message)).to eq(2)
-  end
-
   it 'maps the number of clicks for each website link to clicks' do
     #excludes one of the TCORS members clicks
     expect(TcorsDataReportMapper.clicks(@message)).to eq(5)
@@ -293,11 +293,11 @@ RSpec.describe TcorsDataReportMapper do
   end
 
   it 'maps the duration of the user sessions for each website to session_duration' do
-    expect(TcorsDataReportMapper.session_duration(@message)).to eq([42,18])
+    expect(TcorsDataReportMapper.session_duration(@message)).to eq(42)
   end
 
   it 'maps the time on each webpage for each website to time_onpage' do
-    expect(TcorsDataReportMapper.time_on_page(@message)).to eq([42, 18])
+    expect(TcorsDataReportMapper.time_on_page(@message)).to eq(42)
   end
 
   it 'maps the number of page views for each website to pageviews' do
