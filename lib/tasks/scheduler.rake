@@ -17,3 +17,7 @@ end
 task :get_analytics_from_google_analytics => :environment do
   GetAnalyticsFromGoogleAnalyticsJob.perform_later
 end
+
+task :get_analytics_from_clickmeter => :environment do
+  GetAnalyticsFromClickMeterJob.perform_later
+end
