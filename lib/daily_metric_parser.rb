@@ -38,4 +38,24 @@ class DailyMetricParser
     
     parsed_metrics
   end
+  
+  def column_indices(file_name)
+    return [6, 8] if file_name.end_with?('.xlsx') 
+    return [0, 11] if !file_name.index('Facebook').nil?
+    return [2, 3] if !file_name.index('Tommy-Trogan').nil?
+    return [0, 4] if !file_name.index('tweet_activity_metrics').nil?
+  end
+  
+  def parse_and_store_impressions(folders_and_files)
+    # TODO: Unit test this!
+    data = {}
+    filtered_folders_and_files = convert_to_processable_list(folders_and_files)
+    
+    filtered_folders_and_files.each do |folder, files|
+      files.each do |file|
+        data = parse_metric_from_file(file.path_lower, *column_indices(file.name))
+      end
+      MetricsManager.update_impressions_by_day(name_to_date(folder.name), data)
+    end
+  end
 end
