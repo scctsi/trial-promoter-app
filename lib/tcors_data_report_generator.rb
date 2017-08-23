@@ -3,7 +3,6 @@ require 'csv'
 class TcorsDataReportGenerator
   # TODO: Unit test this
   COLUMN_NAMES = ['database_id', 'stem', 'fda_campaign', 'theme', 'lin_meth_factor', 'lin_meth_level', 'variant', 'sm_type', 'day_experiment', 'date_sent', 'day_sent', 'time_sent', 'medium', 'image_included', 'total_clicks_day_1', 'total_clicks_day_2', 'total_clicks_day_3', 'total_clicks_experiment', 'click_time', 'total_impressions_day_1', 'total_impressions_day_2', 'total_impressions_day_3', 'total_impressions_experiment', 'retweets_twitter', 'shares_facebook', 'shares_instagram', 'replies_twitter', 'comments_facebook', 'comments_instagram', 'likes_twitter', 'likes_facebook', 'likes_instagram', 'total_sessions_day_1', 'total_sessions_day_2', 'total_sessions_day_3', 'total_sessions_experiment', 'total_goals_day_1', 'total_goals_day_2', 'total_goals_day_3', 'total_goals_experiment', 'users', 'exits', 'session_duration', 'time_on_page', 'pageviews']
-
   def self.generate_report
     messages = Message.where('scheduled_date_time >= ? AND scheduled_date_time <= ?', Date.new(2017, 4, 19), Date.new(2017, 7, 12)).order('scheduled_date_time ASC, platform ASC, medium ASC')
     file_name = "data_report_#{Time.now.year}_#{Time.now.month}_#{Time.now.day}_#{Time.now.hour}_#{Time.now.min}_#{Time.now.sec}.csv"
