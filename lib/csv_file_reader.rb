@@ -28,7 +28,7 @@ class CsvFileReader
       # body = body.to_s.split(/\r?\n|\r/).drop(1).join
       p body.to_s
       
-      CSV.parse(body, col_sep: ',', headers: false) do |row|
+      CSV.parse(body.to_s, col_sep: ',', headers: false, :skip_lines => "Post ID") do |row|
         parsed_csv_content << row
       end
     else
