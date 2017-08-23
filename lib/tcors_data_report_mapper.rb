@@ -83,7 +83,20 @@ class TcorsDataReportMapper
 
   def self.click_time(message)
     unique_clicks = message.click_meter_tracking_link.clicks.select{|click| click.unique}
-    click_times = unique_clicks.map{|click| click.click_time.strftime("%H:%M:%S")}
+    click_times = []
+    day_of_published_message = 1 
+    # get click times for each calendar day 
+    3.times do
+      click_times << ((unique_clicks.map{|click| click.click_time.strftime("%H:%M:%S") if click.click_time < (message.scheduled_date_time + day_of_published_message.day)}).compact )
+      day_of_published_message += 1
+    end
+    next_day = 1  
+    day_before = 0
+    2.times do
+      click_times[next_day] = click_times[next_day] - click_times[day_before] - click_times[0]
+      next_day += 1
+      day_before += 1
+    end
     return click_times
   end
 
@@ -170,6 +183,36 @@ class TcorsDataReportMapper
 
   def self.total_sessions_experiment(message)
     return MetricsManager.get_metric_value(message, :google_analytics, "ga:sessions")
+  end
+  
+  def self.total_goals_day_1(message)
+    clicks = []
+    sessions = message.get_sessions(IP_EXCLUSION_LIST)
+    sessions = sessions.select{|session| session.started_at.between?(message.scheduled_date_time, message.scheduled_date_time + 1.day)}
+    sessions.each do |session|
+      clicks << Ahoy::Event.where(visit_id: session.id)
+    end
+    return clicks.count
+  end
+
+  def self.total_goals_day_2(message)
+    clicks = []
+    sessions = message.get_sessions(IP_EXCLUSION_LIST)
+    sessions = sessions.select{|session| session.started_at.between?(message.scheduled_date_time + 1.day, message.scheduled_date_time + 2.day)}
+    sessions.each do |session|
+      clicks << Ahoy::Event.where(visit_id: session.id)
+    end
+    return clicks.count
+  end
+
+  def self.total_goals_day_3(message)
+    clicks = []
+    sessions = message.get_sessions(IP_EXCLUSION_LIST)
+    sessions = sessions.select{|session| session.started_at.between?(message.scheduled_date_time + 2.day, message.scheduled_date_time + 3.day)}
+    sessions.each do |session|
+      clicks << Ahoy::Event.where(visit_id: session.id)
+    end
+    return clicks.count
   end
 
   def self.clicks(message)
