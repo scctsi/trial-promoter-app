@@ -215,7 +215,7 @@ class TcorsDataReportMapper
     return clicks.count
   end
 
-  def self.clicks(message)
+  def self.total_goals_experiment(message)
     clicks = []
     sessions = message.get_sessions(IP_EXCLUSION_LIST)
     sessions.each do |session|
