@@ -35,7 +35,7 @@ class TcorsDataReportMapper
   end
 
   def self.day_experiment(message)
-    return (message.scheduled_date_time.to_i - DateTime.new(2017, 4, 19).to_i) / 1.day.seconds
+    return (message.scheduled_date_time.to_i - DateTime.new(2017, 4, 19).to_i) / 1.day.seconds + 1
   end
 
   def self.date_sent(message)
@@ -84,18 +84,13 @@ class TcorsDataReportMapper
   def self.click_time(message)
     unique_clicks = message.click_meter_tracking_link.clicks.select{|click| click.unique}
     click_times = []
-    day_of_published_message = 1 
-    # get click times for each calendar day 
+    start_of_day = 0 
+    end_of_day = 1 
+    # get click times for each calendar day and store as nested arrays 
     3.times do
-      click_times << ((unique_clicks.map{|click| click.click_time.strftime("%H:%M:%S") if click.click_time < (message.scheduled_date_time + day_of_published_message.day)}).compact )
-      day_of_published_message += 1
-    end
-    next_day = 1  
-    day_before = 0
-    2.times do
-      click_times[next_day] = click_times[next_day] - click_times[day_before] - click_times[0]
-      next_day += 1
-      day_before += 1
+      click_times << ((unique_clicks.map{|click| click.click_time.strftime("%H:%M:%S") if click.click_time.between?(message.scheduled_date_time + start_of_day.day, message.scheduled_date_time + end_of_day.day)}).compact )
+      start_of_day += 1
+      end_of_day += 1
     end
     return click_times
   end

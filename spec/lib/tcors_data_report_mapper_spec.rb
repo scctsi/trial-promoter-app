@@ -12,7 +12,7 @@ RSpec.describe TcorsDataReportMapper do
       visit.ahoy_events << Ahoy::Event.new(visit_id: visit.id)
     end
     @message.click_meter_tracking_link = create(:click_meter_tracking_link)
-    @message.click_meter_tracking_link.clicks << create_list(:click, 3, :unique => '1', :click_time => "30 April 2017 00:23:13")
+    @message.click_meter_tracking_link.clicks << create_list(:click, 3, :unique => '1', :click_time => "30 April 2017 12:23:13")
     @message.click_meter_tracking_link.clicks << create_list(:click, 1, :spider => '1', :click_time => "1 May 2017 12:34:57")
     @message.click_meter_tracking_link.clicks << create_list(:click, 1, :unique => '1', :click_time => "1 May 2017 13:44:56")
     @message.click_meter_tracking_link.clicks << create_list(:click, 2, :unique => '1', :click_time => "2 May 2017 19:26:01")
@@ -66,7 +66,7 @@ RSpec.describe TcorsDataReportMapper do
   end
 
   it 'maps the scheduled date of the message to the day of the experiment' do
-    expect(TcorsDataReportMapper.day_experiment(@message)).to eq(11)
+    expect(TcorsDataReportMapper.day_experiment(@message)).to eq(12)
   end
 
   it 'maps the date the message was published to the date sent' do
@@ -134,7 +134,7 @@ RSpec.describe TcorsDataReportMapper do
   end
 
   it 'maps the times of each human click per tracking link to click_time' do
-    expect(TcorsDataReportMapper.click_time(@message)).to eq([["00:23:13", "00:23:13", "00:23:13"], ["13:44:56"], ["19:26:01", "19:26:01"]])
+    expect(TcorsDataReportMapper.click_time(@message)).to eq([["12:23:13", "12:23:13", "12:23:13"], ["13:44:56"], ["19:26:01", "19:26:01"]])
   end
  
   describe 'impressions by date' do
