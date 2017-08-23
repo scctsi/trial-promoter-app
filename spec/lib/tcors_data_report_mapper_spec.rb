@@ -134,10 +134,9 @@ RSpec.describe TcorsDataReportMapper do
   end
 
   it 'maps the times of each human click per tracking link to click_time' do
-    expect(TcorsDataReportMapper.click_time(@message)).to eq(['00:23:13', '00:23:13', '00:23:13', '13:44:56', '19:26:01', '19:26:01'])
-    expect(TcorsDataReportMapper.click_time(@message)).to_not eq([ '2017-05-01 12:34:57.000000000'])
+    expect(TcorsDataReportMapper.click_time(@message)).to eq([["00:23:13", "00:23:13", "00:23:13"], ["13:44:56"], ["19:26:01", "19:26:01"]])
   end
-
+ 
   describe 'impressions by date' do
     before do
       @message.impressions_by_day = { @message.scheduled_date_time => 100, (@message.scheduled_date_time + 1.day) => 115, (@message.scheduled_date_time + 2.day) => 120 }
@@ -277,7 +276,20 @@ RSpec.describe TcorsDataReportMapper do
     expect(TcorsDataReportMapper.total_sessions_experiment(@message)).to eq(2)
   end
 
-  it 'maps the number of clicks for each website link to clicks' do
+  it 'maps the number of conversions for day 1 to each website link to total_goals_day1' do  
+    expect(TcorsDataReportMapper.total_goals_day_1(@message)).to eq(3)
+  end
+
+  it 'maps the number of conversions for day 2 to each website link to total_goals_day2' do  
+    expect(TcorsDataReportMapper.total_goals_day_2(@message)).to eq(2)
+  end
+
+  it 'maps the number of conversions for day 3 to each website link to total_goals_day3' do  
+    expect(TcorsDataReportMapper.total_goals_day_3(@message)).to eq(0)
+    
+  end
+
+  it 'maps the number of conversions for the duration of the experiment to clicks' do
     #excludes one of the TCORS members clicks
     expect(TcorsDataReportMapper.clicks(@message)).to eq(5)
     visits_3 = create_list(:visit, 1, utm_content: @message.to_param, started_at: @message.scheduled_date_time + 2.day + 1.hour)
