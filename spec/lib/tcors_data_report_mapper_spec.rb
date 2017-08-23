@@ -286,7 +286,6 @@ RSpec.describe TcorsDataReportMapper do
 
   it 'maps the number of conversions for day 3 to each website link to total_goals_day3' do  
     expect(TcorsDataReportMapper.total_goals_day_3(@message)).to eq(0)
-    
   end
 
   it 'maps the number of conversions for the duration of the experiment to clicks' do
