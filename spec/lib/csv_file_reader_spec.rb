@@ -51,7 +51,7 @@ RSpec.describe CsvFileReader do
         csv_content = CsvFileReader.read_from_dropbox(files[1].path_lower, {:skip_first_row => true})
       end
   
-      expect(csv_content.count).to eq(267)
+      expect(csv_content.count).to eq(9)
     end
   end
 end
