@@ -26,6 +26,6 @@ class DropboxClient
   end
   
   def store_file(dropbox_file_path, body)
-     @dropbox_client.upload(dropbox_file_path, body)
+    @dropbox_client.upload(dropbox_file_path, body)
   end
 end
