@@ -46,7 +46,7 @@ class ClickMeterTrackingLink < ActiveRecord::Base
     message = Message.where(id: self.message_id)[0]
     experiment_start = DateTime.parse('19 April 2017')
     experiment_finish = DateTime.parse('15 July 2017')
-    total_days_experiment = (experiment_finish.to_i - experiment_start.to_i) / 1.day.seconds
+    total_days_experiment = (experiment_finish.to_i - experiment_start.to_i) / 1.day.seconds + 1
     total_clicks = 0
     total_days_experiment.times do
       total_clicks += (message.click_meter_tracking_link.get_clicks_by_date(experiment_start)).count
