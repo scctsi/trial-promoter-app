@@ -249,8 +249,6 @@ class TcorsDataReportMapper
     return MetricsManager.get_metric_value(message, :google_analytics, 'ga:pageviews')
   end
 
-  private
-  
   def self.get_sessions(message, start, finish)
     sessions = message.get_sessions(IP_EXCLUSION_LIST)
     return sessions.select{|session| session.started_at.between?(start, finish)}
