@@ -14,7 +14,7 @@ RSpec.describe TcorsDataReportGenerator do
             visit.ahoy_events << Ahoy::Event.new(visit_id: visit.id)
         end
         message.click_meter_tracking_link = create(:click_meter_tracking_link)
-        message.click_meter_tracking_link.clicks << create_list(:click, 3, :unique => '1', :click_time => "30 April 2017 00:23:13")
+        message.click_meter_tracking_link.clicks << create_list(:click, 3, :unique => '1', :click_time => "30 April 2017 12:23:13")
         message.click_meter_tracking_link.clicks << create_list(:click, 1, :spider => '1', :click_time => "1 May 2017 12:34:57")
         message.click_meter_tracking_link.clicks << create_list(:click, 1, :unique => '1', :click_time => "1 May 2017 13:44:56")
         message.click_meter_tracking_link.clicks << create_list(:click, 2, :unique => '1', :click_time => "2 May 2017 19:26:01")
