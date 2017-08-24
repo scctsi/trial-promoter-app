@@ -162,37 +162,23 @@ class TcorsDataReportMapper
   def self.likes_instagram(message)
     return MetricsManager.get_metric_value(message, :instagram, 'likes')
   end
-  
-  
-  
-  
-  
-    # click_times = []
-    # scheduled_start_of_day = message.buffer_update.sent_from_date_time
-    # scheduled_end_of_day = scheduled_start_of_day.end_of_day
-    # # get click times for each calendar day and store as nested arrays 
-    # 3.times do
-    #   click_times << ((unique_clicks.map{|click| click.click_time.strftime("%H:%M:%S") if click.click_time.between?(scheduled_start_of_day, scheduled_end_of_day)}).compact )
-    #   scheduled_start_of_day = (scheduled_start_of_day + 1.day).beginning_of_day
-    #   scheduled_end_of_day = (scheduled_end_of_day + 1.day).end_of_day
-    # end
 
   def self.total_sessions_day_1(message)
     scheduled_start_of_day = message.buffer_update.sent_from_date_time
     scheduled_end_of_day = scheduled_start_of_day.end_of_day
-    return get_sessions_count(message, scheduled_start_of_day, scheduled_end_of_day)
+    return get_sessions(message, scheduled_start_of_day, scheduled_end_of_day).count
   end
 
   def self.total_sessions_day_2(message)
     scheduled_start_of_day = (message.buffer_update.sent_from_date_time + 1.day).beginning_of_day
     scheduled_end_of_day = (scheduled_start_of_day).end_of_day
-    return get_sessions_count(message, scheduled_start_of_day, scheduled_end_of_day)
+    return get_sessions(message, scheduled_start_of_day, scheduled_end_of_day).count
   end
 
   def self.total_sessions_day_3(message)
     scheduled_start_of_day = (message.buffer_update.sent_from_date_time + 2.day).beginning_of_day
     scheduled_end_of_day = (scheduled_start_of_day).end_of_day 
-    return get_sessions_count(message, scheduled_start_of_day, scheduled_end_of_day)
+    return get_sessions(message, scheduled_start_of_day, scheduled_end_of_day).count
   end
 
   def self.total_sessions_experiment(message)
@@ -201,8 +187,9 @@ class TcorsDataReportMapper
   
   def self.total_goals_day_1(message)
     clicks = []
-    sessions = message.get_sessions(IP_EXCLUSION_LIST)
-    sessions = sessions.select{|session| session.started_at.between?(message.buffer_update.sent_from_date_time, message.buffer_update.sent_from_date_time + 1.day)}
+    scheduled_start_of_day = (message.buffer_update.sent_from_date_time).beginning_of_day
+    scheduled_end_of_day = (scheduled_start_of_day).end_of_day 
+    sessions = get_sessions(message, scheduled_start_of_day, scheduled_end_of_day)
     sessions.each do |session|
       clicks << Ahoy::Event.where(visit_id: session.id)
     end
@@ -211,8 +198,9 @@ class TcorsDataReportMapper
 
   def self.total_goals_day_2(message)
     clicks = []
-    sessions = message.get_sessions(IP_EXCLUSION_LIST)
-    sessions = sessions.select{|session| session.started_at.between?(message.buffer_update.sent_from_date_time + 1.day, message.buffer_update.sent_from_date_time + 2.day)}
+    scheduled_start_of_day = (message.buffer_update.sent_from_date_time + 1.day).beginning_of_day
+    scheduled_end_of_day = (scheduled_start_of_day).end_of_day 
+    sessions = get_sessions(message, scheduled_start_of_day, scheduled_end_of_day)
     sessions.each do |session|
       clicks << Ahoy::Event.where(visit_id: session.id)
     end
@@ -221,8 +209,9 @@ class TcorsDataReportMapper
 
   def self.total_goals_day_3(message)
     clicks = []
-    sessions = message.get_sessions(IP_EXCLUSION_LIST)
-    sessions = sessions.select{|session| session.started_at.between?(message.buffer_update.sent_from_date_time + 2.day, message.buffer_update.sent_from_date_time + 3.day)}
+    scheduled_start_of_day = (message.buffer_update.sent_from_date_time + 2.day).beginning_of_day
+    scheduled_end_of_day = (scheduled_start_of_day).end_of_day 
+    sessions = get_sessions(message, scheduled_start_of_day, scheduled_end_of_day)
     sessions.each do |session|
       clicks << Ahoy::Event.where(visit_id: session.id)
     end
@@ -231,7 +220,9 @@ class TcorsDataReportMapper
 
   def self.total_goals_experiment(message)
     clicks = []
-    sessions = message.get_sessions(IP_EXCLUSION_LIST)
+    scheduled_start_of_day = ('2017 April 19').beginning_of_day
+    scheduled_end_of_day = ('2017 July 15').end_of_day 
+    sessions = get_sessions(message, scheduled_start_of_day, scheduled_end_of_day)
     sessions.each do |session|
       clicks << Ahoy::Event.where(visit_id: session.id)
     end
@@ -260,8 +251,8 @@ class TcorsDataReportMapper
 
   private
   
-  def self.get_sessions_count(message, start, finish)
+  def self.get_sessions(message, start, finish)
     sessions = message.get_sessions(IP_EXCLUSION_LIST)
-    return sessions.select{|session| session.started_at.between?(start, finish)}.count
+    return sessions.select{|session| session.started_at.between?(start, finish)}
   end
 end
