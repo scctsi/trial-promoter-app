@@ -35,7 +35,7 @@ class TcorsDataReportMapper
   end
 
   def self.day_experiment(message)
-    return (message.buffer_update.sent_from_date_time.to_i - DateTime.new(2017, 4, 19).to_i) / 1.day.seconds + 1
+    return (message.scheduled_date_time.to_i - DateTime.new(2017, 4, 19).to_i) / 1.day.seconds + 1
   end
 
   def self.date_sent(message)
