@@ -219,7 +219,7 @@ class Message < ActiveRecord::Base
   end
 
   def get_sessions(exclude_ip_address_list = [])
-    visits = Visit.where(utm_content: to_param).to_a
+    visits = Visit.where(utm_content: self.to_param).to_a
     visits.reject!{ |visit| exclude_ip_address_list.include?(visit.ip) }
     return visits
   end

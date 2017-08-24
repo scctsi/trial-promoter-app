@@ -1,6 +1,10 @@
 class TcorsDataReportMapper
   IP_EXCLUSION_LIST = ['128.125.77.139', '128.125.132.141', '207.151.120.4', '128.125.98.4', '128.125.109.224', '128.125.98.2', '68.181.124.25', '162.225.230.188', '216.4.202.66', '68.181.207.160', '2605:e000:8681:4900:a5c8:66d1:4753:fcc0', '68.101.127.18', '2602:306:80c8:88a0:89a:a5f6:7641:321c' ]
 
+  def self.database_id(message)
+    return message.id
+  end
+
   def self.stem(message)
     return message.message_template.experiment_variables['stem_id']
   end
@@ -31,7 +35,7 @@ class TcorsDataReportMapper
   end
 
   def self.day_experiment(message)
-    return (message.scheduled_date_time.to_i - DateTime.new(2017, 4, 19).to_i) / 1.day.seconds
+    return (message.scheduled_date_time.to_i - DateTime.new(2017, 4, 19).to_i) / 1.day.seconds + 1
   end
 
   def self.date_sent(message)
@@ -79,7 +83,15 @@ class TcorsDataReportMapper
 
   def self.click_time(message)
     unique_clicks = message.click_meter_tracking_link.clicks.select{|click| click.unique}
-    click_times = unique_clicks.map{|click| click.click_time.strftime("%H:%M:%S")}
+    click_times = []
+    start_of_day = 0 
+    end_of_day = 1 
+    # get click times for each calendar day and store as nested arrays 
+    3.times do
+      click_times << ((unique_clicks.map{|click| click.click_time.strftime("%H:%M:%S") if click.click_time.between?(message.scheduled_date_time + start_of_day.day, message.scheduled_date_time + end_of_day.day)}).compact )
+      start_of_day += 1
+      end_of_day += 1
+    end
     return click_times
   end
 
@@ -165,14 +177,40 @@ class TcorsDataReportMapper
   end
 
   def self.total_sessions_experiment(message)
-    return message.website_session_count
-  end
-
-  def self.sessions(message)
     return MetricsManager.get_metric_value(message, :google_analytics, "ga:sessions")
   end
+  
+  def self.total_goals_day_1(message)
+    clicks = []
+    sessions = message.get_sessions(IP_EXCLUSION_LIST)
+    sessions = sessions.select{|session| session.started_at.between?(message.scheduled_date_time, message.scheduled_date_time + 1.day)}
+    sessions.each do |session|
+      clicks << Ahoy::Event.where(visit_id: session.id)
+    end
+    return clicks.count
+  end
 
-  def self.clicks(message)
+  def self.total_goals_day_2(message)
+    clicks = []
+    sessions = message.get_sessions(IP_EXCLUSION_LIST)
+    sessions = sessions.select{|session| session.started_at.between?(message.scheduled_date_time + 1.day, message.scheduled_date_time + 2.day)}
+    sessions.each do |session|
+      clicks << Ahoy::Event.where(visit_id: session.id)
+    end
+    return clicks.count
+  end
+
+  def self.total_goals_day_3(message)
+    clicks = []
+    sessions = message.get_sessions(IP_EXCLUSION_LIST)
+    sessions = sessions.select{|session| session.started_at.between?(message.scheduled_date_time + 2.day, message.scheduled_date_time + 3.day)}
+    sessions.each do |session|
+      clicks << Ahoy::Event.where(visit_id: session.id)
+    end
+    return clicks.count
+  end
+
+  def self.total_goals_experiment(message)
     clicks = []
     sessions = message.get_sessions(IP_EXCLUSION_LIST)
     sessions.each do |session|
