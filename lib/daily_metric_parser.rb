@@ -28,7 +28,12 @@ class DailyMetricParser
     if dropbox_file_path.ends_with?('.xlsx')
       parsed_file_contents = ExcelFileReader.read_from_dropbox(dropbox_file_path)
     else
-      parsed_file_contents = CsvFileReader.read_from_dropbox(dropbox_file_path)
+      # TODO: Unit test this next block
+      if !(dropbox_file_path.index('Insights').nil?)
+        parsed_file_contents = CsvFileReader.read_from_dropbox(dropbox_file_path, {:skip_first_row => true})
+      else
+        parsed_file_contents = CsvFileReader.read_from_dropbox(dropbox_file_path)
+      end
     end
     
     parsed_file_contents.each.with_index do |row, index|
