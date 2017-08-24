@@ -220,8 +220,8 @@ class TcorsDataReportMapper
 
   def self.total_goals_experiment(message)
     clicks = []
-    scheduled_start_of_day = ('2017 April 19').beginning_of_day
-    scheduled_end_of_day = ('2017 July 15').end_of_day 
+    scheduled_start_of_day = ('2017 April 19')
+    scheduled_end_of_day = ('2017 July 15') 
     sessions = get_sessions(message, scheduled_start_of_day, scheduled_end_of_day)
     sessions.each do |session|
       clicks << Ahoy::Event.where(visit_id: session.id)
