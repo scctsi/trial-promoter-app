@@ -13,16 +13,16 @@ RSpec.describe CsvFileReader do
     expect(csv_content).to eq(sample_csv_content)
   end
 
-  it 'successfully reads a CSV file which raises an illegal quoting error from a URL (Facebook organic data, which has two header rows)' do
-    csv_url = 'https://s3-us-west-1.amazonaws.com/scctsi-tp-production/analytics/Facebook+Insights+Data+Export+%2528Post+Level%2529+-+Be+Free+of+Tobacco+-+2017-07-19.csv'
-    csv_content = ''
+  # it 'successfully reads a CSV file which raises an illegal quoting error from a URL (Facebook organic data, which has two header rows)' do
+  #   csv_url = 'https://s3-us-west-1.amazonaws.com/scctsi-tp-production/analytics/Facebook+Insights+Data+Export+%2528Post+Level%2529+-+Be+Free+of+Tobacco+-+2017-07-19.csv'
+  #   csv_content = ''
 
-    VCR.use_cassette 'csv_file_reader/read_with_illegal_quoting' do
-      csv_content = CsvFileReader.read(csv_url, {:skip_first_row => true})
-    end
+  #   VCR.use_cassette 'csv_file_reader/read_with_illegal_quoting' do
+  #     csv_content = CsvFileReader.read(csv_url, {:skip_first_row => true})
+  #   end
 
-    expect(csv_content.count).to eq(267)
-  end
+  #   expect(csv_content.count).to eq(267)
+  # end
 
   describe "(development only tests)", :development_only_tests => true do
     before do 
