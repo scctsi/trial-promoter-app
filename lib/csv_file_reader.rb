@@ -25,9 +25,6 @@ class CsvFileReader
     file, body = dropbox_client.get_file(dropbox_file_path)
 
     if options[:skip_first_row]
-      # body = body.to_s.split(/\r?\n|\r/).drop(1).join
-      p body.to_s
-      
       CSV.parse(body.to_s, col_sep: ',', headers: false, :skip_lines => "Post ID") do |row|
         parsed_csv_content << row
       end
