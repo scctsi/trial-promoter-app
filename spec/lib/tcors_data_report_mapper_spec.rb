@@ -81,17 +81,17 @@ RSpec.describe TcorsDataReportMapper do
 
   it 'maps the date the message was published to the day of the week' do
     expect(TcorsDataReportMapper.day_sent(@message)).to eq('7')
-    @message.buffer_update.sent_from_date_time = '29 April 2017 12:00:00'
+    @message.scheduled_date_time = '29 April 2017 12:00:00'
     expect(TcorsDataReportMapper.day_sent(@message)).to eq('6')
-    @message.buffer_update.sent_from_date_time = '28 April 2017 12:00:00'
+    @message.scheduled_date_time = '28 April 2017 12:00:00'
     expect(TcorsDataReportMapper.day_sent(@message)).to eq('5')
-    @message.buffer_update.sent_from_date_time = '27 April 2017 12:00:00'
+    @message.scheduled_date_time = '27 April 2017 12:00:00'
     expect(TcorsDataReportMapper.day_sent(@message)).to eq('4')
-    @message.buffer_update.sent_from_date_time = '26 April 2017 12:00:00'
+    @message.scheduled_date_time = '26 April 2017 12:00:00'
     expect(TcorsDataReportMapper.day_sent(@message)).to eq('3')
-    @message.buffer_update.sent_from_date_time = '25 April 2017 12:00:00'
+    @message.scheduled_date_time = '25 April 2017 12:00:00'
     expect(TcorsDataReportMapper.day_sent(@message)).to eq('2')
-    @message.buffer_update.sent_from_date_time = '24 April 2017 12:00:00'
+    @message.scheduled_date_time = '24 April 2017 12:00:00'
     expect(TcorsDataReportMapper.day_sent(@message)).to eq('1')
   end
 
