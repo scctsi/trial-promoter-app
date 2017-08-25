@@ -28,7 +28,12 @@ class DailyMetricParser
     if dropbox_file_path.ends_with?('.xlsx')
       parsed_file_contents = ExcelFileReader.read_from_dropbox(dropbox_file_path)
     else
-      parsed_file_contents = CsvFileReader.read_from_dropbox(dropbox_file_path)
+      # TODO: Unit test this next block
+      if dropbox_file_path.downcase.index('insights').nil?
+        parsed_file_contents = CsvFileReader.read_from_dropbox(dropbox_file_path)
+      else
+        parsed_file_contents = CsvFileReader.read_from_dropbox(dropbox_file_path, {:skip_first_row => true})
+      end
     end
     
     parsed_file_contents.each.with_index do |row, index|
@@ -51,11 +56,11 @@ class DailyMetricParser
     data = {}
     filtered_folders_and_files = convert_to_processable_list(folders_and_files)
     
-    filtered_folders_and_files.each do |folder, files|
+    filtered_folders_and_files.each do |date, files|
       files.each do |file|
         data = parse_metric_from_file(file.path_lower, *column_indices(file.name))
       end
-      MetricsManager.update_impressions_by_day(name_to_date(folder.name), data)
+      MetricsManager.update_impressions_by_day(date, data)
     end
   end
 end
