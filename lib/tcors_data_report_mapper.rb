@@ -39,7 +39,11 @@ class TcorsDataReportMapper
   end
 
   def self.date_sent(message)
-    return message.buffer_update.sent_from_date_time.strftime("%Y-%m-%d")
+    if message.medium == :organic
+      return message.buffer_update.sent_from_date_time.strftime("%Y-%m-%d")
+    else 
+      return "N/A"
+    end
   end
 
   def self.day_sent(message)
