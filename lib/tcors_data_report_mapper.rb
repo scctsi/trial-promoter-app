@@ -51,7 +51,7 @@ class TcorsDataReportMapper
   def self.day_sent(message)
     #Ruby maps Sunday as 0, so mapper just follows data dictionary
     day_of_week_mapper = {'Sunday' => '7', 'Monday' => '1', 'Tuesday' => '2', 'Wednesday' => '3', 'Thursday' => '4', 'Friday' => '5', 'Saturday' => '6'}
-    return day_of_week_mapper[message.buffer_update.sent_from_date_time.strftime("%A")]
+    return day_of_week_mapper[message.scheduled_date_time.strftime("%A")]
   end
 
   def self.time_sent(message)
