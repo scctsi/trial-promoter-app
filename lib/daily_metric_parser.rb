@@ -56,11 +56,11 @@ class DailyMetricParser
     data = {}
     filtered_folders_and_files = convert_to_processable_list(folders_and_files)
     
-    filtered_folders_and_files.each do |folder, files|
+    filtered_folders_and_files.each do |date, files|
       files.each do |file|
         data = parse_metric_from_file(file.path_lower, *column_indices(file.name))
       end
-      MetricsManager.update_impressions_by_day(name_to_date(folder.name), data)
+      MetricsManager.update_impressions_by_day(date, data)
     end
   end
 end
