@@ -63,4 +63,11 @@ class DailyMetricParser
       MetricsManager.update_impressions_by_day(date, data)
     end
   end
+  
+  def parse_impressions
+    # TODO: Unit test this!
+    dropbox_client = DropboxClient.new
+    folders_and_files = dropbox_client.recursively_list_folder('/TCORS/analytics_files/')
+    parse_and_store_impressions(folders_and_files)
+  end
 end
