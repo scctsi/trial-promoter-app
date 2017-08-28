@@ -4,22 +4,21 @@ require 'google/apis/analytics_v3'
 RSpec.describe TcorsDataReportMapper do
   before do
     @message = create(:message)
-    @message.scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,4,30,12,0,0)
+    @message.scheduled_date_time =  ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,4,30,12,0,0)
     @message.buffer_update = create(:buffer_update)
     @message.buffer_update.sent_from_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,4,30,12,1,0)
     visits_1 = create_list(:visit, 3, utm_content: @message.to_param, started_at: @message.scheduled_date_time + 1.hour)
-    visits_2 = create_list(:visit, 2, utm_content: @message.to_param, started_at: @message.scheduled_date_time + 1.day + 1.hour)
-    visits_3 = create_list(:visit, 1, utm_content: @message.to_param, started_at: @message.scheduled_date_time + 2.day + 1.hour, ip: '128.125.77.139')
+    create_list(:visit, 2, utm_content: @message.to_param, started_at: @message.scheduled_date_time + 1.day + 1.hour)
+    create_list(:visit, 1, utm_content: @message.to_param, started_at: @message.scheduled_date_time + 2.day + 1.hour, ip: '128.125.77.139')
     visits_1.each do |visit|
       visit.ahoy_events << Ahoy::Event.new(visit_id: visit.id)
     end
     @message.click_meter_tracking_link = create(:click_meter_tracking_link)
-    @message.click_meter_tracking_link.clicks << create_list(:click, 3, :unique => '1', :click_time => ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,4,30,12,23,13))
+    @message.click_meter_tracking_link.clicks << create_list(:click, 3, :spider => '0', :unique => '1', :click_time => ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,4,30,12,23,13))
     @message.click_meter_tracking_link.clicks << create_list(:click, 1, :spider => '1', :click_time => ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,5,1,12,34,57))
-    @message.click_meter_tracking_link.clicks << create_list(:click, 1, :unique => '1', :click_time => ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,5,1,13,44,56))
-    @message.click_meter_tracking_link.clicks << create_list(:click, 2, :unique => '1', :click_time => ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,5,2,19,26,1))
+    @message.click_meter_tracking_link.clicks << create_list(:click, 1, :spider => '0', :unique => '1', :click_time => ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,5,1,13,44,56))
+    @message.click_meter_tracking_link.clicks << create_list(:click, 2, :spider => '0', :unique => '1', :click_time => ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,5,2,19,26,1))
     @message.metrics << Metric.new(source: :google_analytics, data: {'ga:sessions'=>2, 'ga:users'=>2, 'ga:exits' =>2, 'ga:sessionDuration' => 42, 'ga:timeOnPage' => 42, 'ga:pageviews' => 2})
-
     @message.website_session_count = 2
     @message.save
   end
@@ -53,7 +52,7 @@ RSpec.describe TcorsDataReportMapper do
       end
     end
 
-    it 'maps the message theme to theme' do
+    it 'maps the message theme to theme' do 
       (1..7).each do |theme|
         @message.message_template.experiment_variables['theme'] = theme.to_s
         expect(TcorsDataReportMapper.theme(@message)).to eq(theme.to_s)
@@ -83,10 +82,10 @@ RSpec.describe TcorsDataReportMapper do
     # Message scheduled at noon
     expect(TcorsDataReportMapper.day_experiment(@message)).to eq(12)
     # Message scheduled just before midnight
-    @message.scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017, 4, 30, 23, 59, 0)
+    @message.scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,4,30,23,59,0)
     expect(TcorsDataReportMapper.day_experiment(@message)).to eq(12)
     # Message scheduled just after midnight of previous day
-    @message.scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017, 4, 30, 0, 0, 1)
+    @message.scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,4,30,0,0,1)
     expect(TcorsDataReportMapper.day_experiment(@message)).to eq(12)
   end
 
@@ -163,7 +162,7 @@ RSpec.describe TcorsDataReportMapper do
   it 'maps the times of each human click per tracking link to click_time' do
     expect(TcorsDataReportMapper.click_time(@message)).to eq([["12:23:13", "12:23:13", "12:23:13"], ["13:44:56"], ["19:26:01", "19:26:01"]])
   end
- 
+
   describe 'impressions by day' do
     before do
       @message.impressions_by_day = { @message.scheduled_date_time.to_date => 100, (@message.scheduled_date_time + 1.day).to_date => 115, (@message.scheduled_date_time + 2.day).to_date => 120 }
