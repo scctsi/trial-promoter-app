@@ -24,8 +24,10 @@ class MetricsManager
   def self.update_impressions_by_day(date, data)
     data.each do |key, value|
       message = Message.find_by_alternative_identifier(key)
-      message.impressions_by_day[date] = value
-      message.save
+      if !(message.nil?)
+        message.impressions_by_day[date] = value
+        message.save
+      end
     end
   end
 end
