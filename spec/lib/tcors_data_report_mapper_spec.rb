@@ -23,11 +23,23 @@ RSpec.describe TcorsDataReportMapper do
     @message.save
   end
 
+  it 'maps the message id to database_id' do
+    expect(TcorsDataReportMapper.database_id(@message)).to eq(@message.id)
+  end
+  
+  it 'maps the click_meter_id to click_meter_id' do
+    @message.click_meter_tracking_link.click_meter_id = 'click_meter_id'
+
+    expect(TcorsDataReportMapper.click_meter_id(@message)).to eq(@message.click_meter_tracking_link.click_meter_id)
+  end
+
+  it 'maps the click_meter_uri to click_meter_uri' do
+    @message.click_meter_tracking_link.click_meter_uri = 'http://www.click_meter.com/uri'
+
+    expect(TcorsDataReportMapper.click_meter_uri(@message)).to eq(@message.click_meter_tracking_link.click_meter_uri)
+  end
+  
   describe 'experiment variables mapping methods' do
-    it 'maps the message id to database_id' do
-      expect(TcorsDataReportMapper.database_id(@message)).to eq(@message.id)
-    end
-    
     it 'maps the message stem_id to stem' do
       @message.message_template.experiment_variables['stem_id'] = 'FE51'
       expect(TcorsDataReportMapper.stem(@message)).to eq('FE51')
@@ -150,7 +162,7 @@ RSpec.describe TcorsDataReportMapper do
   it 'maps the times of each human click per tracking link to click_time' do
     expect(TcorsDataReportMapper.click_time(@message)).to eq([["12:23:13", "12:23:13", "12:23:13"], ["13:44:56"], ["19:26:01", "19:26:01"]])
   end
-  
+
   describe 'impressions by day' do
     before do
       @message.impressions_by_day = { @message.scheduled_date_time.to_date => 100, (@message.scheduled_date_time + 1.day).to_date => 115, (@message.scheduled_date_time + 2.day).to_date => 120 }
