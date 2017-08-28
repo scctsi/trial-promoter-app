@@ -68,6 +68,13 @@ RSpec.describe TcorsDataReportMapper do
   end
 
   it 'maps the scheduled date of the message to the day of the experiment' do
+    # Message scheduled at noon
+    expect(TcorsDataReportMapper.day_experiment(@message)).to eq(12)
+    # Message scheduled just before midnight
+    @message.scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,4,30,23,59,0)
+    expect(TcorsDataReportMapper.day_experiment(@message)).to eq(12)
+    # Message scheduled just after midnight of previous day
+    @message.scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,4,30,0,0,1)
     expect(TcorsDataReportMapper.day_experiment(@message)).to eq(12)
   end
 
