@@ -4,6 +4,14 @@ class TcorsDataReportMapper
   def self.database_id(message)
     return message.id
   end
+  
+  def self.click_meter_id(message)
+    return message.click_meter_tracking_link.click_meter_id
+  end
+
+  def self.click_meter_uri(message)
+    return message.click_meter_tracking_link.click_meter_uri
+  end
 
   def self.stem(message)
     return message.message_template.experiment_variables['stem_id']
