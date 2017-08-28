@@ -39,13 +39,7 @@ class TcorsDataReportMapper
   end
 
   def self.date_sent(message)
-    if message.medium == :ad
-      return "N/A"
-    elsif message.buffer_update.nil? || message.buffer_update.sent_from_date_time.nil?
-      return message.scheduled_date_time.strftime("%Y-%m-%d")
-    else
-      return message.buffer_update.sent_from_date_time.strftime("%Y-%m-%d")
-    end
+    return message.scheduled_date_time.strftime("%Y-%m-%d")
   end
 
   def self.day_sent(message)
@@ -104,28 +98,28 @@ class TcorsDataReportMapper
   end 
 
   def self.total_impressions_day_1(message)
-    if message.impressions_by_day[message.scheduled_date_time].nil?
+    if message.impressions_by_day[message.scheduled_date_time.to_date].nil?
       return 0
     else
-      return message.impressions_by_day[message.scheduled_date_time]
+      return message.impressions_by_day[message.scheduled_date_time.to_date]
     end
   end
 
   def self.total_impressions_day_2(message)
-    return 0 if message.impressions_by_day[message.scheduled_date_time + 1.day].nil?
+    return 0 if message.impressions_by_day[(message.scheduled_date_time + 1.day).to_date].nil?
     if message.medium == :organic
-      return message.impressions_by_day[message.scheduled_date_time + 1.day] - self.total_impressions_day_1(message)
+      return message.impressions_by_day[(message.scheduled_date_time + 1.day).to_date] - self.total_impressions_day_1(message)
     else
-      return message.impressions_by_day[message.scheduled_date_time + 1.day]
+      return message.impressions_by_day[(message.scheduled_date_time + 1.day).to_date]
     end
   end
 
   def self.total_impressions_day_3(message)
-    return 0 if message.impressions_by_day[message.scheduled_date_time + 2.day].nil?
+    return 0 if message.impressions_by_day[(message.scheduled_date_time + 2.day).to_date].nil?
     if message.medium == :organic
-      return message.impressions_by_day[message.scheduled_date_time + 2.day] - self.total_impressions_day_2(message) - self.total_impressions_day_1(message)
+      return message.impressions_by_day[(message.scheduled_date_time + 2.day).to_date] - self.total_impressions_day_2(message) - self.total_impressions_day_1(message)
     else
-      return message.impressions_by_day[message.scheduled_date_time + 2.day]
+      return message.impressions_by_day[(message.scheduled_date_time + 2.day).to_date]
     end
   end
 
