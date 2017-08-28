@@ -4,9 +4,9 @@ require 'google/apis/analytics_v3'
 RSpec.describe TcorsDataReportMapper do
   before do
     @message = create(:message)
-    @message.scheduled_date_time = '30 April 2017 12:00:00'
+    @message.scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,4,30,12,0,0)
     @message.buffer_update = create(:buffer_update)
-    @message.buffer_update.sent_from_date_time = '30 April 2017 12:00:01'
+    @message.buffer_update.sent_from_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,4,30,12,1,0)
     visits_1 = create_list(:visit, 3, utm_content: @message.to_param, started_at: @message.scheduled_date_time + 1.hour)
     visits_2 = create_list(:visit, 2, utm_content: @message.to_param, started_at: @message.scheduled_date_time + 1.day + 1.hour)
     visits_3 = create_list(:visit, 1, utm_content: @message.to_param, started_at: @message.scheduled_date_time + 2.day + 1.hour, ip: '128.125.77.139')
@@ -14,10 +14,10 @@ RSpec.describe TcorsDataReportMapper do
       visit.ahoy_events << Ahoy::Event.new(visit_id: visit.id)
     end
     @message.click_meter_tracking_link = create(:click_meter_tracking_link)
-    @message.click_meter_tracking_link.clicks << create_list(:click, 3, :unique => '1', :click_time => "30 April 2017 12:23:13")
-    @message.click_meter_tracking_link.clicks << create_list(:click, 1, :spider => '1', :click_time => "1 May 2017 12:34:57")
-    @message.click_meter_tracking_link.clicks << create_list(:click, 1, :unique => '1', :click_time => "1 May 2017 13:44:56")
-    @message.click_meter_tracking_link.clicks << create_list(:click, 2, :unique => '1', :click_time => "2 May 2017 19:26:01")
+    @message.click_meter_tracking_link.clicks << create_list(:click, 3, :unique => '1', :click_time => ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,4,30,12,23,13))
+    @message.click_meter_tracking_link.clicks << create_list(:click, 1, :spider => '1', :click_time => ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,5,1,12,34,57))
+    @message.click_meter_tracking_link.clicks << create_list(:click, 1, :unique => '1', :click_time => ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,5,1,13,44,56))
+    @message.click_meter_tracking_link.clicks << create_list(:click, 2, :unique => '1', :click_time => ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,5,2,19,26,1))
     @message.metrics << Metric.new(source: :google_analytics, data: {'ga:sessions'=>2, 'ga:users'=>2, 'ga:exits' =>2, 'ga:sessionDuration' => 42, 'ga:timeOnPage' => 42, 'ga:pageviews' => 2})
 
     @message.website_session_count = 2
@@ -73,27 +73,31 @@ RSpec.describe TcorsDataReportMapper do
 
   it 'maps the date the message was published to the date sent' do
     expect(TcorsDataReportMapper.date_sent(@message)).to eq("2017-04-30")
+    @message.buffer_update = nil
+    expect(TcorsDataReportMapper.date_sent(@message)).to eq("2017-04-30")
+    @message.medium = :ad
+    expect(TcorsDataReportMapper.date_sent(@message)).to eq("N/A")
   end
 
   it 'maps the date the message was published to the day of the week' do
     expect(TcorsDataReportMapper.day_sent(@message)).to eq('7')
-    @message.buffer_update.sent_from_date_time = '29 April 2017 12:00:00'
+    @message.scheduled_date_time = '29 April 2017 12:00:00'
     expect(TcorsDataReportMapper.day_sent(@message)).to eq('6')
-    @message.buffer_update.sent_from_date_time = '28 April 2017 12:00:00'
+    @message.scheduled_date_time = '28 April 2017 12:00:00'
     expect(TcorsDataReportMapper.day_sent(@message)).to eq('5')
-    @message.buffer_update.sent_from_date_time = '27 April 2017 12:00:00'
+    @message.scheduled_date_time = '27 April 2017 12:00:00'
     expect(TcorsDataReportMapper.day_sent(@message)).to eq('4')
-    @message.buffer_update.sent_from_date_time = '26 April 2017 12:00:00'
+    @message.scheduled_date_time = '26 April 2017 12:00:00'
     expect(TcorsDataReportMapper.day_sent(@message)).to eq('3')
-    @message.buffer_update.sent_from_date_time = '25 April 2017 12:00:00'
+    @message.scheduled_date_time = '25 April 2017 12:00:00'
     expect(TcorsDataReportMapper.day_sent(@message)).to eq('2')
-    @message.buffer_update.sent_from_date_time = '24 April 2017 12:00:00'
+    @message.scheduled_date_time = '24 April 2017 12:00:00'
     expect(TcorsDataReportMapper.day_sent(@message)).to eq('1')
   end
 
   it 'maps the time the message was sent to time sent' do
-    @message.buffer_update.sent_from_date_time = '27 April 2017 12:00:00'
-    expect(TcorsDataReportMapper.time_sent(@message)).to eq('12:00:00')
+    @message.buffer_update.sent_from_date_time = '27 April 2017 12:00:02'
+    expect(TcorsDataReportMapper.time_sent(@message)).to eq('12:00:02')
     @message.buffer_update.sent_from_date_time = nil
     expect(TcorsDataReportMapper.time_sent(@message)).to eq('N/A')
     @message.medium = :ad
@@ -143,7 +147,7 @@ RSpec.describe TcorsDataReportMapper do
  
   describe 'impressions by date' do
     before do
-      @message.impressions_by_day = { @message.buffer_update.sent_from_date_time => 100, (@message.buffer_update.sent_from_date_time + 1.day) => 115, (@message.buffer_update.sent_from_date_time + 2.day) => 120 }
+      @message.impressions_by_day = { @message.scheduled_date_time => 100, (@message.scheduled_date_time + 1.day) => 115, (@message.scheduled_date_time + 2.day) => 120 }
       @message.save
     end
 
@@ -173,7 +177,7 @@ RSpec.describe TcorsDataReportMapper do
       @message.medium = :ad
       expect(TcorsDataReportMapper.total_impressions_day_2(@message)).to eq(0)
 
-      @message.impressions_by_day = {(@message.buffer_update.sent_from_date_time + 1.day) => 1 }
+      @message.impressions_by_day = {(@message.scheduled_date_time + 1.day) => 1 }
 
       expect(TcorsDataReportMapper.total_impressions_day_2(@message)).to eq(1)
       @message.medium = :ad
@@ -194,7 +198,7 @@ RSpec.describe TcorsDataReportMapper do
       expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq(0)
 
       @message.medium = :organic
-      @message.impressions_by_day = { (@message.buffer_update.sent_from_date_time + 2.day) => 1 }
+      @message.impressions_by_day = { (@message.scheduled_date_time + 2.day) => 1 }
 
       expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq(1)
       @message.medium = :ad
@@ -294,7 +298,7 @@ RSpec.describe TcorsDataReportMapper do
 
   it 'maps the number of conversions for the duration of the experiment to total_goals_experiment' do
     expect(TcorsDataReportMapper.total_goals_experiment(@message)).to eq(5)
-    visits_3 = create_list(:visit, 1, utm_content: @message.to_param, started_at: @message.scheduled_date_time + 2.day + 1.hour)
+    create_list(:visit, 1, utm_content: @message.to_param, started_at: @message.scheduled_date_time + 2.day + 1.hour)
     expect(TcorsDataReportMapper.total_goals_experiment(@message)).to eq(6)
   end
 

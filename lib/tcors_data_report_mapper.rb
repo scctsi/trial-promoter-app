@@ -39,13 +39,19 @@ class TcorsDataReportMapper
   end
 
   def self.date_sent(message)
-    return message.buffer_update.sent_from_date_time.strftime("%Y-%m-%d")
+    if message.medium == :ad
+      return "N/A"
+    elsif message.buffer_update.nil? || message.buffer_update.sent_from_date_time.nil?
+      return message.scheduled_date_time.strftime("%Y-%m-%d")
+    else
+      return message.buffer_update.sent_from_date_time.strftime("%Y-%m-%d")
+    end
   end
 
   def self.day_sent(message)
     #Ruby maps Sunday as 0, so mapper just follows data dictionary
     day_of_week_mapper = {'Sunday' => '7', 'Monday' => '1', 'Tuesday' => '2', 'Wednesday' => '3', 'Thursday' => '4', 'Friday' => '5', 'Saturday' => '6'}
-    return day_of_week_mapper[message.buffer_update.sent_from_date_time.strftime("%A")]
+    return day_of_week_mapper[message.scheduled_date_time.strftime("%A")]
   end
 
   def self.time_sent(message)
@@ -85,7 +91,7 @@ class TcorsDataReportMapper
 
   def self.click_time(message)
     unique_clicks = message.click_meter_tracking_link.clicks.select{|click| click.unique}
-    scheduled_start_of_day = message.buffer_update.sent_from_date_time
+    scheduled_start_of_day = message.scheduled_date_time
     scheduled_end_of_day = scheduled_start_of_day.end_of_day
     click_times = []
     # get click times for each calendar day and store as nested arrays 
@@ -95,31 +101,31 @@ class TcorsDataReportMapper
       scheduled_end_of_day = (scheduled_end_of_day + 1.day).end_of_day
     end
     return click_times
-  end
+  end 
 
   def self.total_impressions_day_1(message)
-    if message.impressions_by_day[message.buffer_update.sent_from_date_time].nil?
+    if message.impressions_by_day[message.scheduled_date_time].nil?
       return 0
     else
-      return message.impressions_by_day[message.buffer_update.sent_from_date_time]
+      return message.impressions_by_day[message.scheduled_date_time]
     end
   end
 
   def self.total_impressions_day_2(message)
-    return 0 if message.impressions_by_day[message.buffer_update.sent_from_date_time + 1.day].nil?
+    return 0 if message.impressions_by_day[message.scheduled_date_time + 1.day].nil?
     if message.medium == :organic
-      return message.impressions_by_day[message.buffer_update.sent_from_date_time + 1.day] - self.total_impressions_day_1(message)
+      return message.impressions_by_day[message.scheduled_date_time + 1.day] - self.total_impressions_day_1(message)
     else
-      return message.impressions_by_day[message.buffer_update.sent_from_date_time + 1.day]
+      return message.impressions_by_day[message.scheduled_date_time + 1.day]
     end
   end
 
   def self.total_impressions_day_3(message)
-    return 0 if message.impressions_by_day[message.buffer_update.sent_from_date_time + 2.day].nil?
+    return 0 if message.impressions_by_day[message.scheduled_date_time + 2.day].nil?
     if message.medium == :organic
-      return message.impressions_by_day[message.buffer_update.sent_from_date_time + 2.day] - self.total_impressions_day_2(message) - self.total_impressions_day_1(message)
+      return message.impressions_by_day[message.scheduled_date_time + 2.day] - self.total_impressions_day_2(message) - self.total_impressions_day_1(message)
     else
-      return message.impressions_by_day[message.buffer_update.sent_from_date_time + 2.day]
+      return message.impressions_by_day[message.scheduled_date_time + 2.day]
     end
   end
 
@@ -164,19 +170,19 @@ class TcorsDataReportMapper
   end
 
   def self.total_sessions_day_1(message)
-    scheduled_start_of_day = message.buffer_update.sent_from_date_time
+    scheduled_start_of_day = message.scheduled_date_time
     scheduled_end_of_day = scheduled_start_of_day.end_of_day
     return get_sessions(message, scheduled_start_of_day, scheduled_end_of_day).count
   end
 
   def self.total_sessions_day_2(message)
-    scheduled_start_of_day = (message.buffer_update.sent_from_date_time + 1.day).beginning_of_day
+    scheduled_start_of_day = (message.scheduled_date_time + 1.day).beginning_of_day
     scheduled_end_of_day = (scheduled_start_of_day).end_of_day
     return get_sessions(message, scheduled_start_of_day, scheduled_end_of_day).count
   end
 
   def self.total_sessions_day_3(message)
-    scheduled_start_of_day = (message.buffer_update.sent_from_date_time + 2.day).beginning_of_day
+    scheduled_start_of_day = (message.scheduled_date_time + 2.day).beginning_of_day
     scheduled_end_of_day = (scheduled_start_of_day).end_of_day 
     return get_sessions(message, scheduled_start_of_day, scheduled_end_of_day).count
   end
@@ -187,7 +193,7 @@ class TcorsDataReportMapper
   
   def self.total_goals_day_1(message)
     clicks = []
-    scheduled_start_of_day = (message.buffer_update.sent_from_date_time).beginning_of_day
+    scheduled_start_of_day = (message.scheduled_date_time).beginning_of_day
     scheduled_end_of_day = (scheduled_start_of_day).end_of_day 
     sessions = get_sessions(message, scheduled_start_of_day, scheduled_end_of_day)
     sessions.each do |session|
@@ -198,7 +204,7 @@ class TcorsDataReportMapper
 
   def self.total_goals_day_2(message)
     clicks = []
-    scheduled_start_of_day = (message.buffer_update.sent_from_date_time + 1.day).beginning_of_day
+    scheduled_start_of_day = (message.scheduled_date_time + 1.day).beginning_of_day
     scheduled_end_of_day = (scheduled_start_of_day).end_of_day 
     sessions = get_sessions(message, scheduled_start_of_day, scheduled_end_of_day)
     sessions.each do |session|
@@ -209,7 +215,7 @@ class TcorsDataReportMapper
 
   def self.total_goals_day_3(message)
     clicks = []
-    scheduled_start_of_day = (message.buffer_update.sent_from_date_time + 2.day).beginning_of_day
+    scheduled_start_of_day = (message.scheduled_date_time + 2.day).beginning_of_day
     scheduled_end_of_day = (scheduled_start_of_day).end_of_day 
     sessions = get_sessions(message, scheduled_start_of_day, scheduled_end_of_day)
     sessions.each do |session|
@@ -220,9 +226,9 @@ class TcorsDataReportMapper
 
   def self.total_goals_experiment(message)
     clicks = []
-    scheduled_start_of_day = ('2017 April 19')
-    scheduled_end_of_day = ('2017 July 15') 
-    sessions = get_sessions(message, scheduled_start_of_day, scheduled_end_of_day)
+    experiment_start = DateTime.parse('19 April 2017')
+    experiment_finish = DateTime.parse('15 July 2017')
+    sessions = get_sessions(message, experiment_start, experiment_finish)
     sessions.each do |session|
       clicks << Ahoy::Event.where(visit_id: session.id)
     end
