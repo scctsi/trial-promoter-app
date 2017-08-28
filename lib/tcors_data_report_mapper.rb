@@ -39,17 +39,7 @@ class TcorsDataReportMapper
   end
 
   def self.date_sent(message)
-<<<<<<< HEAD
-    if message.medium == :ad
-      return "N/A"
-    elsif message.buffer_update.nil? || message.buffer_update.sent_from_date_time.nil?
-      return message.scheduled_date_time.strftime("%Y-%m-%d")
-    else
-      return message.buffer_update.sent_from_date_time.strftime("%Y-%m-%d")
-    end
-=======
     return message.scheduled_date_time.strftime("%Y-%m-%d")
->>>>>>> 5ebe1184a6407b6d93fa40a9aca90f078f7f33c9
   end
 
   def self.day_sent(message)

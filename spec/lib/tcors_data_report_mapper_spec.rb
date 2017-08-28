@@ -82,7 +82,7 @@ RSpec.describe TcorsDataReportMapper do
     @message.buffer_update = nil
     expect(TcorsDataReportMapper.date_sent(@message)).to eq("2017-04-30")
     @message.medium = :ad
-    expect(TcorsDataReportMapper.date_sent(@message)).to eq("N/A")
+    expect(TcorsDataReportMapper.date_sent(@message)).to eq("2017-04-30")
   end
 
   it 'maps the date the message was published to the day of the week' do
@@ -150,13 +150,8 @@ RSpec.describe TcorsDataReportMapper do
   it 'maps the times of each human click per tracking link to click_time' do
     expect(TcorsDataReportMapper.click_time(@message)).to eq([["12:23:13", "12:23:13", "12:23:13"], ["13:44:56"], ["19:26:01", "19:26:01"]])
   end
-<<<<<<< HEAD
   
-  describe 'impressions by date' do
-=======
- 
   describe 'impressions by day' do
->>>>>>> 5ebe1184a6407b6d93fa40a9aca90f078f7f33c9
     before do
       @message.impressions_by_day = { @message.scheduled_date_time.to_date => 100, (@message.scheduled_date_time + 1.day).to_date => 115, (@message.scheduled_date_time + 2.day).to_date => 120 }
       @message.save
