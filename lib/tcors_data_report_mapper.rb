@@ -35,10 +35,11 @@ class TcorsDataReportMapper
   end
 
   def self.day_experiment(message)
-    return (message.scheduled_date_time.to_i - DateTime.new(2017, 4, 19).to_i) / 1.day.seconds + 1
+    return (message.scheduled_date_time.to_i - ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,4,19,0,0,0).to_i) / 1.day.seconds + 1
   end
 
   def self.date_sent(message)
+<<<<<<< HEAD
     if message.medium == :ad
       return "N/A"
     elsif message.buffer_update.nil? || message.buffer_update.sent_from_date_time.nil?
@@ -46,6 +47,9 @@ class TcorsDataReportMapper
     else
       return message.buffer_update.sent_from_date_time.strftime("%Y-%m-%d")
     end
+=======
+    return message.scheduled_date_time.strftime("%Y-%m-%d")
+>>>>>>> 5ebe1184a6407b6d93fa40a9aca90f078f7f33c9
   end
 
   def self.day_sent(message)
@@ -90,7 +94,7 @@ class TcorsDataReportMapper
   end
 
   def self.click_time(message)
-    unique_clicks = message.click_meter_tracking_link.clicks.select{|click| click.human?}
+    unique_clicks = message.click_meter_tracking_link.clicks.select{|click| click.human? && click.unique}
     scheduled_start_of_day = message.scheduled_date_time
     scheduled_end_of_day = scheduled_start_of_day.end_of_day
     click_times = []
@@ -104,28 +108,28 @@ class TcorsDataReportMapper
   end 
 
   def self.total_impressions_day_1(message)
-    if message.impressions_by_day[message.scheduled_date_time].nil?
+    if message.impressions_by_day[message.scheduled_date_time.to_date].nil?
       return 0
     else
-      return message.impressions_by_day[message.scheduled_date_time]
+      return message.impressions_by_day[message.scheduled_date_time.to_date]
     end
   end
 
   def self.total_impressions_day_2(message)
-    return 0 if message.impressions_by_day[message.scheduled_date_time + 1.day].nil?
+    return 0 if message.impressions_by_day[(message.scheduled_date_time + 1.day).to_date].nil?
     if message.medium == :organic
-      return message.impressions_by_day[message.scheduled_date_time + 1.day] - self.total_impressions_day_1(message)
+      return message.impressions_by_day[(message.scheduled_date_time + 1.day).to_date] - self.total_impressions_day_1(message)
     else
-      return message.impressions_by_day[message.scheduled_date_time + 1.day]
+      return message.impressions_by_day[(message.scheduled_date_time + 1.day).to_date]
     end
   end
 
   def self.total_impressions_day_3(message)
-    return 0 if message.impressions_by_day[message.scheduled_date_time + 2.day].nil?
+    return 0 if message.impressions_by_day[(message.scheduled_date_time + 2.day).to_date].nil?
     if message.medium == :organic
-      return message.impressions_by_day[message.scheduled_date_time + 2.day] - self.total_impressions_day_2(message) - self.total_impressions_day_1(message)
+      return message.impressions_by_day[(message.scheduled_date_time + 2.day).to_date] - self.total_impressions_day_2(message) - self.total_impressions_day_1(message)
     else
-      return message.impressions_by_day[message.scheduled_date_time + 2.day]
+      return message.impressions_by_day[(message.scheduled_date_time + 2.day).to_date]
     end
   end
 
