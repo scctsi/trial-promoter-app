@@ -125,7 +125,7 @@ class ClickMeterClient
       next if exclude_ip_address_list.include?(row["ip"])
       clicks << Click.find_or_create_by(click_meter_event_id: row["id"]) do |click|
         click.click_meter_event_id = row["id"]
-        click.click_time = DateTime.parse(row["accessTime"]).utc
+        click.click_time = DateTime.strptime("#{row['accessTime']}  Pacific Time (US & Canada)", '%Y%m%d%H%M%S %Z')
         click.spider = row["isSpider"] == '1' 
         click.unique = row["isUnique"] == '1'
         click.ip_address = row["ip"]
