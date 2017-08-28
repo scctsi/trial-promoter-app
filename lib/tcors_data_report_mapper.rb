@@ -90,13 +90,13 @@ class TcorsDataReportMapper
   end
 
   def self.click_time(message)
-    unique_clicks = message.click_meter_tracking_link.clicks.select{|click| click.unique}
+    unique_clicks = message.click_meter_tracking_link.clicks.select{|click| click.human?}
     scheduled_start_of_day = message.scheduled_date_time
     scheduled_end_of_day = scheduled_start_of_day.end_of_day
     click_times = []
     # get click times for each calendar day and store as nested arrays 
     3.times do
-      click_times << ((unique_clicks.map{|click| click.click_time.strftime("%H:%M:%S") if click.click_time.between?(scheduled_start_of_day, scheduled_end_of_day)}).compact )
+      click_times << ((unique_clicks.map{|click| click.click_time.strftime("%H:%M:%S") if click.human? && click.click_time.between?(scheduled_start_of_day, scheduled_end_of_day)}).compact )
       scheduled_start_of_day = (scheduled_start_of_day + 1.day).beginning_of_day
       scheduled_end_of_day = (scheduled_end_of_day + 1.day).end_of_day
     end
