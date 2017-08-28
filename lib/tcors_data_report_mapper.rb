@@ -144,7 +144,7 @@ class TcorsDataReportMapper
   end
 
   def self.shares_instagram(message)
-    return MetricsManager.get_metric_value(message, :instagram, 'shares')
+    return MetricsManager.get_metric_value(message, :facebook, 'shares')
   end
 
   def self.replies_twitter(message)
@@ -156,19 +156,19 @@ class TcorsDataReportMapper
   end
 
   def self.comments_instagram(message)
-    return MetricsManager.get_metric_value(message, :instagram, 'comments')
+    return MetricsManager.get_metric_value(message, :facebook, 'comments')
   end
 
   def self.likes_twitter(message)
     return MetricsManager.get_metric_value(message, :twitter, 'likes')
   end
 
-  def self.likes_facebook(message)
-    return MetricsManager.get_metric_value(message, :facebook, 'likes')
+  def self.reactions_facebook(message)
+    return MetricsManager.get_metric_value(message, :facebook, 'reactions')
   end
 
-  def self.likes_instagram(message)
-    return MetricsManager.get_metric_value(message, :instagram, 'likes')
+  def self.reactions_instagram(message)
+    return MetricsManager.get_metric_value(message, :facebook, 'reactions')
   end
 
   def self.total_sessions_day_1(message)

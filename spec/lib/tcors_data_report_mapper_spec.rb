@@ -245,7 +245,7 @@ RSpec.describe TcorsDataReportMapper do
 
   describe 'facebook metrics' do
     before do
-      @message.metrics << Metric.new(source: :facebook, data: {'shares' => 1 , 'comments'=> 4, 'likes'=> 14 })
+      @message.metrics << Metric.new(source: :facebook, data: {'shares' => 1 , 'comments'=> 4, 'reactions'=> 14 })
       @message.save
     end
 
@@ -253,8 +253,8 @@ RSpec.describe TcorsDataReportMapper do
       expect(TcorsDataReportMapper.shares_facebook(@message)).to eq(1)
     end
 
-    it 'maps the number of facebook likes to likes_facebook' do
-      expect(TcorsDataReportMapper.likes_facebook(@message)).to eq(14)
+    it 'maps the number of facebook reactions to reactions_facebook' do
+      expect(TcorsDataReportMapper.reactions_facebook(@message)).to eq(14)
     end
 
     it 'maps the number of facebook comments to comment_facebook' do
@@ -264,7 +264,7 @@ RSpec.describe TcorsDataReportMapper do
 
   describe 'instagram metrics' do
     before do
-      @message.metrics << Metric.new(source: :instagram, data: { 'shares' => 0 , 'comments'=> 1, 'likes'=> 24 })
+      @message.metrics << Metric.new(source: :facebook, data: { 'shares' => 0 , 'comments'=> 1, 'reactions'=> 24 })
       @message.save
     end
 
@@ -276,8 +276,8 @@ RSpec.describe TcorsDataReportMapper do
       expect(TcorsDataReportMapper.comments_instagram(@message)).to eq(1)
     end
 
-    it 'maps the number of instagram likes to likes_instagram' do
-      expect(TcorsDataReportMapper.likes_instagram(@message)).to eq(24)
+    it 'maps the number of instagram reactions to reactions_instagram' do
+      expect(TcorsDataReportMapper.reactions_instagram(@message)).to eq(24)
     end
   end
 
