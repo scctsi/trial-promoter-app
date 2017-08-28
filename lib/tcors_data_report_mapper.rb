@@ -91,7 +91,7 @@ class TcorsDataReportMapper
 
   def self.click_time(message)
     unique_clicks = message.click_meter_tracking_link.clicks.select{|click| click.unique}
-    scheduled_start_of_day = message.buffer_update.sent_from_date_time
+    scheduled_start_of_day = message.scheduled_date_time
     scheduled_end_of_day = scheduled_start_of_day.end_of_day
     click_times = []
     # get click times for each calendar day and store as nested arrays 
