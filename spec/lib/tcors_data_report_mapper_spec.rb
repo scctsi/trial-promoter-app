@@ -76,7 +76,7 @@ RSpec.describe TcorsDataReportMapper do
     @message.buffer_update = nil
     expect(TcorsDataReportMapper.date_sent(@message)).to eq("2017-04-30")
     @message.medium = :ad
-    expect(TcorsDataReportMapper.date_sent(@message)).to eq("N/A")
+    expect(TcorsDataReportMapper.date_sent(@message)).to eq("2017-04-30")
   end
 
   it 'maps the date the message was published to the day of the week' do
