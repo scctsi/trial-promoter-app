@@ -145,9 +145,9 @@ RSpec.describe TcorsDataReportMapper do
     expect(TcorsDataReportMapper.click_time(@message)).to eq([["12:23:13", "12:23:13", "12:23:13"], ["13:44:56"], ["19:26:01", "19:26:01"]])
   end
  
-  describe 'impressions by date' do
+  describe 'impressions by day' do
     before do
-      @message.impressions_by_day = { @message.scheduled_date_time => 100, (@message.scheduled_date_time + 1.day) => 115, (@message.scheduled_date_time + 2.day) => 120 }
+      @message.impressions_by_day = { @message.scheduled_date_time.to_date => 100, (@message.scheduled_date_time + 1.day).to_date => 115, (@message.scheduled_date_time + 2.day).to_date => 120 }
       @message.save
     end
 
@@ -177,7 +177,7 @@ RSpec.describe TcorsDataReportMapper do
       @message.medium = :ad
       expect(TcorsDataReportMapper.total_impressions_day_2(@message)).to eq(0)
 
-      @message.impressions_by_day = {(@message.scheduled_date_time + 1.day) => 1 }
+      @message.impressions_by_day = {(@message.scheduled_date_time + 1.day).to_date => 1 }
 
       expect(TcorsDataReportMapper.total_impressions_day_2(@message)).to eq(1)
       @message.medium = :ad
@@ -198,7 +198,7 @@ RSpec.describe TcorsDataReportMapper do
       expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq(0)
 
       @message.medium = :organic
-      @message.impressions_by_day = { (@message.scheduled_date_time + 2.day) => 1 }
+      @message.impressions_by_day = { (@message.scheduled_date_time + 2.day).to_date => 1 }
 
       expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq(1)
       @message.medium = :ad
