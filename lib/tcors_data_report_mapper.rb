@@ -140,11 +140,19 @@ class TcorsDataReportMapper
   end
 
   def self.shares_facebook(message)
-    return MetricsManager.get_metric_value(message, :facebook, 'shares')
+    if message.platform != :facebook
+      return "N/A"
+    else
+      return MetricsManager.get_metric_value(message, :facebook, 'shares')
+    end
   end
 
   def self.shares_instagram(message)
-    return MetricsManager.get_metric_value(message, :facebook, 'shares')
+    if message.platform != :instagram
+      return "N/A"
+    else
+      return MetricsManager.get_metric_value(message, :facebook, 'shares')
+    end
   end
 
   def self.replies_twitter(message)
@@ -152,11 +160,19 @@ class TcorsDataReportMapper
   end
 
   def self.comments_facebook(message)
-    return MetricsManager.get_metric_value(message, :facebook, 'comments')
+    if message.platform != :facebook
+      return "N/A"
+    else
+      return MetricsManager.get_metric_value(message, :facebook, 'comments')
+    end
   end
 
   def self.comments_instagram(message)
-    return MetricsManager.get_metric_value(message, :facebook, 'comments')
+    if message.platform != :instagram
+      return "N/A"
+    else
+      return MetricsManager.get_metric_value(message, :facebook, 'comments')
+    end
   end
 
   def self.likes_twitter(message)
@@ -164,11 +180,19 @@ class TcorsDataReportMapper
   end
 
   def self.reactions_facebook(message)
-    return MetricsManager.get_metric_value(message, :facebook, 'reactions')
+    if message.platform != :facebook
+      return "N/A"
+    else
+      return MetricsManager.get_metric_value(message, :facebook, 'reactions')
+    end
   end
 
   def self.reactions_instagram(message)
-    return MetricsManager.get_metric_value(message, :facebook, 'reactions')
+    if message.platform != :instagram
+      return "N/A"
+    else
+      return MetricsManager.get_metric_value(message, :facebook, 'reactions')
+    end
   end
 
   def self.total_sessions_day_1(message)
