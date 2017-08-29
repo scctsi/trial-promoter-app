@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170803165652) do
+ActiveRecord::Schema.define(version: 20170829181953) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -228,14 +228,15 @@ ActiveRecord::Schema.define(version: 20170803165652) do
     t.integer  "social_media_profile_id"
     t.string   "platform"
     t.string   "promoted_website_url",         limit: 2000
-    t.string   "campaign_id"
     t.boolean  "backdated"
     t.datetime "original_scheduled_date_time"
+    t.string   "campaign_id"
     t.float    "click_rate"
     t.float    "website_goal_rate"
     t.integer  "website_goal_count"
     t.integer  "website_session_count"
     t.text     "impressions_by_day"
+    t.text     "notes"
   end
 
   add_index "messages", ["message_generating_type", "message_generating_id"], name: "index_on_message_generating_for_analytics_files", using: :btree
