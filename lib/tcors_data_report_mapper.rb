@@ -183,7 +183,12 @@ class TcorsDataReportMapper
     if message.platform != :facebook
       return "N/A"
     else
-      return MetricsManager.get_metric_value(message, :facebook, 'reactions')
+      reactions = MetricsManager.get_metric_value(message, :facebook, 'reactions')
+      if  reactions == "N/A"
+        return MetricsManager.get_metric_value(message, :facebook, 'likes')
+      else
+        return reactions
+      end
     end
   end
 
@@ -191,7 +196,12 @@ class TcorsDataReportMapper
     if message.platform != :instagram
       return "N/A"
     else
-      return MetricsManager.get_metric_value(message, :facebook, 'reactions')
+      reactions = MetricsManager.get_metric_value(message, :facebook, 'reactions')
+      if  reactions == "N/A"
+        return MetricsManager.get_metric_value(message, :facebook, 'likes')
+      else
+        return reactions
+      end
     end
   end
 
