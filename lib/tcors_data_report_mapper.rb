@@ -22,7 +22,7 @@ class TcorsDataReportMapper
   end
 
   def self.theme(message)
-    return message.message_template.experiment_variables['theme']
+    return message.message_template.experiment_variables['theme'].to_s
   end
 
   def self.lin_meth_factor(message)
@@ -67,7 +67,8 @@ class TcorsDataReportMapper
   end
 
   def self.medium(message)
-    return message.medium
+    medium_mapper = {:organic => '1', :ad => '2'}
+    return medium_mapper[message.medium]
   end
 
   def self.image_included(message)
