@@ -134,9 +134,9 @@ RSpec.describe TcorsDataReportMapper do
   end
 
   it 'maps the message medium to the medium' do
-    expect(TcorsDataReportMapper.medium(@message)).to eq(:organic)
+    expect(TcorsDataReportMapper.medium(@message)).to eq('1')
     @message.medium = :ad
-    expect(TcorsDataReportMapper.medium(@message)).to eq(:ad)
+    expect(TcorsDataReportMapper.medium(@message)).to eq('2')
   end
 
   it 'maps image_present to the image' do

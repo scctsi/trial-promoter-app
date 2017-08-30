@@ -67,7 +67,8 @@ class TcorsDataReportMapper
   end
 
   def self.medium(message)
-    return message.medium
+    medium_mapper = {:organic => '1', :ad => '2'}
+    return medium_mapper[message.medium]
   end
 
   def self.image_included(message)
