@@ -15,8 +15,14 @@ class MetricsManager
         message = Message.find_by_alternative_identifier(key)
       end
       if !(message.nil?)
-        message.metrics << Metric.new(source: source, data: value)
-        message.save
+        metrics = message.metrics.select{ |metric| metric.source == source }
+        if metrics.count > 0
+          metrics[0].data = value
+          metrics[0].save
+        else
+          message.metrics << Metric.new(source: source, data: value)
+          message.save
+        end
       end
     end
   end
