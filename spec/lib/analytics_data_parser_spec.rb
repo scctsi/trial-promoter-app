@@ -129,7 +129,7 @@ RSpec.describe AnalyticsDataParser do
 
       parseable_data = AnalyticsDataParser.convert_to_parseable_data(csv_content, :facebook, :organic)
 
-      expect(parseable_data.column_headers).to eq(['social_network_id', '', '', '', '', '', '', '', '', '', '', 'impressions', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'comments', 'likes', 'shares', '', 'clicks'])
+      expect(parseable_data.column_headers).to eq(['social_network_id', '', '', '', '', '', '', '', '', '', '', 'impressions', '', '', '', 'likes', 'shares', 'comments', 'clicks'])
       # NOTE: Facebook (for organic data alone) has an extra row in the header which gives a definition of each column.
       expect(parseable_data.rows).to eq(csv_content[2..-1])
     end
