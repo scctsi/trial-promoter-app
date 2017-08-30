@@ -53,7 +53,7 @@ RSpec.describe TcorsDataReportMapper do
     end
 
     it 'maps the message theme to theme' do 
-      (1..7).each do |theme|
+      (1..8).each do |theme|
         @message.message_template.experiment_variables['theme'] = theme
         expect(TcorsDataReportMapper.theme(@message)).to eq(theme.to_s)
       end
