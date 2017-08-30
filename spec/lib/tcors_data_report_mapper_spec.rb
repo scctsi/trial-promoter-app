@@ -53,11 +53,13 @@ RSpec.describe TcorsDataReportMapper do
     end
 
     it 'maps the message theme to theme' do 
-      themes ={ 'health' => '1', 'appearace' => '2', 'money' => '3', 'love of family' => '4', 'addiction' => '5', 'health + community' => '6', 'health + family' => '7', 'UNCLEAR' => 'UNCLEAR' }
+      themes = { 'health' => '1', 'appearace' => '2', 'money' => '3', 'love of family' => '4', 'addiction' => '5', 'health + community' => '6', 'health + family' => '7', 'UNCLEAR' => 'UNCLEAR' }
       themes.each do |theme, value|
         @message.message_template.experiment_variables['theme'] = theme
         expect(TcorsDataReportMapper.theme(@message)).to eq(value)
       end
+      @message.message_template.experiment_variables['theme'] = 'UNCLEAR'
+      expect(TcorsDataReportMapper.theme(@message)).to eq('UNCLEAR')
     end
 
     it 'maps the message experiment variable to lin_meth_factor' do
