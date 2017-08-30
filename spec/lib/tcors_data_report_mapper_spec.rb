@@ -46,16 +46,17 @@ RSpec.describe TcorsDataReportMapper do
     end
 
     it 'maps the message fda_campaign to fda_campaign' do
-      (1..2).each do |fda_campaign|
-        @message.message_template.experiment_variables['fda_campaign'] = fda_campaign.to_s
-        expect(TcorsDataReportMapper.fda_campaign(@message)).to eq(fda_campaign.to_s)
-      end
+        @message.message_template.experiment_variables['fda_campaign'] = :FE
+        expect(TcorsDataReportMapper.fda_campaign(@message)).to eq('1')
+        @message.message_template.experiment_variables['fda_campaign'] = :TFL
+        expect(TcorsDataReportMapper.fda_campaign(@message)).to eq('2')
     end
 
     it 'maps the message theme to theme' do 
-      (1..7).each do |theme|
+      themes = { 'health' => '1', 'appearace' => '2', 'money' => '3', 'love of family' => '4', 'addiction' => '5', 'health + community' => '6', 'health + family' => '7', 'UNCLEAR' => 'UNCLEAR' }
+      themes.each do |theme, value|
         @message.message_template.experiment_variables['theme'] = theme
-        expect(TcorsDataReportMapper.theme(@message)).to eq(theme.to_s)
+        expect(TcorsDataReportMapper.theme(@message)).to eq(value)
       end
       @message.message_template.experiment_variables['theme'] = 'UNCLEAR'
       expect(TcorsDataReportMapper.theme(@message)).to eq('UNCLEAR')
