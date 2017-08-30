@@ -186,7 +186,7 @@ describe Message do
       @message_with_no_sessions_or_goals = create(:message)
       @message_with_no_sessions_or_goals.metrics << Metric.new(source: :twitter, data: {"clicks" => nil, "impressions" => nil})
       @message_with_no_sessions_or_goals.save
-  end
+    end
 
     it 'returns N/A if asked to retrieve a metric for a missing source' do
       expect(@message.metric_facebook_likes).to eq('N/A')
@@ -217,6 +217,11 @@ describe Message do
 
     it 'returns N/A when asked to find a percentage given two metric names, both of which are missing' do
       @message.metrics << Metric.new(source: :facebook, data: {"shares" => 100})
+      expect(@message.percentage_facebook_clicks_impressions).to eq('N/A')
+    end
+
+    it 'returns N/A when the value of both metrics is 0' do
+      @message.metrics << Metric.new(source: :facebook, data: {"clicks" => 0, "impressions" => 0})
       expect(@message.percentage_facebook_clicks_impressions).to eq('N/A')
     end
 
