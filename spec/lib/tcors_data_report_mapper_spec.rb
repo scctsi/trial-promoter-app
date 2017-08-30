@@ -40,7 +40,7 @@ RSpec.describe TcorsDataReportMapper do
   end
   
   describe 'experiment variables mapping methods' do
-    it 'maps the message stem_id to stem' do
+    it 'maps the message stem_id to stem' do 
       @message.message_template.experiment_variables['stem_id'] = 'FE51'
       expect(TcorsDataReportMapper.stem(@message)).to eq('FE51')
     end
@@ -54,7 +54,7 @@ RSpec.describe TcorsDataReportMapper do
 
     it 'maps the message theme to theme' do 
       (1..7).each do |theme|
-        @message.message_template.experiment_variables['theme'] = theme.to_s
+        @message.message_template.experiment_variables['theme'] = theme
         expect(TcorsDataReportMapper.theme(@message)).to eq(theme.to_s)
       end
     end

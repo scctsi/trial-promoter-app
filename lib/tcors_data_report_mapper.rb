@@ -22,7 +22,7 @@ class TcorsDataReportMapper
   end
 
   def self.theme(message)
-    return message.message_template.experiment_variables['theme']
+    return message.message_template.experiment_variables['theme'].to_s
   end
 
   def self.lin_meth_factor(message)
