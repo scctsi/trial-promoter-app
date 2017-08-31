@@ -46,9 +46,9 @@ RSpec.describe TcorsDataReportMapper do
     end
 
     it 'maps the message fda_campaign to fda_campaign' do
-        @message.message_template.experiment_variables['fda_campaign'] = :FE
+        @message.message_template.experiment_variables['fda_campaign'] = 'FE'
         expect(TcorsDataReportMapper.fda_campaign(@message)).to eq('1')
-        @message.message_template.experiment_variables['fda_campaign'] = :TFL
+        @message.message_template.experiment_variables['fda_campaign'] = 'TFL'
         expect(TcorsDataReportMapper.fda_campaign(@message)).to eq('2')
     end
 
@@ -141,9 +141,9 @@ RSpec.describe TcorsDataReportMapper do
   end
 
   it 'maps image_present to the image' do
-    expect(TcorsDataReportMapper.image_included(@message)).to eq('No')
+    expect(TcorsDataReportMapper.image_included(@message)).to eq('0')
     @message.image_present = 'with'
-    expect(TcorsDataReportMapper.image_included(@message)).to eq('Yes')
+    expect(TcorsDataReportMapper.image_included(@message)).to eq('1')
   end
 
   it 'maps the message total clicks for day 1 to total_clicks_day_1' do
