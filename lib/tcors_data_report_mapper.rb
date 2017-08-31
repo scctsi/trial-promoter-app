@@ -18,11 +18,13 @@ class TcorsDataReportMapper
   end
 
   def self.fda_campaign(message)
-    return message.message_template.experiment_variables['fda_campaign']
+    fda_campaign_mapper = { 'FE' => '1', 'TFL' => '2' }
+    return fda_campaign_mapper[message.message_template.experiment_variables['fda_campaign']]
   end
 
   def self.theme(message)
-    return message.message_template.experiment_variables['theme'].to_s
+    theme_mapper ={ 'health' => '1', 'appearace' => '2', 'money' => '3', 'love of family' => '4', 'addiction' => '5', 'health + community' => '6', 'health + family' => '7', 'UNCLEAR' => 'UNCLEAR' }
+    return theme_mapper[message.message_template.experiment_variables['theme'].to_s]
   end
 
   def self.lin_meth_factor(message)
@@ -72,7 +74,7 @@ class TcorsDataReportMapper
   end
 
   def self.image_included(message)
-    image_mapper = {'without' => 'No', 'with' => 'Yes'}
+    image_mapper = {'without' => '0', 'with' => '1'}
     return image_mapper[message.image_present]
   end
 
