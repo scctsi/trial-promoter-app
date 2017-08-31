@@ -18,7 +18,7 @@ class TcorsDataReportMapper
   end
 
   def self.fda_campaign(message)
-    fda_campaign_mapper = { :FE => '1', :TFL => '2' }
+    fda_campaign_mapper = { 'FE' => '1', 'TFL' => '2' }
     return fda_campaign_mapper[message.message_template.experiment_variables['fda_campaign']]
   end
 
@@ -74,7 +74,7 @@ class TcorsDataReportMapper
   end
 
   def self.image_included(message)
-    image_mapper = {'without' => 'No', 'with' => 'Yes'}
+    image_mapper = {'without' => '0', 'with' => '1'}
     return image_mapper[message.image_present]
   end
 
