@@ -489,7 +489,7 @@ describe Message do
       expect(message.social_network_id).to eq('1605839243031680_1867404650208470')
     end
     
-    it 'finds a Facebook (ad) message by its campaign_id' do
+    it 'finds a Facebook (ad) message by its campaign_id (even if a social_network_id exists)' do
       message = Message.find_by_alternative_identifier('12345678')
       
       expect(message).not_to be_nil
