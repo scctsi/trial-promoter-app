@@ -135,7 +135,12 @@ class TcorsDataReportMapper
   end
 
   def self.total_impressions_experiment(message)
-    return MetricsManager.get_metric_value(message, message.platform, 'impressions')
+    if message.platform == :instagram
+      platform = :facebook
+    else
+      platform = message.platform
+    end
+    return MetricsManager.get_metric_value(message, platform, 'impressions') 
   end
 
   def self.retweets_twitter(message)
