@@ -59,12 +59,10 @@ class DailyMetricParser
     
     filtered_folders_and_files.each do |date, files|
       files.each do |file|
-        sleep 5
         data = parse_metric_from_file(file.path_lower, *column_indices(file.name))
+        MetricsManager.update_impressions_by_day(date, data)
         p data if debug
       end
-      sleep 5
-      MetricsManager.update_impressions_by_day(date, data)
     end
   end
   
@@ -78,6 +76,17 @@ class DailyMetricParser
       parse_and_store_impressions(debug_folders_and_files_list, true)
     else
       parse_and_store_impressions(folders_and_files)
+    end
+  end
+  
+  def log_parsed_metrics(file_path, file_date, parsed_data)
+    logged_results = DailyMetricParserResult.where(file_date: file_date, file_path: file_path)
+    
+    if logged_results.count > 0
+      logged_results[0].parsed_data = parsed_data
+      logged_results[0].save
+    else
+      DailyMetricParserResult.create(file_path: file_path, file_date: file_date, parsed_data: parsed_data)
     end
   end
 end
