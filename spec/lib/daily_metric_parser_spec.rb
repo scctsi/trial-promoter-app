@@ -80,11 +80,25 @@ RSpec.describe DailyMetricParser do
       expect(@daily_metric_parser.column_indices('tweet_activity_metrics_BeFreeOfTobacco_20170419_20170421_en')).to eq([0, 4])
     end
     
-    it 'works with facebook insights' do
-      VCR.use_cassette 'daily_metric_parser/temporary_test' do
-        parsed_metrics = @daily_metric_parser.parse_metric_from_file('/tcors/analytics_files/04-19-2017/Tommy-Trogan-All-Campaigns-Apr-19-2017-_-Apr-20-2017.csv', *@daily_metric_parser.column_indices('Tommy-Trogan-All-Campaigns-Apr-19-2017-_-Apr-20-2017.csv'))
-        p parsed_metrics
-      end
+    it 'logs the metrics parsed from a file' do
+      @daily_metric_parser.log_parsed_metrics('/TCORS/analytics_files/04-20-2017/file.csv', Date.new(2017, 4, 19), {"100" => 500, "200" => 600})
+
+      expect(DailyMetricParserResult.count).to eq(1)
+      daily_metric_parser_result = DailyMetricParserResult.first
+      expect(daily_metric_parser_result.file_date).to eq(Date.new(2017, 4, 19))
+      expect(daily_metric_parser_result.file_path).to eq('/TCORS/analytics_files/04-20-2017/file.csv')
+      expect(daily_metric_parser_result.parsed_data).to eq({"100" => 500, "200" => 600})
+    end
+    
+    it 'replaces the parsed_data in a logged metric parse result for the same file_date and file_path' do
+      @daily_metric_parser.log_parsed_metrics('/TCORS/analytics_files/04-20-2017/file.csv', Date.new(2017, 4, 19), {"100" => 500, "200" => 600})
+      @daily_metric_parser.log_parsed_metrics('/TCORS/analytics_files/04-20-2017/file.csv', Date.new(2017, 4, 19), {"100" => 700, "200" => 800})
+
+      expect(DailyMetricParserResult.count).to eq(1)
+      daily_metric_parser_result = DailyMetricParserResult.first
+      expect(daily_metric_parser_result.file_date).to eq(Date.new(2017, 4, 19))
+      expect(daily_metric_parser_result.file_path).to eq('/TCORS/analytics_files/04-20-2017/file.csv')
+      expect(daily_metric_parser_result.parsed_data).to eq({"100" => 700, "200" => 800})
     end
   end
 end
