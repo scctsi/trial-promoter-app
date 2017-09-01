@@ -59,9 +59,11 @@ class DailyMetricParser
     
     filtered_folders_and_files.each do |date, files|
       files.each do |file|
+        sleep 5
         data = parse_metric_from_file(file.path_lower, *column_indices(file.name))
         p data if debug
       end
+      sleep 5
       MetricsManager.update_impressions_by_day(date, data)
     end
   end
