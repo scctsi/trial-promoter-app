@@ -18,7 +18,7 @@ RSpec.describe TcorsDataReportMapper do
     @message.click_meter_tracking_link.clicks << create_list(:click, 1, :spider => '1', :click_time => ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,5,1,12,34,57))
     @message.click_meter_tracking_link.clicks << create_list(:click, 1, :spider => '0', :unique => '1', :click_time => ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,5,1,13,44,56))
     @message.click_meter_tracking_link.clicks << create_list(:click, 2, :spider => '0', :unique => '1', :click_time => ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,5,2,19,26,1))
-    @message.metrics << Metric.new(source: :google_analytics, data: {'ga:sessions'=>2, 'ga:users'=>2, 'ga:exits' =>2, 'ga:sessionDuration' => 42, 'ga:timeOnPage' => 42, 'ga:pageviews' => 2})
+    @message.metrics << Metric.new(source: :google_analytics, data: {'ga:sessions'=>2, 'ga:users'=>2, 'ga:exits' =>2, 'ga:sessionDuration' => 42, 'ga:timeOnPage' => 42, 'ga:pageviews' => 2})    
     @message.website_session_count = 2
     @message.save
   end
@@ -169,7 +169,16 @@ RSpec.describe TcorsDataReportMapper do
   describe 'impressions by day' do
     before do
       @message.impressions_by_day = { @message.scheduled_date_time.to_date => 100, (@message.scheduled_date_time + 1.day).to_date => 115, (@message.scheduled_date_time + 2.day).to_date => 120 }
-      @message.save
+      @message_twitter = create(:message, platform: :twitter) 
+      @message_twitter.metrics << Metric.new(source: :twitter, data: {"impressions"=>1394, "likes"=>0, "retweets"=>0, "replies"=>0, "clicks"=>4})
+      @message_facebook = create(:message, platform: :facebook) 
+      @message_facebook.metrics << Metric.new(source: :facebook,  data: {"impressions"=>1259, "shares"=>0, "comments"=>0, "reactions"=>25})    
+      @message_instagram= create(:message, platform: :instagram) 
+      @message_instagram.metrics << Metric.new(source: :facebook,  data: {"impressions"=>259, "shares"=>1, "comments"=>1, "reactions"=>15})
+      @message.save 
+      @message_twitter.save
+      @message_facebook.save
+      @message_instagram.save
     end
 
     it 'maps the total impressions for day 1 to total_impressions_day_1' do
@@ -212,6 +221,12 @@ RSpec.describe TcorsDataReportMapper do
       expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq(120)
     end
 
+    it 'maps the total impressions for the duration of the experiment for each platform to total_impressions_experiment' do
+      expect(TcorsDataReportMapper.total_impressions_experiment(@message_twitter)).to eq(1394)
+      expect(TcorsDataReportMapper.total_impressions_experiment(@message_facebook)).to eq(1259) 
+      expect(TcorsDataReportMapper.total_impressions_experiment(@message_instagram)).to eq(259) 
+    end
+  
     it 'returns zero for data that is missing for either day 2 or day 3' do
       @message.impressions_by_day = { }
       expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq(0)
