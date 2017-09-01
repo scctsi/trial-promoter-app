@@ -78,11 +78,12 @@ RSpec.describe TcorsDataReportMapper do
   end
 
   it 'maps the message content to the variant' do
-    expect(TcorsDataReportMapper.variant(@message)).to eq('Content')
+    @message.message_template.content = "Even if someone doesn't smoke, they could be breathing in the deadly mix by being around smokers.{url}"
+    expect(TcorsDataReportMapper.variant(@message)).to eq("Even if someone doesn't smoke, they could be breathing in the deadly mix by being around smokers.")
   end
 
   it 'maps the scheduled date of the message to the day of the experiment' do
-    # Message scheduled at noon
+    # Message scheduled at noon 
     expect(TcorsDataReportMapper.day_experiment(@message)).to eq(12)
     # Message scheduled just before midnight
     @message.scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,4,30,23,59,0)
