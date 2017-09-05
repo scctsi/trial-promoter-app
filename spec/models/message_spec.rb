@@ -510,7 +510,7 @@ describe Message do
       expect(message.buffer_update.published_text).to eq('Some text unique to this message')
     end
   end
-
+  
   private
   def expect_backdated(message, message_scheduled_date_time)
     message.reload
@@ -523,9 +523,9 @@ describe Message do
   end
 
   def expect_not_backdated(message, message_scheduled_date_time)
-      message.reload
-      expect(message.scheduled_date_time).to eq(message_scheduled_date_time)
-      expect(message.backdated).to be nil
-      expect(message.original_scheduled_date_time).to be nil
+    message.reload
+    expect(message.scheduled_date_time).to eq(message_scheduled_date_time)
+    expect(message.backdated).to be nil
+    expect(message.original_scheduled_date_time).to be nil
   end
 end

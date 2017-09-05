@@ -5,14 +5,6 @@ class TcorsDataReportMapper
     return message.id
   end
   
-  def self.click_meter_id(message)
-    return message.click_meter_tracking_link.click_meter_id
-  end
-
-  def self.click_meter_uri(message)
-    return message.click_meter_tracking_link.click_meter_uri
-  end
-
   def self.stem(message)
     return message.message_template.experiment_variables['stem_id']
   end
@@ -46,7 +38,7 @@ class TcorsDataReportMapper
   end
 
   def self.day_experiment(message)
-    return (message.scheduled_date_time.to_i - ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,4,19,0,0,0).to_i) / 1.day.seconds + 1
+    return (message.scheduled_date_time.to_i - ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017, 4, 19, 0, 0, 0).to_i) / 1.day.seconds + 1
   end
 
   def self.date_sent(message)
