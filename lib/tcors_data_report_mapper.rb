@@ -36,7 +36,8 @@ class TcorsDataReportMapper
   end
 
   def self.variant(message)
-    return message.content
+    content = message.message_template.content.chomp("{url}")
+    return content
   end
 
   def self.sm_type(message)
@@ -112,7 +113,7 @@ class TcorsDataReportMapper
     if message.impressions_by_day[message.scheduled_date_time.to_date].nil?
       return 0
     else
-      return message.impressions_by_day[message.scheduled_date_time.to_date]
+      return message.impressions_by_day[message.scheduled_date_time.to_date] 
     end
   end
 
