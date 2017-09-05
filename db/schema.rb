@@ -11,7 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20170829181953) do
+=======
+ActiveRecord::Schema.define(version: 20170901185716) do
+>>>>>>> development
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -99,6 +103,14 @@ ActiveRecord::Schema.define(version: 20170829181953) do
     t.datetime "created_at",                    null: false
     t.datetime "updated_at",                    null: false
     t.text     "hashtags"
+  end
+
+  create_table "daily_metric_parser_results", force: :cascade do |t|
+    t.date     "file_date"
+    t.text     "file_path"
+    t.text     "parsed_data"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
   create_table "data_dictionaries", force: :cascade do |t|

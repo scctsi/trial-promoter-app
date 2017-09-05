@@ -46,28 +46,47 @@ class DailyMetricParser
   
   def column_indices(file_name)
     return [6, 8] if file_name.end_with?('.xlsx') 
-    return [0, 11] if !file_name.index('Facebook').nil?
-    return [2, 3] if !file_name.index('Tommy-Trogan').nil?
-    return [0, 4] if !file_name.index('tweet_activity_metrics').nil?
+    return [0, 11] if !(file_name.index('Facebook').nil?)
+    return [2, 3] if !(file_name.index('Tommy-Trogan').nil?)
+    return [0, 4] if !(file_name.index('tweet_activity_metrics').nil?)
   end
   
-  def parse_and_store_impressions(folders_and_files)
+  def parse_and_store_impressions(folders_and_files, debug = false)
     # TODO: Unit test this!
     data = {}
     filtered_folders_and_files = convert_to_processable_list(folders_and_files)
+    p filtered_folders_and_files if debug
     
     filtered_folders_and_files.each do |date, files|
       files.each do |file|
         data = parse_metric_from_file(file.path_lower, *column_indices(file.name))
+        MetricsManager.update_impressions_by_day(date, data)
+        p data if debug
       end
-      MetricsManager.update_impressions_by_day(date, data)
     end
   end
   
-  def parse_impressions
+  def parse_impressions(debug = false)
     # TODO: Unit test this!
     dropbox_client = DropboxClient.new
     folders_and_files = dropbox_client.recursively_list_folder('/TCORS/analytics_files/')
-    parse_and_store_impressions(folders_and_files)
+    if debug
+      debug_folders_and_files_list = {}
+      debug_folders_and_files_list[folders_and_files.keys.first] = folders_and_files.values.first
+      parse_and_store_impressions(debug_folders_and_files_list, true)
+    else
+      parse_and_store_impressions(folders_and_files)
+    end
+  end
+  
+  def log_parsed_metrics(file_path, file_date, parsed_data)
+    logged_results = DailyMetricParserResult.where(file_date: file_date, file_path: file_path)
+    
+    if logged_results.count > 0
+      logged_results[0].parsed_data = parsed_data
+      logged_results[0].save
+    else
+      DailyMetricParserResult.create(file_path: file_path, file_date: file_date, parsed_data: parsed_data)
+    end
   end
 end
