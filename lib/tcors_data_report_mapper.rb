@@ -5,6 +5,10 @@ class TcorsDataReportMapper
     return message.id
   end
   
+  def self.note(message)
+    return message.note
+  end
+  
   def self.stem(message)
     return message.message_template.experiment_variables['stem_id']
   end
