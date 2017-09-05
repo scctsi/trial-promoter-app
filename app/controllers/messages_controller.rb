@@ -20,4 +20,27 @@ class MessagesController < ApplicationController
       redirect_to root_path
     end
   end
+  
+  def edit_note
+    message = Message.find(params[:id])
+    authorize message
+    message.note = params[:note]
+    message.save
+    if request.xhr?
+      render 'shared/_message_note.html.haml', layout: false, locals: { message: message }
+    else
+      redirect_to root_path
+    end
+  end
+
+  def new_note
+    message = Message.find(params[:id])
+    authorize message
+    if request.xhr?
+      render 'shared/forms/_input_message_note.html.haml', layout: false, locals: { message: message }
+    else
+      redirect_to root_path
+    end
+  end
+
 end
