@@ -11,11 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 20170829181953) do
-=======
-ActiveRecord::Schema.define(version: 20170901185716) do
->>>>>>> development
+ActiveRecord::Schema.define(version: 20170905174312) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -248,7 +244,7 @@ ActiveRecord::Schema.define(version: 20170901185716) do
     t.integer  "website_goal_count"
     t.integer  "website_session_count"
     t.text     "impressions_by_day"
-    t.text     "notes"
+    t.text     "note"
   end
 
   add_index "messages", ["message_generating_type", "message_generating_id"], name: "index_on_message_generating_for_analytics_files", using: :btree
