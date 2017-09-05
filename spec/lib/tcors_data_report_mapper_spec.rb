@@ -27,18 +27,6 @@ RSpec.describe TcorsDataReportMapper do
     expect(TcorsDataReportMapper.database_id(@message)).to eq(@message.id)
   end
   
-  it 'maps the click_meter_id to click_meter_id' do
-    @message.click_meter_tracking_link.click_meter_id = 'click_meter_id'
-
-    expect(TcorsDataReportMapper.click_meter_id(@message)).to eq(@message.click_meter_tracking_link.click_meter_id)
-  end
-
-  it 'maps the click_meter_uri to click_meter_uri' do
-    @message.click_meter_tracking_link.click_meter_uri = 'http://www.click_meter.com/uri'
-
-    expect(TcorsDataReportMapper.click_meter_uri(@message)).to eq(@message.click_meter_tracking_link.click_meter_uri)
-  end
-  
   describe 'experiment variables mapping methods' do
     it 'maps the message stem_id to stem' do 
       @message.message_template.experiment_variables['stem_id'] = 'FE51'
