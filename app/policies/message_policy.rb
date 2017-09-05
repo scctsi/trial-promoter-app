@@ -6,4 +6,12 @@ class MessagePolicy < ApplicationPolicy
   def new_campaign_id?
     user.role.administrator?
   end
+  
+  def edit_note?
+    user.role.administrator?
+  end
+  
+  def new_note?
+    user.role.administrator?
+  end
 end
