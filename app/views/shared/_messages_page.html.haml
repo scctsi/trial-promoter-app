@@ -53,6 +53,8 @@
                 .ui.basic.small.label
                   Lin_meth_level:
                   = message.message_template.experiment_variables['lin_meth_level']
+                - if current_user.role != :read_only
+                  = render partial: 'shared/message_note.html.haml', locals: { message: message }
                 - if !message.buffer_update.nil?
                   - if !message.buffer_update.sent_from_date_time.nil?
                     .ui.basic.grey.small.label

@@ -44,6 +44,8 @@ Rails.application.routes.draw do
     member do
       post 'edit_campaign_id', to: 'messages#edit_campaign_id'
       get 'new_campaign_id', to: 'messages#new_campaign_id'
+      post 'edit_note', to: 'messages#edit_note'
+      get 'new_note', to: 'messages#new_note'
     end
   end
 

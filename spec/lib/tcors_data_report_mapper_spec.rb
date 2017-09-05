@@ -4,6 +4,7 @@ require 'google/apis/analytics_v3'
 RSpec.describe TcorsDataReportMapper do
   before do
     @message = create(:message)
+    @message.note = "Note"
     @message.scheduled_date_time =  ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,4,30,12,0,0)
     @message.buffer_update = create(:buffer_update)
     @message.buffer_update.sent_from_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,4,30,12,1,0)
@@ -25,6 +26,10 @@ RSpec.describe TcorsDataReportMapper do
 
   it 'maps the message id to database_id' do
     expect(TcorsDataReportMapper.database_id(@message)).to eq(@message.id)
+  end
+
+  it 'maps the message note to note' do
+    expect(TcorsDataReportMapper.note(@message)).to eq(@message.note)
   end
   
   describe 'experiment variables mapping methods' do
