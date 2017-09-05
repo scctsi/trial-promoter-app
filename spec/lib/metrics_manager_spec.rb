@@ -76,6 +76,22 @@ RSpec.describe MetricsManager do
     expect(@messages[2].metrics[0].data).to eq({ 'metric_1' => 3, 'metric_2' => 4 })
   end
   
+  it 'updates existing metrics for messages given a hash of metric hashes indexed by the social network id' do
+    data = { @messages[0].social_network_id => { 'metric_1' => 1, 'metric_2' => 2}, @messages[1].social_network_id => { 'metric_1' => 2, 'metric_2' => 3}, @messages[2].social_network_id => { 'metric_1' => 3, 'metric_2' => 4} }
+    updated_data = { @messages[0].social_network_id => { 'metric_1' => 10, 'metric_2' => 20}, @messages[1].social_network_id => { 'metric_1' => 20, 'metric_2' => 30}, @messages[2].social_network_id => { 'metric_1' => 30, 'metric_2' => 40} }
+
+    MetricsManager.update_metrics(data, :twitter)
+    MetricsManager.update_metrics(updated_data, :twitter)
+
+    @messages.each { |message| message.reload }
+    @messages[0..2].each { |message| expect(message.metrics.count).to eq(1) }
+    @messages[0..2].each { |message| expect(message.metrics[0].source).to eq(:twitter) }
+    expect(@messages[0].metrics[0].data).to eq({ 'metric_1' => 10, 'metric_2' => 20 })
+    expect(@messages[1].metrics[0].data).to eq({ 'metric_1' => 20, 'metric_2' => 30 })
+    expect(@messages[2].metrics[0].data).to eq({ 'metric_1' => 30, 'metric_2' => 40 })
+  end
+
+  
   it 'updates metrics for messages given a hash of metric hashes indexed by the campaign id' do
     data = { @messages[3].campaign_id => { 'metric_1' => 1, 'metric_2' => 2} }
 

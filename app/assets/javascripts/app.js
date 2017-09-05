@@ -537,9 +537,9 @@ $(document).ready(function() {
 
   function setUpEditCampainIdLabelEvents() {
     //Edit campaign id for fb and instagram ads
-    $('.edit-id').click(function(event){
-      var messageId = $(this).data('message-id');
-      var $inputForm = $(this);
+    $('.edit-id i').click(function(event){
+      var messageId = $(this).parent().data('message-id');
+      var $inputForm = $(this).parent();
       getCampaignIdInputForm(messageId, $inputForm);
       event.preventDefault();
     });

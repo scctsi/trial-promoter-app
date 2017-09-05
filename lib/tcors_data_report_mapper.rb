@@ -10,11 +10,13 @@ class TcorsDataReportMapper
   end
 
   def self.fda_campaign(message)
-    return message.message_template.experiment_variables['fda_campaign']
+    fda_campaign_mapper = { 'FE' => '1', 'TFL' => '2' }
+    return fda_campaign_mapper[message.message_template.experiment_variables['fda_campaign']]
   end
 
   def self.theme(message)
-    return message.message_template.experiment_variables['theme']
+    theme_mapper ={ 'health' => '1', 'appearace' => '2', 'money' => '3', 'love of family' => '4', 'addiction' => '5', 'health + community' => '6', 'health + family' => '7', 'UNCLEAR' => 'UNCLEAR' }
+    return theme_mapper[message.message_template.experiment_variables['theme'].to_s]
   end
 
   def self.lin_meth_factor(message)
@@ -26,7 +28,8 @@ class TcorsDataReportMapper
   end
 
   def self.variant(message)
-    return message.content
+    content = message.message_template.content.chomp("{url}")
+    return content
   end
 
   def self.sm_type(message)
@@ -59,11 +62,12 @@ class TcorsDataReportMapper
   end
 
   def self.medium(message)
-    return message.medium
+    medium_mapper = {:organic => '1', :ad => '2'}
+    return medium_mapper[message.medium]
   end
 
   def self.image_included(message)
-    image_mapper = {'without' => 'No', 'with' => 'Yes'}
+    image_mapper = {'without' => '0', 'with' => '1'}
     return image_mapper[message.image_present]
   end
 
@@ -101,7 +105,7 @@ class TcorsDataReportMapper
     if message.impressions_by_day[message.scheduled_date_time.to_date].nil?
       return 0
     else
-      return message.impressions_by_day[message.scheduled_date_time.to_date]
+      return message.impressions_by_day[message.scheduled_date_time.to_date] 
     end
   end
 
@@ -124,7 +128,12 @@ class TcorsDataReportMapper
   end
 
   def self.total_impressions_experiment(message)
-    return MetricsManager.get_metric_value(message, message.platform, 'impressions')
+    if message.platform == :instagram
+      platform = :facebook
+    else
+      platform = message.platform
+    end
+    return MetricsManager.get_metric_value(message, platform, 'impressions') 
   end
 
   def self.retweets_twitter(message)

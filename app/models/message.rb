@@ -146,6 +146,7 @@ class Message < ActiveRecord::Base
       metric_1_name = name[11..-1].split('_')[1]
       metric_2_name = name[11..-1].split('_')[2]
       return 'N/A' if metrics_from_source[0].data[metric_1_name].nil? || metrics_from_source[0].data[metric_2_name].nil?
+      return 'N/A' if metrics_from_source[0].data[metric_2_name] == 0
       return (metrics_from_source[0].data[metric_1_name].to_f / metrics_from_source[0].data[metric_2_name].to_f) * 100
     end
   end

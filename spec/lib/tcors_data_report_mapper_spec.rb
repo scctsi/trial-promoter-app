@@ -18,7 +18,7 @@ RSpec.describe TcorsDataReportMapper do
     @message.click_meter_tracking_link.clicks << create_list(:click, 1, :spider => '1', :click_time => ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,5,1,12,34,57))
     @message.click_meter_tracking_link.clicks << create_list(:click, 1, :spider => '0', :unique => '1', :click_time => ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,5,1,13,44,56))
     @message.click_meter_tracking_link.clicks << create_list(:click, 2, :spider => '0', :unique => '1', :click_time => ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,5,2,19,26,1))
-    @message.metrics << Metric.new(source: :google_analytics, data: {'ga:sessions'=>2, 'ga:users'=>2, 'ga:exits' =>2, 'ga:sessionDuration' => 42, 'ga:timeOnPage' => 42, 'ga:pageviews' => 2})
+    @message.metrics << Metric.new(source: :google_analytics, data: {'ga:sessions'=>2, 'ga:users'=>2, 'ga:exits' =>2, 'ga:sessionDuration' => 42, 'ga:timeOnPage' => 42, 'ga:pageviews' => 2})    
     @message.website_session_count = 2
     @message.save
   end
@@ -28,23 +28,26 @@ RSpec.describe TcorsDataReportMapper do
   end
   
   describe 'experiment variables mapping methods' do
-    it 'maps the message stem_id to stem' do
+    it 'maps the message stem_id to stem' do 
       @message.message_template.experiment_variables['stem_id'] = 'FE51'
       expect(TcorsDataReportMapper.stem(@message)).to eq('FE51')
     end
 
     it 'maps the message fda_campaign to fda_campaign' do
-      (1..2).each do |fda_campaign|
-        @message.message_template.experiment_variables['fda_campaign'] = fda_campaign.to_s
-        expect(TcorsDataReportMapper.fda_campaign(@message)).to eq(fda_campaign.to_s)
-      end
+        @message.message_template.experiment_variables['fda_campaign'] = 'FE'
+        expect(TcorsDataReportMapper.fda_campaign(@message)).to eq('1')
+        @message.message_template.experiment_variables['fda_campaign'] = 'TFL'
+        expect(TcorsDataReportMapper.fda_campaign(@message)).to eq('2')
     end
 
     it 'maps the message theme to theme' do 
-      (1..7).each do |theme|
-        @message.message_template.experiment_variables['theme'] = theme.to_s
-        expect(TcorsDataReportMapper.theme(@message)).to eq(theme.to_s)
+      themes = { 'health' => '1', 'appearace' => '2', 'money' => '3', 'love of family' => '4', 'addiction' => '5', 'health + community' => '6', 'health + family' => '7', 'UNCLEAR' => 'UNCLEAR' }
+      themes.each do |theme, value|
+        @message.message_template.experiment_variables['theme'] = theme
+        expect(TcorsDataReportMapper.theme(@message)).to eq(value)
       end
+      @message.message_template.experiment_variables['theme'] = 'UNCLEAR'
+      expect(TcorsDataReportMapper.theme(@message)).to eq('UNCLEAR')
     end
 
     it 'maps the message experiment variable to lin_meth_factor' do
@@ -63,11 +66,12 @@ RSpec.describe TcorsDataReportMapper do
   end
 
   it 'maps the message content to the variant' do
-    expect(TcorsDataReportMapper.variant(@message)).to eq('Content')
+    @message.message_template.content = "Even if someone doesn't smoke, they could be breathing in the deadly mix by being around smokers.{url}"
+    expect(TcorsDataReportMapper.variant(@message)).to eq("Even if someone doesn't smoke, they could be breathing in the deadly mix by being around smokers.")
   end
 
   it 'maps the scheduled date of the message to the day of the experiment' do
-    # Message scheduled at noon
+    # Message scheduled at noon 
     expect(TcorsDataReportMapper.day_experiment(@message)).to eq(12)
     # Message scheduled just before midnight
     @message.scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,4,30,23,59,0)
@@ -120,15 +124,15 @@ RSpec.describe TcorsDataReportMapper do
   end
 
   it 'maps the message medium to the medium' do
-    expect(TcorsDataReportMapper.medium(@message)).to eq(:organic)
+    expect(TcorsDataReportMapper.medium(@message)).to eq('1')
     @message.medium = :ad
-    expect(TcorsDataReportMapper.medium(@message)).to eq(:ad)
+    expect(TcorsDataReportMapper.medium(@message)).to eq('2')
   end
 
   it 'maps image_present to the image' do
-    expect(TcorsDataReportMapper.image_included(@message)).to eq('No')
+    expect(TcorsDataReportMapper.image_included(@message)).to eq('0')
     @message.image_present = 'with'
-    expect(TcorsDataReportMapper.image_included(@message)).to eq('Yes')
+    expect(TcorsDataReportMapper.image_included(@message)).to eq('1')
   end
 
   it 'maps the message total clicks for day 1 to total_clicks_day_1' do
@@ -154,7 +158,16 @@ RSpec.describe TcorsDataReportMapper do
   describe 'impressions by day' do
     before do
       @message.impressions_by_day = { @message.scheduled_date_time.to_date => 100, (@message.scheduled_date_time + 1.day).to_date => 115, (@message.scheduled_date_time + 2.day).to_date => 120 }
-      @message.save
+      @message_twitter = create(:message, platform: :twitter) 
+      @message_twitter.metrics << Metric.new(source: :twitter, data: {"impressions"=>1394, "likes"=>0, "retweets"=>0, "replies"=>0, "clicks"=>4})
+      @message_facebook = create(:message, platform: :facebook) 
+      @message_facebook.metrics << Metric.new(source: :facebook,  data: {"impressions"=>1259, "shares"=>0, "comments"=>0, "reactions"=>25})    
+      @message_instagram= create(:message, platform: :instagram) 
+      @message_instagram.metrics << Metric.new(source: :facebook,  data: {"impressions"=>259, "shares"=>1, "comments"=>1, "reactions"=>15})
+      @message.save 
+      @message_twitter.save
+      @message_facebook.save
+      @message_instagram.save
     end
 
     it 'maps the total impressions for day 1 to total_impressions_day_1' do
@@ -197,6 +210,12 @@ RSpec.describe TcorsDataReportMapper do
       expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq(120)
     end
 
+    it 'maps the total impressions for the duration of the experiment for each platform to total_impressions_experiment' do
+      expect(TcorsDataReportMapper.total_impressions_experiment(@message_twitter)).to eq(1394)
+      expect(TcorsDataReportMapper.total_impressions_experiment(@message_facebook)).to eq(1259) 
+      expect(TcorsDataReportMapper.total_impressions_experiment(@message_instagram)).to eq(259) 
+    end
+  
     it 'returns zero for data that is missing for either day 2 or day 3' do
       @message.impressions_by_day = { }
       expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq(0)
