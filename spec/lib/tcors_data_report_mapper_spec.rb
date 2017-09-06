@@ -8,7 +8,7 @@ RSpec.describe TcorsDataReportMapper do
     @message.scheduled_date_time =  ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,4,30,12,0,0)
     @message.buffer_update = create(:buffer_update)
     @message.buffer_update.sent_from_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,4,30,12,1,0)
-    @message.social_network_id = "101"
+    @message.social_network_id = "870429890541228033"
     @message.campaign_id = "202"
     visits_1 = create_list(:visit, 3, utm_content: @message.to_param, started_at: @message.scheduled_date_time + 1.hour)
     create_list(:visit, 2, utm_content: @message.to_param, started_at: @message.scheduled_date_time + 1.day + 1.hour)
@@ -31,11 +31,11 @@ RSpec.describe TcorsDataReportMapper do
   end
 
   it 'maps the social_network_id to social_network_id' do
-    expect(TcorsDataReportMapper.social_network_id(@message)).to eq(@message.social_network_id)
+    expect(TcorsDataReportMapper.social_network_id(@message)).to eq("SNI: #{@message.social_network_id}")
   end
 
   it 'maps the campaign_id to campaign_id' do
-    expect(TcorsDataReportMapper.campaign_id(@message)).to eq(@message.campaign_id)
+    expect(TcorsDataReportMapper.campaign_id(@message)).to eq("CI: #{@message.campaign_id}")
   end
 
   it 'maps the message note to note' do
