@@ -5,10 +5,18 @@ class TcorsDataReportMapper
     return message.id
   end
   
+  def self.campaign_id(message)
+    return message.campaign_id
+  end
+  
+  def self.social_network_id(message)
+    return message.social_network_id
+  end
+  
   def self.note(message)
     return message.note
   end
-  
+
   def self.stem(message)
     return message.message_template.experiment_variables['stem_id']
   end
