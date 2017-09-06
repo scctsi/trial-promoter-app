@@ -334,7 +334,7 @@ RSpec.describe TcorsDataReportMapper do
   end
 
   it 'maps the number of sessions for the whole experiment to total_sessions_experiment' do
-    expect(TcorsDataReportMapper.total_sessions_experiment(@message)).to eq(2)
+    expect(TcorsDataReportMapper.total_sessions_experiment(@message)).to eq(5)
   end
 
   it 'maps the number of conversions for day 1 to each website link to total_goals_day1' do  
