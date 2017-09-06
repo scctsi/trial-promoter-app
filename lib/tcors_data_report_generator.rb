@@ -16,4 +16,4 @@ class TcorsDataReportGenerator
     dropbox_client = DropboxClient.new
     dropbox_client.store_file("/TCORS/data_reports/#{file_name}", IO.read("#{Rails.root}/tmp/#{file_name}"))
   end
-en
+end
