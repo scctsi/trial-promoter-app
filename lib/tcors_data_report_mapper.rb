@@ -229,7 +229,7 @@ class TcorsDataReportMapper
   end
 
   def self.total_sessions_experiment(message)
-    return MetricsManager.get_metric_value(message, :google_analytics, "ga:sessions")
+    return message.get_sessions(IP_EXCLUSION_LIST).count
   end
   
   def self.total_goals_day_1(message)
