@@ -369,9 +369,7 @@ RSpec.describe TcorsDataReportMapper do
   end
 
   it 'maps the number of conversions for the duration of the experiment to total_goals_experiment' do 
-    expect(TcorsDataReportMapper.total_goals_experiment(@message)).to eq(5)
-    create_list(:visit, 1, utm_content: @message.to_param, started_at: @message.scheduled_date_time + 2.day + 1.hour)
-    expect(TcorsDataReportMapper.total_goals_experiment(@message)).to eq(6)
+    expect(TcorsDataReportMapper.total_goals_experiment(@message)).to eq(4)
   end
 
   it 'maps the number of users for each website to users' do

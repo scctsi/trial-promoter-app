@@ -253,14 +253,14 @@ class TcorsDataReportMapper
   end
 
   def self.total_goals_experiment(message)
-    goals = []
+    goal_count = 0
     experiment_start = DateTime.parse('19 April 2017')
     experiment_finish = DateTime.parse('15 July 2017')
     sessions = get_sessions(message, experiment_start, experiment_finish)
     sessions.each do |session|
-      goals << Ahoy::Event.where(visit_id: session.id).where(name: "Converted")
+      goal_count += 1 if Ahoy::Event.where(visit_id: session.id).where(name: "Converted").count > 0
     end
-    return goals.count
+    return goal_count
   end
 
   def self.users(message)
