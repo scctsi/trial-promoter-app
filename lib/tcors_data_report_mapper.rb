@@ -241,47 +241,26 @@ class TcorsDataReportMapper
   end
   
   def self.total_goals_day_1(message)
-    clicks = []
-    scheduled_start_of_day = (message.scheduled_date_time).beginning_of_day
-    scheduled_end_of_day = (scheduled_start_of_day).end_of_day 
-    sessions = get_sessions(message, scheduled_start_of_day, scheduled_end_of_day)
-    sessions.each do |session|
-      clicks << Ahoy::Event.where(visit_id: session.id)
-    end
-    return clicks.count
+    return calculate_goal_count(message, message.scheduled_date_time)
   end
 
   def self.total_goals_day_2(message)
-    clicks = []
-    scheduled_start_of_day = (message.scheduled_date_time + 1.day).beginning_of_day
-    scheduled_end_of_day = (scheduled_start_of_day).end_of_day 
-    sessions = get_sessions(message, scheduled_start_of_day, scheduled_end_of_day)
-    sessions.each do |session|
-      clicks << Ahoy::Event.where(visit_id: session.id)
-    end
-    return clicks.count
+    return calculate_goal_count(message, message.scheduled_date_time + 1.day)
   end
 
   def self.total_goals_day_3(message)
-    clicks = []
-    scheduled_start_of_day = (message.scheduled_date_time + 2.day).beginning_of_day
-    scheduled_end_of_day = (scheduled_start_of_day).end_of_day 
-    sessions = get_sessions(message, scheduled_start_of_day, scheduled_end_of_day)
-    sessions.each do |session|
-      clicks << Ahoy::Event.where(visit_id: session.id)
-    end
-    return clicks.count
+    return calculate_goal_count(message, message.scheduled_date_time + 2.day)
   end
 
   def self.total_goals_experiment(message)
-    clicks = []
+    goals = []
     experiment_start = DateTime.parse('19 April 2017')
     experiment_finish = DateTime.parse('15 July 2017')
     sessions = get_sessions(message, experiment_start, experiment_finish)
     sessions.each do |session|
-      clicks << Ahoy::Event.where(visit_id: session.id)
+      goals << Ahoy::Event.where(visit_id: session.id).where(name: "Converted")
     end
-    return clicks.count
+    return goals.count
   end
 
   def self.users(message)
@@ -307,5 +286,15 @@ class TcorsDataReportMapper
   def self.get_sessions(message, start, finish)
     sessions = message.get_sessions(IP_EXCLUSION_LIST)
     return sessions.select{|session| session.started_at.between?(start, finish)}
+  end
+  
+  private
+  def self.calculate_goal_count(message, date)
+    goal_count = 0
+    sessions = get_sessions(message, date.beginning_of_day, date.end_of_day)
+    sessions.each do |session|
+      goal_count += 1 if Ahoy::Event.where(visit_id: session.id).where(name: "Converted").count > 0
+    end
+    return goal_count 
   end
 end
