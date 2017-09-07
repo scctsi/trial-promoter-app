@@ -188,6 +188,27 @@ RSpec.describe TcorsDataReportMapper do
       @message_facebook.save
       @message_instagram.save
     end
+    
+    describe 'for backdated Twitter ads' do
+      before do
+        @message.impressions_by_day = { @message.scheduled_date_time.to_date + 5.days => 100, (@message.scheduled_date_time + 6.days).to_date => 115, (@message.scheduled_date_time + 7.days).to_date => 120 }
+        @message.medium = :ad
+        @message.platform = :twitter
+        @message.backdated = true
+      end
+
+      it 'maps the total impressions for day 1 to total_impressions_day_1 (using impressions data 5 days from the scheduled_date_time)' do
+        expect(TcorsDataReportMapper.total_impressions_day_1(@message)).to eq(100)
+      end
+  
+      it 'maps the total impressions to day 2 to total_impressions_day_2 (using impressions data 6 days from the scheduled_date_time)' do
+        expect(TcorsDataReportMapper.total_impressions_day_2(@message)).to eq(115)
+      end
+
+      it 'maps the total impressions to day 3 to total_impressions_day_3 (using impressions data 7 days from the scheduled_date_time)' do
+        expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq(120)
+      end
+    end
 
     it 'maps the total impressions for day 1 to total_impressions_day_1' do
       expect(TcorsDataReportMapper.total_impressions_day_1(@message)).to eq(100)
