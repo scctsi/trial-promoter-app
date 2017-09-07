@@ -10,12 +10,17 @@ RSpec.describe TcorsDataReportMapper do
     @message.buffer_update.sent_from_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,4,30,12,1,0)
     @message.social_network_id = "870429890541228033"
     @message.campaign_id = "202"
-    visits_1 = create_list(:visit, 3, utm_content: @message.to_param, started_at: @message.scheduled_date_time + 1.hour)
-    create_list(:visit, 2, utm_content: @message.to_param, started_at: @message.scheduled_date_time + 1.day + 1.hour)
+    visits_day_1 = create_list(:visit, 3, utm_content: @message.to_param, started_at: @message.scheduled_date_time + 1.hour)
+    visits_day_2 = create_list(:visit, 2, utm_content: @message.to_param, started_at: @message.scheduled_date_time + 1.day + 1.hour)
     create_list(:visit, 1, utm_content: @message.to_param, started_at: @message.scheduled_date_time + 2.day + 1.hour, ip: '128.125.77.139')
-    visits_1.each do |visit|
-      visit.ahoy_events << Ahoy::Event.new(visit_id: visit.id)
+    # All visits on day one converted once each
+    visits_day_1.each do |visit|
+      visit.ahoy_events << Ahoy::Event.new(visit_id: visit.id, name: "Converted")
     end
+    # One visit on day 2 converted many times
+    visits_day_2[0].ahoy_events << Ahoy::Event.new(visit_id: visits_day_2[0].id, name: "Converted")
+    visits_day_2[0].ahoy_events << Ahoy::Event.new(visit_id: visits_day_2[0].id, name: "Converted")
+    
     @message.click_meter_tracking_link = create(:click_meter_tracking_link)
     @message.click_meter_tracking_link.clicks << create_list(:click, 3, :spider => '0', :unique => '1', :click_time => ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,4,30,12,23,13))
     @message.click_meter_tracking_link.clicks << create_list(:click, 1, :spider => '1', :click_time => ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,5,1,12,34,57))
@@ -376,18 +381,16 @@ RSpec.describe TcorsDataReportMapper do
     expect(TcorsDataReportMapper.total_goals_day_1(@message)).to eq(3)
   end
 
-  it 'maps the number of conversions for day 2 to each website link to total_goals_day2' do  
-    expect(TcorsDataReportMapper.total_goals_day_2(@message)).to eq(2)
+  it 'maps the number of conversions for day 2 to each website link to total_goals_day2' do 
+    expect(TcorsDataReportMapper.total_goals_day_2(@message)).to eq(1)
   end
 
   it 'maps the number of conversions for day 3 to each website link to total_goals_day3' do  
     expect(TcorsDataReportMapper.total_goals_day_3(@message)).to eq(0)
   end
 
-  it 'maps the number of conversions for the duration of the experiment to total_goals_experiment' do
-    expect(TcorsDataReportMapper.total_goals_experiment(@message)).to eq(5)
-    create_list(:visit, 1, utm_content: @message.to_param, started_at: @message.scheduled_date_time + 2.day + 1.hour)
-    expect(TcorsDataReportMapper.total_goals_experiment(@message)).to eq(6)
+  it 'maps the number of conversions for the duration of the experiment to total_goals_experiment' do 
+    expect(TcorsDataReportMapper.total_goals_experiment(@message)).to eq(4)
   end
 
   it 'maps the number of users for each website to users' do
