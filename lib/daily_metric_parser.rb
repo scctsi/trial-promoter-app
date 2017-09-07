@@ -51,32 +51,25 @@ class DailyMetricParser
     return [0, 4] if !(file_name.index('tweet_activity_metrics').nil?)
   end
   
-  def parse_and_store_impressions(folders_and_files, debug = false)
+  def parse_and_store_impressions(folders_and_files, only_twitter_ads = false)
     # TODO: Unit test this!
     data = {}
     filtered_folders_and_files = convert_to_processable_list(folders_and_files)
-    p filtered_folders_and_files if debug
-    
+
     filtered_folders_and_files.each do |date, files|
       files.each do |file|
+        next if only_twitter_ads && !file.name.end_with?('.xlsx')
         data = parse_metric_from_file(file.path_lower, *column_indices(file.name))
         MetricsManager.update_impressions_by_day(date, data)
-        p data if debug
       end
     end
   end
   
-  def parse_impressions(debug = false)
+  def parse_impressions(only_twitter_ads = false)
     # TODO: Unit test this!
     dropbox_client = DropboxClient.new
     folders_and_files = dropbox_client.recursively_list_folder('/TCORS/analytics_files/')
-    if debug
-      debug_folders_and_files_list = {}
-      debug_folders_and_files_list[folders_and_files.keys.first] = folders_and_files.values.first
-      parse_and_store_impressions(debug_folders_and_files_list, true)
-    else
-      parse_and_store_impressions(folders_and_files)
-    end
+    parse_and_store_impressions(folders_and_files, only_twitter_ads)
   end
   
   def log_parsed_metrics(file_path, file_date, parsed_data)

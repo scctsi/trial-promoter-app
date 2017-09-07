@@ -6,11 +6,11 @@ class TcorsDataReportMapper
   end
   
   def self.campaign_id(message)
-    return message.campaign_id
+    return "CI: #{message.campaign_id}"
   end
   
   def self.social_network_id(message)
-    return message.social_network_id
+    return "SNI: #{message.social_network_id}"
   end
   
   def self.note(message)
