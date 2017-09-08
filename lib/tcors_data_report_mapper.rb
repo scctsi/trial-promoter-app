@@ -63,11 +63,11 @@ class TcorsDataReportMapper
     return day_of_week_mapper[message.scheduled_date_time.strftime("%A")]
   end
 
-  def self.time_sent(message)
+  def self.time_sent(message) 
     if message.medium == :ad
-      return 'N/A'
+      return 'NDA'
     elsif message.buffer_update.sent_from_date_time.nil?
-      return 'N/A'
+      return 'NDA'
     else  
       return message.buffer_update.sent_from_date_time.strftime("%H:%M:%S")
     end
@@ -116,14 +116,14 @@ class TcorsDataReportMapper
   def self.total_impressions_day_1(message)
     if message.backdated
       if message.impressions_by_day[(message.scheduled_date_time + 5.days).to_date].nil?
-        return 0
+        return 'NDA'
       else
         return message.impressions_by_day[message.scheduled_date_time.to_date + 5.days]
       end
     end
       
     if message.impressions_by_day[message.scheduled_date_time.to_date].nil?
-      return 0
+      return 'NDA'
     else
       return message.impressions_by_day[message.scheduled_date_time.to_date] 
     end
@@ -132,15 +132,19 @@ class TcorsDataReportMapper
   def self.total_impressions_day_2(message)
     if message.backdated
       if message.impressions_by_day[(message.scheduled_date_time + 6.days).to_date].nil?
-        return 0
+        return 'NDA'
       else
         return message.impressions_by_day[message.scheduled_date_time.to_date + 6.days]
       end
     end
 
-    return 0 if message.impressions_by_day[(message.scheduled_date_time + 1.day).to_date].nil?
+    return 'NDA' if message.impressions_by_day[(message.scheduled_date_time + 1.day).to_date].nil?
     if message.medium == :organic
-      return message.impressions_by_day[(message.scheduled_date_time + 1.day).to_date] - self.total_impressions_day_1(message)
+      if self.total_impressions_day_1(message) == 'NDA'
+        return message.impressions_by_day[(message.scheduled_date_time + 1.day).to_date]
+      else
+        return message.impressions_by_day[(message.scheduled_date_time + 1.day).to_date] - self.total_impressions_day_1(message)
+      end
     else
       return message.impressions_by_day[(message.scheduled_date_time + 1.day).to_date]
     end
@@ -149,15 +153,23 @@ class TcorsDataReportMapper
   def self.total_impressions_day_3(message)
     if message.backdated
       if message.impressions_by_day[(message.scheduled_date_time + 7.days).to_date].nil?
-        return 0
+        return 'NDA'
       else
         return message.impressions_by_day[message.scheduled_date_time.to_date + 7.days]
       end
     end
 
-    return 0 if message.impressions_by_day[(message.scheduled_date_time + 2.day).to_date].nil?
+    return 'NDA' if message.impressions_by_day[(message.scheduled_date_time + 2.day).to_date].nil?
     if message.medium == :organic
-      return message.impressions_by_day[(message.scheduled_date_time + 2.day).to_date] - self.total_impressions_day_2(message) - self.total_impressions_day_1(message)
+      if self.total_impressions_day_2(message) == 'NDA' && self.total_impressions_day_1(message) == 'NDA'
+        return message.impressions_by_day[(message.scheduled_date_time + 2.day).to_date]
+      elsif self.total_impressions_day_2(message) == 'NDA'
+        return message.impressions_by_day[(message.scheduled_date_time + 2.day).to_date] - self.total_impressions_day_1(message)
+      elsif self.total_impressions_day_1(message) == 'NDA'
+        return message.impressions_by_day[(message.scheduled_date_time + 2.day).to_date] - self.total_impressions_day_2(message)
+      else
+        return message.impressions_by_day[(message.scheduled_date_time + 2.day).to_date] - self.total_impressions_day_2(message) - self.total_impressions_day_1(message)
+      end
     else
       return message.impressions_by_day[(message.scheduled_date_time + 2.day).to_date]
     end
@@ -264,48 +276,27 @@ class TcorsDataReportMapper
     return message.get_sessions(IP_EXCLUSION_LIST).count
   end
   
-  def self.total_goals_day_1(message)
-    clicks = []
-    scheduled_start_of_day = (message.scheduled_date_time).beginning_of_day
-    scheduled_end_of_day = (scheduled_start_of_day).end_of_day 
-    sessions = get_sessions(message, scheduled_start_of_day, scheduled_end_of_day)
-    sessions.each do |session|
-      clicks << Ahoy::Event.where(visit_id: session.id)
-    end
-    return clicks.count
+  def self.total_website_clicks_day_1(message)
+    return calculate_goal_count(message, message.scheduled_date_time)
   end
 
-  def self.total_goals_day_2(message)
-    clicks = []
-    scheduled_start_of_day = (message.scheduled_date_time + 1.day).beginning_of_day
-    scheduled_end_of_day = (scheduled_start_of_day).end_of_day 
-    sessions = get_sessions(message, scheduled_start_of_day, scheduled_end_of_day)
-    sessions.each do |session|
-      clicks << Ahoy::Event.where(visit_id: session.id)
-    end
-    return clicks.count
+  def self.total_website_clicks_day_2(message)
+    return calculate_goal_count(message, message.scheduled_date_time + 1.day)
   end
 
-  def self.total_goals_day_3(message)
-    clicks = []
-    scheduled_start_of_day = (message.scheduled_date_time + 2.day).beginning_of_day
-    scheduled_end_of_day = (scheduled_start_of_day).end_of_day 
-    sessions = get_sessions(message, scheduled_start_of_day, scheduled_end_of_day)
-    sessions.each do |session|
-      clicks << Ahoy::Event.where(visit_id: session.id)
-    end
-    return clicks.count
+  def self.total_website_clicks_day_3(message)
+    return calculate_goal_count(message, message.scheduled_date_time + 2.day) 
   end
 
-  def self.total_goals_experiment(message)
-    clicks = []
+  def self.total_website_clicks_experiment(message)
+    goal_count = 0
     experiment_start = DateTime.parse('19 April 2017')
     experiment_finish = DateTime.parse('15 July 2017')
     sessions = get_sessions(message, experiment_start, experiment_finish)
     sessions.each do |session|
-      clicks << Ahoy::Event.where(visit_id: session.id)
+      goal_count += 1 if Ahoy::Event.where(visit_id: session.id).where(name: "Converted").count > 0
     end
-    return clicks.count
+    return goal_count
   end
 
   def self.users(message)
@@ -331,5 +322,15 @@ class TcorsDataReportMapper
   def self.get_sessions(message, start, finish)
     sessions = message.get_sessions(IP_EXCLUSION_LIST)
     return sessions.select{|session| session.started_at.between?(start, finish)}
+  end
+  
+  private
+  def self.calculate_goal_count(message, date)
+    goal_count = 0
+    sessions = get_sessions(message, date.beginning_of_day, date.end_of_day)
+    sessions.each do |session|
+      goal_count += 1 if Ahoy::Event.where(visit_id: session.id).where(name: "Converted").count > 0
+    end
+    return goal_count 
   end
 end
