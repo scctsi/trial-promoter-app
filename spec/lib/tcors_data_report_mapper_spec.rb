@@ -249,11 +249,6 @@ RSpec.describe TcorsDataReportMapper do
       @message.impressions_by_day = {}
       expect(TcorsDataReportMapper.total_impressions_day_2(@message)).to eq('NDA')
       @message.medium = :ad
-
-    it 'returns NDA for data that is missing for either day 1 or day 2' do
-      @message.impressions_by_day = {}
-      expect(TcorsDataReportMapper.total_impressions_day_2(@message)).to eq('NDA')
-      @message.medium = :ad
       expect(TcorsDataReportMapper.total_impressions_day_2(@message)).to eq('NDA')
 
       @message.impressions_by_day = {(@message.scheduled_date_time + 1.day).to_date => 1 }
