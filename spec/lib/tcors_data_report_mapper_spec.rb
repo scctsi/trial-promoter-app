@@ -10,12 +10,17 @@ RSpec.describe TcorsDataReportMapper do
     @message.buffer_update.sent_from_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,4,30,12,1,0)
     @message.social_network_id = "870429890541228033"
     @message.campaign_id = "202"
-    visits_1 = create_list(:visit, 3, utm_content: @message.to_param, started_at: @message.scheduled_date_time + 1.hour)
-    create_list(:visit, 2, utm_content: @message.to_param, started_at: @message.scheduled_date_time + 1.day + 1.hour)
+    visits_day_1 = create_list(:visit, 3, utm_content: @message.to_param, started_at: @message.scheduled_date_time + 1.hour)
+    visits_day_2 = create_list(:visit, 2, utm_content: @message.to_param, started_at: @message.scheduled_date_time + 1.day + 1.hour)
     create_list(:visit, 1, utm_content: @message.to_param, started_at: @message.scheduled_date_time + 2.day + 1.hour, ip: '128.125.77.139')
-    visits_1.each do |visit|
-      visit.ahoy_events << Ahoy::Event.new(visit_id: visit.id)
+    # All visits on day one converted once each
+    visits_day_1.each do |visit|
+      visit.ahoy_events << Ahoy::Event.new(visit_id: visit.id, name: "Converted")
     end
+    # One visit on day 2 converted many times
+    visits_day_2[0].ahoy_events << Ahoy::Event.new(visit_id: visits_day_2[0].id, name: "Converted")
+    visits_day_2[0].ahoy_events << Ahoy::Event.new(visit_id: visits_day_2[0].id, name: "Converted")
+    
     @message.click_meter_tracking_link = create(:click_meter_tracking_link)
     @message.click_meter_tracking_link.clicks << create_list(:click, 3, :spider => '0', :unique => '1', :click_time => ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,4,30,12,23,13))
     @message.click_meter_tracking_link.clicks << create_list(:click, 1, :spider => '1', :click_time => ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,5,1,12,34,57))
@@ -128,9 +133,9 @@ RSpec.describe TcorsDataReportMapper do
     @message.buffer_update.sent_from_date_time = '27 April 2017 12:00:02'
     expect(TcorsDataReportMapper.time_sent(@message)).to eq('12:00:02')
     @message.buffer_update.sent_from_date_time = nil
-    expect(TcorsDataReportMapper.time_sent(@message)).to eq('N/A')
+    expect(TcorsDataReportMapper.time_sent(@message)).to eq('NDA')
     @message.medium = :ad
-    expect(TcorsDataReportMapper.time_sent(@message)).to eq('N/A')
+    expect(TcorsDataReportMapper.time_sent(@message)).to eq('NDA')
   end
 
   it 'maps the social media platform to the sm_type' do
@@ -138,7 +143,7 @@ RSpec.describe TcorsDataReportMapper do
     expect(TcorsDataReportMapper.sm_type(@message)).to eq('T')
     @message.platform = :facebook
     expect(TcorsDataReportMapper.sm_type(@message)).to eq('F')
-    @message.platform = :instagram
+    @message.platform = :instagram 
     expect(TcorsDataReportMapper.sm_type(@message)).to eq('I')
   end
 
@@ -216,12 +221,12 @@ RSpec.describe TcorsDataReportMapper do
       expect(TcorsDataReportMapper.total_impressions_day_1(@message)).to eq(100)
     end
 
-    it 'returns zero for data that is missing' do
+    it 'returns NDA for data that is missing' do
       @message.impressions_by_day = {}
 
-      expect(TcorsDataReportMapper.total_impressions_day_1(@message)).to eq(0)
+      expect(TcorsDataReportMapper.total_impressions_day_1(@message)).to eq('NDA')
       @message.medium = :ad
-      expect(TcorsDataReportMapper.total_impressions_day_1(@message)).to eq(0)
+      expect(TcorsDataReportMapper.total_impressions_day_1(@message)).to eq('NDA')
     end
 
     it 'maps the total impressions to day 2 to total_impressions_day_2' do
@@ -229,12 +234,27 @@ RSpec.describe TcorsDataReportMapper do
       @message.medium = :ad
       expect(TcorsDataReportMapper.total_impressions_day_2(@message)).to eq(115)
     end
-
-    it 'returns zero for data that is missing for either day 1 or day 2' do
-      @message.impressions_by_day = { }
+    
+    it 'returns NDA for data that is missing on day 1 and displays impressions if data exists for day 2' do
+      @message.impressions_by_day = { (@message.scheduled_date_time + 1.day).to_date => 0 }
+      
+      expect(TcorsDataReportMapper.total_impressions_day_1(@message)).to eq('NDA')
       expect(TcorsDataReportMapper.total_impressions_day_2(@message)).to eq(0)
+      
       @message.medium = :ad
-      expect(TcorsDataReportMapper.total_impressions_day_2(@message)).to eq(0)
+      expect(TcorsDataReportMapper.total_impressions_day_1(@message)).to eq('NDA')
+    end
+
+    it 'returns NDA for data that is missing for either day 1 or day 2' do
+      @message.impressions_by_day = {}
+      expect(TcorsDataReportMapper.total_impressions_day_2(@message)).to eq('NDA')
+      @message.medium = :ad
+
+    it 'returns NDA for data that is missing for either day 1 or day 2' do
+      @message.impressions_by_day = {}
+      expect(TcorsDataReportMapper.total_impressions_day_2(@message)).to eq('NDA')
+      @message.medium = :ad
+      expect(TcorsDataReportMapper.total_impressions_day_2(@message)).to eq('NDA')
 
       @message.impressions_by_day = {(@message.scheduled_date_time + 1.day).to_date => 1 }
 
@@ -249,6 +269,20 @@ RSpec.describe TcorsDataReportMapper do
       @message.medium = :ad
       expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq(120)
     end
+    
+    it 'displays impressions for day 3 even if data is missing for days 1 and/or 2' do
+      @message.impressions_by_day = { (@message.scheduled_date_time + 2.day).to_date => 0 }
+      
+      expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq(0)
+      
+      @message.impressions_by_day = { (@message.scheduled_date_time + 1.day).to_date => 1, (@message.scheduled_date_time + 2.day).to_date => 1 }
+      expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq(0)
+      
+      @message.medium = :ad
+      @message.impressions_by_day = {}
+      
+      expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq('NDA')
+    end
 
     it 'maps the total impressions for the duration of the experiment for each platform to total_impressions_experiment' do
       expect(TcorsDataReportMapper.total_impressions_experiment(@message_twitter)).to eq(1394)
@@ -256,14 +290,15 @@ RSpec.describe TcorsDataReportMapper do
       expect(TcorsDataReportMapper.total_impressions_experiment(@message_instagram)).to eq(259) 
     end
   
-    it 'returns zero for data that is missing for either day 2 or day 3' do
-      @message.impressions_by_day = { }
-      expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq(0)
+    it 'returns 0 for organic, NDA for ad if data is missing for day 3' do
+      @message.impressions_by_day = { (@message.scheduled_date_time).to_date => 0, (@message.scheduled_date_time + 1.day).to_date => 0, (@message.scheduled_date_time + 2.day).to_date => 0 }
+      expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq(0) 
+      @message.impressions_by_day = {}
       @message.medium = :ad
-      expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq(0)
+      expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq('NDA')
 
       @message.medium = :organic
-      @message.impressions_by_day = { (@message.scheduled_date_time + 2.day).to_date => 1 }
+      @message.impressions_by_day = { (@message.scheduled_date_time).to_date => 0, (@message.scheduled_date_time + 1.day).to_date => 0, (@message.scheduled_date_time + 2.day).to_date => 1 }
 
       expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq(1)
       @message.medium = :ad
@@ -373,21 +408,19 @@ RSpec.describe TcorsDataReportMapper do
   end
 
   it 'maps the number of conversions for day 1 to each website link to total_goals_day1' do  
-    expect(TcorsDataReportMapper.total_goals_day_1(@message)).to eq(3)
+    expect(TcorsDataReportMapper.total_website_clicks_day_1(@message)).to eq(3)
   end
 
-  it 'maps the number of conversions for day 2 to each website link to total_goals_day2' do  
-    expect(TcorsDataReportMapper.total_goals_day_2(@message)).to eq(2)
+  it 'maps the number of conversions for day 2 to each website link to total_goals_day2' do 
+    expect(TcorsDataReportMapper.total_website_clicks_day_2(@message)).to eq(1)
   end
 
   it 'maps the number of conversions for day 3 to each website link to total_goals_day3' do  
-    expect(TcorsDataReportMapper.total_goals_day_3(@message)).to eq(0)
+    expect(TcorsDataReportMapper.total_website_clicks_day_3(@message)).to eq(0)
   end
 
-  it 'maps the number of conversions for the duration of the experiment to total_goals_experiment' do
-    expect(TcorsDataReportMapper.total_goals_experiment(@message)).to eq(5)
-    create_list(:visit, 1, utm_content: @message.to_param, started_at: @message.scheduled_date_time + 2.day + 1.hour)
-    expect(TcorsDataReportMapper.total_goals_experiment(@message)).to eq(6)
+  it 'maps the number of conversions for the duration of the experiment to total_goals_experiment' do 
+    expect(TcorsDataReportMapper.total_website_clicks_experiment(@message)).to eq(4)
   end
 
   it 'maps the number of users for each website to users' do
