@@ -221,18 +221,20 @@ RSpec.describe TcorsDataReportMapper do
       expect(TcorsDataReportMapper.total_impressions_day_1(@message)).to eq(100)
     end
 
-    it 'returns NDA for data that is missing' do
-      @message.impressions_by_day = {}
-
-      expect(TcorsDataReportMapper.total_impressions_day_1(@message)).to eq('NDA')
-      @message.medium = :ad
-      expect(TcorsDataReportMapper.total_impressions_day_1(@message)).to eq('NDA')
-    end
-
     it 'maps the total impressions to day 2 to total_impressions_day_2' do
       expect(TcorsDataReportMapper.total_impressions_day_2(@message)).to eq(15)
       @message.medium = :ad
       expect(TcorsDataReportMapper.total_impressions_day_2(@message)).to eq(115)
+    end
+    
+    it 'returns NDA for data that is missing on day 1 and displays impressions if data exists for day 2' do
+      @message.impressions_by_day = { (@message.scheduled_date_time + 1.day).to_date => 0 }
+      
+      expect(TcorsDataReportMapper.total_impressions_day_1(@message)).to eq('NDA')
+      expect(TcorsDataReportMapper.total_impressions_day_2(@message)).to eq(0)
+      
+      @message.medium = :ad
+      expect(TcorsDataReportMapper.total_impressions_day_1(@message)).to eq('NDA')
     end
 
     it 'returns NDA for data that is missing for either day 1 or day 2' do
@@ -253,6 +255,20 @@ RSpec.describe TcorsDataReportMapper do
       expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq(5)
       @message.medium = :ad
       expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq(120)
+    end
+    
+    it 'displays impressions for day 3 even if data is missing for days 1 and/or 2' do
+      @message.impressions_by_day = { (@message.scheduled_date_time + 2.day).to_date => 0 }
+      
+      expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq(0)
+      
+      @message.impressions_by_day = { (@message.scheduled_date_time + 1.day).to_date => 1, (@message.scheduled_date_time + 2.day).to_date => 1 }
+      expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq(0)
+      
+      @message.medium = :ad
+      @message.impressions_by_day = {}
+      
+      expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq('NDA')
     end
 
     it 'maps the total impressions for the duration of the experiment for each platform to total_impressions_experiment' do
