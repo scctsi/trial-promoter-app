@@ -276,8 +276,6 @@ class TcorsDataReportMapper
     return message.get_sessions(IP_EXCLUSION_LIST).count
   end
   
-
-
   def self.total_website_clicks_day_1(message)
     return calculate_goal_count(message, message.scheduled_date_time)
   end
