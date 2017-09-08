@@ -221,6 +221,14 @@ RSpec.describe TcorsDataReportMapper do
       expect(TcorsDataReportMapper.total_impressions_day_1(@message)).to eq(100)
     end
 
+    it 'returns NDA for data that is missing' do
+      @message.impressions_by_day = {}
+
+      expect(TcorsDataReportMapper.total_impressions_day_1(@message)).to eq('NDA')
+      @message.medium = :ad
+      expect(TcorsDataReportMapper.total_impressions_day_1(@message)).to eq('NDA')
+    end
+
     it 'maps the total impressions to day 2 to total_impressions_day_2' do
       expect(TcorsDataReportMapper.total_impressions_day_2(@message)).to eq(15)
       @message.medium = :ad
@@ -236,6 +244,11 @@ RSpec.describe TcorsDataReportMapper do
       @message.medium = :ad
       expect(TcorsDataReportMapper.total_impressions_day_1(@message)).to eq('NDA')
     end
+
+    it 'returns NDA for data that is missing for either day 1 or day 2' do
+      @message.impressions_by_day = {}
+      expect(TcorsDataReportMapper.total_impressions_day_2(@message)).to eq('NDA')
+      @message.medium = :ad
 
     it 'returns NDA for data that is missing for either day 1 or day 2' do
       @message.impressions_by_day = {}
