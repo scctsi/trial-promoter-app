@@ -140,7 +140,11 @@ class TcorsDataReportMapper
 
     return 'NDA' if message.impressions_by_day[(message.scheduled_date_time + 1.day).to_date].nil?
     if message.medium == :organic
-      return message.impressions_by_day[(message.scheduled_date_time + 1.day).to_date] - self.total_impressions_day_1(message)
+      if self.total_impressions_day_1(message) == 'NDA'
+        return message.impressions_by_day[(message.scheduled_date_time + 1.day).to_date]
+      else
+        return message.impressions_by_day[(message.scheduled_date_time + 1.day).to_date] - self.total_impressions_day_1(message)
+      end
     else
       return message.impressions_by_day[(message.scheduled_date_time + 1.day).to_date]
     end
@@ -157,7 +161,15 @@ class TcorsDataReportMapper
 
     return 'NDA' if message.impressions_by_day[(message.scheduled_date_time + 2.day).to_date].nil?
     if message.medium == :organic
-      return message.impressions_by_day[(message.scheduled_date_time + 2.day).to_date] - self.total_impressions_day_2(message) - self.total_impressions_day_1(message)
+      if self.total_impressions_day_2(message) == 'NDA' && self.total_impressions_day_1(message) == 'NDA'
+        return message.impressions_by_day[(message.scheduled_date_time + 2.day).to_date]
+      elsif self.total_impressions_day_2(message) == 'NDA'
+        return message.impressions_by_day[(message.scheduled_date_time + 2.day).to_date] - self.total_impressions_day_1(message)
+      elsif self.total_impressions_day_1(message) == 'NDA'
+        return message.impressions_by_day[(message.scheduled_date_time + 2.day).to_date] - self.total_impressions_day_2(message)
+      else
+        return message.impressions_by_day[(message.scheduled_date_time + 2.day).to_date] - self.total_impressions_day_2(message) - self.total_impressions_day_1(message)
+      end
     else
       return message.impressions_by_day[(message.scheduled_date_time + 2.day).to_date]
     end
