@@ -97,6 +97,11 @@ class Message < ActiveRecord::Base
   def visits
     Visit.where(utm_content: self.to_param)
   end
+  
+  def scheduled_date_time
+    return self[:original_scheduled_date_time] if backdated
+    return self[:scheduled_date_time]
+  end
 
   def events
     #REF https://github.com/ankane/ahoy/blob/081d97500f51f20eb2b2ba237ff6f215bbce115c/README.md#querying-properties
@@ -115,8 +120,8 @@ class Message < ActiveRecord::Base
     # Only backdate tweets scheduled on May 31st or later
     return if scheduled_date_time.month <= 5 && scheduled_date_time.day <= 30
 
-    self.backdated = true
     self.original_scheduled_date_time = scheduled_date_time
+    self.backdated = true
     self.scheduled_date_time -= number_of_days.days
     if !buffer_update.nil?
       buffer_update.destroy
