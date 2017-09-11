@@ -114,14 +114,6 @@ class TcorsDataReportMapper
   end 
 
   def self.total_impressions_day_1(message)
-    if message.backdated
-      if message.impressions_by_day[(message.scheduled_date_time + 5.days).to_date].nil?
-        return 'NDA'
-      else
-        return message.impressions_by_day[message.scheduled_date_time.to_date + 5.days]
-      end
-    end
-      
     if message.impressions_by_day[message.scheduled_date_time.to_date].nil?
       return 'NDA'
     else
@@ -130,14 +122,6 @@ class TcorsDataReportMapper
   end
 
   def self.total_impressions_day_2(message)
-    if message.backdated
-      if message.impressions_by_day[(message.scheduled_date_time + 6.days).to_date].nil?
-        return 'NDA'
-      else
-        return message.impressions_by_day[message.scheduled_date_time.to_date + 6.days]
-      end
-    end
-
     return 'NDA' if message.impressions_by_day[(message.scheduled_date_time + 1.day).to_date].nil?
     if message.medium == :organic
       if self.total_impressions_day_1(message) == 'NDA'
@@ -151,14 +135,6 @@ class TcorsDataReportMapper
   end
 
   def self.total_impressions_day_3(message)
-    if message.backdated
-      if message.impressions_by_day[(message.scheduled_date_time + 7.days).to_date].nil?
-        return 'NDA'
-      else
-        return message.impressions_by_day[message.scheduled_date_time.to_date + 7.days]
-      end
-    end
-
     return 'NDA' if message.impressions_by_day[(message.scheduled_date_time + 2.day).to_date].nil?
     if message.medium == :organic
       if self.total_impressions_day_2(message) == 'NDA' && self.total_impressions_day_1(message) == 'NDA'

@@ -5,9 +5,9 @@ RSpec.describe TcorsDataReportMapper do
   before do
     @message = create(:message)
     @message.note = "Note"
-    @message.scheduled_date_time =  ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,4,30,12,0,0)
+    @message.scheduled_date_time =  ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017, 4, 30, 12, 0, 0)
     @message.buffer_update = create(:buffer_update)
-    @message.buffer_update.sent_from_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,4,30,12,1,0)
+    @message.buffer_update.sent_from_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017, 4, 30, 12, 1, 0)
     @message.social_network_id = "870429890541228033"
     @message.campaign_id = "202"
     visits_day_1 = create_list(:visit, 3, utm_content: @message.to_param, started_at: @message.scheduled_date_time + 1.hour)
@@ -105,6 +105,15 @@ RSpec.describe TcorsDataReportMapper do
     expect(TcorsDataReportMapper.day_experiment(@message)).to eq(12)
   end
 
+  it 'uses the original_scheduled_date_time for calculating the day_experiment' do
+    @message.medium = :ad
+    @message.platform = :twitter
+    @message.backdated = true
+    @message.original_scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017, 5, 5, 12, 0, 0)
+    
+    expect(TcorsDataReportMapper.day_experiment(@message)).to eq(17)
+  end
+  
   it 'maps the date the message was published to the date sent' do
     expect(TcorsDataReportMapper.date_sent(@message)).to eq("2017-04-30")
     @message.buffer_update = nil
@@ -113,7 +122,16 @@ RSpec.describe TcorsDataReportMapper do
     expect(TcorsDataReportMapper.date_sent(@message)).to eq("2017-04-30")
   end
 
-  it 'maps the date the message was published to the day of the week' do
+  it 'returns the original_scheduled_date_time for Twitter ads messages' do
+    @message.medium = :ad
+    @message.platform = :twitter
+    @message.backdated = true
+    @message.original_scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017, 5, 5, 12, 0, 0)
+    
+    expect(TcorsDataReportMapper.date_sent(@message)).to eq("2017-05-05")
+  end
+
+  it 'maps the day of the week the message was send to day_sent' do
     expect(TcorsDataReportMapper.day_sent(@message)).to eq('7')
     @message.scheduled_date_time = '29 April 2017 12:00:00'
     expect(TcorsDataReportMapper.day_sent(@message)).to eq('6')
@@ -127,6 +145,15 @@ RSpec.describe TcorsDataReportMapper do
     expect(TcorsDataReportMapper.day_sent(@message)).to eq('2')
     @message.scheduled_date_time = '24 April 2017 12:00:00'
     expect(TcorsDataReportMapper.day_sent(@message)).to eq('1')
+  end
+
+  it 'uses the original_scheduled_date_time when mapping the day of the week the message was send to day_sent' do
+    @message.medium = :ad
+    @message.platform = :twitter
+    @message.backdated = true
+    @message.original_scheduled_date_time = '4 April 2017 12:00:00'
+    
+    expect(TcorsDataReportMapper.day_sent(@message)).to eq('2')
   end
 
   it 'maps the time the message was sent to time sent' do
@@ -182,11 +209,11 @@ RSpec.describe TcorsDataReportMapper do
   describe 'impressions by day' do
     before do
       @message.impressions_by_day = { @message.scheduled_date_time.to_date => 100, (@message.scheduled_date_time + 1.day).to_date => 115, (@message.scheduled_date_time + 2.day).to_date => 120 }
-      @message_twitter = create(:message, platform: :twitter) 
+      @message_twitter = create(:message, platform: :twitter)
       @message_twitter.metrics << Metric.new(source: :twitter, data: {"impressions"=>1394, "likes"=>0, "retweets"=>0, "replies"=>0, "clicks"=>4})
-      @message_facebook = create(:message, platform: :facebook) 
+      @message_facebook = create(:message, platform: :facebook)
       @message_facebook.metrics << Metric.new(source: :facebook,  data: {"impressions"=>1259, "shares"=>0, "comments"=>0, "reactions"=>25})    
-      @message_instagram= create(:message, platform: :instagram) 
+      @message_instagram= create(:message, platform: :instagram)
       @message_instagram.metrics << Metric.new(source: :facebook,  data: {"impressions"=>259, "shares"=>1, "comments"=>1, "reactions"=>15})
       @message.save 
       @message_twitter.save
@@ -196,6 +223,7 @@ RSpec.describe TcorsDataReportMapper do
     
     describe 'for backdated Twitter ads' do
       before do
+        @message.original_scheduled_date_time = @message.scheduled_date_time + 5.days
         @message.impressions_by_day = { @message.scheduled_date_time.to_date + 5.days => 100, (@message.scheduled_date_time + 6.days).to_date => 115, (@message.scheduled_date_time + 7.days).to_date => 120 }
         @message.medium = :ad
         @message.platform = :twitter
