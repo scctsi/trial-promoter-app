@@ -13,6 +13,11 @@ class TcorsDataReportMapper
     return "SNI: #{message.social_network_id}"
   end
   
+  def self.backdated(message)
+    return "Yes" if message.backdated
+    return "No"
+  end
+  
   def self.note(message)
     return message.note
   end
