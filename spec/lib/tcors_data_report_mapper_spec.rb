@@ -42,6 +42,20 @@ RSpec.describe TcorsDataReportMapper do
   it 'maps the campaign_id to campaign_id' do
     expect(TcorsDataReportMapper.campaign_id(@message)).to eq("CI: #{@message.campaign_id}")
   end
+  
+  it 'maps whether a message was backdated to backdated' do
+    @message.backdated = nil
+    
+    expect(TcorsDataReportMapper.backdated(@message)).to eq("No")
+
+    @message.backdated = false
+    
+    expect(TcorsDataReportMapper.backdated(@message)).to eq("No")
+    
+    @message.backdated = true
+    
+    expect(TcorsDataReportMapper.backdated(@message)).to eq("Yes")
+  end
 
   it 'maps the message note to note' do
     expect(TcorsDataReportMapper.note(@message)).to eq(@message.note)
