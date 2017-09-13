@@ -8,6 +8,7 @@
         %th.center.aligned Image
         %th.center.aligned Filename
         %th.center.aligned Size
+        %th.center.aligned Codes
     %tbody
       - images.each do |image|
         - row_class = ''
@@ -25,9 +26,10 @@
               Not calculated
             - else
               #{image.width} x #{image.height}
+          %td
     %tfoot
       %tr
-        %th{ :colspan => "4" }
+        %th{ :colspan => "5" }
           Number of invalid images (for instagram ads): #{invalid_image_count}
           %br
           Number of uncalculated image sizes: #{uncalculated_image_size_count}
