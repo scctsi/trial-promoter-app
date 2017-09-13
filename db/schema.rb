@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170905174312) do
+ActiveRecord::Schema.define(version: 20170912225731) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -156,6 +156,7 @@ ActiveRecord::Schema.define(version: 20170905174312) do
     t.text     "instagram_posting_times"
     t.integer  "click_meter_group_id"
     t.integer  "click_meter_domain_id"
+    t.string   "image_codes"
   end
 
   create_table "experiments_social_media_profiles", force: :cascade do |t|
@@ -187,6 +188,7 @@ ActiveRecord::Schema.define(version: 20170905174312) do
     t.integer  "width"
     t.integer  "height"
     t.boolean  "meets_instagram_ad_requirements"
+    t.text     "codes"
   end
 
   create_table "message_generation_parameter_sets", force: :cascade do |t|
@@ -236,9 +238,9 @@ ActiveRecord::Schema.define(version: 20170905174312) do
     t.integer  "social_media_profile_id"
     t.string   "platform"
     t.string   "promoted_website_url",         limit: 2000
+    t.string   "campaign_id"
     t.boolean  "backdated"
     t.datetime "original_scheduled_date_time"
-    t.string   "campaign_id"
     t.float    "click_rate"
     t.float    "website_goal_rate"
     t.integer  "website_goal_count"
