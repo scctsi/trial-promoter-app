@@ -167,14 +167,14 @@ class TcorsDataReportMapper
   end
 
   def self.retweets_twitter(message)
-    return MetricsManager.get_metric_value(message, :twitter, 'retweets')
+    return MetricsManager.get_metric_value(message, :twitter, 'retweets') == 'N/A' ? 'NDA' : MetricsManager.get_metric_value(message, :twitter, 'retweets')
   end
 
   def self.shares_facebook(message)
     if message.platform != :facebook
       return "N/A"
     else
-      return MetricsManager.get_metric_value(message, :facebook, 'shares')
+      return MetricsManager.get_metric_value(message, :facebook, 'shares') == 'N/A' ? 'NDA' : MetricsManager.get_metric_value(message, :facebook, 'shares')
     end
   end
 
@@ -182,19 +182,19 @@ class TcorsDataReportMapper
     if message.platform != :instagram
       return "N/A"
     else
-      return MetricsManager.get_metric_value(message, :facebook, 'shares')
+      return MetricsManager.get_metric_value(message, :facebook, 'shares') == 'N/A' ? 'NDA' : MetricsManager.get_metric_value(message, :facebook, 'shares')
     end
   end
 
   def self.replies_twitter(message)
-    return MetricsManager.get_metric_value(message, :twitter, 'replies')
+    return MetricsManager.get_metric_value(message, :twitter, 'replies') == 'N/A' ? 'NDA' : MetricsManager.get_metric_value(message, :twitter, 'replies')
   end
 
   def self.comments_facebook(message)
     if message.platform != :facebook
       return "N/A"
     else
-      return MetricsManager.get_metric_value(message, :facebook, 'comments')
+      return MetricsManager.get_metric_value(message, :facebook, 'comments') == 'N/A' ? 'NDA' : MetricsManager.get_metric_value(message, :facebook, 'comments')
     end
   end
 
@@ -202,12 +202,12 @@ class TcorsDataReportMapper
     if message.platform != :instagram
       return "N/A"
     else
-      return MetricsManager.get_metric_value(message, :facebook, 'comments')
+      return MetricsManager.get_metric_value(message, :facebook, 'comments') == 'N/A' ? 'NDA' : MetricsManager.get_metric_value(message, :facebook, 'comments')
     end
   end
 
   def self.likes_twitter(message)
-    return MetricsManager.get_metric_value(message, :twitter, 'likes')
+    return MetricsManager.get_metric_value(message, :twitter, 'likes') == 'N/A' ? 'NDA' : MetricsManager.get_metric_value(message, :twitter, 'likes')
   end
 
   def self.reactions_facebook(message)
@@ -216,7 +216,7 @@ class TcorsDataReportMapper
     else
       reactions = MetricsManager.get_metric_value(message, :facebook, 'reactions')
       if  reactions == "N/A"
-        return MetricsManager.get_metric_value(message, :facebook, 'likes')
+        return MetricsManager.get_metric_value(message, :facebook, 'likes') == 'N/A' ? 'NDA' : MetricsManager.get_metric_value(message, :facebook, 'likes')
       else
         return reactions
       end
@@ -229,7 +229,7 @@ class TcorsDataReportMapper
     else
       reactions = MetricsManager.get_metric_value(message, :facebook, 'reactions')
       if  reactions == "N/A"
-        return MetricsManager.get_metric_value(message, :facebook, 'likes')
+        return MetricsManager.get_metric_value(message, :facebook, 'likes')  == 'N/A' ? 'NDA' : MetricsManager.get_metric_value(message, :facebook, 'likes')
       else
         return reactions
       end
