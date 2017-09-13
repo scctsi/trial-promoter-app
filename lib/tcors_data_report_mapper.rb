@@ -167,6 +167,9 @@ class TcorsDataReportMapper
   end
 
   def self.retweets_twitter(message)
+    if message.platform != :twitter
+      return 'N/A'
+    end
     return MetricsManager.get_metric_value(message, :twitter, 'retweets') == 'N/A' ? 'NDA' : MetricsManager.get_metric_value(message, :twitter, 'retweets')
   end
 
@@ -187,6 +190,9 @@ class TcorsDataReportMapper
   end
 
   def self.replies_twitter(message)
+    if message.platform != :twitter
+      return 'N/A'
+    end
     return MetricsManager.get_metric_value(message, :twitter, 'replies') == 'N/A' ? 'NDA' : MetricsManager.get_metric_value(message, :twitter, 'replies')
   end
 
@@ -207,6 +213,9 @@ class TcorsDataReportMapper
   end
 
   def self.likes_twitter(message)
+    if message.platform != :twitter
+      return 'N/A'
+    end
     return MetricsManager.get_metric_value(message, :twitter, 'likes') == 'N/A' ? 'NDA' : MetricsManager.get_metric_value(message, :twitter, 'likes')
   end
 
