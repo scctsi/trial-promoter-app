@@ -89,15 +89,15 @@ class TcorsDataReportMapper
   end
 
   def self.total_clicks_day_1(message)
-    return message.click_meter_tracking_link.get_daily_click_totals.first
+    return self.click_time(message)[0].count
   end
 
   def self.total_clicks_day_2(message)
-    return message.click_meter_tracking_link.get_daily_click_totals.second
+    return self.click_time(message)[1].count
   end
 
   def self.total_clicks_day_3(message)
-    return message.click_meter_tracking_link.get_daily_click_totals.third
+    return self.click_time(message)[2].count
   end
 
   def self.total_clicks_experiment(message)
