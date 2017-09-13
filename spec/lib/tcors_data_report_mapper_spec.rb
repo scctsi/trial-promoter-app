@@ -4,6 +4,7 @@ require 'google/apis/analytics_v3'
 RSpec.describe TcorsDataReportMapper do
   before do
     @message = create(:message)
+    @message_null = create(:message)
     @message.note = "Note"
     @message.scheduled_date_time =  ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017, 4, 30, 12, 0, 0)
     @message.buffer_update = create(:buffer_update)
@@ -321,10 +322,14 @@ RSpec.describe TcorsDataReportMapper do
       expect(TcorsDataReportMapper.total_impressions_day_3(@message)).to eq('NDA')
     end
 
-    it 'maps the total impressions for the duration of the experiment for each platform to total_impressions_experiment' do
+    it 'maps the total impressions for the duration of the experiment for each platform to total_impressions_experiment or return NDA' do
       expect(TcorsDataReportMapper.total_impressions_experiment(@message_twitter)).to eq(1394)
       expect(TcorsDataReportMapper.total_impressions_experiment(@message_facebook)).to eq(1259) 
-      expect(TcorsDataReportMapper.total_impressions_experiment(@message_instagram)).to eq(259) 
+      expect(TcorsDataReportMapper.total_impressions_experiment(@message_instagram)).to eq(259)
+      
+      @message.metrics = []
+      
+      expect(TcorsDataReportMapper.total_impressions_experiment(@message)).to eq("NDA") 
     end
   
     it 'returns 0 for organic, NDA for ad if data is missing for day 3' do
@@ -462,21 +467,26 @@ RSpec.describe TcorsDataReportMapper do
 
   it 'maps the number of users for each website to users' do
     expect(TcorsDataReportMapper.users(@message)).to eq(2)
+    expect(TcorsDataReportMapper.users(@message_null)).to eq('NDA') 
   end
 
   it 'maps the number of website exits for each website to exits' do
     expect(TcorsDataReportMapper.exits(@message)).to eq(2)
+    expect(TcorsDataReportMapper.exits(@message_null)).to eq('NDA') 
   end
 
   it 'maps the duration of the user sessions for each website to session_duration' do
     expect(TcorsDataReportMapper.session_duration(@message)).to eq(42)
+    expect(TcorsDataReportMapper.session_duration(@message_null)).to eq('NDA') 
   end
 
   it 'maps the time on each webpage for each website to time_onpage' do
-    expect(TcorsDataReportMapper.time_on_page(@message)).to eq(42)
+    expect(TcorsDataReportMapper.time_on_page(@message)).to eq(42)  
+    expect(TcorsDataReportMapper.time_on_page(@message_null)).to eq('NDA') 
   end
 
   it 'maps the number of page views for each website to pageviews' do
     expect(TcorsDataReportMapper.pageviews(@message)).to eq(2)
+    expect(TcorsDataReportMapper.pageviews(@message_null)).to eq('NDA') 
   end
 end
