@@ -162,7 +162,8 @@ class TcorsDataReportMapper
     else
       platform = message.platform
     end
-    return MetricsManager.get_metric_value(message, platform, 'impressions') 
+    return MetricsManager.get_metric_value(message, platform, 'impressions') == 'N/A' ? 'NDA' : MetricsManager
+    .get_metric_value(message, platform, 'impressions')  
   end
 
   def self.retweets_twitter(message)
@@ -281,23 +282,23 @@ class TcorsDataReportMapper
   end
 
   def self.users(message)
-    return MetricsManager.get_metric_value(message, :google_analytics, 'ga:users')
+    return MetricsManager.get_metric_value(message, :google_analytics, 'ga:users') == 'N/A' ? 'NDA' : MetricsManager.get_metric_value(message, :google_analytics, 'ga:users')
   end
 
   def self.exits(message)
-    return MetricsManager.get_metric_value(message, :google_analytics, 'ga:exits')
+    return MetricsManager.get_metric_value(message, :google_analytics, 'ga:exits') == 'N/A' ? 'NDA' : MetricsManager.get_metric_value(message, :google_analytics, 'ga:exits')
   end
 
   def self.session_duration(message)
-    return MetricsManager.get_metric_value(message, :google_analytics, 'ga:sessionDuration')
+    return MetricsManager.get_metric_value(message, :google_analytics, 'ga:sessionDuration') == 'N/A' ? 'NDA' : MetricsManager.get_metric_value(message, :google_analytics, 'ga:sessionDuration')
   end
 
   def self.time_on_page(message)
-    return MetricsManager.get_metric_value(message, :google_analytics, 'ga:timeOnPage')
+    return MetricsManager.get_metric_value(message, :google_analytics, 'ga:timeOnPage')  == 'N/A' ? 'NDA' : MetricsManager.get_metric_value(message, :google_analytics, 'ga:timeOnPage')
   end
 
   def self.pageviews(message)
-    return MetricsManager.get_metric_value(message, :google_analytics, 'ga:pageviews')
+    return MetricsManager.get_metric_value(message, :google_analytics, 'ga:pageviews') == 'N/A' ? 'NDA' : MetricsManager.get_metric_value(message, :google_analytics, 'ga:pageviews')
   end
 
   def self.get_sessions(message, start, finish)
