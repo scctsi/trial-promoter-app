@@ -365,16 +365,31 @@ RSpec.describe TcorsDataReportMapper do
     it 'maps the number of twitter replies to replies_twitter' do
       expect(TcorsDataReportMapper.replies_twitter(@message)).to eq(3)
     end
+
+    it 'returns NDA for retweets_twitter if data is not available' do
+      @message.metrics[1].data = { 'replies'=> 3, 'likes'=> 14 }
+      expect(TcorsDataReportMapper.retweets_twitter(@message)).to eq('NDA')
+    end
+
+    it 'returns NDA for likes_twitter if data is not available' do
+      @message.metrics[1].data = { 'retweets' => 12 , 'replies'=> 3 }
+      expect(TcorsDataReportMapper.likes_twitter(@message)).to eq('NDA')
+    end
+
+    it 'returns replies_twitter if data is not available' do
+      @message.metrics[1].data = { 'retweets' => 12, 'likes'=> 14 }
+      expect(TcorsDataReportMapper.replies_twitter(@message)).to eq('NDA')
+    end
   end
 
   describe 'facebook metrics' do
     before do
       @message.platform = :facebook
-      @message.metrics << Metric.new(source: :facebook, data: {'shares' => 1 , 'comments'=> 4, 'reactions'=> 14 })
+      @message.metrics << Metric.new(source: :facebook, data: {'shares' => 1 , 'comments' => 4, 'reactions' => 14 })
       @message.save
     end
 
-    it 'maps the number of facebook shares to share_facebook' do
+    it 'maps the number of facebook shares to shares_facebook' do
       expect(TcorsDataReportMapper.shares_facebook(@message)).to eq(1)
       expect(TcorsDataReportMapper.shares_instagram(@message)).to eq("N/A")
     end
@@ -384,14 +399,29 @@ RSpec.describe TcorsDataReportMapper do
       expect(TcorsDataReportMapper.reactions_instagram(@message)).to eq("N/A")
     end
 
-    it 'maps the number of facebook comments to comment_facebook' do
+    it 'maps the number of facebook comments to comments_facebook' do
       expect(TcorsDataReportMapper.comments_facebook(@message)).to eq(4)
       expect(TcorsDataReportMapper.comments_instagram(@message)).to eq("N/A")
     end
     
     it 'maps the number of facebook likes to reactions_facebook' do
-      @message.metrics << Metric.new(source: :facebook, data: {'shares' => 0 , 'comments'=> 0, 'likes'=> 1 })
+      @message.metrics << Metric.new(source: :facebook, data: {'shares' => 0 , 'comments' => 0, 'likes' => 1 })
       expect(TcorsDataReportMapper.reactions_facebook(@message)).to eq(1) 
+    end
+
+    it 'returns NDA for shares_facebook if data is not available' do
+      @message.metrics[1].data = {'comments' => 0, 'likes' => 1 }
+      expect(TcorsDataReportMapper.shares_facebook(@message)).to eq('NDA')
+    end
+
+    it 'returns NDA for reactions_facebook if data is not available' do
+      @message.metrics[1].data = {'shares' => 1, 'comments' => 4}
+      expect(TcorsDataReportMapper.reactions_facebook(@message)).to eq('NDA')
+    end
+
+    it 'returns NDA for comments_facebook if data is not available' do
+      @message.metrics[1].data = {'shares' => 1, 'likes' => 14}
+      expect(TcorsDataReportMapper.comments_facebook(@message)).to eq('NDA')
     end
   end
 
@@ -421,10 +451,20 @@ RSpec.describe TcorsDataReportMapper do
       @message.metrics << Metric.new(source: :facebook, data: {'shares' => 0 , 'comments'=> 0, 'likes'=> 1 })
       expect(TcorsDataReportMapper.reactions_instagram(@message)).to eq(1) 
     end
-    
-    it 'returns the number of instagram likes to reactions_instagram' do
-      @message.metrics << Metric.new(source: :facebook, data: {'shares' => 0 , 'comments' => 0, 'likes' => 1})
-      expect(TcorsDataReportMapper.reactions_instagram(@message)).to eq(1) 
+
+    it 'returns NDA for shares_instagram if data is not available' do
+      @message.metrics[1].data = { 'comments' => 1, 'reactions' => 24 }
+      expect(TcorsDataReportMapper.shares_instagram(@message)).to eq('NDA')
+    end
+
+    it 'returns NDA for comments_instagram if data is not available' do
+      @message.metrics[1].data = { 'shares' => 0 , 'reactions' => 24 }
+      expect(TcorsDataReportMapper.comments_instagram(@message)).to eq('NDA')
+    end
+
+    it 'returns NDA for reactions_instagram if data is not available' do
+      @message.metrics[1].data = { 'shares' => 0 , 'comments' => 1 }
+      expect(TcorsDataReportMapper.reactions_instagram(@message)).to eq('NDA')
     end
   end
 
