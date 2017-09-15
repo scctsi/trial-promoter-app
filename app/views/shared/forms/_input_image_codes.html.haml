@@ -1,0 +1,9 @@
+.ui.fluid.multiple.selection.dropdown
+  .default.text Select image codes
+  %input{:name => "image_codes", :type => "hidden"}
+  .menu
+    - experiment.image_codes.each do |key, code|
+      .item #{code}
+.ui.fluid.icon.button.save-image-codes{'data-image-id': image.id}
+  %i.save.icon 
+  Save

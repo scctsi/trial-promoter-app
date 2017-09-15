@@ -27,6 +27,11 @@
             - else
               #{image.width} x #{image.height}
           %td
+            - if current_user.role != :read_only
+              - if image.codes == {}
+                = render partial: 'shared/forms/input_image_codes.html.haml', locals: { image: image, experiment: experiment }
+              - else
+                = render partial: 'shared/image_codes.html.haml', locals: { image: image }
     %tfoot
       %tr
         %th{ :colspan => "5" }
