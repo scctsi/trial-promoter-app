@@ -1,4 +1,17 @@
 class ImagesController < ApplicationController
+  def save_codes
+    image = Image.find(params[:id])
+    authorize image
+    #codes needs to be a hash
+    # image.codes = params[:codes]
+    image.save
+    if request.xhr?
+      render 'shared/_image_codes.html.haml', layout: false, locals: { image: image }
+    else
+      redirect_to root_path
+    end
+  end
+  
   def add
     authorize Image
     experiment = Experiment.find(params[:experiment_id])

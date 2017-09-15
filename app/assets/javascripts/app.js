@@ -28,10 +28,6 @@ $(document).ready(function() {
     $('#experiment_clinical_trial_ids').chosen({
       search_contains: true
     });
-      
-    $('#image_codes').chosen({
-      hide_results_on_select: true
-    });
   }
 
   function setUpTagListInputs() {
@@ -572,7 +568,28 @@ $(document).ready(function() {
       }
     });
   }
-
+  
+  function setUpSaveImageCodesFormEvents() {
+    $('.button.save-image-codes').click(function(event){
+      var $inputForm = $(this).parent();
+      var imageCodes = $(this).parent().find('input').val();
+      var imageId = $(this).data('image-id');
+      saveImageCodes(imageId, imageCodes, $inputForm);
+      event.preventDefault();
+    })
+  }
+  
+  function saveImageCodes(imageId, imageCodes, $inputForm) {
+    $.ajax({
+      url:  '/images/' + imageId + '/save_codes',
+      type: 'POST',
+      data: { image_id: imageId },
+      success: function(imageCodes) {
+        $inputForm.replaceWith(imageCodes);
+        setUpSaveImageCodesFormEvents();
+      }
+    });
+  }
   /* Under Construction */
   /* Under Construction */
   /* Under Construction */
@@ -652,6 +669,7 @@ $(document).ready(function() {
   // Initialize
   setUpSaveCampaignIdFormEvents();
   setUpEditCampaignIdLabelEvents();
+  setUpSaveImageCodesFormEvents();
   setUpSaveNoteFormEvents();
   setUpEditNoteEvents();
   setUpAjaxPagination();
@@ -676,6 +694,7 @@ $(document).ready(function() {
     context: 'parent'
   });
   $('.table').tablesort();
+  $('.ui.dropdown').dropdown();
 
   // Lazyload for images
   $("img").lazyload({
