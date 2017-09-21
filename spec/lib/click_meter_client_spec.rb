@@ -21,7 +21,7 @@ RSpec.describe ClickMeterClient do
 
     it 'uses the Click Meter API to get information about a tracking link (datapoint)' do
       click_meter_tracking_link = nil
-      
+
       VCR.use_cassette 'click_meter/get_tracking_link' do
         click_meter_tracking_link = ClickMeterClient.get_tracking_link('9948001')
       end
@@ -37,9 +37,9 @@ RSpec.describe ClickMeterClient do
       click_meter_tracking_link.destination_url = 'http://www.sc-ctsi.org'
       allow(ClickMeterClient).to receive(:get_tracking_link).and_return(click_meter_tracking_link)
       click_meter_tracking_link = create(:click_meter_tracking_link)
-      
+
       ClickMeterClient.update_tracking_link(click_meter_tracking_link)
-      
+
       click_meter_tracking_link.reload
       expect(click_meter_tracking_link.tracking_url).to eq('http://9nl.es/name-unique-to-sc-ctsi')
       expect(click_meter_tracking_link.destination_url).to eq('http://www.sc-ctsi.org')
@@ -47,7 +47,7 @@ RSpec.describe ClickMeterClient do
 
     it 'returns nil if trying to get a non-existent tracking link' do
       click_meter_tracking_link = nil
-      
+
       VCR.use_cassette 'click_meter/get_non_existent_tracking_link' do
         click_meter_tracking_link = ClickMeterClient.get_tracking_link('non-existent')
       end
@@ -57,7 +57,7 @@ RSpec.describe ClickMeterClient do
 
     it 'returns nil if trying to get a deleted tracking link' do
       click_meter_tracking_link = nil
-      
+
       VCR.use_cassette 'click_meter/get_deleted_tracking_link' do
         click_meter_tracking_link = ClickMeterClient.get_tracking_link('11067935')
       end
@@ -81,13 +81,13 @@ RSpec.describe ClickMeterClient do
       expect(tracking_link.click_meter_id).to eq('9948001')
       expect(tracking_link.click_meter_uri).to eq('/datapoints/9948001')
     end
-  
+
     it 'raises an exception when creating a tracking link with a name that already exists on that domain' do
       VCR.use_cassette 'click_meter/create_tracking_link_with_existing_name' do
         expect { ClickMeterClient.create_tracking_link(571973, 1501, 'http://www.sc-ctsi.org', 'SC CTSI', 'abc') }.to raise_error(ClickMeterTrackingLinkNameExistsError, 'Click Meter already has a URL named abc on domain ID 1501')
       end
     end
-    
+
     it 'deletes a Click Meter tracking link using the Click Meter API' do
       VCR.use_cassette 'click_meter/delete_tracking_link' do
         tracking_link = ClickMeterClient.create_tracking_link(571973, 1501, 'http://www.sc-ctsi.org', 'SC CTSI', 'name-unique-to-sc-ctsi-to-be-deleted-3')
@@ -97,7 +97,7 @@ RSpec.describe ClickMeterClient do
         expect(click_meter_tracking_link).to be nil
       end
     end
-    
+
     it 'gets an array of all groups using the Click Meter API' do
       VCR.use_cassette 'click_meter/get_groups' do
         groups = ClickMeterClient.get_groups
@@ -141,15 +141,15 @@ RSpec.describe ClickMeterClient do
         expect(domains).to eq([])
       end
     end
- 
+
     it 'creates a Click Meter tracking link for a message' do
       allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('production'))
       click_meter_tracking_link = ClickMeterTrackingLink.new
       message = create(:message)
       allow(ClickMeterClient).to receive(:create_tracking_link).and_return(click_meter_tracking_link)
-      
+
       ClickMeterClient.create_click_meter_tracking_link(message, 100, 200)
-      
+
       expect(ClickMeterClient).to have_received(:create_tracking_link).with(100, 200, TrackingUrl.campaign_url(message), message.to_param, BijectiveFunction.encode(message.id))
       expect(message.click_meter_tracking_link).not_to be_nil
       expect(message.persisted?).to be_truthy
@@ -161,24 +161,24 @@ RSpec.describe ClickMeterClient do
       click_meter_tracking_link = ClickMeterTrackingLink.new
       message = create(:message)
       allow(ClickMeterClient).to receive(:create_tracking_link).and_return(click_meter_tracking_link)
-      
+
       ClickMeterClient.create_click_meter_tracking_link(message, 100, 200)
-      
+
       expect(ClickMeterClient).to have_received(:create_tracking_link).with(100, 200, TrackingUrl.campaign_url(message), message.to_param, BijectiveFunction.encode(message.id))
       expect(message.click_meter_tracking_link).not_to be_nil
       expect(message.persisted?).to be_truthy
       expect(message.click_meter_tracking_link.persisted?).to be_truthy
       click_meter_tracking_link = ClickMeterTrackingLink.new
     end
-    
+
     it 'creates a fake Click Meter tracking link for a message (on test environment)' do
       allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('test'))
       click_meter_tracking_link = ClickMeterTrackingLink.new
       message = create(:message)
       allow(ClickMeterClient).to receive(:create_tracking_link).and_return(click_meter_tracking_link)
-      
+
       ClickMeterClient.create_click_meter_tracking_link(message, 100, 200)
-      
+
       expect(ClickMeterClient).not_to have_received(:create_tracking_link)
       expect(message.click_meter_tracking_link).not_to be_nil
       expect(message.click_meter_tracking_link.click_meter_id).to eq(message.id.to_s)
@@ -195,9 +195,19 @@ RSpec.describe ClickMeterClient do
         clicks = ClickMeterClient.get_clicks(click_meter_tracking_link)
         expect(clicks.count).to eq(15)
         expect(clicks[0].click_meter_event_id).to eq('012691042@20170426212421792704001')
-        expect(clicks[0].click_time).to eq(DateTime.parse('20170426212421'))
+        expect(clicks[0].click_time).to eq(DateTime.strptime('20170426212421 Pacific Time (US & Canada)', '%Y%m%d%H%M%S %Z'))
         expect(clicks[0].spider).to be true
+        expect(clicks[0].ip_address).to eq('66.220.145.244')
         expect(clicks[0].unique).to be true
+      end
+    end
+
+    it 'gets no clicks given a blacklisted ip address' do
+      exclude_ip_address_list = ["54.82.29.147", "173.252.88.87", "66.220.145.245", "66.220.145.244", "185.20.6.14", "52.202.49.192", "192.241.206.112"]
+      click_meter_tracking_link = create(:click_meter_tracking_link, click_meter_id: '12691042')
+      VCR.use_cassette 'click_meter/get_no_clicks_blacklisted_ip' do
+        clicks = ClickMeterClient.get_clicks(click_meter_tracking_link, exclude_ip_address_list)
+        expect(clicks.count).to eq(1)
       end
     end
 

@@ -12,11 +12,13 @@
 #  meets_instagram_ad_requirements :boolean
 #
 
+
 class Image < ActiveRecord::Base
   acts_as_ordered_taggable_on :experiments
 
-  before_destroy :delete_image_from_s3
+  before_destroy :delete_image_from_s3 
 
+  serialize :codes, Hash
   validates :url, presence: true
   validates :original_filename, presence: true
 
