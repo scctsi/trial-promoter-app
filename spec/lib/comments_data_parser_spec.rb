@@ -6,7 +6,7 @@ RSpec.describe CommentsDataParser do
     @comments = create_list(:comment, 3)
     @data = OpenStruct.new
     @data.column_headers = ['Date of Message', 'Message', 'Date of Comment', 'Comment', 'Commentator Username', 'Action Taken', 'Comment Type', 'Comment Syntax', 'Rationale(s) for Action/Categorization', 'Notes']
-    @data.rows = []
+    @data.rows = [] 
     @data.rows << [@messages[0].scheduled_date_time, @messages[0].content, @comments[0].comment_date, @comments[0].content, @comments[0].commentator_username, '1', '1', '10', '12', '']
   end
 

@@ -23,7 +23,7 @@ describe Comment do
   before do
     @comments = create_list(:comment, 3)
     @message = create(:message)
-    # @message.comments << comment
+    @message.comments = @comments
     @excel_file_reader = double('excel_file_reader')
     allow(ExcelFileReader).to receive(:new).and_return(@excel_file_reader)
     @excel_content = []
@@ -45,4 +45,4 @@ describe Comment do
     expect(CommentsDataParser).to have_received(:parse).with(@parseable_data)
     expect(CommentsDataParser).to have_received(:store).with(@parsed_data)
   end
-end
+end 
