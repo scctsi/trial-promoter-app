@@ -23,7 +23,7 @@
         .ui.label.basic.teal
           -if message.click_rate.nil?
             = 'N/A'
-          -elsif message.click_rate == 0.0
+          -elsif message.click_rate == 0.0 |
             = "0 %"
           -else
             = number_with_precision(message.click_rate, precision: 3, significant: true)

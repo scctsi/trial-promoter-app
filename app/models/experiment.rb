@@ -8,7 +8,6 @@
 #  message_distribution_start_date :datetime
 #  created_at                      :datetime         not null
 #  updated_at                      :datetime         not null
-#  analytics_file_todos_created    :boolean
 #  twitter_posting_times           :text
 #  facebook_posting_times          :text
 #  instagram_posting_times         :text
@@ -20,6 +19,8 @@
 class Experiment < ActiveRecord::Base
   include ActionView::Helpers::DateHelper
   include ActiveModel::Validations
+
+  serialize :image_codes, Hash
 
   validates_with ExperimentValidator
   validates :name, presence: true
@@ -59,28 +60,6 @@ class Experiment < ActiveRecord::Base
       yield(day)
       day += 1.day
     end
-  end
-
-  def social_media_profiles_needing_analytics_uploads
-    social_media_profiles
-  end
-
-  def create_analytics_file_todos
-    profiles = social_media_profiles_needing_analytics_uploads
-    if profiles.count > 0
-      each_day do |day|
-        profiles.each do |profile|
-          AnalyticsFile.create(:required_upload_date => day, :social_media_profile => profile, :message_generating => self)
-        end
-      end
-      # Add in one additional day to ensure a full day of data collection after the experiment has ended
-      profiles.each do |profile|
-        AnalyticsFile.create(:required_upload_date => end_date + 1.day, :social_media_profile => profile, :message_generating => self)
-      end
-    end
-
-    self.analytics_file_todos_created = true
-    save
   end
 
   def self.allowed_times

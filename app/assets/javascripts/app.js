@@ -28,6 +28,10 @@ $(document).ready(function() {
     $('#experiment_clinical_trial_ids').chosen({
       search_contains: true
     });
+      
+    $('#image_codes').chosen({
+      hide_results_on_select: true
+    });
   }
 
   function setUpTagListInputs() {
@@ -535,11 +539,11 @@ $(document).ready(function() {
     });
   }
 
-  function setUpEditCampainIdLabelEvents() {
+  function setUpEditCampaignIdLabelEvents() {
     //Edit campaign id for fb and instagram ads
-    $('.edit-id').click(function(event){
-      var messageId = $(this).data('message-id');
-      var $inputForm = $(this);
+    $('.edit-id i').click(function(event){
+      var messageId = $(this).parent().data('message-id');
+      var $inputForm = $(this).parent();
       getCampaignIdInputForm(messageId, $inputForm);
       event.preventDefault();
     });
@@ -552,7 +556,7 @@ $(document).ready(function() {
       data: { campaign_id: campaignId },
       success: function(campaignIdLabelHtml) {
         $inputForm.replaceWith(campaignIdLabelHtml);
-        setUpEditCampainIdLabelEvents();
+        setUpEditCampaignIdLabelEvents();
       }
     });
   }
@@ -568,6 +572,57 @@ $(document).ready(function() {
       }
     });
   }
+
+  /* Under Construction */
+  /* Under Construction */
+  /* Under Construction */
+
+  function setUpSaveNoteFormEvents() {
+    $('.button.save-note').click(function(event){
+      var $inputForm = $(this).parent();
+      var note = $(this).parent().find('input').val();
+      var messageId = $(this).data('message-id');
+      editNote(messageId, note, $inputForm);
+      event.preventDefault();
+    });
+  }
+
+  function setUpEditNoteEvents() {
+    $('.edit-note i').click(function(event){
+      var messageId = $(this).parent().data('message-id');
+      var $inputForm = $(this).parent();
+      getNoteInputForm(messageId, $inputForm);
+      event.preventDefault();
+    });
+  }
+
+  function editNote(messageId, note, $inputForm) {
+    $.ajax({
+      url:  '/messages/' + messageId + '/edit_note',
+      type: 'POST',
+      data: { note: note },
+      success: function(noteLabelHtml) {
+        $inputForm.replaceWith(noteLabelHtml);
+        setUpEditNoteEvents();
+      }
+    });
+  }
+
+  function getNoteInputForm(messageId, $inputForm) {
+    $.ajax({
+      url: '/messages/' + messageId + '/new_note',
+      type: 'GET',
+      data: {},
+      success: function(noteFormHtml) {
+        $inputForm.replaceWith(noteFormHtml);
+        setUpSaveNoteFormEvents();
+      }
+    });
+  }
+
+  /* Under Construction */
+  /* Under Construction */
+  /* Under Construction */
 
   function setUpAjaxPagination() {
     $('.ui .pagination a').click(function(e){
@@ -586,7 +641,9 @@ $(document).ready(function() {
           $('.paginated-content').html(res);
           setUpAjaxPagination();
           setUpSaveCampaignIdFormEvents();
-          setUpEditCampainIdLabelEvents();
+          setUpEditCampaignIdLabelEvents();
+          setUpSaveNoteFormEvents();
+          setUpEditNoteEvents();
         }
       });
     });
@@ -594,7 +651,9 @@ $(document).ready(function() {
 
   // Initialize
   setUpSaveCampaignIdFormEvents();
-  setUpEditCampainIdLabelEvents();
+  setUpEditCampaignIdLabelEvents();
+  setUpSaveNoteFormEvents();
+  setUpEditNoteEvents();
   setUpAjaxPagination();
   setUpPostingTimeInputs();
   showSocialMediaProfiles();
