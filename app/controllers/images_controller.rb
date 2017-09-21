@@ -1,12 +1,10 @@
 class ImagesController < ApplicationController
-  def save_codes
+  def edit_codes
     image = Image.find(params[:id])
     authorize image
-    #codes needs to be a hash
-    # image.codes = params[:codes]
-    image.save
+    image.map_codes(params[:codes])
     if request.xhr?
-      render 'shared/_image_codes.html.haml', layout: false, locals: { image: image }
+      render json: { }    
     else
       redirect_to root_path
     end

@@ -569,27 +569,33 @@ $(document).ready(function() {
     });
   }
   
-  function setUpSaveImageCodesFormEvents() {
+  function setUpEditImageCodesFormEvents() {
     $('.button.save-image-codes').click(function(event){
-      var $inputForm = $(this).parent();
-      var imageCodes = $(this).parent().find('input').val();
+      var $inputForm = $(this).find('.dropdown.edit-image-codes');
+      var imageCodes = $(this).parent().find('.dropdown.edit-image-codes').dropdown("get value");
       var imageId = $(this).data('image-id');
-      saveImageCodes(imageId, imageCodes, $inputForm);
+      var $saveButton = $(this).parent().find('.button.save-image-codes');
+      if (imageCodes != null) {
+        imageCodes.join(",");
+      }
+      saveImageCodes(imageId, imageCodes, $inputForm, $saveButton);
       event.preventDefault();
     })
   }
   
-  function saveImageCodes(imageId, imageCodes, $inputForm) {
+  function saveImageCodes(imageId, imageCodes, $inputForm, $saveButton) {
+    console.log(imageCodes);
     $.ajax({
-      url:  '/images/' + imageId + '/save_codes',
+      url:  '/images/' + imageId + '/edit_codes',
       type: 'POST',
-      data: { image_id: imageId },
+      data: { codes: imageCodes  },
       success: function(imageCodes) {
-        $inputForm.replaceWith(imageCodes);
-        setUpSaveImageCodesFormEvents();
+        $inputForm.append(imageCodes);
+        $saveButton.addClass('disabled');
       }
     });
   }
+
   /* Under Construction */
   /* Under Construction */
   /* Under Construction */
@@ -669,7 +675,7 @@ $(document).ready(function() {
   // Initialize
   setUpSaveCampaignIdFormEvents();
   setUpEditCampaignIdLabelEvents();
-  setUpSaveImageCodesFormEvents();
+  setUpEditImageCodesFormEvents();
   setUpSaveNoteFormEvents();
   setUpEditNoteEvents();
   setUpAjaxPagination();
@@ -694,7 +700,12 @@ $(document).ready(function() {
     context: 'parent'
   });
   $('.table').tablesort();
-  $('.ui.dropdown').dropdown();
+  $('.ui.dropdown').dropdown({
+    onChange: function() {
+      var imageId = $(this).data("image-id");
+      $("#edit-image-codes-" + imageId).find('.save-image-codes').first().removeClass('disabled');
+    }
+  });
 
   // Lazyload for images
   $("img").lazyload({

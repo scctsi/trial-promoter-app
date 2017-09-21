@@ -11,7 +11,7 @@ class ImagePolicy < ApplicationPolicy
     user.role.administrator?
   end
   
-  def save_codes
+  def edit_codes?
     user.role.administrator?
   end
 end
