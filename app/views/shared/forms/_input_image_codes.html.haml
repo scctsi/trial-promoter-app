@@ -1,9 +1,12 @@
-.ui.fluid.multiple.selection.dropdown
-  .default.text Select image codes
-  %input{:name => "image_codes", :type => "hidden"}
-  .menu
-    - experiment.image_codes.each do |key, code|
-      .item #{code}
-.ui.fluid.icon.button.save-image-codes{'data-image-id': image.id}
-  %i.save.icon 
-  Save
+%div{ :id => "edit-image-codes-#{image.id}" }
+  %form.ui.form
+    %select.ui.fluid.multiple.selection.dropdown.edit-image-codes{:multiple => "multiple", "data-image-id" => "#{image.id}"}
+      - experiment.image_codes.each do |key, code|
+        - if image.codes.has_value?(code)
+          %option{"value"=>"#{key}:#{code}", :selected => "selected"} #{code}
+        - else
+          %option{"value"=>"#{key}:#{code}"} #{code}
+    .ui.button.disabled.fluid.save-image-codes{'data-image-id': image.id}
+      %i.save.icon 
+      Save
+      
