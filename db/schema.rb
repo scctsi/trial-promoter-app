@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170912225731) do
+ActiveRecord::Schema.define(version: 20170920210644) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -189,6 +189,7 @@ ActiveRecord::Schema.define(version: 20170912225731) do
     t.integer  "height"
     t.boolean  "meets_instagram_ad_requirements"
     t.text     "codes"
+    t.integer  "duplicated_image_id"
   end
 
   create_table "message_generation_parameter_sets", force: :cascade do |t|
