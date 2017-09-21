@@ -1,4 +1,15 @@
 class ImagesController < ApplicationController
+  def edit_codes
+    image = Image.find(params[:id])
+    authorize image
+    image.map_codes(params[:codes])
+    if request.xhr?
+      render json: { }    
+    else
+      redirect_to root_path
+    end
+  end
+  
   def add
     authorize Image
     experiment = Experiment.find(params[:experiment_id])

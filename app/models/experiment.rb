@@ -21,7 +21,6 @@ class Experiment < ActiveRecord::Base
   include ActiveModel::Validations
 
   serialize :image_codes, Hash
-
   validates_with ExperimentValidator
   validates :name, presence: true
   validates :message_distribution_start_date, presence: true
