@@ -30,13 +30,15 @@
 #  website_goal_rate            :float
 #  website_goal_count           :integer
 #  website_session_count        :integer
+#  impressions_by_day           :text
 #
-
 
 class Message < ActiveRecord::Base
   extend Enumerize
   include CampaignId
   acts_as_ordered_taggable_on :experiments
+
+  serialize :impressions_by_day, Hash
 
   validates :content, presence: true
   validates :platform, presence: true
@@ -72,7 +74,6 @@ class Message < ActiveRecord::Base
     end
   end
 
-
   def medium
     return self[:medium].to_sym if !self[:medium].nil?
     nil
@@ -96,6 +97,11 @@ class Message < ActiveRecord::Base
     Visit.where(utm_content: self.to_param)
   end
 
+  def scheduled_date_time
+    return self[:original_scheduled_date_time] if backdated
+    return self[:scheduled_date_time]
+  end
+
   def events
     #REF https://github.com/ankane/ahoy/blob/081d97500f51f20eb2b2ba237ff6f215bbce115c/README.md#querying-properties
     Ahoy::Event.where(name: "Converted").where_properties(utm_content: self.to_param)
@@ -113,8 +119,8 @@ class Message < ActiveRecord::Base
     # Only backdate tweets scheduled on May 31st or later
     return if scheduled_date_time.month <= 5 && scheduled_date_time.day <= 30
 
-    self.backdated = true
     self.original_scheduled_date_time = scheduled_date_time
+    self.backdated = true
     self.scheduled_date_time -= number_of_days.days
     if !buffer_update.nil?
       buffer_update.destroy
@@ -144,6 +150,7 @@ class Message < ActiveRecord::Base
       metric_1_name = name[11..-1].split('_')[1]
       metric_2_name = name[11..-1].split('_')[2]
       return 'N/A' if metrics_from_source[0].data[metric_1_name].nil? || metrics_from_source[0].data[metric_2_name].nil?
+      return 'N/A' if metrics_from_source[0].data[metric_2_name] == 0
       return (metrics_from_source[0].data[metric_1_name].to_f / metrics_from_source[0].data[metric_2_name].to_f) * 100
     end
   end
@@ -164,9 +171,9 @@ class Message < ActiveRecord::Base
     save
   end
 
-  def calculate_website_goal_rate
+  def calculate_website_goal_rate(exclude_ip_address_list = [])
     calculate_goal_count
-    calculate_session_count
+    calculate_session_count(exclude_ip_address_list)
 
     if website_session_count == 0
       self.website_goal_rate = nil
@@ -177,9 +184,9 @@ class Message < ActiveRecord::Base
     save
   end
 
-  def calculate_goal_count
+  def calculate_goal_count(exclude_ip_address_list = [])
     goal_count = 0
-    sessions = get_sessions
+    sessions = get_sessions(exclude_ip_address_list)
     # Converted event is in the Ahoy code.
     # For the TCORS experiment, the 'Converted' event occurs in main.js file of website (Fresh Empire or This Free Life)
     # when user scrolls or clicks on navigation bar
@@ -191,16 +198,34 @@ class Message < ActiveRecord::Base
     save
   end
 
-  def calculate_session_count
-    sessions = get_sessions
+  def calculate_session_count(exclude_ip_address_list = [])
+    sessions = get_sessions(exclude_ip_address_list)
     self.website_session_count = sessions.count
 
     save
   end
 
-private
+  def self.find_by_alternative_identifier(alternative_identifier_value)
+    # When parsing analytics files and other data files, messages need to be found by their
+    # social_network_id, campaign_id and sometime the published_text of their buffer_update.
+    # This helper method allow a string to be passed in and it searches the above three
+    # attributes till it finds a match.
+    message = Message.where(:social_network_id => alternative_identifier_value)[0]
 
-  def get_sessions
-    Visit.where(utm_content: to_param)
+    if message.nil?
+      message = Message.where(:campaign_id => alternative_identifier_value)[0]
+    end
+
+    if message.nil?
+      message = Message.joins(:buffer_update).where(:buffer_updates => { :published_text => alternative_identifier_value})[0]
+    end
+
+    message
+  end
+
+  def get_sessions(exclude_ip_address_list = [])
+    visits = Visit.where(utm_content: self.to_param).to_a
+    visits.reject!{ |visit| exclude_ip_address_list.include?(visit.ip) }
+    return visits
   end
 end

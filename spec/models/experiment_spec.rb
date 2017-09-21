@@ -8,13 +8,13 @@
 #  message_distribution_start_date :datetime
 #  created_at                      :datetime         not null
 #  updated_at                      :datetime         not null
-#  analytics_file_todos_created    :boolean
 #  twitter_posting_times           :text
 #  facebook_posting_times          :text
 #  instagram_posting_times         :text
 #  click_meter_group_id            :integer
 #  click_meter_domain_id           :integer
 #
+
 
 require 'rails_helper'
 
@@ -34,8 +34,9 @@ RSpec.describe Experiment, type: :model do
   it { is_expected.to have_many(:analytics_files) }
   it { is_expected.to have_many(:modifications) }
   it { is_expected.to have_and_belong_to_many :social_media_profiles }
+  it { is_expected.to serialize(:image_codes).as(Hash) }
 
-  it 'returns an array of all possible times in a day' do
+  it 'returns an array of all possible times in a day' do 
     expect(Experiment.allowed_times.count).to be(12 * 60 * 2)
   end
 

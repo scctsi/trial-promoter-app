@@ -39,4 +39,38 @@ RSpec.describe MessagesController, type: :controller do
       expect(response).to redirect_to :new_user_session
     end
   end
+  
+  describe 'POST #edit_note' do
+    before do
+      post :edit_note, id: @messages[0].id, note: 'Note'
+    end
+
+    it 'saves a note for a message' do
+      @messages[0].reload
+
+      expect(@messages[0].note).to eq('Note')
+    end
+
+    it 'redirects unauthenticated user to sign-in page' do
+      sign_out(:user)
+
+      post :edit_note, id: @messages[0].id, note: 'Note'
+
+      expect(response).to redirect_to :new_user_session
+    end
+  end
+
+  describe 'GET #new_note' do
+    before do
+      get :new_note, id: @messages[0].id
+    end
+
+    it 'redirects unauthenticated user to sign-in page' do
+      sign_out(:user)
+
+      get :new_note, id: @messages[0].id
+
+      expect(response).to redirect_to :new_user_session
+    end
+  end
 end

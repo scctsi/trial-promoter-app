@@ -11,8 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-
-ActiveRecord::Schema.define(version: 20170714221557) do
+ActiveRecord::Schema.define(version: 20170912225731) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -87,6 +86,7 @@ ActiveRecord::Schema.define(version: 20170714221557) do
     t.boolean  "spider"
     t.boolean  "unique"
     t.integer  "click_meter_tracking_link_id"
+    t.text     "ip_address"
   end
 
   add_index "clicks", ["click_meter_tracking_link_id"], name: "index_clicks_on_click_meter_tracking_link_id", using: :btree
@@ -113,6 +113,13 @@ ActiveRecord::Schema.define(version: 20170714221557) do
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
     t.string   "message_id"
+
+  create_table "daily_metric_parser_results", force: :cascade do |t|
+    t.date     "file_date"
+    t.text     "file_path"
+    t.text     "parsed_data"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
   create_table "data_dictionaries", force: :cascade do |t|
@@ -163,6 +170,7 @@ ActiveRecord::Schema.define(version: 20170714221557) do
     t.text     "instagram_posting_times"
     t.integer  "click_meter_group_id"
     t.integer  "click_meter_domain_id"
+    t.string   "image_codes"
   end
 
   create_table "experiments_social_media_profiles", force: :cascade do |t|
@@ -194,6 +202,7 @@ ActiveRecord::Schema.define(version: 20170714221557) do
     t.integer  "width"
     t.integer  "height"
     t.boolean  "meets_instagram_ad_requirements"
+    t.text     "codes"
   end
 
   create_table "message_generation_parameter_sets", force: :cascade do |t|
@@ -251,6 +260,8 @@ ActiveRecord::Schema.define(version: 20170714221557) do
     t.float    "website_goal_rate"
     t.integer  "website_goal_count"
     t.integer  "website_session_count"
+    t.text     "impressions_by_day"
+    t.text     "note"
   end
 
   add_index "messages", ["message_generating_type", "message_generating_id"], name: "index_on_message_generating_for_analytics_files", using: :btree
