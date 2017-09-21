@@ -195,7 +195,7 @@ RSpec.describe ClickMeterClient do
         clicks = ClickMeterClient.get_clicks(click_meter_tracking_link)
         expect(clicks.count).to eq(15)
         expect(clicks[0].click_meter_event_id).to eq('012691042@20170426212421792704001')
-        expect(clicks[0].click_time).to eq(DateTime.parse('20170426212421'))
+        expect(clicks[0].click_time).to eq(DateTime.strptime('20170426212421 Pacific Time (US & Canada)', '%Y%m%d%H%M%S %Z'))
         expect(clicks[0].spider).to be true
         expect(clicks[0].ip_address).to eq('66.220.145.244')
         expect(clicks[0].unique).to be true
