@@ -11,7 +11,7 @@ RSpec.describe GetAnalyticsFromClickMeterJob, type: :job do
     experiment = create(:experiment)
     @messages = create_list(:message, 6, message_generating: experiment)
     (0..5).each do |index|
-      @messages[index].publish_status = :published_to_social_network
+      @messages[index].publish_status = :published_to_buffer
     end
     @messages.each{ |msg| msg.save }
   end

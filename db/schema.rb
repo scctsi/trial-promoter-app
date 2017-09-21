@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170803165652) do
+ActiveRecord::Schema.define(version: 20170912225731) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,19 +20,15 @@ ActiveRecord::Schema.define(version: 20170803165652) do
     t.integer  "visit_id"
     t.integer  "user_id"
     t.string   "name"
-    t.jsonb    "properties"
     t.datetime "time"
+    t.jsonb    "properties"
   end
 
   add_index "ahoy_events", ["name", "time"], name: "index_ahoy_events_on_name_and_time", using: :btree
   add_index "ahoy_events", ["user_id", "name"], name: "index_ahoy_events_on_user_id_and_name", using: :btree
   add_index "ahoy_events", ["visit_id", "name"], name: "index_ahoy_events_on_visit_id_and_name", using: :btree
 
-  create_table "amplitude_conversion_trackers", force: :cascade do |t|
-    t.string   "user"
-    t.integer  "visit"
-    t.integer  "event"
-    t.string   "message"
+  create_table "analytics_file_sets", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -47,6 +43,7 @@ ActiveRecord::Schema.define(version: 20170803165652) do
     t.integer  "message_generating_id"
     t.string   "message_generating_type"
     t.string   "processing_status"
+    t.integer  "analytics_file_set_id"
   end
 
   create_table "buffer_updates", force: :cascade do |t|
@@ -104,15 +101,12 @@ ActiveRecord::Schema.define(version: 20170803165652) do
     t.text     "hashtags"
   end
 
-  create_table "comments", force: :cascade do |t|
-    t.date     "message_date"
-    t.text     "message"
-    t.date     "comment_date"
-    t.text     "comment_text"
-    t.text     "commentator_username"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
-    t.string   "message_id"
+  create_table "daily_metric_parser_results", force: :cascade do |t|
+    t.date     "file_date"
+    t.text     "file_path"
+    t.text     "parsed_data"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
   create_table "data_dictionaries", force: :cascade do |t|
@@ -157,12 +151,12 @@ ActiveRecord::Schema.define(version: 20170803165652) do
     t.datetime "message_distribution_start_date"
     t.datetime "created_at",                                   null: false
     t.datetime "updated_at",                                   null: false
-    t.boolean  "gianalytics_file_todos_created"
     t.text     "twitter_posting_times"
     t.text     "facebook_posting_times"
     t.text     "instagram_posting_times"
     t.integer  "click_meter_group_id"
     t.integer  "click_meter_domain_id"
+    t.string   "image_codes"
   end
 
   create_table "experiments_social_media_profiles", force: :cascade do |t|
@@ -194,6 +188,7 @@ ActiveRecord::Schema.define(version: 20170803165652) do
     t.integer  "width"
     t.integer  "height"
     t.boolean  "meets_instagram_ad_requirements"
+    t.text     "codes"
   end
 
   create_table "message_generation_parameter_sets", force: :cascade do |t|
@@ -227,8 +222,8 @@ ActiveRecord::Schema.define(version: 20170803165652) do
     t.integer  "message_template_id"
     t.text     "content"
     t.string   "tracking_url",                 limit: 2000
-    t.datetime "created_at",                                                null: false
-    t.datetime "updated_at",                                                null: false
+    t.datetime "created_at",                                null: false
+    t.datetime "updated_at",                                null: false
     t.integer  "website_id"
     t.integer  "message_generating_id"
     t.string   "message_generating_type"
@@ -243,15 +238,15 @@ ActiveRecord::Schema.define(version: 20170803165652) do
     t.integer  "social_media_profile_id"
     t.string   "platform"
     t.string   "promoted_website_url",         limit: 2000
-    t.string   "campaign_id"
     t.boolean  "backdated"
     t.datetime "original_scheduled_date_time"
-    t.boolean  "campaign_unmatchable",                      default: false
+    t.string   "campaign_id"
     t.float    "click_rate"
     t.float    "website_goal_rate"
     t.integer  "website_goal_count"
     t.integer  "website_session_count"
     t.text     "impressions_by_day"
+    t.text     "note"
   end
 
   add_index "messages", ["message_generating_type", "message_generating_id"], name: "index_on_message_generating_for_analytics_files", using: :btree

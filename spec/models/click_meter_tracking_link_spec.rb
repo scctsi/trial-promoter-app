@@ -90,46 +90,55 @@ RSpec.describe ClickMeterTrackingLink, type: :model do
 
   describe "#get_clicks_by_date" do
     before do
-      @click_meter_tracking_link.clicks << create_list(:click, 3, :click_time => "23 April 2017", :unique => '1')
-      @click_meter_tracking_link.clicks << create_list(:click, 1, :click_time => "24 April 2017", :unique => '1')
-      @click_meter_tracking_link.clicks << create_list(:click, 2, :click_time => "25 April 2017", :unique => '1')
-      @click_meter_tracking_link.clicks << create_list(:click, 0, :click_time => "26 April 2017")
+      @click_meter_tracking_link.clicks << create(:click, click_time: DateTime.new(2017,5,1,17,0,28), spider: '1', unique: '1')
+      @click_meter_tracking_link.clicks << create(:click, click_time: DateTime.new(2017,5,1,17,0,41), spider: '1', unique: '1')
+      @click_meter_tracking_link.clicks << create(:click, click_time: DateTime.new(2017,5,2,12,3,33), spider: '0', unique: '1')
+      @click_meter_tracking_link.clicks << create(:click, click_time: DateTime.new(2017,5,2,12,6,0), spider: '1', unique: '1')
+      @click_meter_tracking_link.clicks << create(:click, click_time: DateTime.new(2017,5,3,12,6,0), spider: '1', unique: '1')
     end
 
     it 'returns clicks' do
-      expect((@click_meter_tracking_link.get_clicks_by_date("25 April 2017")).first).to be_instance_of(Click)
+      expect(@click_meter_tracking_link.get_clicks_by_date(DateTime.parse("2 May 2017"))[0]).to be_instance_of(Click)
     end
 
     it 'returns the clicks on a link for a given date' do
-      expect((@click_meter_tracking_link.get_clicks_by_date("25 April 2017")).count).to eq(2)
-      expect((@click_meter_tracking_link.get_clicks_by_date("24 April 2017")).count).to eq(1)
-      expect((@click_meter_tracking_link.get_clicks_by_date("23 April 2017")).count).to eq(3)
+      expect((@click_meter_tracking_link.get_clicks_by_date(DateTime.parse("2 May 2017"))).count).to eq(1)
     end
 
-    it 'returns 0 for a given date in which there are no clicks' do
-      expect((@click_meter_tracking_link.get_clicks_by_date("26 April 2017")).count).to eq(0)
-    end
+    it 'returns 0 for a given date in which there are no human clicks' do 
+      expect((@click_meter_tracking_link.get_clicks_by_date(DateTime.parse("1 May 2017"))).count).to eq(0)
+    end 
   end
 
   describe "methods that get number of clicks" do
-    before do
-      @click_meter_tracking_link.message.scheduled_date_time = "23 April 2017"
-      @click_meter_tracking_link.clicks << create_list(:click, 3, :click_time => "23 April 2017", :unique => '1')
-      @click_meter_tracking_link.clicks << create_list(:click, 1, :click_time => "24 April 2017", :unique => '1')
-      @click_meter_tracking_link.clicks << create_list(:click, 2, :click_time => "25 April 2017", :unique => '1')
+    before do 
+      
+      create(:click, click_time: ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,6,1,17,0,28), spider: '1', unique: '1', click_meter_tracking_link: @click_meter_tracking_link)
+      create(:click, click_time: ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,6,1,17,0,41), spider: '1', unique: '1', click_meter_tracking_link: @click_meter_tracking_link)
+      create(:click, click_time: ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,6,1,12,3,33), spider: '0', unique: '1', click_meter_tracking_link: @click_meter_tracking_link)
+      create(:click, click_time: ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,6,1,13,9,13), spider: '0', unique: '1', click_meter_tracking_link: @click_meter_tracking_link)
+      create(:click, click_time: ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,6,1,16,23,33), spider: '0', unique: '1', click_meter_tracking_link: @click_meter_tracking_link)
+      create(:click, click_time: ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,6,2,12,6,0), spider: '1', unique: '1', click_meter_tracking_link: @click_meter_tracking_link)
+      create(:click, click_time: ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,6,2,16,23,33), spider: '1', unique: '1', click_meter_tracking_link: @click_meter_tracking_link)
+      create(:click, click_time: ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,6,2,16,23,33), spider: '0', unique: '1', click_meter_tracking_link: @click_meter_tracking_link)
+      create(:click, click_time: ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,6,2,19,11,0), spider: '1', unique: '1', click_meter_tracking_link: @click_meter_tracking_link)
+      create(:click, click_time: ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,6,3,0,11,0), spider: '0', unique: '1', click_meter_tracking_link: @click_meter_tracking_link)
+      create(:click, click_time: ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,6,3,0,11,0), spider: '1', unique: '1', click_meter_tracking_link: @click_meter_tracking_link)
+      # Set the scheduled_date_time for the message
+      @click_meter_tracking_link.message.scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017, 6, 1, 0, 0, 3)
       @click_meter_tracking_link.message.save
+      @click_meter_tracking_link.reload
     end
 
     it 'get the total clicks for each of the 3 days after the message is published' do
-      clicks = @click_meter_tracking_link.get_daily_click_totals
-
-      expect(clicks.first).to eq(3)
-      expect(clicks.second).to eq(1)
-      expect(clicks.third).to eq(2)
+      clicks = @click_meter_tracking_link.get_daily_click_totals 
+      expect(clicks[0]).to eq(3)
+      expect(clicks[1]).to eq(1) 
+      expect(clicks[2]).to eq(1)
     end
 
-    it 'get the number of total clicks for the duration of the experiment' do
-      expect(@click_meter_tracking_link.get_total_clicks).to eq(6)
+    it 'gets the number of total clicks for the duration of the experiment' do
+      expect(@click_meter_tracking_link.get_total_clicks).to eq(5)
     end
   end
 end
