@@ -25,6 +25,8 @@ class Image < ActiveRecord::Base
   scope :belonging_to, ->(experiment) { tagged_with(experiment.to_param, on: :experiments) }
 
   has_many :messages
+  has_many :duplicates, class_name: 'Image', foreign_key: 'duplicated_image_id'
+  belongs_to :duplicated_image, class_name: 'Image'
 
   def delete_image_from_s3
     s3 = S3Client.new
