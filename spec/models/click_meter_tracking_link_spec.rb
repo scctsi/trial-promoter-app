@@ -107,9 +107,6 @@ RSpec.describe ClickMeterTrackingLink, type: :model do
       expect((@click_meter_tracking_link.get_clicks_by_date(DateTime.parse("1 May 2017"))).count).to eq(0)
     end
   end
-<<<<<<< HEAD
-end
-=======
 
   describe "methods that get number of clicks" do
     before do
@@ -143,4 +140,3 @@ end
     end
   end
 end
->>>>>>> development
