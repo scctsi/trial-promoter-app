@@ -39,6 +39,32 @@ RSpec.describe GoogleAnalyticsDataParser do
     expect { GoogleAnalyticsDataParser.parse(@ga_data) }.to raise_error(MissingAdContentDimensionError, 'Google Analytics data must contain the ga:adContent dimension')
   end
 
+  it 'ignores any row where ad content is not set (direct traffic)' do
+    @ga_data.rows << ['trial-promoter', 'google / organic', '(not set)', '4', '5']
+    ga_metrics = GoogleAnalyticsDataParser.parse(@ga_data)
+
+    GoogleAnalyticsDataParser.store(ga_metrics)
+    @messages.each{ |message| message.reload }
+
+    expect(@messages[0].metrics[0].data).to eq(ga_metrics[@messages[0].to_param])
+    expect(@messages[1].metrics[0].data).to eq(ga_metrics[@messages[1].to_param])
+    expect(@messages[2].metrics[0].data).to eq(ga_metrics[@messages[2].to_param])
+    expect(@messages[3].metrics[0]).to eq(nil)
+  end
+
+  it 'ignores any row where message cannot be found' do
+    @ga_data.rows << ['trial-promoter', 'google / organic', '1-tcors-message-0', '4', '5']
+    ga_metrics = GoogleAnalyticsDataParser.parse(@ga_data)
+
+    GoogleAnalyticsDataParser.store(ga_metrics)
+    @messages.each{ |message| message.reload }
+
+    expect(@messages[0].metrics[0].data).to eq(ga_metrics[@messages[0].to_param])
+    expect(@messages[1].metrics[0].data).to eq(ga_metrics[@messages[1].to_param])
+    expect(@messages[2].metrics[0].data).to eq(ga_metrics[@messages[2].to_param])
+    expect(@messages[3].metrics[0]).to eq(nil)
+  end
+
   it 'stores the data as metrics' do
     ga_metrics = GoogleAnalyticsDataParser.parse(@ga_data)
 

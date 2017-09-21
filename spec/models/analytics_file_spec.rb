@@ -66,6 +66,34 @@ RSpec.describe AnalyticsFile do
     expect(@analytics_file.processing_status.value).to eq("processed")
   end
 
+  it "processes a file for Facebook Insights (organic data) (in CSV format) located at the file's URL" do
+    @analytics_file.social_media_profile.allowed_mediums = [:organic]
+    @analytics_file.social_media_profile.platform = :facebook
+    @analytics_file.url = 'http://www.example.com/file.csv'
+    @analytics_file.process
+
+    expect(CsvFileReader).to have_received(:read).with(@analytics_file.url, {:skip_first_row => true})
+    expect(AnalyticsDataParser).to have_received(:convert_to_parseable_data).with(@csv_content, @analytics_file.social_media_profile.platform, @analytics_file.social_media_profile.allowed_mediums[0])
+    expect(AnalyticsDataParser).to have_received(:parse).with(@parseable_data)
+    expect(AnalyticsDataParser).to have_received(:store).with(@parsed_data, @analytics_file.social_media_profile.platform)
+    @analytics_file.reload
+    expect(@analytics_file.processing_status.value).to eq("processed")
+  end
+
+  it "processes a file for Facebook/Instagram Ads (in CSV format) located at the file's URL" do
+    @analytics_file.social_media_profile.allowed_mediums = [:ad]
+    @analytics_file.social_media_profile.platform = :facebook
+    @analytics_file.url = 'http://www.example.com/file.csv'
+    @analytics_file.process
+
+    expect(CsvFileReader).to have_received(:read).with(@analytics_file.url)
+    expect(AnalyticsDataParser).to have_received(:convert_to_parseable_data).with(@csv_content, @analytics_file.social_media_profile.platform, @analytics_file.social_media_profile.allowed_mediums[0])
+    expect(AnalyticsDataParser).to have_received(:parse).with(@parseable_data, 'campaign_id')
+    expect(AnalyticsDataParser).to have_received(:store).with(@parsed_data, @analytics_file.social_media_profile.platform)
+    @analytics_file.reload
+    expect(@analytics_file.processing_status.value).to eq("processed")
+  end
+
   it 'does not process an already processed file' do
     @analytics_file.processing_status = :processed
     @analytics_file.save
