@@ -28,6 +28,10 @@ $(document).ready(function() {
     $('#experiment_clinical_trial_ids').chosen({
       search_contains: true
     });
+      
+    $('#image_codes').chosen({
+      hide_results_on_select: true
+    });
   }
 
   function setUpTagListInputs() {
