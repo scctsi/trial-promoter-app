@@ -93,4 +93,27 @@ RSpec.describe ImagesController, type: :controller do
       expect(response).to redirect_to :new_user_session
     end
   end
+  
+  describe 'POST #edit_codes' do
+    before do
+      @image = create(:image)  
+    end
+    
+    it 'adds codes to the image' do
+      post :edit_codes, id: @image.id, codes: ["1:color", "2:monochrome"]
+      
+      @image.reload
+      expect(@image.codes.count).to eq(2)
+      expect(@image.codes["1"]).to eq("color")
+      expect(@image.codes["2"]).to eq("monochrome")
+    end
+
+    it 'redirects unauthenticated user to sign-in page' do
+      sign_out(:user)
+
+      post :add, image_id: @image.id, codes: ["1:color", "2:monochrome"]
+
+      expect(response).to redirect_to :new_user_session
+    end
+  end
 end
