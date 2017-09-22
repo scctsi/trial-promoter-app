@@ -590,15 +590,10 @@ $(document).ready(function() {
       type: 'POST',
       data: { codes: imageCodes  },
       success: function(imageCodes) {
-        $inputForm.append(imageCodes);
         $saveButton.addClass('disabled');
       }
     });
   }
-
-  /* Under Construction */
-  /* Under Construction */
-  /* Under Construction */
 
   function setUpSaveNoteFormEvents() {
     $('.button.save-note').click(function(event){
@@ -642,10 +637,6 @@ $(document).ready(function() {
       }
     });
   }
-
-  /* Under Construction */
-  /* Under Construction */
-  /* Under Construction */
 
   function setUpAjaxPagination() {
     $('.ui .pagination a').click(function(e){
