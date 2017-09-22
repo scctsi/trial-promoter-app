@@ -572,6 +572,33 @@ $(document).ready(function() {
       }
     });
   }
+  
+  function setUpEditImageCodesFormEvents() {
+    $('.button.save-image-codes').click(function(event){
+      var $inputForm = $(this).find('.dropdown.edit-image-codes');
+      var imageCodes = $(this).parent().find('.dropdown.edit-image-codes').dropdown("get value");
+      var imageId = $(this).data('image-id');
+      var $saveButton = $(this).parent().find('.button.save-image-codes');
+      if (imageCodes != null) {
+        imageCodes.join(",");
+      }
+      saveImageCodes(imageId, imageCodes, $inputForm, $saveButton);
+      event.preventDefault();
+    })
+  }
+  
+  function saveImageCodes(imageId, imageCodes, $inputForm, $saveButton) {
+    console.log(imageCodes);
+    $.ajax({
+      url:  '/images/' + imageId + '/edit_codes',
+      type: 'POST',
+      data: { codes: imageCodes  },
+      success: function(imageCodes) {
+        $inputForm.append(imageCodes);
+        $saveButton.addClass('disabled');
+      }
+    });
+  }
 
   /* Under Construction */
   /* Under Construction */
@@ -652,6 +679,7 @@ $(document).ready(function() {
   // Initialize
   setUpSaveCampaignIdFormEvents();
   setUpEditCampaignIdLabelEvents();
+  setUpEditImageCodesFormEvents();
   setUpSaveNoteFormEvents();
   setUpEditNoteEvents();
   setUpAjaxPagination();
@@ -676,6 +704,12 @@ $(document).ready(function() {
     context: 'parent'
   });
   $('.table').tablesort();
+  $('.ui.dropdown').dropdown({
+    onChange: function() {
+      var imageId = $(this).data("image-id");
+      $("#edit-image-codes-" + imageId).find('.save-image-codes').first().removeClass('disabled');
+    }
+  });
 
   // Lazyload for images
   $("img").lazyload({

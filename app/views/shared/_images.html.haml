@@ -1,5 +1,7 @@
 - invalid_image_count = 0
 - uncalculated_image_size_count = 0
+- unduplicated_images = images.select { |image| image.duplicated_image.nil? }
+- duplicated_images = images.select { |image| !image.duplicated_image.nil? }
 %table.ui.celled.striped.table
   %form#image-tagging-form
     %thead
@@ -10,7 +12,7 @@
         %th.center.aligned Size
         %th.center.aligned Codes
     %tbody
-      - images.each do |image|
+      - unduplicated_images.each do |image|
         - row_class = ''
         - if image.meets_instagram_ad_requirements == false
           - invalid_image_count += 1
@@ -27,11 +29,31 @@
             - else
               #{image.width} x #{image.height}
           %td
+            - if current_user.role != :read_only
+              = render partial: 'shared/forms/input_image_codes.html.haml', locals: { image: image, experiment: experiment }
     %tfoot
       %tr
         %th{ :colspan => "5" }
           Number of invalid images (for instagram ads): #{invalid_image_count}
           %br
           Number of uncalculated image sizes: #{uncalculated_image_size_count}
-
-    
+%h2.header
+  Duplicates
+%table.ui.celled.striped.table
+  %form#image-tagging-form
+    %thead
+      %tr
+        %th Database ID
+        %th.center.aligned Image
+        %th.center.aligned Filename
+        %th.center.aligned Duplicated Image
+    %tbody
+      - duplicated_images.each do |image|
+        %tr.center.aligned
+          %td= image.id
+          %td
+            = image_tag "#{image.url}", width: '150', height: '150', lazy: true
+          %td= image.original_filename
+          %td
+            = image_tag "#{image.duplicated_image.url}", width: '150', height: '150', lazy: true
+          
