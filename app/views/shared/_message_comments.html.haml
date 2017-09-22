@@ -1,0 +1,35 @@
+.ui.header
+  .content
+    = paginate messages, :remote => true
+  .ui.right.floated.segment.object-count
+    %h3.ui.header
+      = page_entries_info messages
+  - grouped_messages = messages.group_by{ |message| message.scheduled_date_time.to_date }
+  - grouped_messages.each do |scheduled_date, messages_by_scheduled_date|
+    %h3.ui.dividing.header
+      = scheduled_date.strftime("%b #{scheduled_date.day.ordinalize}")
+    - grouped_messages_by_platform = messages_by_scheduled_date.group_by(&:platform)
+    - grouped_messages_by_platform.each do |platform, messages_by_platform|
+      %h4.ui.header
+        %i{ :class => "#{platform.to_s} icon"}
+        .content
+          = platform.to_s.titleize
+      .ui.items
+        .item
+          .content
+            %table.ui.celled.striped.table
+              %thead
+                %tr
+                  %th.center.aligned Message
+                  %th.center.aligned Comments
+                  %th.center.aligned Codes
+                  - messages.each do |message|
+              %tbody
+                %tr
+                  %td
+                    = message.content
+                  - message.comments.each do |comment|
+                    %td 
+                      = comment.comment_text
+                    %td
+                      %form#comment-coding-form
