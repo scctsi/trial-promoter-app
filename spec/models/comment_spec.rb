@@ -3,8 +3,6 @@
 # Table name: comments
 #
 #  id                   :integer          not null, primary key
-#  message_date         :date
-#  content              :text
 #  comment_date         :date
 #  comment_text         :text
 #  commentator_username :text
@@ -21,28 +19,30 @@ describe Comment do
   it { is_expected.to belong_to :message }
 
   before do
-    @comments = create_list(:comment, 3)
-    @message = create(:message)
-    @message.comments = @comments
-    @excel_file_reader = double('excel_file_reader')
-    allow(ExcelFileReader).to receive(:new).and_return(@excel_file_reader)
-    @excel_content = []
-    allow(@excel_file_reader).to receive(:read).and_return(@excel_content)
-    @parseable_data = []
-    allow(CommentsDataParser).to receive(:convert_to_parseable_data).and_return(@parseable_data)
-    @parsed_data = {}
-    allow(CommentsDataParser).to receive(:parse).and_return(@parsed_data)
-    allow(CommentsDataParser).to receive(:store)
+    @messages = create_list(:message, 3, :platform => :facebook)
+    @messages[0].content = "#Tobacco use causes 1300 US deaths daily-more than AIDS, alcohol, car accidents, homicides & illegal drugs combined http://bit.ly/2pyWcHR"
+    @messages[1].content = "#Smoking damages your DNA, which can cause cancer almost anywhere, not just your lungs. http://bit.ly/2oKGOYW"
+    @messages[2].content = ""
+    @comment = create(:comment)
+    @messages.each{ |message| message.save }
+    @filename = "#{Rails.root}/spec/fixtures/sample_comments.xlsx"
   end
 
   it 'processes a file of comments' do
-    @comments[0].url = 'http://www.example.com/file.xlsx'
 
-    @comments[0].process
+    @comment.process(@filename)
+    expect(@messages[0].comments.count).to eq(1)
+    expect(@messages[1].comments.count).to eq(2)
+    expect(@messages[2].comments.count).to eq(0)
+  end
+  
+  it 'does not save duplicate comments' do
+    @comment.process(@filename)
+    @comment.process(@filename)
 
-    expect(@excel_file_reader).to have_received(:read).with(@comments[0].url)
-    expect(CommentsDataParser).to have_received(:convert_to_parseable_data).with(@excel_content)
-    expect(CommentsDataParser).to have_received(:parse).with(@parseable_data)
-    expect(CommentsDataParser).to have_received(:store).with(@parsed_data)
+    
+    expect(@messages[0].comments.count).to eq(1)
+    expect(@messages[1].comments.count).to eq(2)
+    expect(@messages[2].comments.count).to eq(0)    
   end
 end 

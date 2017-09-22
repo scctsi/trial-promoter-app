@@ -3,8 +3,6 @@
 # Table name: comments
 #
 #  id                   :integer          not null, primary key
-#  message_date         :date
-#  content              :text
 #  comment_date         :date
 #  comment_text         :text
 #  commentator_username :text
@@ -12,16 +10,32 @@
 #  updated_at           :datetime         not null
 #  message_id           :string
 #  toxicity_score       :string
-#  url                  :string
 #
 
 class Comment < ActiveRecord::Base
   belongs_to :message
-
-  def process
-    content = ExcelFileReader.new.read(url) if url.ends_with?('.xlsx')
-    parseable_data = CommentsDataParser.convert_to_parseable_data(content)
-    parsed_data = CommentsDataParser.parse(parseable_data)
-    CommentsDataParser.store(parsed_data)
+ 
+  def process(filename)
+    comments_spreadsheet = ExcelFileReader.new.read(filename) if filename.ends_with?('.xlsx') 
+    messages = Message.all
+    #delete comments to avoid repeats from being saved
+    messages.each do |message|
+      message.comments.destroy_all
+    end
+    message_index = comments_spreadsheet[0].index("Message")
+    comment_index = comments_spreadsheet[0].index("Comment")
+    comment_date_index = comments_spreadsheet[0].index("Date of Comment")
+    comment_username_index = comments_spreadsheet[0].index("Commentator Username")
+    messages.each do |message|  
+      comments_spreadsheet.each do |comments_row| 
+        #some comments have a newline character that needs to be removed
+        clean_comment = comments_row[message_index].chomp
+        if message.content == clean_comment 
+          message.comments << Comment.create(comment_text: comments_row[comment_index], comment_date: comments_row[comment_date_index], commentator_username: comments_row[comment_username_index])
+        end 
+      end
+      message.save
+    end
   end
 end
+ 
