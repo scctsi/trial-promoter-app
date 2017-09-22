@@ -20,6 +20,8 @@ RSpec.describe Image do
   it { is_expected.to validate_presence_of :url }
   it { is_expected.to validate_presence_of :original_filename }
   it { is_expected.to have_many :messages }
+  it { is_expected.to have_many(:duplicates).class_name('Image') }
+  it { is_expected.to belong_to(:duplicated_image).class_name('Image') }
 
   it 'is taggable on experiments with a single tag' do
     image = create(:image)
@@ -79,4 +81,14 @@ RSpec.describe Image do
 
     expect(s3_client_double).to have_received(:delete).with('bucket', 'key')
   end
+  
+  it 'maps the code key to the code value' do
+    image = create(:image)
+    codes = ["0:color","2:portrait"]
+    
+    image.map_codes(codes) 
+    
+    expect(image.codes).to eq({"0" => "color", "2" => "portrait"}) 
+  end 
 end
+ 

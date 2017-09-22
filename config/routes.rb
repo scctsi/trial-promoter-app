@@ -61,6 +61,9 @@ Rails.application.routes.draw do
       get :check_validity_for_instagram_ads
       post :add
     end
+    member do
+      post 'edit_codes', to: 'images#edit_codes'
+    end
   end
 
   # Analytics files
