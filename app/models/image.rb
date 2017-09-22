@@ -10,8 +10,8 @@
 #  width                           :integer
 #  height                          :integer
 #  meets_instagram_ad_requirements :boolean
+#  codes                           :text
 #
-
 
 class Image < ActiveRecord::Base
   acts_as_ordered_taggable_on :experiments

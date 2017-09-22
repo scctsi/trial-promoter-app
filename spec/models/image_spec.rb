@@ -10,8 +10,8 @@
 #  width                           :integer
 #  height                          :integer
 #  meets_instagram_ad_requirements :boolean
+#  codes                           :text
 #
-
 
 require 'rails_helper'
 

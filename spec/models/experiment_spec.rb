@@ -13,8 +13,8 @@
 #  instagram_posting_times         :text
 #  click_meter_group_id            :integer
 #  click_meter_domain_id           :integer
+#  image_codes                     :string
 #
-
 
 require 'rails_helper'
 
