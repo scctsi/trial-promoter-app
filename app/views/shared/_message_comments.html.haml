@@ -14,22 +14,21 @@
         %i{ :class => "#{platform.to_s} icon"}
         .content
           = platform.to_s.titleize
-      .ui.items
-        .item
-          .content
-            %table.ui.celled.striped.table
-              %thead
-                %tr
-                  %th.center.aligned Message
-                  %th.center.aligned Comments
-                  %th.center.aligned Codes
-                  - messages.each do |message|
-              %tbody
-                %tr
+    .ui.items
+      .item
+        .content
+          %table.ui.celled.striped.table
+            - messages.each do |message|
+              %form#comment-coding-form
+                %thead
+                  %tr
+                    %th.center.aligned Message
+                    %th.center.aligned Comments
+                    %th.center.aligned Codes
+              - message.comments.each do |comment|
+                %tbody
                   %td
                     = message.content
-                  - message.comments.each do |comment|
-                    %td 
-                      = comment.comment_text
-                    %td
-                      %form#comment-coding-form
+                  %td 
+                    = comment.comment_text
+                  %td
