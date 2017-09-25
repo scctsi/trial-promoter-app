@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170920210644) do
+ActiveRecord::Schema.define(version: 20170925222537) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -109,6 +109,7 @@ ActiveRecord::Schema.define(version: 20170920210644) do
     t.datetime "updated_at",           null: false
     t.string   "message_id"
     t.string   "toxicity_score"
+    t.text     "codes"
   end
 
   create_table "daily_metric_parser_results", force: :cascade do |t|
@@ -167,6 +168,7 @@ ActiveRecord::Schema.define(version: 20170920210644) do
     t.integer  "click_meter_group_id"
     t.integer  "click_meter_domain_id"
     t.string   "image_codes"
+    t.string   "comment_codes"
   end
 
   create_table "experiments_social_media_profiles", force: :cascade do |t|

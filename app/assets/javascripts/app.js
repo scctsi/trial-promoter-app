@@ -583,13 +583,38 @@ $(document).ready(function() {
     })
   }
   
+  function setUpEditCommentCodesFormEvents() {
+    $('.button.save-comment-codes').click(function(event){
+      var $inputForm = $(this).find('.dropdown.edit-comment-codes');
+      var commentCodes = $(this).parent().find('.dropdown.edit-comment-codes').dropdown("get value");
+      var commentId = $(this).data('comment-id');
+      var $saveButton = $(this).parent().find('.button.save-comment-codes');
+      if (commentCodes != null) {
+        commentCodes.join(",");
+      }
+      saveCommentCodes(commentId, commentCodes, $inputForm, $saveButton);
+      event.preventDefault();
+    })
+  }
+  
   function saveImageCodes(imageId, imageCodes, $inputForm, $saveButton) {
-    console.log(imageCodes);
     $.ajax({
       url:  '/images/' + imageId + '/edit_codes',
       type: 'POST',
       data: { codes: imageCodes  },
       success: function(imageCodes) {
+        $saveButton.addClass('disabled');
+      }
+    });
+  }
+  
+  function saveCommentCodes(commentId, commentCodes, $inputForm, $saveButton) {
+    console.log(commentCodes);
+    $.ajax({
+      url:  '/comments/' + commentId + '/edit_codes',
+      type: 'POST',
+      data: { codes: commentCodes  },
+      success: function(commentCodes) {
         $saveButton.addClass('disabled');
       }
     });
@@ -667,6 +692,7 @@ $(document).ready(function() {
   setUpSaveCampaignIdFormEvents();
   setUpEditCampaignIdLabelEvents();
   setUpEditImageCodesFormEvents();
+  setUpEditCommentCodesFormEvents();
   setUpSaveNoteFormEvents();
   setUpEditNoteEvents();
   setUpAjaxPagination();
@@ -695,6 +721,9 @@ $(document).ready(function() {
     onChange: function() {
       var imageId = $(this).data("image-id");
       $("#edit-image-codes-" + imageId).find('.save-image-codes').first().removeClass('disabled');
+      
+      var commentId = $(this).data("comment-id");
+      $("#edit-comment-codes-" + commentId).find('.save-comment-codes').first().removeClass('disabled');
     }
   });
 

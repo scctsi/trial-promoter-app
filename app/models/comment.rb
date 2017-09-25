@@ -14,6 +14,8 @@
 
 class Comment < ActiveRecord::Base
   belongs_to :message
+  
+  serialize :codes, Hash
  
   def process(filename)
     comments_spreadsheet = ExcelFileReader.new.read(filename) if filename.ends_with?('.xlsx') 
@@ -37,5 +39,19 @@ class Comment < ActiveRecord::Base
       message.save
     end
   end
+  
+  def map_codes(code_object) 
+    if code_object == []
+      self.codes = {}
+    else
+      hash = {}
+      code_object.each do |code_pair|
+        key_value = code_pair.split(':') 
+        hash[key_value[0]] = key_value[1] 
+      end
+      self.codes = hash
+    end
+    save
+  end 
 end
  

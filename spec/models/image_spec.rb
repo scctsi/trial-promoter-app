@@ -11,6 +11,7 @@
 #  height                          :integer
 #  meets_instagram_ad_requirements :boolean
 #  codes                           :text
+#  duplicated_image_id             :integer
 #
 
 require 'rails_helper'
