@@ -3,4 +3,4 @@
     .header
     %p There are no messages, hence no comments
 - else
-  = render partial: 'shared/message_comments', locals: { messages: @messages, experiment_id: @experiment.id }
+  = render partial: 'shared/message_comments', locals: { messages: @messages, experiment: @experiment }

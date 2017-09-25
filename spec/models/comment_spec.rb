@@ -10,13 +10,13 @@
 #  updated_at           :datetime         not null
 #  message_id           :string
 #  toxicity_score       :string
-#  url                  :string
 #
 
 require 'rails_helper'
 
 describe Comment do
   it { is_expected.to belong_to :message }
+  it { is_expected.to serialize(:codes).as(Hash) }
 
   before do
     @messages = create_list(:message, 3, :platform => :facebook)
@@ -46,4 +46,14 @@ describe Comment do
     expect(@messages[1].comments.count).to eq(2)
     expect(@messages[2].comments.count).to eq(0)    
   end
+  
+  it 'maps an array of codes to a hash with the correct key and value' do
+    comment = create(:comment)
+    codes = ["0:color","2:portrait"]
+    
+    comment.map_codes(codes) 
+
+    comment.reload     
+    expect(comment.codes).to eq({"0" => "color", "2" => "portrait"}) 
+  end 
 end 
