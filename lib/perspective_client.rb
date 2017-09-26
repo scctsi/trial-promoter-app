@@ -1,7 +1,6 @@
 class PerspectiveClient
-  def get_toxicity_score(comment)
-    # @comments = Comment.where(toxicity_score: null)
-
-# curl -H "Content-Type: application/json" --data '{comment: {text: "#{comment.content}"},languages: ["en"],requestedAttributes: {TOXICITY:{}} }' https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze?key='AIzaSyBfCT_Irwq-RvcC9n1Cc9dQRkDt_9mTH8s'
+  def self.get_toxicity_score(comment)
+    access_token = Setting[:google_perspective_api_key]
+    "Content-Type: application/json" --data '{comment: {text: "#{comment.comment_text}"},languages: ["en"],requestedAttributes: {TOXICITY:{}} }' https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze?key=access_token
   end
 end

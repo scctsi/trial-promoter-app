@@ -49,11 +49,11 @@ describe Comment do
   
   it 'maps an array of codes to a hash with the correct key and value' do
     comment = create(:comment)
-    codes = ["0:color","2:portrait"]
+    codes = ["0:negative","1:positive"]
     
     comment.map_codes(codes) 
 
     comment.reload     
-    expect(comment.codes).to eq({"0" => "color", "2" => "portrait"}) 
+    expect(comment.codes).to eq({"0" => "negative", "1" => "positive"}) 
   end 
 end 
