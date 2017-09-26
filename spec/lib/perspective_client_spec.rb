@@ -12,9 +12,9 @@ RSpec.describe PerspectiveClient do
   describe "(development only tests)", :development_only_tests => true do
     it 'returns the score from the Google Perspective API' do
       VCR.use_cassette 'perspective_client/get_toxicity_score' do
-        # toxicity_score = PerspectiveClient.get_toxicity_score(@comment.content)
+        PerspectiveClient.get_toxicity_score(@comment)
       end
     end
   end
 end 
- 
+   
