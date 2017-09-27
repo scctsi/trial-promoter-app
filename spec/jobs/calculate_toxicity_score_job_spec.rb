@@ -20,7 +20,7 @@ RSpec.describe CalculateToxicityScoreJob, type: :job do
 
   it 'processes each comment toxicity_score' do 
     (0..2).each do |index|
-      expect(PerspectiveClient).to receive(:calculate_toxicity_score).with(@comments[index])
+      expect(PerspectiveClient).to receive(:calculate_toxicity_score).with(@comments[index].comment_text)
     end
     
     perform_enqueued_jobs { CalculateToxicityScoreJob.perform_later }

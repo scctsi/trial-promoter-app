@@ -18,6 +18,6 @@ class PerspectiveClient
       http.request(request)
     end
     
-    return JSON.parse(response.body)["attributeScores"]["TOXICITY"]["spanScores"][0]["score"]["value"].round(2).to_s
+    return JSON.parse(response.body)["attributeScores"]["TOXICITY"]["summaryScore"]["value"].round(2).to_s 
   end
 end
