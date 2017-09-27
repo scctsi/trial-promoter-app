@@ -66,4 +66,17 @@ describe Comment do
     comment.reload
     expect(comment.toxicity_score).to eq("0.78")
   end
-end 
+  
+  it 'skips the api call if a toxicity_score already exists' do
+    comment = create(:comment)
+    
+    allow(PerspectiveClient).to receive(:calculate_toxicity_score).and_return("0.78")
+    comment.save_toxicity_score
+    
+    allow(PerspectiveClient).to receive(:calculate_toxicity_score).and_return("0.87")
+    comment.save_toxicity_score
+
+    comment.reload
+    expect(comment.toxicity_score).to eq("0.78")
+  end
+end  
