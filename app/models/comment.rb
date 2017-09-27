@@ -52,6 +52,12 @@ class Comment < ActiveRecord::Base
       self.codes = hash
     end
     save
-  end 
+  end
+  
+  def save_toxicity_score
+    self.toxicity_score = PerspectiveClient.calculate_toxicity_score(self)
+    
+    save
+  end
 end
  
