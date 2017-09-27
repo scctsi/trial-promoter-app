@@ -1,4 +1,12 @@
 class ImagesController < ApplicationController
+  def edit_codes
+    image = Image.find(params[:id])
+    authorize image
+    image.map_codes(params[:codes])
+
+    render json: { }    
+  end
+  
   def add
     authorize Image
     experiment = Experiment.find(params[:experiment_id])
