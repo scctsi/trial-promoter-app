@@ -37,6 +37,7 @@ class Image < ActiveRecord::Base
     duplicate_image = Image.where('url LIKE ?', "%#{duplicate_image_filename}%")[0]
     
     duplicated_image.duplicates << duplicate_image
+    duplicate_image.save
     duplicated_image.save
   end
   

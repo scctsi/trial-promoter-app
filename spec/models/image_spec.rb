@@ -40,10 +40,10 @@ RSpec.describe Image do
     Image.set_duplicate('file0.jpg', 'file3.jpg')
     
     images.each { |image| image.reload }
-    expect(images[0].duplicates.count).to eq(0)
-    expect(images[0].duplicates[0]).to eq(images[2])
+    expect(images[0].duplicates.count).to eq(1)
+    expect(images[0].duplicates[0]).to eq(images[3])
     expect(images[0].duplicated_image).to be_nil
-    expect(images[2].duplicated_image).to eq(images[0])
+    expect(images[3].duplicated_image).to eq(images[0])
   end
 
   it 'is taggable on experiments with a single tag' do
