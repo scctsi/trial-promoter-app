@@ -598,7 +598,6 @@ $(document).ready(function() {
   }
 
   function saveCodes(model, modelId, modelCodes, $inputForm, $saveButton) {
-    console.log(modelCodes);
     $.ajax({
       url:  '/' + model + 's/' + modelId + '/edit_codes',
       type: 'POST',
