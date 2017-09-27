@@ -578,7 +578,7 @@ $(document).ready(function() {
       if (imageCodes != null) {
         imageCodes.join(",");
       }
-      saveImageCodes(imageId, imageCodes, $inputForm, $saveButton);
+      saveCodes('image', imageId, imageCodes, $inputForm, $saveButton);
       event.preventDefault();
     })
   }
@@ -592,33 +592,24 @@ $(document).ready(function() {
       if (commentCodes != null) {
         commentCodes.join(",");
       }
-      saveCommentCodes(commentId, commentCodes, $inputForm, $saveButton);
+      saveCodes('comment', commentId, commentCodes, $inputForm, $saveButton);
       event.preventDefault();
     })
   }
-  
-  function saveImageCodes(imageId, imageCodes, $inputForm, $saveButton) {
+
+  function saveCodes(model, modelId, modelCodes, $inputForm, $saveButton) {
+    console.log(modelCodes);
     $.ajax({
-      url:  '/images/' + imageId + '/edit_codes',
+      url:  '/' + model + 's/' + modelId + '/edit_codes',
       type: 'POST',
-      data: { codes: imageCodes  },
-      success: function(imageCodes) {
+      data: { codes: modelCodes  },
+      success: function(modelCodes) {
         $saveButton.addClass('disabled');
       }
     });
   }
   
-  function saveCommentCodes(commentId, commentCodes, $inputForm, $saveButton) {
-    console.log(commentCodes);
-    $.ajax({
-      url:  '/comments/' + commentId + '/edit_codes',
-      type: 'POST',
-      data: { codes: commentCodes  },
-      success: function(commentCodes) {
-        $saveButton.addClass('disabled');
-      }
-    });
-  }
+  
 
   function setUpSaveNoteFormEvents() {
     $('.button.save-note').click(function(event){
