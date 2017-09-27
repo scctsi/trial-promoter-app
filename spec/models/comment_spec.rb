@@ -55,5 +55,15 @@ describe Comment do
 
     comment.reload     
     expect(comment.codes).to eq({"0" => "negative", "1" => "positive"}) 
-  end 
+  end
+  
+  it 'saves the toxicity_score to the comment' do
+    comment = create(:comment)
+    
+    allow(PerspectiveClient).to receive(:calculate_toxicity_score).and_return("0.78")
+    comment.save_toxicity_score
+
+    comment.reload
+    expect(comment.toxicity_score).to eq("0.78")
+  end
 end 
