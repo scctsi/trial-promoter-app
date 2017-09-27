@@ -26,6 +26,18 @@ class Image < ActiveRecord::Base
 
   has_many :messages
 
+  def filename
+    url[(url.rindex('/') + 1)..-1]
+  end
+  
+  def self.set_duplicate(duplicated_image_filename, duplicate_image_filename)
+    duplicated_image = Image.where('url LIKE ?', "%#{duplicated_image_filename}%")[0]
+    duplicate_image = Image.where('url LIKE ?', "%#{duplicate_image_filename}%")[0]
+    
+    duplicated_image.duplicates << duplicate_image
+    duplicated_image.save
+  end
+  
   def delete_image_from_s3
     s3 = S3Client.new
     s3.delete(s3.bucket(self.url), s3.key(self.url))
