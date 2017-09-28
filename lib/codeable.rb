@@ -1,4 +1,4 @@
-module CodeMapper
+module Codeable
   def map_codes(code_object) 
     if code_object == []
       self.codes = {}
