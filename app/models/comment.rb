@@ -13,7 +13,7 @@
 #
 
 class Comment < ActiveRecord::Base
-  include CodeMapper
+  include Codeable
   belongs_to :message
   
   serialize :codes, Hash

@@ -15,7 +15,7 @@
 #
 
 class Image < ActiveRecord::Base
-  include CodeMapper
+  include Codeable
   acts_as_ordered_taggable_on :experiments
 
   before_destroy :delete_image_from_s3 
@@ -32,7 +32,7 @@ class Image < ActiveRecord::Base
 
   def delete_image_from_s3
     s3 = S3Client.new
-    s3.delete(s3.bucket(self.url), s3.key(self.url))
+    s3.delete(s3.bucket(self.url), s3.key(self.url)) 
   end
 end
    
