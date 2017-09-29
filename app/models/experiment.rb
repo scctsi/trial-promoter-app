@@ -13,15 +13,16 @@
 #  instagram_posting_times         :text
 #  click_meter_group_id            :integer
 #  click_meter_domain_id           :integer
+#  image_codes                     :string
+#  comment_codes                   :string
 #
-
 
 class Experiment < ActiveRecord::Base
   include ActionView::Helpers::DateHelper
   include ActiveModel::Validations
 
   serialize :image_codes, Array
-
+  serialize :comment_codes, Array
   validates_with ExperimentValidator
   validates :name, presence: true
   validates :message_distribution_start_date, presence: true

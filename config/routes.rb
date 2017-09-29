@@ -65,6 +65,13 @@ Rails.application.routes.draw do
       post 'edit_codes', to: 'images#edit_codes'
     end
   end
+  
+  #Comments
+  resources :comments do
+    member do
+      post 'edit_codes', to: 'comments#edit_codes'
+    end
+  end
 
   # Analytics files
   resources :analytics_files do

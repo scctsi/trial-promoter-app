@@ -56,6 +56,7 @@ class Message < ActiveRecord::Base
   has_one :buffer_update
   has_one :click_meter_tracking_link, dependent: :destroy
   has_many :image_replacements
+  has_many :comments
   has_many :metrics do
     def << (value)
       source_metrics_exists = false
@@ -95,7 +96,7 @@ class Message < ActiveRecord::Base
   def visits
     Visit.where(utm_content: self.to_param)
   end
-  
+
   def scheduled_date_time
     return self[:original_scheduled_date_time] if backdated
     return self[:scheduled_date_time]
@@ -203,18 +204,18 @@ class Message < ActiveRecord::Base
 
     save
   end
-  
+
   def self.find_by_alternative_identifier(alternative_identifier_value)
     # When parsing analytics files and other data files, messages need to be found by their
     # social_network_id, campaign_id and sometime the published_text of their buffer_update.
     # This helper method allow a string to be passed in and it searches the above three
     # attributes till it finds a match.
     message = Message.where(:social_network_id => alternative_identifier_value)[0]
-    
+
     if message.nil?
       message = Message.where(:campaign_id => alternative_identifier_value)[0]
     end
-    
+
     if message.nil?
       message = Message.joins(:buffer_update).where(:buffer_updates => { :published_text => alternative_identifier_value})[0]
     end
