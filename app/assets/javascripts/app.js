@@ -584,7 +584,6 @@ $(document).ready(function() {
   }
   
   function saveImageCodes(imageId, imageCodes, $inputForm, $saveButton) {
-    console.log(imageCodes);
     $.ajax({
       url:  '/images/' + imageId + '/edit_codes',
       type: 'POST',

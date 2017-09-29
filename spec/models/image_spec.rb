@@ -10,8 +10,8 @@
 #  width                           :integer
 #  height                          :integer
 #  meets_instagram_ad_requirements :boolean
+#  duplicated_image_id             :integer
 #
-
 
 require 'rails_helper'
 
