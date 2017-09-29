@@ -57,12 +57,12 @@ describe Comment do
   end
   
   it 'skips the api call if a toxicity_score already exists' do
+    allow(PerspectiveClient).to receive(:calculate_toxicity_score).and_return("0.78")
     comment = create(:comment)
     
-    allow(PerspectiveClient).to receive(:calculate_toxicity_score).and_return("0.78")
     comment.save_toxicity_score
-
     comment.save_toxicity_score
+    
     expect(PerspectiveClient).to have_received(:calculate_toxicity_score).once
   end
 end  

@@ -9,6 +9,7 @@ defaults: &defaults
   aws_access_key_id: ""
   aws_secret_access_key: ""
   dropbox_access_token: ""
+  
 
 development:
   <<: *defaults
