@@ -33,4 +33,4 @@ class Image < ActiveRecord::Base
     s3.delete(s3.bucket(self.url), s3.key(self.url))
   end
 end
-   
+
