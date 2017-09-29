@@ -1,0 +1,6 @@
+- if @messages.count == 0
+  .ui.message
+    .header
+    %p There are no messages, hence no comments
+- else
+  = render partial: 'shared/message_comments', locals: { messages: @messages, experiment: @experiment }
