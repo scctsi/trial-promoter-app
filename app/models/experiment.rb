@@ -20,7 +20,7 @@ class Experiment < ActiveRecord::Base
   include ActionView::Helpers::DateHelper
   include ActiveModel::Validations
 
-  serialize :image_codes, Hash
+
   validates_with ExperimentValidator
   validates :name, presence: true
   validates :message_distribution_start_date, presence: true
@@ -32,6 +32,7 @@ class Experiment < ActiveRecord::Base
   has_many :modifications
   has_and_belongs_to_many :social_media_profiles
 
+  serialize :image_codes, Array
   accepts_nested_attributes_for :message_generation_parameter_set, update_only: true
 
   def to_param

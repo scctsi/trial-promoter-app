@@ -10,6 +10,7 @@
 #  spider                       :boolean
 #  unique                       :boolean
 #  click_meter_tracking_link_id :integer
+#  ip_address                   :text
 #
 
 class Click < ActiveRecord::Base
