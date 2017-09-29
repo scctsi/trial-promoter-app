@@ -104,8 +104,8 @@ RSpec.describe ImagesController, type: :controller do
       
       @image.reload
       expect(@image.code_list.count).to eq(2)
-      expect(@image.code_list[0]).to eq("monochrome")
-      expect(@image.code_list[1]).to eq("color")
+      expect(@image.code_list[0]).to eq("color")
+      expect(@image.code_list[1]).to eq("monochrome")
     end
 
     it 'redirects unauthenticated user to sign-in page' do
