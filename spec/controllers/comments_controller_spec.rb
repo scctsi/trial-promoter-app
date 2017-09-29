@@ -11,12 +11,11 @@ RSpec.describe CommentsController, type: :controller do
     end
     
     it 'adds codes to the comment' do
-      post :edit_codes, id: @comment.id, codes: ["1:color", "2:monochrome"]
+      post :edit_codes, id: @comment.id, codes: ["positive", "negative"]
       
       @comment.reload
-      expect(@comment.codes.count).to eq(2)
-      expect(@comment.codes["1"]).to eq("color")
-      expect(@comment.codes["2"]).to eq("monochrome")
+      expect(@comment.code_list.count).to eq(2)
+      expect(@comment.code_list).to include("positive", "negative")
     end
 
     it 'redirects unauthenticated user to sign-in page' do
