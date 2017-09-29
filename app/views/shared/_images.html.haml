@@ -31,7 +31,10 @@
           %td
             - if current_user.role != :read_only
               = render partial: 'shared/forms/input_image_codes.html.haml', locals: { image: image, experiment: experiment }
+<<<<<<< HEAD
     %tfoot
+=======
+>>>>>>> add-coding-interface
       %tr
         %th{ :colspan => "5" }
           Number of invalid images (for instagram ads): #{invalid_image_count}
