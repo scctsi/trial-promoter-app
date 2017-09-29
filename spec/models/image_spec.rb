@@ -36,13 +36,12 @@ RSpec.describe Image do
   it 'is taggable on experiments with multiple tags (some of them multi-word tags)' do
     image = create(:image)
 
-    image.experiment_list.add('tcors', 'tcors 2')
+    image.experiment_list.add(['tcors', 'tcors 2'])
     image.save
     image.reload
 
     expect(image.experiments.count).to eq(2)
-    expect(image.experiments[0].name).to eq('tcors')
-    expect(image.experiments[1].name).to eq('tcors 2')
+    expect(image.experiment_list).to eq(['tcors','tcors 2']) 
   end
 
   it 'has a scope for finding images that belong to an experiment' do

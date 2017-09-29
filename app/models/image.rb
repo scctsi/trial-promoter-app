@@ -10,7 +10,6 @@
 #  width                           :integer
 #  height                          :integer
 #  meets_instagram_ad_requirements :boolean
-
 #  duplicated_image_id             :integer
 #
 
@@ -35,8 +34,3 @@ class Image < ActiveRecord::Base
     s3.delete(s3.bucket(self.url), s3.key(self.url)) 
   end
 end
-<<<<<<< HEAD
-
-=======
-   
->>>>>>> perspective
