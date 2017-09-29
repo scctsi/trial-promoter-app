@@ -4,7 +4,7 @@ require 'yaml'
 RSpec.describe PerspectiveClient do
   before do
     secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
-    allow(Setting).to receive(:[]).with(:google_perspective_api_key).and_return(secrets['google_perspective_access_key'])
+    allow(Setting).to receive(:[]).with(:google_perspective_api_key).and_return(secrets['google_perspective_api_key'])
     @text = "This message is stupid."
   end
 
