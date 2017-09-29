@@ -1,0 +1,11 @@
+%div{ :id => "edit-comment-codes-#{comment.id}" }
+  %select.ui.fluid.multiple.selection.dropdown.edit-comment-codes{:multiple => "multiple", "data-comment-id" => "#{comment.id}"}
+    - experiment.comment_codes.each do |key, code|
+      - if comment.codes.has_value?(code)
+        %option{"value"=>"#{key}:#{code}", :selected => "selected"} #{code}
+      - else
+        %option{"value"=>"#{key}:#{code}"} #{code}
+  .ui.button.fluid.disabled.save-comment-codes{'data-comment-id': comment.id}
+    %i.save.icon 
+    Save
+      

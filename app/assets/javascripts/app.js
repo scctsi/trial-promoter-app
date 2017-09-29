@@ -578,22 +578,37 @@ $(document).ready(function() {
       if (imageCodes != null) {
         imageCodes.join(",");
       }
-      saveImageCodes(imageId, imageCodes, $inputForm, $saveButton);
+      saveCodes('image', imageId, imageCodes, $inputForm, $saveButton);
       event.preventDefault();
     })
   }
   
-  function saveImageCodes(imageId, imageCodes, $inputForm, $saveButton) {
-    console.log(imageCodes);
+  function setUpEditCommentCodesFormEvents() {
+    $('.button.save-comment-codes').click(function(event){
+      var $inputForm = $(this).find('.dropdown.edit-comment-codes');
+      var commentCodes = $(this).parent().find('.dropdown.edit-comment-codes').dropdown("get value");
+      var commentId = $(this).data('comment-id');
+      var $saveButton = $(this).parent().find('.button.save-comment-codes');
+      if (commentCodes != null) {
+        commentCodes.join(",");
+      }
+      saveCodes('comment', commentId, commentCodes, $inputForm, $saveButton);
+      event.preventDefault();
+    })
+  }
+
+  function saveCodes(model, modelId, modelCodes, $inputForm, $saveButton) {
     $.ajax({
-      url:  '/images/' + imageId + '/edit_codes',
+      url:  '/' + model + 's/' + modelId + '/edit_codes',
       type: 'POST',
-      data: { codes: imageCodes  },
-      success: function(imageCodes) {
+      data: { codes: modelCodes  },
+      success: function(modelCodes) {
         $saveButton.addClass('disabled');
       }
     });
   }
+  
+  
 
   function setUpSaveNoteFormEvents() {
     $('.button.save-note').click(function(event){
@@ -667,6 +682,7 @@ $(document).ready(function() {
   setUpSaveCampaignIdFormEvents();
   setUpEditCampaignIdLabelEvents();
   setUpEditImageCodesFormEvents();
+  setUpEditCommentCodesFormEvents();
   setUpSaveNoteFormEvents();
   setUpEditNoteEvents();
   setUpAjaxPagination();
@@ -695,6 +711,9 @@ $(document).ready(function() {
     onChange: function() {
       var imageId = $(this).data("image-id");
       $("#edit-image-codes-" + imageId).find('.save-image-codes').first().removeClass('disabled');
+      
+      var commentId = $(this).data("comment-id");
+      $("#edit-comment-codes-" + commentId).find('.save-comment-codes').first().removeClass('disabled');
     }
   });
 
