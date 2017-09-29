@@ -16,6 +16,7 @@
 require 'rails_helper'
 
 RSpec.describe Image do
+  it { is_expected.to serialize(:codes).as(Hash) }
   it { is_expected.to validate_presence_of :url }
   it { is_expected.to validate_presence_of :original_filename }
   it { is_expected.to have_many :messages }
@@ -89,12 +90,13 @@ RSpec.describe Image do
   it 'is taggable on experiments with multiple tags (some of them multi-word tags)' do
     image = create(:image)
 
-    image.experiment_list.add(['tcors', 'tcors 2'])
+    image.experiment_list.add('tcors', 'tcors 2')
     image.save
     image.reload
 
     expect(image.experiments.count).to eq(2)
-    expect(image.experiment_list).to include('tcors','tcors 2') 
+    expect(image.experiments[0].name).to eq('tcors')
+    expect(image.experiments[1].name).to eq('tcors 2')
   end
 
   it 'has a scope for finding images that belong to an experiment' do
@@ -132,4 +134,14 @@ RSpec.describe Image do
 
     expect(s3_client_double).to have_received(:delete).with('bucket', 'key')
   end
+
+  it 'maps an array of codes to a hash with the correct key and value' do
+    image = create(:image)
+    codes = ["0:color","2:portrait"]
+    
+    image.map_codes(codes) 
+
+    image.reload
+    expect(image.codes).to eq({"0" => "color", "2" => "portrait"}) 
+  end 
 end
