@@ -13,11 +13,10 @@
 #
 
 class Comment < ActiveRecord::Base
-  include Codeable
+  acts_as_taggable_on :codes
+
   belongs_to :message
   
-  serialize :codes, Hash
- 
   def process(filename)
     comments_spreadsheet = ExcelFileReader.new.read(filename) if filename.ends_with?('.xlsx') 
     messages = Message.all

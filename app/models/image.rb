@@ -14,7 +14,6 @@
 #
 
 class Image < ActiveRecord::Base
-  include Codeable
   acts_as_ordered_taggable_on :experiments
   acts_as_taggable_on :codes
 
