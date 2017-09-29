@@ -12,6 +12,7 @@
 #  updated_at      :datetime         not null
 #
 
+
 class ClickMeterTrackingLink < ActiveRecord::Base
   belongs_to :message
   validates :message, presence: true

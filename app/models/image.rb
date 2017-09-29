@@ -10,10 +10,12 @@
 #  width                           :integer
 #  height                          :integer
 #  meets_instagram_ad_requirements :boolean
+
 #  duplicated_image_id             :integer
 #
 
 class Image < ActiveRecord::Base
+  include Codeable
   acts_as_ordered_taggable_on :experiments
   acts_as_taggable_on :codes
 
@@ -30,7 +32,11 @@ class Image < ActiveRecord::Base
 
   def delete_image_from_s3
     s3 = S3Client.new
-    s3.delete(s3.bucket(self.url), s3.key(self.url))
+    s3.delete(s3.bucket(self.url), s3.key(self.url)) 
   end
 end
+<<<<<<< HEAD
 
+=======
+   
+>>>>>>> perspective

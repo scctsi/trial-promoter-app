@@ -35,6 +35,11 @@ RSpec.describe Experiment, type: :model do
   it { is_expected.to have_many(:analytics_files) }
   it { is_expected.to have_many(:modifications) }
   it { is_expected.to have_and_belong_to_many :social_media_profiles }
+<<<<<<< HEAD
+=======
+  it { is_expected.to serialize(:image_codes).as(Hash) }
+  it { is_expected.to serialize(:comment_codes).as(Hash) }
+>>>>>>> perspective
 
   it 'returns an array of all possible times in a day' do 
     expect(Experiment.allowed_times.count).to be(12 * 60 * 2)
