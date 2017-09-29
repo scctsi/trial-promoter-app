@@ -94,7 +94,7 @@ RSpec.describe Image do
     image.reload
 
     expect(image.experiments.count).to eq(2)
-    expect(image.experiment_list).to eq(['tcors','tcors 2']) 
+    expect(image.experiment_list).to include('tcors','tcors 2') 
   end
 
   it 'has a scope for finding images that belong to an experiment' do
