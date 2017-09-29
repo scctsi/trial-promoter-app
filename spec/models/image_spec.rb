@@ -16,7 +16,6 @@
 require 'rails_helper'
 
 RSpec.describe Image do
-  it { is_expected.to serialize(:codes).as(Hash) }
   it { is_expected.to validate_presence_of :url }
   it { is_expected.to validate_presence_of :original_filename }
   it { is_expected.to have_many :messages }
