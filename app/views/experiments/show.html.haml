@@ -22,6 +22,8 @@
     - if current_user.role.include?('administrator')
       %a{ class: 'item', 'data-tab': 'analytics-file-uploads' }
         Analytics file uploads
+      %a{ class: 'item', 'data-tab': 'message-comments' }
+        Message comments
   .ui.bottom.attached.tab.segment{ 'data-tab': 'setup' }
     = render partial: 'experiments/tabs/setup'
   .ui.bottom.attached.tab.segment{ 'data-tab': 'images' }
@@ -34,3 +36,5 @@
     = render partial: 'experiments/tabs/dashboard'
   .ui.bottom.attached.tab.segment{ 'data-tab': 'analytics-file-uploads' }
     = render partial: 'experiments/tabs/analytics_file_uploads'
+  .ui.bottom.attached.tab.segment{ 'data-tab': 'message-comments' }
+    = render partial: 'experiments/tabs/message_comments'

@@ -12,8 +12,8 @@
 #  message_generating_id   :integer
 #  message_generating_type :string
 #  processing_status       :string
+#  analytics_file_set_id   :integer
 #
-
 
 require 'rails_helper'
 
@@ -59,7 +59,7 @@ RSpec.describe AnalyticsFile do
     @analytics_file.process
 
     expect(@excel_file_reader).to have_received(:read).with(@analytics_file.url)
-    expect(AnalyticsDataParser).to have_received(:convert_to_parseable_data).with(@csv_content, @analytics_file.social_media_profile.platform, @analytics_file.social_media_profile.allowed_mediums[0])
+    expect(AnalyticsDataParser).to have_received(:convert_to_parseable_data).with(@excel_content, @analytics_file.social_media_profile.platform, @analytics_file.social_media_profile.allowed_mediums[0])
     expect(AnalyticsDataParser).to have_received(:parse).with(@parseable_data)
     expect(AnalyticsDataParser).to have_received(:store).with(@parsed_data, @analytics_file.social_media_profile.platform)
     @analytics_file.reload
