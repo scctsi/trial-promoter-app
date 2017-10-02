@@ -2,10 +2,11 @@ class ImagesController < ApplicationController
   def edit_codes
     image = Image.find(params[:id])
     authorize image
-    image.map_codes(params[:codes])
-
+    image.code_list = (params[:codes])
+    image.save
+    
     render json: { }    
-  end
+  end 
   
   def add
     authorize Image
