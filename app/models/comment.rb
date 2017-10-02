@@ -32,11 +32,7 @@ class Comment < ActiveRecord::Base
       comments_spreadsheet.each do |comments_row| 
         #some comments have a newline character that needs to be removed
         clean_comment = comments_row[message_index].chomp
-<<<<<<< HEAD
         if !message.buffer_update.nil? && message.buffer_update.published_text == clean_comment 
-=======
-        if message.buffer_update.published_text == clean_comment 
->>>>>>> development
           message.comments << Comment.create(comment_text: comments_row[comment_index], comment_date: comments_row[comment_date_index], commentator_username: comments_row[comment_username_index])
         end 
       end
