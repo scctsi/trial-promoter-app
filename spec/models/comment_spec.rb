@@ -46,7 +46,6 @@ describe Comment do
     expect(@messages[0].comments.count).to eq(1)
     expect(@messages[1].comments.count).to eq(2)
     expect(@messages[2].comments.count).to eq(0)
-    
     expect(@messages[3].comments.count).to eq(0)    
   end
   
