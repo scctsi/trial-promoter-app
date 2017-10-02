@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170920210644) do
+ActiveRecord::Schema.define(version: 20170929205952) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -101,6 +101,16 @@ ActiveRecord::Schema.define(version: 20170920210644) do
     t.text     "hashtags"
   end
 
+  create_table "comments", force: :cascade do |t|
+    t.date     "comment_date"
+    t.text     "comment_text"
+    t.text     "commentator_username"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+    t.string   "message_id"
+    t.string   "toxicity_score"
+  end
+
   create_table "daily_metric_parser_results", force: :cascade do |t|
     t.date     "file_date"
     t.text     "file_path"
@@ -156,7 +166,8 @@ ActiveRecord::Schema.define(version: 20170920210644) do
     t.text     "instagram_posting_times"
     t.integer  "click_meter_group_id"
     t.integer  "click_meter_domain_id"
-    t.string   "image_codes"
+    t.text     "comment_codes"
+    t.text     "image_codes"
   end
 
   create_table "experiments_social_media_profiles", force: :cascade do |t|
@@ -188,7 +199,6 @@ ActiveRecord::Schema.define(version: 20170920210644) do
     t.integer  "width"
     t.integer  "height"
     t.boolean  "meets_instagram_ad_requirements"
-    t.text     "codes"
     t.integer  "duplicated_image_id"
   end
 

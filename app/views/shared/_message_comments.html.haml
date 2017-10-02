@@ -1,0 +1,48 @@
+.ui.right.floated.segment.object-count
+  %h3.ui.header
+    = page_entries_info messages
+%br
+%br
+- grouped_messages = messages.group_by{ |message| message.scheduled_date_time.to_date }
+- grouped_messages.each do |scheduled_date, messages_by_scheduled_date|
+  %h3.ui.dividing.header
+  - grouped_messages_by_platform = messages_by_scheduled_date.group_by(&:platform)
+  - grouped_messages_by_platform.each do |platform, messages_by_platform|
+    %h4.ui.header
+      %i{ :class => "#{platform.to_s} icon"}
+      .content
+        = platform.to_s.titleize
+%table.ui.celled.striped.table
+  %thead
+    %tr
+      %th.center.aligned Message
+      %th.center.aligned Message date
+      %th.center.aligned Comments
+      %th.center.aligned Comment date
+      %th.center.aligned Codes
+      %th.center.aligned Toxicity score
+  %tbody
+  - messages.each do |message|
+    - message.comments.each do |comment|
+      %tr
+        %td
+          = message.content
+        %td
+          - if message.buffer_update 
+            = message.buffer_update.sent_from_date_time.strftime("%m/%d/%Y")
+          - else
+            = message.scheduled_date_time.strftime("%m/%d/%Y")
+        %td
+          = comment.comment_text
+        %td
+          - if comment.comment_date
+            = comment.comment_date.strftime("%m/%d/%Y")
+          - else
+            N/A
+        %td
+          - if current_user.role != :read_only
+            = render partial: 'shared/forms/input_comment_codes.html.haml', locals: { experiment: experiment, comment: comment }
+        %td
+          - if current_user.role != :read_only
+            = comment.toxicity_score
+          
