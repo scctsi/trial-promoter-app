@@ -28,7 +28,7 @@ describe Comment do
     @messages[3].buffer_update =nil
     @messages[3].save
     @filename = "#{Rails.root}/spec/fixtures/sample_comments.xlsx"
-  end
+  end 
 
   it 'processes a file of comments' do
 
@@ -45,10 +45,10 @@ describe Comment do
     
     expect(@messages[0].comments.count).to eq(1)
     expect(@messages[1].comments.count).to eq(2)
-    expect(@messages[2].comments.count).to eq(0)
+    expect(@messages[2].comments.count).to eq(0)   
     expect(@messages[3].comments.count).to eq(0)    
-  end
-  
+  end 
+
   it 'saves the toxicity_score to the comment' do
     comment = create(:comment)
     
