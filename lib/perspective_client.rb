@@ -3,7 +3,7 @@ require 'uri'
 
 class PerspectiveClient
   def self.calculate_toxicity_score(text)
-    text = text.gsub(/"/, "'")
+    text = text.tr('"', "'")
     access_token = Setting[:google_perspective_api_key]
 
     uri = URI.parse("https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze?key=#{access_token}")
