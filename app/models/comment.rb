@@ -31,7 +31,7 @@ class Comment < ActiveRecord::Base
     orphan_comments = []
     messages.each do |message|  
       comments_spreadsheet.each do |comments_row| 
-        #some comments have a newline character in the message text that needs to be removed
+        #some comments have a newline/ space/ carriage return character in the message text that needs to be removed
         clean_message = comments_row[message_index].squish
         orphan_comments << clean_message
         if !message.buffer_update.nil? && message.buffer_update.published_text.squish.include?(clean_message) 
