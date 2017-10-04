@@ -18,35 +18,39 @@ describe Comment do
   it { is_expected.to belong_to :message }
 
   before do
-    @messages = create_list(:message, 4, :platform => :facebook)
+    @messages = create_list(:message, 5, :platform => :facebook)
     @messages.each{|message| message.buffer_update = create(:buffer_update)}
     @messages[0].buffer_update.published_text = "#Tobacco use causes 1300 US deaths daily-more than AIDS, alcohol, car accidents, homicides & illegal drugs combined http://bit.ly/2pyWcHR"
     @messages[1].buffer_update.published_text = "#Smoking damages your DNA, which can cause cancer almost anywhere, not just your lungs. http://bit.ly/2oKGOYW"
     @messages[2].buffer_update.published_text = ""
-    @comment = create(:comment) 
+    @messages[4].buffer_update.published_text = "Hydrogen cyanide is found in rat poison. It’s also in #cigarette smoke.  
+    
+    http://bit.ly/2t2KVBd"
     @messages.each{ |message| message.buffer_update.save }
     @messages[3].buffer_update =nil
     @messages[3].save
-    @filename = "#{Rails.root}/spec/fixtures/sample_comments.xlsx"
+    @filepath = "#{Rails.root}/spec/fixtures/facebook_comments2.xlsx"
   end 
 
   it 'processes a file of comments' do
 
-    @comment.process(@filename)
+    Comment.process(@filepath)
     expect(@messages[0].comments.count).to eq(1)
     expect(@messages[1].comments.count).to eq(2)
     expect(@messages[2].comments.count).to eq(0)
   end
   
   it 'does not save duplicate comments' do
-    @comment.process(@filename)
-    @comment.process(@filename)
+    Comment.process(@filepath)
+    Comment.process(@filepath)
 
     
     expect(@messages[0].comments.count).to eq(1)
     expect(@messages[1].comments.count).to eq(2)
     expect(@messages[2].comments.count).to eq(0)   
-    expect(@messages[3].comments.count).to eq(0)    
+    expect(@messages[3].comments.count).to eq(0)
+    expect(@messages[4].comments.count).to eq(1)    
+    expect(@messages[4].comments.first.comment_text).to eq("Very gross")    
   end 
 
   it 'saves the toxicity_score to the comment' do
