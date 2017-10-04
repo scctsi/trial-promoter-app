@@ -5,12 +5,15 @@ class ExcelFileReader
     parsed_excel_content = []
 
     # Use the extension option if the extension is ambiguous.
-    xlsx = Roo::Spreadsheet.open(url, extension: :xlsx)
-    xlsx.each do |row|
-      parsed_excel_content << row
+    ods = Roo::Spreadsheet.open(url, extension: :xlsx)
+    
+    ods.each_with_pagename do |name, sheet|
+      sheet.each do |row|
+        parsed_excel_content << row
+      end
     end
 
-    parsed_excel_content
+    parsed_excel_content 
   end
   
   def self.read_from_dropbox(dropbox_file_path)
