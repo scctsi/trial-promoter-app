@@ -12,8 +12,8 @@
 #  message_generating_id   :integer
 #  message_generating_type :string
 #  processing_status       :string
+#  analytics_file_set_id   :integer
 #
-
 
 class AnalyticsFile < ActiveRecord::Base
   extend Enumerize

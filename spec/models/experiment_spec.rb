@@ -13,8 +13,9 @@
 #  instagram_posting_times         :text
 #  click_meter_group_id            :integer
 #  click_meter_domain_id           :integer
+#  comment_codes                   :string
+#  image_codes                     :text
 #
-
 
 require 'rails_helper'
 
@@ -32,9 +33,10 @@ RSpec.describe Experiment, type: :model do
   it { is_expected.to have_one(:data_dictionary) }
   it { is_expected.to have_many(:messages) }
   it { is_expected.to have_many(:analytics_files) }
-  it { is_expected.to have_many(:modifications) }
+  it { is_expected.to have_many(:modifications) } 
   it { is_expected.to have_and_belong_to_many :social_media_profiles }
-  it { is_expected.to serialize(:image_codes).as(Hash) }
+  it { is_expected.to serialize(:image_codes).as(Array) }
+  it { is_expected.to serialize(:comment_codes).as(Array) }
 
   it 'returns an array of all possible times in a day' do 
     expect(Experiment.allowed_times.count).to be(12 * 60 * 2)

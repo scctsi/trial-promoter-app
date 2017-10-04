@@ -12,8 +12,6 @@
 #  updated_at      :datetime         not null
 #
 
-require 'rails_helper'
-
 RSpec.describe ClickMeterTrackingLink, type: :model do
   it { is_expected.to belong_to(:message) }
   it { is_expected.to validate_presence_of(:message) }
@@ -105,14 +103,14 @@ RSpec.describe ClickMeterTrackingLink, type: :model do
       expect((@click_meter_tracking_link.get_clicks_by_date(DateTime.parse("2 May 2017"))).count).to eq(1)
     end
 
-    it 'returns 0 for a given date in which there are no human clicks' do 
+    it 'returns 0 for a given date in which there are no human clicks' do
       expect((@click_meter_tracking_link.get_clicks_by_date(DateTime.parse("1 May 2017"))).count).to eq(0)
-    end 
+    end
   end
 
   describe "methods that get number of clicks" do
-    before do 
-      
+    before do
+
       create(:click, click_time: ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,6,1,17,0,28), spider: '1', unique: '1', click_meter_tracking_link: @click_meter_tracking_link)
       create(:click, click_time: ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,6,1,17,0,41), spider: '1', unique: '1', click_meter_tracking_link: @click_meter_tracking_link)
       create(:click, click_time: ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,6,1,12,3,33), spider: '0', unique: '1', click_meter_tracking_link: @click_meter_tracking_link)
@@ -131,9 +129,9 @@ RSpec.describe ClickMeterTrackingLink, type: :model do
     end
 
     it 'get the total clicks for each of the 3 days after the message is published' do
-      clicks = @click_meter_tracking_link.get_daily_click_totals 
+      clicks = @click_meter_tracking_link.get_daily_click_totals
       expect(clicks[0]).to eq(3)
-      expect(clicks[1]).to eq(1) 
+      expect(clicks[1]).to eq(1)
       expect(clicks[2]).to eq(1)
     end
 
