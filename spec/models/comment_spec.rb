@@ -18,7 +18,7 @@ describe Comment do
   it { is_expected.to belong_to :message }
 
   before do
-    @messages = create_list(:message, 6, :platform => :facebook)
+    @messages = create_list(:message, 6, :platform => :facebook, :publish_status => :published_to_social_network)
     @messages.each{|message| message.buffer_update = create(:buffer_update)}
     @messages[0].buffer_update.published_text = "#Tobacco use causes 1300 US deaths daily-more than AIDS, alcohol, car accidents, homicides & illegal drugs combined http://bit.ly/2pyWcHR"
     @messages[1].buffer_update.published_text = "#Smoking damages your DNA, which can cause cancer almost anywhere, not just your lungs. http://bit.ly/2oKGOYW"

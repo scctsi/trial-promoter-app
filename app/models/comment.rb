@@ -19,11 +19,9 @@ class Comment < ActiveRecord::Base
   
   def self.process(filepath)
     comments_spreadsheet = ExcelFileReader.new.read(filepath) if filepath.ends_with?('.xlsx') 
-    messages = Message.all
+    messages = Message.where(publish_status: :published_to_social_network)
     #delete comments to avoid repeats from being saved 
-    messages.each do |message|
-      message.comments.destroy_all
-    end
+    Comment.destroy_all
     message_index = comments_spreadsheet[0].index("Message")
     comment_index = comments_spreadsheet[0].index("Comment")
     comment_date_index = comments_spreadsheet[0].index("Date of Comment")
