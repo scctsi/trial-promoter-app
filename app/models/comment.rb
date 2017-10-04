@@ -17,7 +17,7 @@ class Comment < ActiveRecord::Base
 
   belongs_to :message
   
-  def process(filename)
+  def self.process(filename)
     comments_spreadsheet = ExcelFileReader.new.read(filename) if filename.ends_with?('.xlsx') 
     messages = Message.all
     #delete comments to avoid repeats from being saved
@@ -31,12 +31,12 @@ class Comment < ActiveRecord::Base
     orphan_comments = []
     messages.each do |message|  
       comments_spreadsheet.each do |comments_row| 
-        #some comments have a newline character that needs to be removed
-        clean_comment = comments_row[message_index].chomp
-        orphan_comments << clean_comment
-        if !message.buffer_update.nil? && message.buffer_update.published_text == clean_comment 
+        #some comments have a newline/ space/ carriage return character in the message text that needs to be removed
+        clean_message = comments_row[message_index].squish
+        orphan_comments << clean_message
+        if !message.buffer_update.nil? && message.buffer_update.published_text.squish.include?(clean_message) 
           message.comments << Comment.create(comment_text: comments_row[comment_index], comment_date: comments_row[comment_date_index], commentator_username: comments_row[comment_username_index])
-          orphan_comments -= [clean_comment]
+          orphan_comments -= [clean_message]
         end 
       end
       message.save
