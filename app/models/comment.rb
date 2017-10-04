@@ -17,8 +17,13 @@ class Comment < ActiveRecord::Base
 
   belongs_to :message
   
+<<<<<<< HEAD
   def self.process(filepath)
     comments_spreadsheet = ExcelFileReader.new.read(filepath) if filepath.ends_with?('.xlsx') 
+=======
+  def self.process(filename)
+    comments_spreadsheet = ExcelFileReader.new.read(filename) if filename.ends_with?('.xlsx') 
+>>>>>>> development
     messages = Message.all
     #delete comments to avoid repeats from being saved 
     messages.each do |message|
