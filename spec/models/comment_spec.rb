@@ -34,8 +34,8 @@ describe Comment do
   end 
 
   it 'processes a file of comments' do
-
     Comment.process(@filepath)
+    
     expect(@messages[0].comments.count).to eq(1)
     expect(@messages[1].comments.count).to eq(2)
     expect(@messages[2].comments.count).to eq(0)
@@ -46,7 +46,6 @@ describe Comment do
     Comment.process(@filepath)
     Comment.process(@filepath)
 
-    
     expect(@messages[0].comments.count).to eq(1)
     expect(@messages[1].comments.count).to eq(2)
     expect(@messages[2].comments.count).to eq(0)   
