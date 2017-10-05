@@ -47,6 +47,7 @@ class Comment < ActiveRecord::Base
     orphan_comments.each do |comment| 
       logger.debug { "The comment: " + comment + " could not find a matching message." }
     end
+    @comments = Comment.all
   end
   
   def save_toxicity_score
