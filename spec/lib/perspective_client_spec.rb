@@ -4,7 +4,11 @@ require 'yaml'
 RSpec.describe PerspectiveClient do
   before do
     secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
+<<<<<<< HEAD
     allow(Setting).to receive(:[]).with(:google_perspective_api_key).and_return(secrets['google_perspective_api_key'])
+=======
+    allow(Setting).to receive(:[]).with(:google_perspective_api_key).and_return(secrets['google_perspective_access_key'])
+>>>>>>> acts-as-codeable
     @text = "This message is stupid."
   end
 
@@ -15,6 +19,7 @@ RSpec.describe PerspectiveClient do
       end
       expect(@toxicity_score).to eq("0.92")
     end
+<<<<<<< HEAD
     
     it 'returns the score from the Google Perspective API when comment has double quotes within the string' do
       VCR.use_cassette 'perspective_client/calculate_toxicity_score_for_double_quotes' do
@@ -22,6 +27,8 @@ RSpec.describe PerspectiveClient do
       end
       expect(@toxicity_score).to eq("0.31")
     end
+=======
+>>>>>>> acts-as-codeable
   end
 end 
    

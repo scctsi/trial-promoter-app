@@ -40,6 +40,10 @@ describe Comment do
     @comment.process(@filename)
     @comment.process(@filename)
 
+<<<<<<< HEAD
+=======
+    
+>>>>>>> acts-as-codeable
     expect(@messages[0].comments.count).to eq(1)
     expect(@messages[1].comments.count).to eq(2)
     expect(@messages[2].comments.count).to eq(0)    
