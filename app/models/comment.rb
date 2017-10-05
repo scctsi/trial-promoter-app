@@ -16,7 +16,7 @@ class Comment < ActiveRecord::Base
   acts_as_taggable_on :codes
 
   belongs_to :message
-  
+
   def self.process(filepath)
     comments_spreadsheet = ExcelFileReader.new.read(filepath) if filepath.ends_with?('.xlsx') 
     #only get messages that were actually published
