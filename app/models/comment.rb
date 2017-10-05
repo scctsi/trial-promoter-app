@@ -39,7 +39,7 @@ class Comment < ActiveRecord::Base
           if published_text.include?(clean_message) 
             message.comments << Comment.create(comment_text: comments_row[comment_index], comment_date: comments_row[comment_date_index], commentator_username: comments_row[comment_username_index])
             orphan_comments -= [clean_message]
-          end 
+          end
         end
         message.save
       end
