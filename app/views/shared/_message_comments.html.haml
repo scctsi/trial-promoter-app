@@ -1,3 +1,6 @@
+.ui.right.floated.segment.object-count
+  %h3.ui.header
+    = page_entries_info comments
 %table.ui.celled.striped.table
   %thead
     %tr
@@ -8,27 +11,23 @@
       %th.center.aligned Codes
       %th.center.aligned Toxicity score
   %tbody
-  - messages.each do |message|
-    - message.comments.each do |comment|
-      %tr
-        %td
-          = message.content
-        %td
-          - if message.buffer_update 
-            = message.buffer_update.sent_from_date_time.strftime("%m/%d/%Y")
-          - else
-            = message.scheduled_date_time.strftime("%m/%d/%Y")
-        %td
-          = comment.comment_text
-        %td
-          - if comment.comment_date
-            = comment.comment_date.strftime("%m/%d/%Y")
-          - else
-            N/A
-        %td
-          - if current_user.role != :read_only
-            = render partial: 'shared/forms/input_comment_codes.html.haml', locals: { experiment: experiment, comment: comment }
-        %td
-          - if current_user.role != :read_only
-            = comment.toxicity_score
-          
+  - @comments.each do |comment|
+    %tr 
+      %td
+        = @messages.find(comment.message_id).content
+      %td
+        = @messages.find(comment.message_id).scheduled_date_time.strftime("%m/%d/%Y")
+      %td
+        = comment.comment_text
+      %td
+        - if comment.comment_date
+          = comment.comment_date.strftime("%m/%d/%Y")
+        - else
+          N/A
+      %td
+        - if current_user.role != :read_only
+          = render partial: 'shared/forms/input_comment_codes.html.haml', locals: { experiment: experiment, comment: comment }
+      %td
+        - if current_user.role != :read_only
+          = comment.toxicity_score
+        
