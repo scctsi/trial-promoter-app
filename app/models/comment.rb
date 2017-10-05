@@ -19,20 +19,28 @@ class Comment < ActiveRecord::Base
 
   def self.process(filepath)
     comments_spreadsheet = ExcelFileReader.new.read(filepath) if filepath.ends_with?('.xlsx') 
-    #only get messages that were actually published
+    comments_content = []
+
+    comments_spreadsheet.each do |comments_row| 
+      comments_content << comments_row
+    end
+    
+    # Only get messages that were actually published
     messages = Message.where(publish_status: :published_to_social_network)
-    #delete comments to avoid repeats from being saved
-    #TODO fix this so it only deletes comments associated with the given experiment
+    # Delete comments to avoid repeats from being saved
+    # TODO fix this so it only deletes comments associated with the given experiment
     Comment.destroy_all
     message_index = comments_spreadsheet[0].index("Message")
     comment_index = comments_spreadsheet[0].index("Comment")
     comment_date_index = comments_spreadsheet[0].index("Date of Comment")
     comment_username_index = comments_spreadsheet[0].index("Commentator Username")
     orphan_comments = []
+    
+    
     messages.each do |message|  
       if !message.buffer_update.nil? 
         published_text = message.buffer_update.published_text.squish
-        comments_spreadsheet.each do |comments_row| 
+        comments_content.each do |comments_row| 
           #some comments have a newline/ space/ carriage return character in the message text that needs to be removed
           clean_message = comments_row[message_index].squish
           orphan_comments << clean_message
