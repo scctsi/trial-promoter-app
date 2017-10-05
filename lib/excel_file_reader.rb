@@ -1,14 +1,20 @@
 require 'roo'
 
 class ExcelFileReader
-  def read(url)
+  def read(url, read_all_sheets = false)
     parsed_excel_content = []
 
     # Use the extension option if the extension is ambiguous.
     ods = Roo::Spreadsheet.open(url, extension: :xlsx)
     
-    ods.each_with_pagename do |name, sheet|
-      sheet.each do |row|
+    if read_all_sheets
+      ods.each_with_pagename do |name, sheet|
+        sheet.each do |row|
+          parsed_excel_content << row
+        end
+      end
+    else
+      ods.each do |row|
         parsed_excel_content << row
       end
     end
