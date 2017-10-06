@@ -1,4 +1,4 @@
-DataReportMapper
+class DataReportMapper
   def self.database_id(message)
     return message.id
   end
@@ -262,7 +262,7 @@ DataReportMapper
   end
 
   def self.total_sessions_experiment(message)
-    return message.get_sessions(IP_EXCLUSION_LIST).count
+    return message.get_sessions(Experiment::IP_EXCLUSION_LIST).count
   end
   
   def self.total_website_clicks_day_1(message)
@@ -309,7 +309,8 @@ DataReportMapper
   end
 
   def self.get_sessions(message, start, finish)
-    sessions = message.get_sessions(IP_EXCLUSION_LIST)
+
+    sessions = message.get_sessions(Experiment::IP_EXCLUSION_LIST)
     return sessions.select{|session| session.started_at.between?(start, finish)}
   end
   
