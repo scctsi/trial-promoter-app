@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'google/apis/analytics_v3'
 
-RSpec.describe TcorsDataReportMapper do
+RSpec.describe DataReportMapper do
   before do
     @message = create(:message)
     @message_null = create(:message)

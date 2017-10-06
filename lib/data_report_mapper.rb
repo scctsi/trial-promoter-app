@@ -1,6 +1,4 @@
-class TcorsDataReportMapper
-  IP_EXCLUSION_LIST = ['128.125.77.139', '128.125.132.141', '207.151.120.4', '128.125.98.4', '128.125.109.224', '128.125.98.2', '68.181.124.25', '162.225.230.188', '216.4.202.66', '68.181.207.160', '2605:e000:8681:4900:a5c8:66d1:4753:fcc0', '68.101.127.18', '2602:306:80c8:88a0:89a:a5f6:7641:321c' ]
-
+DataReportMapper
   def self.database_id(message)
     return message.id
   end
@@ -26,7 +24,7 @@ class TcorsDataReportMapper
     return message.message_template.experiment_variables['stem_id']
   end
 
-  def self.fda_campaign(message)
+  def self.fda_campaign(message) 
     fda_campaign_mapper = { 'FE' => '1', 'TFL' => '2' }
     return fda_campaign_mapper[message.message_template.experiment_variables['fda_campaign']]
   end
