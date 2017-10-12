@@ -6,9 +6,9 @@ RSpec.describe DataReportMapper do
     @message = build(:message)
     # @message_null = build(:message)
     # @message.note = "Note"
-    @message.scheduled_date_time =  DateTime.new(2017, 4, 30, 12, 0, 0)
+    @message.scheduled_date_time =  ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017, 4, 30, 12, 0, 0)
     @message.buffer_update = build(:buffer_update)
-    # @message.buffer_update.sent_from_date_time = DateTime.new(2017, 4, 30, 12, 1, 0)
+    # @message.buffer_update.sent_from_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017, 4, 30, 12, 1, 0)
     # @message.social_network_id = "870429890541228033"
     # @message.campaign_id = "202"
     visits_day_1 = build_list(:visit, 3, utm_content: @message.to_param, started_at: @message.scheduled_date_time + 1.hour)
@@ -114,10 +114,10 @@ RSpec.describe DataReportMapper do
     # Message scheduled at noon 
     expect(DataReportMapper.day_experiment(@message)).to eq(12)
     # Message scheduled just before midnight
-    @message.scheduled_date_time = DateTime.new(2017,4,30,23,59,0)
+    @message.scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,4,30,23,59,0)
     expect(DataReportMapper.day_experiment(@message)).to eq(12)
     # Message scheduled just after midnight of previous day
-    @message.scheduled_date_time = DateTime.new(2017,4,30,0,0,1)
+    @message.scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,4,30,0,0,1)
     expect(DataReportMapper.day_experiment(@message)).to eq(12)
   end
 
@@ -125,7 +125,7 @@ RSpec.describe DataReportMapper do
     @message.medium = :ad
     @message.platform = :twitter
     @message.backdated = true
-    @message.original_scheduled_date_time = DateTime.new(2017, 5, 5, 12, 0, 0)
+    @message.original_scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017, 5, 5, 12, 0, 0)
     
     expect(DataReportMapper.day_experiment(@message)).to eq(17)
   end
@@ -142,7 +142,7 @@ RSpec.describe DataReportMapper do
     @message.medium = :ad
     @message.platform = :twitter
     @message.backdated = true
-    @message.original_scheduled_date_time = DateTime.new(2017, 5, 5, 12, 0, 0)
+    @message.original_scheduled_date_time = ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017, 5, 5, 12, 0, 0)
     
     expect(DataReportMapper.date_sent(@message)).to eq("2017-05-05")
   end
@@ -226,7 +226,7 @@ RSpec.describe DataReportMapper do
   
     it 'maps the message total clicks for day 2 to total_clicks_day' do
       #TODO allows spiders and non-unique clicks
-      expect(DataReportMapper.total_clicks_day(@message, 1).count).to eq()
+      expect(DataReportMapper.total_clicks_day(@message, 1).count).to eq(4)
     end
   
     it 'maps the message total clicks for day 3 to total_clicks_day' do
