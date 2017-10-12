@@ -120,9 +120,6 @@ class DataReportMapper
         click_times = all_clicks.map{|click| click.click_time.strftime("%H:%M:%S").in_time_zone if (!click.human? && !click.unique) }.compact
       end
     end
-    # scheduled_start_of_day = (scheduled_start_of_day + 1.day).beginning_of_day
-    # scheduled_end_of_day = (scheduled_end_of_day + 1.day).end_of_day
-
     return click_times
   end
 
