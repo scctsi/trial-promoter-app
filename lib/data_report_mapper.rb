@@ -1,6 +1,12 @@
-class TcorsDataReportMapper
-  IP_EXCLUSION_LIST = ['128.125.77.139', '128.125.132.141', '207.151.120.4', '128.125.98.4', '128.125.109.224', '128.125.98.2', '68.181.124.25', '162.225.230.188', '216.4.202.66', '68.181.207.160', '2605:e000:8681:4900:a5c8:66d1:4753:fcc0', '68.101.127.18', '2602:306:80c8:88a0:89a:a5f6:7641:321c' ]
-
+class DataReportMapper
+  include Metricable
+  
+  attr_reader :experiment
+  
+  def initialize(experiment)
+    @experiment = experiment
+  end
+  
   def self.database_id(message)
     return message.id
   end
@@ -26,7 +32,7 @@ class TcorsDataReportMapper
     return message.message_template.experiment_variables['stem_id']
   end
 
-  def self.fda_campaign(message)
+  def self.fda_campaign(message) 
     fda_campaign_mapper = { 'FE' => '1', 'TFL' => '2' }
     return fda_campaign_mapper[message.message_template.experiment_variables['fda_campaign']]
   end
@@ -88,73 +94,80 @@ class TcorsDataReportMapper
     return image_mapper[message.image_present]
   end
 
-  def self.total_clicks_day_1(message)
-    return self.click_time(message)[0].count
-  end
-
-  def self.total_clicks_day_2(message)
-    return self.click_time(message)[1].count
-  end
-
-  def self.total_clicks_day_3(message)
-    return self.click_time(message)[2].count
-  end
-
+  def self.total_clicks_day(message, day_offset = 0)
+    all_clicks = message.click_meter_tracking_link.clicks.select{|click| click.click_time.to_date == (message.scheduled_date_time.to_date + day_offset.day)}
+    return all_clicks
+  end 
+  
   def self.total_clicks_experiment(message)
-    return message.click_meter_tracking_link.get_total_clicks
+    return message.click_meter_tracking_link.clicks.map
   end
 
-  def self.click_time(message)
-    unique_clicks = message.click_meter_tracking_link.clicks.select{|click| click.human? && click.unique}
-    scheduled_start_of_day = message.scheduled_date_time
-    scheduled_end_of_day = scheduled_start_of_day.end_of_day
-    click_times = []
-    # get click times for each calendar day and store as nested arrays 
-    3.times do
-      click_times << ((unique_clicks.map{|click| click.click_time.strftime("%H:%M:%S") if click.human? && click.click_time.between?(scheduled_start_of_day, scheduled_end_of_day)}).compact )
-      scheduled_start_of_day = (scheduled_start_of_day + 1.day).beginning_of_day
-      scheduled_end_of_day = (scheduled_end_of_day + 1.day).end_of_day
+  def self.click_time(all_clicks, creature = 'human', unique = true)  
+    # all_clicks = message.click_meter_tracking_link.clicks.map
+    # Time.zone = "America/Los_Angeles"
+    
+    # get click times for each calendar day and store as array of times 
+    if creature == 'human'
+      if unique == true
+        click_times = all_clicks.map{|click| click.click_time.in_time_zone("America/Los_Angeles").strftime("%H:%M:%S") if (click.human? && click.unique == true) }.compact
+      else
+        click_times = all_clicks.map{|click| click.click_time.in_time_zone("America/Los_Angeles").strftime("%H:%M:%S") if (click.human? && !click.unique) }.compact
+      end
+    else
+      if unique == true
+        click_times = all_clicks.map{|click| click.click_time.in_time_zone("America/Los_Angeles").strftime("%H:%M:%S") if (!click.human? && click.unique == true) }.compact
+      else
+        click_times = all_clicks.map{|click| click.click_time.in_time_zone("America/Los_Angeles").strftime("%H:%M:%S") if (!click.human? && !click.unique) }.compact
+      end
     end
     return click_times
-  end 
+  end
 
-  def self.total_impressions_day_1(message)
-    if message.impressions_by_day[message.scheduled_date_time.to_date].nil?
+  def self.total_impressions_day(message, offset)
+    if message.impressions_by_day[(message.scheduled_date_time + offset.day).to_date].nil?
       return 'NDA'
     else
-      return message.impressions_by_day[message.scheduled_date_time.to_date] 
+      impressions_total = message.impressions_by_day[(message.scheduled_date_time + offset.day).to_date] 
+      if (offset > 0 && message.medium == :organic)
+        earlier_offset = offset - 1
+        if (message.impressions_by_day[(message.scheduled_date_time + (earlier_offset).day).to_date] != nil)
+            impressions_total -= message.impressions_by_day[(message.scheduled_date_time + earlier_offset.day).to_date] 
+        end
+      end
+      return impressions_total 
     end
   end
 
-  def self.total_impressions_day_2(message)
-    return 'NDA' if message.impressions_by_day[(message.scheduled_date_time + 1.day).to_date].nil?
-    if message.medium == :organic
-      if self.total_impressions_day_1(message) == 'NDA'
-        return message.impressions_by_day[(message.scheduled_date_time + 1.day).to_date]
-      else
-        return message.impressions_by_day[(message.scheduled_date_time + 1.day).to_date] - self.total_impressions_day_1(message)
-      end
-    else
-      return message.impressions_by_day[(message.scheduled_date_time + 1.day).to_date]
-    end
-  end
+  # def self.total_impressions_day_2(message)
+  #   return 'NDA' if message.impressions_by_day[(message.scheduled_date_time + 1.day).to_date].nil?
+  #   if message.medium == :organic
+  #     if self.total_impressions_day_1(message) == 'NDA'
+  #       return message.impressions_by_day[(message.scheduled_date_time + 1.day).to_date]
+  #     else
+  #       return message.impressions_by_day[(message.scheduled_date_time + 1.day).to_date] - self.total_impressions_day_1(message)
+  #     end
+  #   else
+  #     return message.impressions_by_day[(message.scheduled_date_time + 1.day).to_date]
+  #   end
+  # end
 
-  def self.total_impressions_day_3(message)
-    return 'NDA' if message.impressions_by_day[(message.scheduled_date_time + 2.day).to_date].nil?
-    if message.medium == :organic
-      if self.total_impressions_day_2(message) == 'NDA' && self.total_impressions_day_1(message) == 'NDA'
-        return message.impressions_by_day[(message.scheduled_date_time + 2.day).to_date]
-      elsif self.total_impressions_day_2(message) == 'NDA'
-        return message.impressions_by_day[(message.scheduled_date_time + 2.day).to_date] - self.total_impressions_day_1(message)
-      elsif self.total_impressions_day_1(message) == 'NDA'
-        return message.impressions_by_day[(message.scheduled_date_time + 2.day).to_date] - self.total_impressions_day_2(message)
-      else
-        return message.impressions_by_day[(message.scheduled_date_time + 2.day).to_date] - self.total_impressions_day_2(message) - self.total_impressions_day_1(message)
-      end
-    else
-      return message.impressions_by_day[(message.scheduled_date_time + 2.day).to_date]
-    end
-  end
+  # def self.total_impressions_day_3(message)
+  #   return 'NDA' if message.impressions_by_day[(message.scheduled_date_time + 2.day).to_date].nil?
+  #   if message.medium == :organic
+  #     if self.total_impressions_day_2(message) == 'NDA' && self.total_impressions_day_1(message) == 'NDA'
+  #       return message.impressions_by_day[(message.scheduled_date_time + 2.day).to_date]
+  #     elsif self.total_impressions_day_2(message) == 'NDA'
+  #       return message.impressions_by_day[(message.scheduled_date_time + 2.day).to_date] - self.total_impressions_day_1(message)
+  #     elsif self.total_impressions_day_1(message) == 'NDA'
+  #       return message.impressions_by_day[(message.scheduled_date_time + 2.day).to_date] - self.total_impressions_day_2(message)
+  #     else
+  #       return message.impressions_by_day[(message.scheduled_date_time + 2.day).to_date] - self.total_impressions_day_2(message) - self.total_impressions_day_1(message)
+  #     end
+  #   else
+  #     return message.impressions_by_day[(message.scheduled_date_time + 2.day).to_date]
+  #   end
+  # end
 
   def self.total_impressions_experiment(message)
     if message.platform == :instagram
@@ -162,15 +175,14 @@ class TcorsDataReportMapper
     else
       platform = message.platform
     end
-    return MetricsManager.get_metric_value(message, platform, 'impressions') == 'N/A' ? 'NDA' : MetricsManager
-    .get_metric_value(message, platform, 'impressions')  
+    return Metricable.get_metric(message, platform, 'impressions')
   end
 
   def self.retweets_twitter(message)
     if message.platform != :twitter
       return 'N/A'
     end
-    return MetricsManager.get_metric_value(message, :twitter, 'retweets') == 'N/A' ? 'NDA' : MetricsManager.get_metric_value(message, :twitter, 'retweets')
+    return Metricable.get_metric(message, message.platform, 'retweets')
   end
 
   def self.shares_facebook(message)
@@ -264,7 +276,7 @@ class TcorsDataReportMapper
   end
 
   def self.total_sessions_experiment(message)
-    return message.get_sessions(IP_EXCLUSION_LIST).count
+    return message.get_sessions(Experiment::IP_EXCLUSION_LIST).count
   end
   
   def self.total_website_clicks_day_1(message)
@@ -311,7 +323,8 @@ class TcorsDataReportMapper
   end
 
   def self.get_sessions(message, start, finish)
-    sessions = message.get_sessions(IP_EXCLUSION_LIST)
+
+    sessions = message.get_sessions(Experiment::IP_EXCLUSION_LIST)
     return sessions.select{|session| session.started_at.between?(start, finish)}
   end
   
