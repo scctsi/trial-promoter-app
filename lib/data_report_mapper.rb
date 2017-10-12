@@ -115,7 +115,7 @@ class DataReportMapper
       end
     else
       if unique == true
-        click_times = all_clicks.map{|click| click.click_time.strftime("%H:%M:%S") if (!click.human? && click.unique == true) }.compact
+        click_times = all_clicks.map{|click|p click.click_time; click.click_time.strftime("%H:%M:%S") if (!click.human? && click.unique == true) }.compact
       else
         click_times = all_clicks.map{|click| click.click_time.strftime("%H:%M:%S") if (!click.human? && !click.unique) }.compact
       end
