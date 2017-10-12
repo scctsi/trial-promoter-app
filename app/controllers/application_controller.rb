@@ -13,7 +13,7 @@ class ApplicationController < ActionController::Base
   def set_timezone
     Time.zone = ActiveSupport::TimeZone["America/Los_Angeles"]
   end
-
+  
   private
 
   def user_not_authorized
