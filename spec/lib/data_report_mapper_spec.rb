@@ -215,8 +215,8 @@ RSpec.describe DataReportMapper do
       @message.click_meter_tracking_link.clicks << build_list(:click, 1, :spider => '1', :unique => '1', :click_time => ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,5,1,12,34,57))
       @message.click_meter_tracking_link.clicks << build_list(:click, 1, :spider => '0', :unique => '1', :click_time => ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,5,1,13,44,56))
       @message.click_meter_tracking_link.clicks << build_list(:click, 1, :spider => '0', :unique => '0', :click_time => ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,5,1,14,44,56))
-      # This is actually day 3
       @message.click_meter_tracking_link.clicks << build_list(:click, 2, :spider => '0', :unique => '1', :click_time => ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,5,1,19,26,1))
+      @message.click_meter_tracking_link.clicks << build_list(:click, 2, :spider => '0', :unique => '1', :click_time => ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,5,2,10,26,1))
     end
     
     it 'maps the message total clicks for day 1 to total_clicks_day' do
@@ -231,12 +231,12 @@ RSpec.describe DataReportMapper do
   
     it 'maps the message total clicks for day 3 to total_clicks_day' do
       #TODO allows spiders and non-unique clicks
-      expect(DataReportMapper.total_clicks_day(@message, 2).count).to eq(0)
+      expect(DataReportMapper.total_clicks_day(@message, 2).count).to eq(2)
     end
   
     it 'maps the message total human clicks for the entire experiment to total_clicks_experiment' do
       #TODO allows spiders and non-unique clicks
-      expect(DataReportMapper.total_clicks_experiment(@message).count).to eq(12)
+      expect(DataReportMapper.total_clicks_experiment(@message).count).to eq(14)
     end
   
     it 'maps the times of each kind of click (human, spider) per tracking link to click_time' do
@@ -247,8 +247,8 @@ RSpec.describe DataReportMapper do
       
       clicks_entire_experiment = DataReportMapper.total_clicks_experiment(@message)
       
-      expect(DataReportMapper.click_time(clicks_entire_experiment, 'human', true)).to eq(["12:23:13", "12:23:13", "12:23:13", "13:44:56", "19:26:01", "19:26:01"])
-      expect(DataReportMapper.click_time(clicks_entire_experiment)).to eq(["12:23:13", "12:23:13", "12:23:13", "13:44:56", "19:26:01", "19:26:01"])
+      expect(DataReportMapper.click_time(clicks_entire_experiment, 'human', true)).to eq(["12:23:13", "12:23:13", "12:23:13", "13:44:56", "19:26:01", "19:26:01", "10:26:01", "10:26:01"])
+      expect(DataReportMapper.click_time(clicks_entire_experiment)).to eq(["12:23:13", "12:23:13", "12:23:13", "13:44:56", "19:26:01", "19:26:01", "10:26:01", "10:26:01"])
       expect(DataReportMapper.click_time(clicks_entire_experiment, 'spider', false)).to eq(["12:34:57", "12:34:57"])
       expect(DataReportMapper.click_time(clicks_day_1, 'human', true)).to eq(["12:23:13", "12:23:13", "12:23:13"])
       expect(DataReportMapper.click_time(clicks_day_1, 'human', false)).to eq(["01:23:13"])
@@ -258,7 +258,7 @@ RSpec.describe DataReportMapper do
       expect(DataReportMapper.click_time(clicks_day_2, 'human', false)).to eq(["14:44:56"])
       expect(DataReportMapper.click_time(clicks_day_2, 'spider', true)).to eq(["12:34:57"])
       expect(DataReportMapper.click_time(clicks_day_2, 'spider', false)).to eq(["12:34:57"])
-      expect(DataReportMapper.click_time(clicks_day_3, 'human', true)).to eq([])
+      expect(DataReportMapper.click_time(clicks_day_3, 'human', true)).to eq(["10:26:01", "10:26:01"])
       expect(DataReportMapper.click_time(clicks_day_3, 'human', false)).to eq([])
       expect(DataReportMapper.click_time(clicks_day_3, 'spider', true)).to eq([])
       expect(DataReportMapper.click_time(clicks_day_3, 'spider', false)).to eq([])
