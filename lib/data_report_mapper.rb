@@ -105,19 +105,20 @@ class DataReportMapper
 
   def self.click_time(all_clicks, creature = 'human', unique = true)  
     # all_clicks = message.click_meter_tracking_link.clicks.map
+    # Time.zone = "America/Los_Angeles"
     
     # get click times for each calendar day and store as array of times 
     if creature == 'human'
       if unique == true
-        click_times = all_clicks.map{|click| click.click_time.in_time_zone.strftime("%H:%M:%S") if (click.human? && click.unique == true) }.compact
+        click_times = all_clicks.map{|click| click.click_time.in_time_zone("America/Los_Angeles").strftime("%H:%M:%S") if (click.human? && click.unique == true) }.compact
       else
-        click_times = all_clicks.map{|click| click.click_time.in_time_zone.strftime("%H:%M:%S") if (click.human? && !click.unique) }.compact
+        click_times = all_clicks.map{|click| click.click_time.in_time_zone("America/Los_Angeles").strftime("%H:%M:%S") if (click.human? && !click.unique) }.compact
       end
     else
       if unique == true
-        click_times = all_clicks.map{|click| click.click_time.in_time_zone.strftime("%H:%M:%S") if (!click.human? && click.unique == true) }.compact
+        click_times = all_clicks.map{|click| click.click_time.in_time_zone("America/Los_Angeles").strftime("%H:%M:%S") if (!click.human? && click.unique == true) }.compact
       else
-        click_times = all_clicks.map{|click| click.click_time.in_time_zone.strftime("%H:%M:%S") if (!click.human? && !click.unique) }.compact
+        click_times = all_clicks.map{|click| click.click_time.in_time_zone("America/Los_Angeles").strftime("%H:%M:%S") if (!click.human? && !click.unique) }.compact
       end
     end
     return click_times
