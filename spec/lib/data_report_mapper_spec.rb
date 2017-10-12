@@ -206,17 +206,17 @@ RSpec.describe DataReportMapper do
     before do
       @message.click_meter_tracking_link = build(:click_meter_tracking_link)
       #Day 1 starts on April 30th
-      @message.click_meter_tracking_link.clicks << build_list(:click, 3, :spider => '0', :unique => '1', :click_time => DateTime.new(2017,4,30,12,23,13))    
-      @message.click_meter_tracking_link.clicks << build_list(:click, 1, :spider => '0', :unique => '0', :click_time => DateTime.new(2017,4,30,01,23,13))
-      @message.click_meter_tracking_link.clicks << build_list(:click, 1, :spider => '1', :unique => '0', :click_time => DateTime.new(2017,4,30,12,34,57))
-      @message.click_meter_tracking_link.clicks << build_list(:click, 1, :spider => '1', :unique => '1', :click_time => DateTime.new(2017,4,30,11,34,57))
+      @message.click_meter_tracking_link.clicks << build_list(:click, 3, :spider => '0', :unique => '1', :click_time => ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,4,30,12,23,13))    
+      @message.click_meter_tracking_link.clicks << build_list(:click, 1, :spider => '0', :unique => '0', :click_time => ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,4,30,01,23,13))
+      @message.click_meter_tracking_link.clicks << build_list(:click, 1, :spider => '1', :unique => '0', :click_time => ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,4,30,12,34,57))
+      @message.click_meter_tracking_link.clicks << build_list(:click, 1, :spider => '1', :unique => '1', :click_time => ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,4,30,11,34,57))
       #Day 2
-      @message.click_meter_tracking_link.clicks << build_list(:click, 1, :spider => '1', :unique => '0', :click_time => DateTime.new(2017,5,1,12,34,57))
-      @message.click_meter_tracking_link.clicks << build_list(:click, 1, :spider => '1', :unique => '1', :click_time => DateTime.new(2017,5,1,12,34,57))
-      @message.click_meter_tracking_link.clicks << build_list(:click, 1, :spider => '0', :unique => '1', :click_time => DateTime.new(2017,5,1,13,44,56))
-      @message.click_meter_tracking_link.clicks << build_list(:click, 1, :spider => '0', :unique => '0', :click_time => DateTime.new(2017,5,1,14,44,56))
+      @message.click_meter_tracking_link.clicks << build_list(:click, 1, :spider => '1', :unique => '0', :click_time => ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,5,1,12,34,57))
+      @message.click_meter_tracking_link.clicks << build_list(:click, 1, :spider => '1', :unique => '1', :click_time => ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,5,1,12,34,57))
+      @message.click_meter_tracking_link.clicks << build_list(:click, 1, :spider => '0', :unique => '1', :click_time => ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,5,1,13,44,56))
+      @message.click_meter_tracking_link.clicks << build_list(:click, 1, :spider => '0', :unique => '0', :click_time => ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,5,1,14,44,56))
       # This is actually day 3
-      @message.click_meter_tracking_link.clicks << build_list(:click, 2, :spider => '0', :unique => '1', :click_time => DateTime.new(2017,5,1,19,26,1))
+      @message.click_meter_tracking_link.clicks << build_list(:click, 2, :spider => '0', :unique => '1', :click_time => ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017,5,1,19,26,1))
     end
     
     it 'maps the message total clicks for day 1 to total_clicks_day' do
