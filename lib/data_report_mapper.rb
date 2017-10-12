@@ -109,15 +109,15 @@ class DataReportMapper
     # get click times for each calendar day and store as array of times 
     if creature == 'human'
       if unique == true
-        click_times = all_clicks.map{|click| click.click_time.strftime("%H:%M:%S").in_time_zone if (click.human? && click.unique == true) }.compact
+        click_times = all_clicks.map{|click| click.click_time.in_time_zone.strftime("%H:%M:%S") if (click.human? && click.unique == true) }.compact
       else
-        click_times = all_clicks.map{|click| click.click_time.strftime("%H:%M:%S").in_time_zone if (click.human? && !click.unique) }.compact
+        click_times = all_clicks.map{|click| click.click_time.in_time_zone.strftime("%H:%M:%S") if (click.human? && !click.unique) }.compact
       end
     else
       if unique == true
-        click_times = all_clicks.map{|click| click.click_time.strftime("%H:%M:%S").in_time_zone if (!click.human? && click.unique == true) }.compact
+        click_times = all_clicks.map{|click| click.click_time.in_time_zone.strftime("%H:%M:%S") if (!click.human? && click.unique == true) }.compact
       else
-        click_times = all_clicks.map{|click| click.click_time.strftime("%H:%M:%S").in_time_zone if (!click.human? && !click.unique) }.compact
+        click_times = all_clicks.map{|click| click.click_time.in_time_zone.strftime("%H:%M:%S") if (!click.human? && !click.unique) }.compact
       end
     end
     return click_times
