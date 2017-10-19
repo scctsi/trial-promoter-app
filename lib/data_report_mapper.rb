@@ -30,13 +30,11 @@ class DataReportMapper
     return message.message_template.experiment_variables['stem_id']
   end
 
-  def fda_campaign(message) 
-    fda_campaign_mapper = { 'FE' => '1', 'TFL' => '2' }
+  def fda_campaign(message, fda_campaign_mapper = { 'FE' => '1', 'TFL' => '2' }) 
     return fda_campaign_mapper[message.message_template.experiment_variables['fda_campaign']]
   end
 
-  def theme(message)
-    theme_mapper ={ 'health' => '1', 'appearace' => '2', 'money' => '3', 'love of family' => '4', 'addiction' => '5', 'health + community' => '6', 'health + family' => '7', 'UNCLEAR' => 'UNCLEAR' }
+  def theme(message,  theme_mapper = { 'health' => '1', 'appearace' => '2', 'money' => '3', 'love of family' => '4', 'addiction' => '5', 'health + community' => '6', 'health + family' => '7', 'UNCLEAR' => 'UNCLEAR' })
     return theme_mapper[message.message_template.experiment_variables['theme'].to_s]
   end
 
@@ -48,27 +46,24 @@ class DataReportMapper
     return message.message_template.experiment_variables['lin_meth_level'].to_s
   end
 
-  def variant(message)
-    content = message.message_template.content.chomp("{url}")
+  def variant(message, content = message.message_template.content.chomp("{url}"))
     return content
   end
 
-  def sm_type(message)
-    platform_mapper = {:twitter => 'T', :facebook => 'F', :instagram => 'I'}
+  def sm_type(message, platform_mapper = {:twitter => 'T', :facebook => 'F', :instagram => 'I'})
     return platform_mapper[message.platform]
   end
 
   def day_experiment(message)
-    return (message.scheduled_date_time.to_i - ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017, 4, 19, 0, 0, 0).to_i) / 1.day.seconds + 1
+    return (message.scheduled_date_time.to_i - experiment.message_distribution_start_date.to_i) / 1.day.seconds + 1
   end
 
   def date_sent(message)
     return message.scheduled_date_time.strftime("%Y-%m-%d")
   end
 
-  def day_sent(message)
-    #Ruby maps Sunday as 0, so mapper just follows data dictionary
-    day_of_week_mapper = {'Sunday' => '7', 'Monday' => '1', 'Tuesday' => '2', 'Wednesday' => '3', 'Thursday' => '4', 'Friday' => '5', 'Saturday' => '6'}
+  #Ruby maps Sunday as 0, so mapper follows data dictionary
+  def day_sent(message, day_of_week_mapper = {'Sunday' => '7', 'Monday' => '1', 'Tuesday' => '2', 'Wednesday' => '3', 'Thursday' => '4', 'Friday' => '5', 'Saturday' => '6'})
     return day_of_week_mapper[message.scheduled_date_time.strftime("%A")]
   end
 
@@ -101,18 +96,18 @@ class DataReportMapper
     return message.click_meter_tracking_link.clicks.map
   end
 
-  def click_time(all_clicks, creature = 'human', unique = true)  
+  def click_time(all_clicks, creature = 'human', unique = true, timezone = "America/Los_Angeles")  
     if creature == 'human'
       if unique == true
-        click_times = all_clicks.map{|click| click.click_time.in_time_zone("America/Los_Angeles").strftime("%H:%M:%S") if (click.human? && click.unique == true) }.compact
+        click_times = all_clicks.map{|click| click.click_time.in_time_zone(timezone).strftime("%H:%M:%S") if (click.human? && click.unique == true) }.compact
       else
-        click_times = all_clicks.map{|click| click.click_time.in_time_zone("America/Los_Angeles").strftime("%H:%M:%S") if (click.human? && !click.unique) }.compact
+        click_times = all_clicks.map{|click| click.click_time.in_time_zone(timezone).strftime("%H:%M:%S") if (click.human? && !click.unique) }.compact
       end
     else
       if unique == true
-        click_times = all_clicks.map{|click| click.click_time.in_time_zone("America/Los_Angeles").strftime("%H:%M:%S") if (!click.human? && click.unique == true) }.compact
+        click_times = all_clicks.map{|click| click.click_time.in_time_zone(timezone).strftime("%H:%M:%S") if (!click.human? && click.unique == true) }.compact
       else
-        click_times = all_clicks.map{|click| click.click_time.in_time_zone("America/Los_Angeles").strftime("%H:%M:%S") if (!click.human? && !click.unique) }.compact
+        click_times = all_clicks.map{|click| click.click_time.in_time_zone(timezone).strftime("%H:%M:%S") if (!click.human? && !click.unique) }.compact
       end
     end
     return click_times
@@ -268,7 +263,7 @@ class DataReportMapper
   private
   def calculate_goal_count(message, date)
     goal_count = 0
-    sessions = message.get_sessions(date.beginning_of_day, date.end_of_day, message.message_generating.ip_exclusion_list)
+    sessions = message.get_sessions(date.beginning_of_day, date.end_of_day, experiment.ip_exclusion_list)
     sessions.each do |session|
       goal_count += 1 if Ahoy::Event.where(visit_id: session.id).where(name: "Converted").count > 0
     end
