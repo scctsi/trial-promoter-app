@@ -11,7 +11,7 @@ RSpec.describe DataReportMapper do
 
     @message.metrics << Metric.new(source: :google_analytics, data: {'ga:sessions'=>2, 'ga:users'=>2, 'ga:exits' =>2, 'ga:sessionDuration' => 42, 'ga:timeOnPage' => 42, 'ga:pageviews' => 2})    
     @message.website_session_count = 2
-
+    @experiment.message_distribution_start_date = ActiveSupport::TimeZone.new("America/Los_Angeles").local(2017, 4, 19, 0, 0, 0)
     @data_report_mapper = DataReportMapper.new(@experiment)
   end
   
@@ -209,27 +209,22 @@ RSpec.describe DataReportMapper do
     end
     
     it 'maps the message total clicks for day 1 to total_clicks_day' do
-      #TODO allows spiders and non-unique clicks
       expect(@data_report_mapper.total_clicks_day(@message, 0).count).to eq(6)
     end
   
     it 'maps the message total clicks for day 2 to total_clicks_day' do
-      #TODO allows spiders and non-unique clicks
       expect(@data_report_mapper.total_clicks_day(@message, 1).count).to eq(6)
     end
   
     it 'maps the message total clicks for day 3 to total_clicks_day' do
-      #TODO allows spiders and non-unique clicks
       expect(@data_report_mapper.total_clicks_day(@message, 2).count).to eq(2)
     end
   
     it 'maps the message total human clicks for the entire experiment to total_clicks_experiment' do
-      #TODO allows spiders and non-unique clicks
       expect(@data_report_mapper.total_clicks_experiment(@message).count).to eq(14)
     end
   
     it 'maps the times of each kind of click (human, spider) per tracking link to click_time' do
-      #TODO should get click times from clicks, e.g. self.clicks('human', true)
       clicks_day_1 = @data_report_mapper.total_clicks_day(@message, 0)
       clicks_day_2 = @data_report_mapper.total_clicks_day(@message, 1)
       clicks_day_3 = @data_report_mapper.total_clicks_day(@message, 2)
