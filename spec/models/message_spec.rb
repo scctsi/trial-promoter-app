@@ -239,7 +239,12 @@ describe Message do
   describe 'message click rate and website goal rate calculations' do
     before do
       @message = create(:message)
-      visits = create_list(:visit, 3, utm_content: @message.to_param)
+      @experiment = build(:experiment, :ip_exclusion_list => ['128.125.77.139', '128.125.132.141', '207.151.120.4', '128.125.98.4', '128.125.109.224', '128.125.98.2', '68.181.124.25', '162.225.230.188', '216.4.202.66', '68.181.207.160', '2605:e000:8681:4900:a5c8:66d1:4753:fcc0', '68.101.127.18', '2602:306:80c8:88a0:89a:a5f6:7641:321c'])
+      @experiment.message_distribution_start_date = DateTime.new(2017, 1, 1)
+      @experiment.message_generation_parameter_set = build(:message_generation_parameter_set, message_generating: @experiment)
+      allow(@experiment.message_generation_parameter_set).to receive(:length_of_experiment_in_days).and_return(10)
+    
+      visits = create_list(:visit, 3, utm_content: @message.to_param, started_at: DateTime.new(2017, 7, 7))
       Ahoy::Event.create(visit_id: visits[0].id, name: "Converted")
 
       @message_with_no_sessions_or_goals = create(:message)
@@ -256,21 +261,21 @@ describe Message do
     end
 
     it 'saves the number of goals for a given message' do
-      @message.calculate_goal_count
+      @message.calculate_goal_count(@experiment.ip_exclusion_list)
       @message.reload
 
       expect(@message.website_goal_count).to eq(1)
     end
 
     it 'saves the sessions (Ahoy visits) for a given message' do
-      @message.calculate_session_count
+      @message.calculate_session_count(@experiment.ip_exclusion_list)
       @message.reload
 
       expect(@message.website_session_count).to eq(3)
     end
 
     it 'saves a goal rate percentage from Ahoy (goals / visits)' do
-      @message.calculate_website_goal_rate
+      @message.calculate_website_goal_rate(@experiment.ip_exclusion_list)
       @message.reload
 
       expect(@message.website_goal_rate).to eq(33.33)

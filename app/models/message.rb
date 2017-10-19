@@ -173,7 +173,7 @@ class Message < ActiveRecord::Base
 
   def calculate_website_goal_rate(exclude_ip_address_list = [])
     calculate_goal_count
-    calculate_session_count(exclude_ip_address_list)
+    calculate_session_count
 
     if website_session_count == 0
       self.website_goal_rate = nil
@@ -184,9 +184,10 @@ class Message < ActiveRecord::Base
     save
   end
 
-  def calculate_goal_count(exclude_ip_address_list = [])
+  def calculate_goal_count(ip_exclusion_list = [])
     goal_count = 0
-    sessions = get_sessions(exclude_ip_address_list)
+    # Getting sessions from arbitrary beginning of time to end of time - for entire duration of experiment
+    sessions = get_sessions(DateTime.new(1970, 1, 1), DateTime.new(2100, 1, 1), ip_exclusion_list)
     # Converted event is in the Ahoy code.
     # For the TCORS experiment, the 'Converted' event occurs in main.js file of website (Fresh Empire or This Free Life)
     # when user scrolls or clicks on navigation bar
@@ -198,8 +199,8 @@ class Message < ActiveRecord::Base
     save
   end
 
-  def calculate_session_count(exclude_ip_address_list = [])
-    sessions = get_sessions(exclude_ip_address_list)
+  def calculate_session_count(ip_exclusion_list = [])
+    sessions = get_sessions(DateTime.new(1970, 1, 1), DateTime.new(2100, 1, 1), ip_exclusion_list)
     self.website_session_count = sessions.count
 
     save
@@ -223,9 +224,9 @@ class Message < ActiveRecord::Base
     message
   end
 
-  def get_sessions(exclude_ip_address_list = [])
+  def get_sessions(start_of_experiment, end_of_experiment, exclude_ip_address_list = [])
     visits = Visit.where(utm_content: self.to_param).to_a
     visits.reject!{ |visit| exclude_ip_address_list.include?(visit.ip) }
-    return visits
+    return visits.select{ |session| session.started_at.between?(start_of_experiment, end_of_experiment) }
   end
 end
