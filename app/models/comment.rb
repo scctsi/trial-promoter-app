@@ -33,7 +33,7 @@ class Comment < ActiveRecord::Base
     messages.each do |message|  
       if !message.buffer_update.nil? 
         published_text = message.buffer_update.published_text.squish
-        comments_content.each do |comments_row| 
+        comments_spreadsheet.each do |comments_row| 
           #some comments have a newline/ space/ carriage return character in the message text that needs to be removed
           clean_message = comments_row[message_index].squish
           if published_text.include?(clean_message) 
