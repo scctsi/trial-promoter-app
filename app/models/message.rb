@@ -229,4 +229,12 @@ class Message < ActiveRecord::Base
     visits.reject!{ |visit| exclude_ip_address_list.include?(visit.ip) }
     return visits.select{ |session| session.started_at.between?(start_of_experiment, end_of_experiment) }
   end
+  
+  def get_goal_count(sessions)
+    goal_count = 0
+    sessions.each do |session|
+      goal_count += 1 if Ahoy::Event.where(visit_id: session.id).where(name: "Converted").count > 0
+    end
+    return goal_count 
+  end
 end
