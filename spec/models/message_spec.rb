@@ -275,7 +275,7 @@ describe Message do
     end
 
     it 'saves a goal rate percentage from Ahoy (goals / visits)' do
-      @message.calculate_website_goal_rate(@experiment.ip_exclusion_list)
+      @message.calculate_website_goal_rate
       @message.reload
 
       expect(@message.website_goal_rate).to eq(33.33)

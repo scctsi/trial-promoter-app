@@ -171,7 +171,7 @@ class Message < ActiveRecord::Base
     save
   end
 
-  def calculate_website_goal_rate(exclude_ip_address_list = [])
+  def calculate_website_goal_rate
     calculate_goal_count
     calculate_session_count
 
