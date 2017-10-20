@@ -77,13 +77,11 @@ class DataReportMapper
     end
   end
 
-  def medium(message)
-    medium_mapper = {:organic => '1', :ad => '2'}
+  def medium(message, medium_mapper = {:organic => '1', :ad => '2'})
     return medium_mapper[message.medium]
   end
 
-  def image_included(message)
-    image_mapper = {'without' => '0', 'with' => '1'}
+  def image_included(message, image_mapper = {'without' => '0', 'with' => '1'})
     return image_mapper[message.image_present]
   end
 
