@@ -16,8 +16,6 @@
 #  value_mapping      :text
 #
 
-
-
 require 'rails_helper'
 
 RSpec.describe DataDictionaryEntry do
@@ -26,6 +24,8 @@ RSpec.describe DataDictionaryEntry do
   it { is_expected.to enumerize(:source).in(:buffer, :experiment, :facebook, :instagram, :google_analytics, :trial_promoter, :twitter) }
   it { is_expected.to belong_to(:data_dictionary) }
   it { is_expected.to validate_presence_of(:data_dictionary) }
+  it { is_expected.to serialize(:allowed_values).as(Array) }
+  it { is_expected.to serialize(:value_mapping).as(Hash) }
   
   it 'stores allowed values as an array' do
     data_dictionary_entry = build(:data_dictionary_entry)

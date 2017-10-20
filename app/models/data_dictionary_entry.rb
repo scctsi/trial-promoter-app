@@ -16,8 +16,6 @@
 #  value_mapping      :text
 #
 
-
-
 class DataDictionaryEntry < ActiveRecord::Base
   extend Enumerize
 
@@ -28,6 +26,6 @@ class DataDictionaryEntry < ActiveRecord::Base
   belongs_to :data_dictionary
   validates :data_dictionary, presence: true
   
-  serialize :allowed_values
-  serialize :value_mapping
+  serialize :allowed_values, Array
+  serialize :value_mapping, Hash
 end

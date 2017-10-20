@@ -166,8 +166,8 @@ ActiveRecord::Schema.define(version: 20170929205952) do
     t.text     "instagram_posting_times"
     t.integer  "click_meter_group_id"
     t.integer  "click_meter_domain_id"
-    t.text     "comment_codes"
     t.text     "image_codes"
+    t.text     "comment_codes"
   end
 
   create_table "experiments_social_media_profiles", force: :cascade do |t|
@@ -249,9 +249,9 @@ ActiveRecord::Schema.define(version: 20170929205952) do
     t.integer  "social_media_profile_id"
     t.string   "platform"
     t.string   "promoted_website_url",         limit: 2000
-    t.string   "campaign_id"
     t.boolean  "backdated"
     t.datetime "original_scheduled_date_time"
+    t.string   "campaign_id"
     t.float    "click_rate"
     t.float    "website_goal_rate"
     t.integer  "website_goal_count"
