@@ -129,92 +129,45 @@ class DataReportMapper
   end
 
   def total_impressions_experiment(message)
-    if message.platform == :instagram
-      platform = :facebook
-    else
-      platform = message.platform
-    end
-    return get_metric(message, platform, 'impressions')
+    return get_metric(message, message.platform, 'impressions')
   end
 
   def retweets_twitter(message)
-    if message.platform != :twitter
-      return 'N/A'
-    end
-    return get_metric(message, message.platform, 'retweets')
+    return get_metric(message, :twitter, 'retweets')
   end
 
   def shares_facebook(message)
-    if message.platform != :facebook
-      return "N/A"
-    else
-      return get_metric(message, message.platform, 'shares')
-    end
+    return get_metric(message, :facebook, 'shares')
   end
 
   def shares_instagram(message)
-    if message.platform != :instagram
-      return "N/A"
-    else
-      return get_metric(message, :facebook, 'shares')
-    end
+    # Our code has a logic issue where we require a metric_alias when getting Instagram metrics, so we need to just pass in any value for the metric_alias
+    return get_metric(message, :instagram, 'shares', 'shares')
   end
 
   def replies_twitter(message)
-    if message.platform != :twitter
-      return 'N/A'
-    end
-    return get_metric(message, message.platform, 'replies')
+    return get_metric(message, :twitter, 'replies')
   end
 
   def comments_facebook(message)
-    if message.platform != :facebook
-      return "N/A"
-    else
-      return get_metric(message, message.platform, 'comments')
-    end
+    return get_metric(message, :facebook, 'comments')
   end
 
   def comments_instagram(message)
-    if message.platform != :instagram
-      return "N/A"
-    else
-      return get_metric(message, :facebook, 'comments')
-    end
+    # Our code has a logic issue where we require a metric_alias when getting Instagram metrics, so we need to just pass in any value for the metric_alias
+    return get_metric(message, :instagram, 'comments', 'comments')
   end
 
   def likes_twitter(message)
-    if message.platform != :twitter
-      return 'N/A'
-    end
-    return get_metric(message, message.platform, 'likes')
-    # return MetricsManager.get_metric_value(message, :twitter, 'likes') == 'N/A' ? 'NDA' : MetricsManager.get_metric_value(message, :twitter, 'likes')
+    return get_metric(message, :twitter, 'likes')
   end
 
   def reactions_facebook(message)
-    if message.platform != :facebook
-      return "N/A"
-    else
-      reactions = MetricsManager.get_metric_value(message, :facebook, 'reactions')
-      if  reactions == "N/A"
-        return MetricsManager.get_metric_value(message, :facebook, 'likes') == 'N/A' ? 'NDA' : MetricsManager.get_metric_value(message, :facebook, 'likes')
-      else
-        return reactions
-      end
-    end
+    return get_metric(message, :facebook, 'reactions', 'likes')
   end
 
   def reactions_instagram(message)
-    if message.platform != :instagram
-      return "N/A"
-    else
-      reactions = MetricsManager.get_metric_value(message, :facebook, 'reactions')
-      if  reactions == "N/A"
-        return MetricsManager.get_metric_value(message, :facebook, 'likes')  == 'N/A' ? 'NDA' : MetricsManager.get_metric_value(message, :facebook, 'likes')
-      else
-        return reactions
-      end
-    end
+    return get_metric(message, :instagram, 'reactions', 'likes')
   end
 
   def total_sessions_day(message, offset = 0, ip_exclusion_list)
@@ -269,8 +222,24 @@ class DataReportMapper
     end
     return goal_count 
   end
-  
-  def get_metric(message, platform, metric)
-     MetricsManager.get_metric_value(message, platform, metric)  == 'N/A' ? 'NDA' : MetricsManager.get_metric_value(message, platform, metric)
+
+  def get_metric(message, source_platform, metric, metric_alias = nil)
+    # The data report always returns ALL columns for every message. This includes for example likes_twitter even for Facebook and Insagram messages.
+    # So if we ask a message whose platform is Facebook to get likes from Twitter (source_platform), we need to return Not Applicable (N/A).
+    return 'N/A' if message.platform != source_platform 
+    
+    # Instagram metrics are provided by Facebook, so we always convert the source_platform to facebook when the source_platform is Instagram
+    source_platform = :facebook if source_platform == :instagram
+
+    if metric_alias.nil? 
+      return MetricsManager.get_metric_value(message, source_platform, metric)  == 'N/A' ? 'NDA' : MetricsManager.get_metric_value(message, source_platform, metric)
+    else
+      metric_value = MetricsManager.get_metric_value(message, source_platform, metric)
+      if metric_value == 'N/A'
+        return MetricsManager.get_metric_value(message, source_platform, metric_alias) == 'N/A' ? 'NDA' : MetricsManager.get_metric_value(message, source_platform, metric_alias)
+      else
+        return metric_value
+      end
+    end
   end
 end
