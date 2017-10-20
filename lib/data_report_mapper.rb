@@ -183,12 +183,8 @@ class DataReportMapper
   end
 
   def total_website_clicks_experiment(message, ip_exclusion_list)
-    goal_count = 0
     sessions = message.get_sessions(DateTime.new(1970, 1, 1), DateTime.new(2100, 1, 1), ip_exclusion_list)
-    sessions.each do |session|
-      goal_count += 1 if Ahoy::Event.where(visit_id: session.id).where(name: "Converted").count > 0
-    end
-    return goal_count
+    return get_goal_count(sessions)
   end
 
   def users(message)
@@ -213,14 +209,18 @@ class DataReportMapper
 
   private
   def calculate_goal_count(message, date)
-    goal_count = 0
     sessions = message.get_sessions(date.beginning_of_day, date.end_of_day, experiment.ip_exclusion_list)
+    return get_goal_count(sessions) 
+  end
+
+  def get_goal_count(sessions)
+    goal_count = 0
     sessions.each do |session|
       goal_count += 1 if Ahoy::Event.where(visit_id: session.id).where(name: "Converted").count > 0
     end
     return goal_count 
   end
-
+  
   def get_metric(message, source_platform, metric, metric_alias = nil)
     # The data report always returns ALL columns for every message. This includes for example likes_twitter even for Facebook and Insagram messages.
     # So if we ask a message whose platform is Facebook to get likes from Twitter (source_platform), we need to return Not Applicable (N/A).
