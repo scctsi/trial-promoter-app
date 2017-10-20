@@ -52,4 +52,3 @@ class Comment < ActiveRecord::Base
     save
   end
 end
- 
