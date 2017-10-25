@@ -16,8 +16,6 @@ RSpec.describe PerspectiveClient do
       expect(@toxicity_score).to eq("0.92")
     end
 
-
-    
     it 'returns the score from the Google Perspective API when comment has double quotes within the string' do
       VCR.use_cassette 'perspective_client/calculate_toxicity_score_for_double_quotes' do
         @toxicity_score = PerspectiveClient.calculate_toxicity_score("Wow actually touching on the seriousness of the actual addiction!! Not just \"shaming\" yay!") 
@@ -25,7 +23,12 @@ RSpec.describe PerspectiveClient do
       expect(@toxicity_score).to eq("0.31")
     end
 
-
+    it 'returns the score from the Google Perspective API when comment has double quotes within the string' do
+      VCR.use_cassette 'perspective_client/calculate_toxicity_score_for_double_quotes' do
+        @toxicity_score = PerspectiveClient.calculate_toxicity_score("Wow actually touching on the seriousness of the actual addiction!! Not just \"shaming\" yay!") 
+      end
+      expect(@toxicity_score).to eq("0.31")
+    end
   end
 end 
    
