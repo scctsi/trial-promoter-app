@@ -67,16 +67,15 @@ m = Message.find(11173)
  
 m = Message.find(11168)
  m.comments << Comment.create(comment_text: "Smoke weed instead", comment_date: "4/18/2017", commentator_username: "woodstock__.__") 
- m.comments << Comment.create(comment_text: "Wtf does this pic have to do with that 🤔🤔🤔", comment_date: "4/18/2017", commentator_username: "blank_circles") 
- m.comments << Comment.create(comment_text: "Smoke weed instead", comment_date: "4/18/2017", commentator_username: "woodstock__.__") 
- m.comments << Comment.create(comment_text: "Smoke weed instead", comment_date: "4/18/2017", commentator_username: "woodstock__.__") 
- m.comments << Comment.create(comment_text: "Smoke weed instead", comment_date: "4/18/2017", commentator_username: "woodstock__.__") 
- m.comments << Comment.create(comment_text: "Smoke weed instead", comment_date: "4/18/2017", commentator_username: "woodstock__.__") 
- m.comments << Comment.create(comment_text: "Smoke weed instead", comment_date: "4/18/2017", commentator_username: "woodstock__.__") 
- m.comments << Comment.create(comment_text: "Smoke weed instead", comment_date: "4/18/2017", commentator_username: "woodstock__.__") 
- m.comments << Comment.create(comment_text: "Smoke weed instead", comment_date: "4/18/2017", commentator_username: "woodstock__.__") 
+ m.comments << Comment.create(comment_text: "Wtf does this pic have to do with that 🤔🤔🤔", comment_date: "4/18/2017", commentator_username:  "blank_circles") 
+ m.comments << Comment.create(comment_text: "If it was a straight couple you wouldn't have commented @blank_circles", comment_date: "4/18/2017", commentator_username: "this_is_cuz_im_black") 
+ m.comments << Comment.create(comment_text: "@this_is_cuz_im_black I would've still commented tf u mean", comment_date: "4/18/2017", commentator_username: "blank_circles") 
+ m.comments << Comment.create(comment_text: "Lmao @blank_circles", comment_date: "4/18/2017", commentator_username: "this_is_cuz_im_black") 
+ m.comments << Comment.create(comment_text: "Seriously what does this picture have anything to do with smoking and cancer lmao", comment_date: "4/18/2017", commentator_username: "liz_____p") 
+ m.comments << Comment.create(comment_text: "I was gonna make my usual 'gay' comment but there is actually a gay couple. So I give you this instead:", comment_date: "4/18/2017", commentator_username: "17stevenmichael08") 
+ m.comments << Comment.create(comment_text: "L", comment_date: "4/18/2017", commentator_username: "17stevenmichael08") 
  
- 
- 
+m = Message.find(11133)
+ m.comments << Comment.create(comment_text: "Lol", comment_date: "4/18/2017", commentator_username: "doctor.penn")
  
  
