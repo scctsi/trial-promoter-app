@@ -36,7 +36,6 @@ class Comment < ActiveRecord::Base
     comment_username_index = comments_spreadsheet[0].index("Commentator Username")
     orphan_comments = []
     
-    
     messages.each do |message|  
       if !message.buffer_update.nil? 
         published_text = message.buffer_update.published_text.squish
