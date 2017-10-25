@@ -107,8 +107,8 @@ ActiveRecord::Schema.define(version: 20171025215942) do
     t.text     "commentator_username"
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
-    t.string   "message_id"
     t.string   "toxicity_score"
+    t.integer  "message_id"
   end
 
   create_table "daily_metric_parser_results", force: :cascade do |t|
