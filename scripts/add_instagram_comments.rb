@@ -74,8 +74,42 @@ m = Message.find(11168)
  m.comments << Comment.create(comment_text: "Seriously what does this picture have anything to do with smoking and cancer lmao", comment_date: "4/18/2017", commentator_username: "liz_____p") 
  m.comments << Comment.create(comment_text: "I was gonna make my usual 'gay' comment but there is actually a gay couple. So I give you this instead:", comment_date: "4/18/2017", commentator_username: "17stevenmichael08") 
  m.comments << Comment.create(comment_text: "L", comment_date: "4/18/2017", commentator_username: "17stevenmichael08") 
- 
+
 m = Message.find(11133)
- m.comments << Comment.create(comment_text: "Lol", comment_date: "4/18/2017", commentator_username: "doctor.penn")
+ m.comments << Comment.create(comment_text: "Lol", comment_date: "4/18/2017", commentator_username: "doctor.penn") 
+
+m = Message.find(11123)
+ m.comments << Comment.create(comment_text: "Unless its weed. No ones snoked a joint and was still stressed", comment_date: "4/18/2017", commentator_username: "woodstock__.__")
+ 
+m = Message.find(11113)
+ m.comments << Comment.create(comment_text: "Man ive lost months at this point LOL", comment_date: "4/18/2017", commentator_username: "schmolhighwaters")
+ m.comments << Comment.create(comment_text: "How are people supposed to stop when you put motivating messages like these on Instagram", comment_date: "4/18/2017", commentator_username: "edgydiabetic")
+  
+m = Message.find(11098)
+ m.comments << Comment.create(comment_text: "@xxkellymarie_xx", comment_date: "4/18/2017", commentator_username: "hannah_and_zack") 
+ m.comments << Comment.create(comment_text: "someone help he calculate the number of cigs I have to smoke so I can die", comment_date: "4/18/2017", commentator_username: "flip__heck")
+   
+m = Message.find(11033)
+ m.comments << Comment.create(comment_text: "@xxkellymarie_xx", comment_date: "4/18/2017", commentator_username: "hannah_and_zack") 
+ m.comments << Comment.create(comment_text: "someone help he calculate the number of cigs I have to smoke so I can die", comment_date: "4/18/2017", commentator_username: "flip__heck")
+ 
+m = Message.find(10998)
+ m.comments << Comment.create(comment_text: "#FatBackwoodsOnly", comment_date: "4/18/2017", commentator_username: "dabtanium_studios") 
+ 
+m = Message.find(10998)
+ m.comments << Comment.create(comment_text: "I hope I get cancer from smoking", comment_date: "4/18/2017", commentator_username: "backwoodtripgod") 
+
+m = Message.find(10893)
+ m.comments << Comment.create(comment_text: "im gay", comment_date: "4/18/2017", commentator_username: "rattyonce") 
+
+ 
+  
+m = Message.find(10858)
+ m.comments << Comment.create(comment_text: "😮😧😱what no way!", comment_date: "4/18/2017", commentator_username: "matt_barton_0614") 
+ m.comments << Comment.create(comment_text: "thought this was mrs. marquez @laylita.xo", comment_date: "4/18/2017", commentator_username: "meiiilaaani") 
+
+ 
+ 
+ 
  
  
