@@ -710,7 +710,7 @@ $(document).ready(function() {
     historyType: 'hash',
     context: 'parent'
   });
-  $('.table').tablesort();
+  $('.table.sortable').tablesort();
   $('.ui.dropdown').dropdown({
     onChange: function() {
       var imageId = $(this).data("image-id");
