@@ -1,7 +1,11 @@
 %div{ :id => "edit-comment-codes-#{comment.id}" }
   %select.ui.fluid.multiple.selection.dropdown.edit-comment-codes{:multiple => "multiple", "data-comment-id" => "#{comment.id}"}
-    - if !experiment.comment_codes.nil? && !comment.code_list.nil?
+    - if !experiment.comment_codes.nil?
       - experiment.comment_codes.each do |code|
+        - if code.include?('Header')
+          - code.slice!('Header-')
+          %option{:disabled => "disabled"} #{code}
+          - next
         - if comment.code_list.include?(code)
           %option{"value"=>"#{code}", :selected => "selected"} #{code}
         - else
