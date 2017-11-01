@@ -71,12 +71,24 @@ RSpec.describe SocialMediaProfile, type: :model do
   it 'returns the HTML to display a platform icon and name for the platform' do
     social_media_profile = build(:social_media_profile, platform: :twitter)
     
-    expect(social_media_profile.platform_icon_and_name).to eq("<i class = '#{social_media_profile.platform} icon'></i> #{social_media_profile.platform.to_s.titleize}".html_safe)
+    expect(social_media_profile.platform_icon_and_name).to eq("<i class = '#{social_media_profile.platform} icon '></i> #{social_media_profile.platform.to_s.titleize}".html_safe)
+  end  
+  
+  it 'returns the HTML to display a medium-sized platform icon and name for the platform when size is given as an argument' do
+    social_media_profile = build(:social_media_profile, platform: :twitter)
+    
+    expect(social_media_profile.platform_icon_and_name('medium')).to eq("<i class = '#{social_media_profile.platform} icon medium'></i> #{social_media_profile.platform.to_s.titleize}".html_safe)
   end
 
   it 'returns the HTML to display an icon for the platform' do
     social_media_profile = build(:social_media_profile, platform: :twitter)
     
-    expect(social_media_profile.platform_icon).to eq("<i class = '#{social_media_profile.platform} icon'></i>".html_safe)
+    expect(social_media_profile.platform_icon).to eq("<i class = '#{social_media_profile.platform} icon '></i>".html_safe)
+  end
+  
+  it 'returns the HTML to display a large-sized icon for the platform when size is given as an argument' do
+    social_media_profile = build(:social_media_profile, platform: :twitter)
+    
+    expect(social_media_profile.platform_icon('large')).to eq("<i class = '#{social_media_profile.platform} icon large'></i>".html_safe)
   end
 end
