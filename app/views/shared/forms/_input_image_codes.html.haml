@@ -1,5 +1,5 @@
 %div{ :id => "edit-image-codes-#{image.id}" }
-  %select.ui.fluid.multiple.search.selection.dropdown.edit-image-codes{:multiple => "multiple", "data-image-id" => "#{image.id}"}
+  %select.ui.striped.fluid.multiple.search.selection.dropdown.edit-image-codes{:multiple => "multiple", "data-image-id" => "#{image.id}"}
     - if !experiment.image_codes.nil?
       - experiment.image_codes.each do |code|
         - if code.include?('Header')
