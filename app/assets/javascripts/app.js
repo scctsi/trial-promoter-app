@@ -664,21 +664,6 @@ $(document).ready(function() {
       var experimentId = $('.paginated-content').data('experiment-id');
       var model = $('.paginated-content#model').data('model');
       var page = '';
-      
-      
-    $('.ui.dropdown').dropdown({
-      debugger
-      onChange: function() {
-        var commentId = $(this).data("comment-id");
-        $("#edit-comment-codes-" + commentId).find('.save-comment-codes').first().removeClass('disabled');
-      }
-    });
-      
-      
-      
-      
-      
-      
       if (targetUrl.includes("page=")){
         page = targetUrl.match(/page=(\d+)/)[1];
       }
