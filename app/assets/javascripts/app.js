@@ -674,6 +674,13 @@ $(document).ready(function() {
           success: function(res){
             $('.paginated-content').html(res);
             setUpAjaxPagination();
+            $('.ui.dropdown').dropdown({
+              onChange: function() {
+                var commentId = $(this).data("comment-id");
+                $("#edit-comment-codes-" + commentId).find('.save-comment-codes').first().removeClass('disabled');
+              }
+            });
+            setUpEditCommentCodesFormEvents();
           }
         });
       } else {
