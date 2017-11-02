@@ -1,3 +1,4 @@
+= render partial: 'shared/comments', locals: { comments: comments, messages: @all_messages, experiment_id: @experiment.id }
 %table.ui.sortable.celled.striped.table
   %thead
     %tr
