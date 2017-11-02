@@ -1,1 +1,36 @@
 = render partial: 'shared/comments', locals: { comments: comments, messages: @all_messages, experiment_id: @experiment.id }
+%table.ui.sortable.celled.striped.table
+  %thead
+    %tr
+      %th.center.aligned Platform
+      %th.center.aligned Message
+      %th.center.aligned Message date
+      %th.center.aligned Comment Text
+      %th.center.aligned Comment date
+      %th.center.aligned Codes
+      %th.center.aligned Toxicity score
+  %tbody
+    - comments.each do |comment|
+      %tr
+        %td.center.aligned
+          = messages.find(comment.message_id).social_media_profile.platform_icon_and_name('big')
+        %td
+          = messages.find(comment.message_id).content
+        %td
+          - if messages.find(comment.message_id).buffer_update 
+            = messages.find(comment.message_id).buffer_update.sent_from_date_time.strftime("%m/%d/%Y")
+          - else
+            = messages.find(comment.message_id).scheduled_date_time.strftime("%m/%d/%Y")
+        %td
+          = comment.comment_text
+        %td
+          - if comment.comment_date
+            = comment.comment_date.strftime("%m/%d/%Y")
+          - else
+            N/A
+        %td
+          - if current_user.role != :read_only
+            = render partial: 'shared/forms/input_comment_codes.html.haml', locals: { experiment: experiment, comment: comment }
+        %td
+          - if current_user.role != :read_only
+            = comment.toxicity_score
