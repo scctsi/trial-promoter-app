@@ -1,0 +1,2 @@
+.paginated-content#model{ 'data-experiment-id': experiment_id, 'data-model': 'comment' }
+  = render partial: 'shared/comments_page', locals: { comments: comments, messages: messages, experiment_id: @experiment_id }
