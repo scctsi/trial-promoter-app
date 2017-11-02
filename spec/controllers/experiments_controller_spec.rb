@@ -476,15 +476,15 @@ RSpec.describe ExperimentsController, type: :controller do
   
   describe 'GET #comments_page' do
     before do
-      @message = create(:message)
-      @comments = create_list(:comment, 3, message_id: @message.id)
-      @comments.each{|comment| comment.toxicity_score = rand(0..1)}
-      @experiment = create(:experiment)
+      comments = build_list(:comment, 3)
+      @message = build(:message, comments: comments)
       @message_comments = double('message_comments')
+      @experiment = create(:experiment)
       @ordered_comments = []
       @paged_comments = double('paged_comments')
-      allow(Comment).to receive(:where).with(@message).and_return(@message_comments)
-      allow(@experiment_comments).to receive(:page).and_return(@paged_comments)
+      allow(Comment).to receive(:joins).with(:message).and_return(@message_comments)
+      allow(@message_comments).to receive(:page).and_return(@paged_comments)
+      allow(@paged_comments).to receive(:per).and_return(@paged_comments)
       allow(@paged_comments).to receive(:order).and_return(@ordered_comments)
     end
 
@@ -506,8 +506,9 @@ RSpec.describe ExperimentsController, type: :controller do
     it 'assigns all comments to @comments' do
       get :comments_page, id: @experiment, page: '2'
 
-      expect(Comment).to have_received(:where).with(@message)
-      expect(@experiment_comments).to have_received(:page).with('2')
+      expect(Comment).to have_received(:joins).with(:message)
+      expect(@message_comments).to have_received(:page).with('2')      
+      expect(@paged_comments).to have_received(:per).with(100)
       expect(@paged_comments).to have_received(:order).with('toxicity_score DESC')
     end
   end
