@@ -25,12 +25,12 @@
 #  campaign_id                  :string
 #  backdated                    :boolean
 #  original_scheduled_date_time :datetime
-#  campaign_unmatchable         :boolean          default(FALSE)
 #  click_rate                   :float
 #  website_goal_rate            :float
 #  website_goal_count           :integer
 #  website_session_count        :integer
 #  impressions_by_day           :text
+#  note                         :text
 #
 
 class Message < ActiveRecord::Base

@@ -28,10 +28,6 @@ $(document).ready(function() {
     $('#experiment_clinical_trial_ids').chosen({
       search_contains: true
     });
-      
-    $('#image_codes').chosen({
-      hide_results_on_select: true
-    });
   }
 
   function setUpTagListInputs() {
@@ -572,6 +568,47 @@ $(document).ready(function() {
       }
     });
   }
+  
+  function setUpEditImageCodesFormEvents() {
+    $('.button.save-image-codes').click(function(event){
+      var $inputForm = $(this).find('.dropdown.edit-image-codes');
+      var imageCodes = $(this).parent().find('.dropdown.edit-image-codes').dropdown("get value");
+      var imageId = $(this).data('image-id');
+      var $saveButton = $(this).parent().find('.button.save-image-codes');
+      if (imageCodes != null) {
+        imageCodes.join(",");
+      }
+      saveCodes('image', imageId, imageCodes, $inputForm, $saveButton);
+      event.preventDefault();
+    })
+  }
+
+  function setUpEditCommentCodesFormEvents() {
+    $('.button.save-comment-codes').click(function(event){
+      var $inputForm = $(this).find('.dropdown.edit-comment-codes');
+      var commentCodes = $(this).parent().find('.dropdown.edit-comment-codes').dropdown("get value");
+      var commentId = $(this).data('comment-id');
+      var $saveButton = $(this).parent().find('.button.save-comment-codes');
+      if (commentCodes != null) {
+        commentCodes.join(",");
+      }
+      saveCodes('comment', commentId, commentCodes, $inputForm, $saveButton);
+      event.preventDefault();
+    })
+  }
+
+  function saveCodes(model, modelId, modelCodes, $inputForm, $saveButton) {
+    $.ajax({
+      url:  '/' + model + 's/' + modelId + '/edit_codes',
+      type: 'POST',
+      data: { codes: modelCodes  },
+      success: function(modelCodes) {
+        $saveButton.addClass('disabled');
+      }
+    });
+  }
+  
+  
 
   /* Under Construction */
   /* Under Construction */
@@ -620,38 +657,54 @@ $(document).ready(function() {
     });
   }
 
-  /* Under Construction */
-  /* Under Construction */
-  /* Under Construction */
-
   function setUpAjaxPagination() {
     $('.ui .pagination a').click(function(e){
       e.preventDefault();
       var targetUrl = $(this).attr('href');
       var experimentId = $('.paginated-content').data('experiment-id');
+      var model = $('.paginated-content#model').data('model');
       var page = '';
       if (targetUrl.includes("page=")){
         page = targetUrl.match(/page=(\d+)/)[1];
       }
-
-      $.ajax({
-        url: '/experiments/' + experimentId + '/messages_page.html',
-        data: { page: page },
-        success: function(res){
-          $('.paginated-content').html(res);
-          setUpAjaxPagination();
-          setUpSaveCampaignIdFormEvents();
-          setUpEditCampaignIdLabelEvents();
-          setUpSaveNoteFormEvents();
-          setUpEditNoteEvents();
-        }
-      });
+      if (model == 'comment'){
+        $.ajax({
+          url: '/experiments/' + experimentId + '/comments_page.html',
+          data: { page: page },
+          success: function(res){
+            $('.paginated-content').html(res);
+            setUpAjaxPagination();
+            $('.ui.dropdown').dropdown({
+              onChange: function() {
+                var commentId = $(this).data("comment-id");
+                $("#edit-comment-codes-" + commentId).find('.save-comment-codes').first().removeClass('disabled');
+              }
+            });
+            setUpEditCommentCodesFormEvents();
+          }
+        });
+      } else {
+        $.ajax({
+          url: '/experiments/' + experimentId + '/messages_page.html',
+          data: { page: page },
+          success: function(res){
+            $('.paginated-content').html(res);
+            setUpAjaxPagination();
+            setUpSaveCampaignIdFormEvents();
+            setUpEditCampaignIdLabelEvents();
+            setUpSaveNoteFormEvents();
+            setUpEditNoteEvents();
+          }
+        });
+      }
     });
   }
 
   // Initialize
   setUpSaveCampaignIdFormEvents();
   setUpEditCampaignIdLabelEvents();
+  setUpEditImageCodesFormEvents();
+  setUpEditCommentCodesFormEvents();
   setUpSaveNoteFormEvents();
   setUpEditNoteEvents();
   setUpAjaxPagination();
@@ -675,7 +728,16 @@ $(document).ready(function() {
     historyType: 'hash',
     context: 'parent'
   });
-  $('.table').tablesort();
+  $('.table.sortable').tablesort();
+  $('.ui.dropdown').dropdown({
+    onChange: function() {
+      var imageId = $(this).data("image-id");
+      $("#edit-image-codes-" + imageId).find('.save-image-codes').first().removeClass('disabled');
+      
+      var commentId = $(this).data("comment-id");
+      $("#edit-comment-codes-" + commentId).find('.save-comment-codes').first().removeClass('disabled');
+    }
+  });
 
   // Lazyload for images
   $("img").lazyload({

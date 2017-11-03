@@ -16,6 +16,7 @@ Rails.application.routes.draw do
       get 'send_to_buffer', to: 'experiments#send_to_buffer'
       get 'correctness_analysis', to: 'experiments#correctness_analysis'
       get 'messages_page', to: 'experiments#messages_page'
+      get 'comments_page', to: 'experiments#comments_page'
     end
     resources :message_generation_parameter_sets
   end
@@ -60,6 +61,16 @@ Rails.application.routes.draw do
       post :import
       get :check_validity_for_instagram_ads
       post :add
+    end
+    member do
+      post 'edit_codes', to: 'images#edit_codes'
+    end
+  end
+  
+  #Comments
+  resources :comments do
+    member do
+      post 'edit_codes', to: 'comments#edit_codes'
     end
   end
 

@@ -11,7 +11,7 @@ RSpec.describe CommentAggregator do
     VCR.use_cassette 'comment_aggregator/test_setup' do
       pages = @comment_aggregator.get_user_object
       @page = pages.select{ |page| page["name"] == "B Free of Tobacco" }[0]
-      @aggregated_comments = @comment_aggregator.get_comments(@message.social_network_id, @message)
+      @aggregated_comments = @comment_aggregator.get_comments
     end
   end
 
@@ -22,24 +22,15 @@ RSpec.describe CommentAggregator do
       expect(@page["name"]).to eq("B Free of Tobacco")
     end
 
-    it 'gets the comments associated with a given message' do
-      expect(@message.comments.count).to eq(22)
-    end
-
-    it 'saves the comments associated with a given message' do
-      @message.reload
-
-      expect(@message.comments[0].comment_text).to eq( "Cyanide is in apple seeds to lol")
-    end
-
-    it 'only saves comments once' do
+    it 'does not duplicate comments' do
       VCR.use_cassette 'comment_aggregator/get_comments_once' do
-        @comment_aggregator.get_comments(@message.social_network_id, @message)
-        @comment_aggregator.get_comments(@message.social_network_id, @message)
+        @comment_aggregator.get_comments
+        file_lines_count_first = CSV.read("facebook_ads_comments.csv").count
+        @comment_aggregator.get_comments
+        file_lines_count_second = CSV.read("facebook_ads_comments.csv").count
 
-        @message.reload
-
-        expect(@message.comments.count).to eq(22)
+        expect(file_lines_count_first).to eq(968)
+        expect(file_lines_count_first).to eq(file_lines_count_second)
       end
     end
   end
