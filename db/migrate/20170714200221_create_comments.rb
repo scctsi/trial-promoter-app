@@ -11,4 +11,8 @@ class CreateComments < ActiveRecord::Migration
       t.timestamps null: false
     end
   end
+<<<<<<< HEAD
 end
+=======
+end
+>>>>>>> development

@@ -1,0 +1,15 @@
+%div{ :id => "edit-image-codes-#{image.id}" }
+  %select.ui.fluid.multiple.search.selection.dropdown.edit-image-codes{:multiple => "multiple", "data-image-id" => "#{image.id}"}
+    - if !experiment.image_codes.nil?
+      - experiment.image_codes.each do |code|
+        - if code.include?('Header')
+          - code.slice!('Header-')
+          %option{:disabled => "disabled"} #{code}
+          - next
+        - if image.code_list.include?(code)
+          %option{"value"=>"#{code}", :selected => "selected"} #{code}
+        - else
+          %option{"value"=>"#{code}"} #{code}
+  .ui.button.disabled.fluid.save-image-codes{'data-image-id': image.id}
+    %i.save.icon 
+    Save
