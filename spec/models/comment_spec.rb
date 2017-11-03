@@ -3,30 +3,19 @@
 # Table name: comments
 #
 #  id                   :integer          not null, primary key
-<<<<<<< HEAD
-#  message_date         :date
-#  message              :text
-=======
->>>>>>> development
+
 #  comment_date         :date
 #  comment_text         :text
 #  commentator_username :text
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
 #  message_id           :string
-<<<<<<< HEAD
-=======
 #  toxicity_score       :string
->>>>>>> development
 #
 
 require 'rails_helper'
 
 describe Comment do
-<<<<<<< HEAD
-  it { is_expected.to belong_to(:message) }
-end
-=======
   it { is_expected.to belong_to :message }
 
   before do
@@ -86,4 +75,3 @@ end
     expect(PerspectiveClient).to have_received(:calculate_toxicity_score).once
   end
 end  
->>>>>>> development
