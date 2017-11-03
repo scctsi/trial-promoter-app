@@ -102,22 +102,14 @@ ActiveRecord::Schema.define(version: 20171025215942) do
   end
 
   create_table "comments", force: :cascade do |t|
-<<<<<<< HEAD
-    t.date     "message_date"
-    t.text     "message"
-=======
->>>>>>> development
+
     t.date     "comment_date"
     t.text     "comment_text"
     t.text     "commentator_username"
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
-<<<<<<< HEAD
-    t.string   "message_id"
-=======
     t.string   "toxicity_score"
     t.integer  "message_id"
->>>>>>> development
   end
 
   create_table "daily_metric_parser_results", force: :cascade do |t|
