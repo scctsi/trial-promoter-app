@@ -3,6 +3,7 @@
 # Table name: comments
 #
 #  id                   :integer          not null, primary key
+
 #  comment_date         :date
 #  comment_text         :text
 #  commentator_username :text

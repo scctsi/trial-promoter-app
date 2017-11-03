@@ -102,6 +102,7 @@ ActiveRecord::Schema.define(version: 20171025215942) do
   end
 
   create_table "comments", force: :cascade do |t|
+
     t.date     "comment_date"
     t.text     "comment_text"
     t.text     "commentator_username"

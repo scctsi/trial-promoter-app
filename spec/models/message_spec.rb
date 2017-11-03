@@ -33,6 +33,7 @@
 #  note                         :text
 #
 
+
 require 'rails_helper'
 
 describe Message do
@@ -43,6 +44,7 @@ describe Message do
   it { is_expected.to have_many :metrics }
   it { is_expected.to have_many :comments }
   it { is_expected.to have_many :image_replacements }
+  it { is_expected.to have_many :comments }
   it { is_expected.to belong_to(:message_generating) }
   it { is_expected.to enumerize(:platform).in(:twitter, :facebook, :instagram) }
   it { is_expected.to enumerize(:medium).in(:ad, :organic).with_default(:organic) }
