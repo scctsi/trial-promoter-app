@@ -1,17 +1,17 @@
 require 'rails_helper'
 
-RSpec.describe CommentAggregator do
+RSpec.describe FacebookCommentsAggregator do
   before do
     secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
     allow(Setting).to receive(:[]).with(:facebook_access_token).and_return(secrets['facebook_access_token'])
-    @comment_aggregator = CommentAggregator.new
+    @facebook_comments_aggregator = FacebookCommentsAggregator.new
     @message = build(:message)
     @message.social_network_id = "980601328736431_1056074954522401"
 
-    VCR.use_cassette 'comment_aggregator/test_setup' do
-      pages = @comment_aggregator.get_user_object
+    VCR.use_cassette 'facebook_comments_aggregator/test_setup' do
+      pages = @facebook_comments_aggregator.get_user_object
       @page = pages.select{ |page| page["name"] == "B Free of Tobacco" }[0]
-      @aggregated_comments = @comment_aggregator.get_comments
+      @facebook_comments_aggregator.get_comments
     end
   end
 
@@ -23,10 +23,10 @@ RSpec.describe CommentAggregator do
     end
 
     it 'does not duplicate comments' do
-      VCR.use_cassette 'comment_aggregator/get_comments_once' do
-        @comment_aggregator.get_comments
+      VCR.use_cassette 'facebook_comments_aggregator/get_comments_once' do
+        @facebook_comments_aggregator.get_comments
         file_lines_count_first = CSV.read("facebook_ads_comments.csv").count
-        @comment_aggregator.get_comments
+        @facebook_comments_aggregator.get_comments
         file_lines_count_second = CSV.read("facebook_ads_comments.csv").count
 
         expect(file_lines_count_first).to eq(968)

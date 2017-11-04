@@ -1,9 +1,9 @@
 require "csv"
 
-class CommentAggregator
+class FacebookCommentsAggregator
   def initialize
     secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
-    Setting[:facebook_access_token]=secrets['facebook_access_token']
+    Setting[:facebook_access_token] = secrets['facebook_access_token']
     @graph = Koala::Facebook::API.new(Setting[:facebook_access_token])
   end
 
