@@ -2,15 +2,16 @@
 #
 # Table name: comments
 #
-#  id                   :integer          not null, primary key
-
-#  comment_date         :date
-#  comment_text         :text
-#  commentator_username :text
-#  created_at           :datetime         not null
-#  updated_at           :datetime         not null
-#  message_id           :string
-#  toxicity_score       :string
+#  id                      :integer          not null, primary key
+#  comment_date            :datetime
+#  comment_text            :text
+#  commentator_username    :text
+#  created_at              :datetime         not null
+#  updated_at              :datetime         not null
+#  toxicity_score          :string
+#  message_id              :integer
+#  social_media_comment_id :string
+#  commentator_id          :string
 #
 
 class Comment < ActiveRecord::Base

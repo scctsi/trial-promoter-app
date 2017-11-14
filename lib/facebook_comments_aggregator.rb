@@ -11,27 +11,35 @@ class FacebookCommentsAggregator
     return @graph.get_connections("me", "accounts")
   end
 
-  def get_posts
-    return @graph.get_object(object_id, fields: ['posts'])
+  def get_posts(page_id)
+    return @graph.get_object(page_id, fields: ['posts'])
+  end
+  
+  def get_post_comments(post_id)
   end
 
-  def get_comments
-    all_posts = @graph.get_connections("me","posts")
-
+  def get_comments(page_id)
+    get_posts(page_id)
+    all_posts = @graph.get_connections(page_id,"posts")
     begin
-      CSV.open("facebook_ads_comments.csv", :write_headers => true, :headers => ["Message Date", "Message Id", "Message", "Comment", "Date of Comment", "Commentator Username"]) do |csv|
         all_posts.each do |fb_post|
-
           all_comments = @graph.get_connections(fb_post["id"], "comments", filter: 'stream')
           begin
-            all_comments.each do |c|
-              csv << [ fb_post["created_time"], fb_post["id"], fb_post["message"], c["created_time"], c["from"]["name"], c["message"] ]
+            all_comments.each do |comment|
+              make_comment = Comment.find_or_create_by(social_media_comment_id: comment["id"]) do |new_comment|
+                new_comment.commentator_username = comment["from"]["name"],
+                new_comment.commentator_id = comment["from"]["id"],  
+                new_comment.comment_text = comment["message"]
+              end
+              make_comment.comment_date = make_comment["created_time"]
+              make_comment.message = Message.find_by_published_text(fb_post["message"].squish)
+              
+              make_comment.save
             end
             all_comments = all_comments.next_page
           end while all_comments != nil
         end
         all_posts = all_posts.next_page
-      end
     end while all_posts != nil
   end
 end
