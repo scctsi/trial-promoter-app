@@ -2,15 +2,16 @@
 #
 # Table name: comments
 #
-#  id                   :integer          not null, primary key
-
-#  comment_date         :date
-#  comment_text         :text
-#  commentator_username :text
-#  created_at           :datetime         not null
-#  updated_at           :datetime         not null
-#  message_id           :string
-#  toxicity_score       :string
+#  id                      :integer          not null, primary key
+#  comment_date            :datetime
+#  comment_text            :text
+#  commentator_username    :text
+#  created_at              :datetime         not null
+#  updated_at              :datetime         not null
+#  toxicity_score          :string
+#  message_id              :integer
+#  social_media_comment_id :string
+#  commentator_id          :string
 #
 
 require 'rails_helper'
@@ -54,7 +55,7 @@ describe Comment do
     expect(@messages[4].comments.count).to eq(1)    
     expect(@messages[4].comments.first.comment_text).to eq("Very gross")    
   end 
-
+  
   it 'saves the toxicity_score to the comment' do
     comment = create(:comment)
     

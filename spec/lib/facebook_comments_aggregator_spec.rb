@@ -5,13 +5,10 @@ RSpec.describe FacebookCommentsAggregator do
     secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
     allow(Setting).to receive(:[]).with(:facebook_access_token).and_return(secrets['facebook_access_token'])
     @facebook_comments_aggregator = FacebookCommentsAggregator.new
-    @message = build(:message)
-    @message.social_network_id = "980601328736431_1056074954522401"
 
     VCR.use_cassette 'facebook_comments_aggregator/test_setup' do
       pages = @facebook_comments_aggregator.get_user_object
       @page = pages.select{ |page| page["name"] == "B Free of Tobacco" }[0]
-      @facebook_comments_aggregator.get_comments
     end
   end
 
@@ -21,16 +18,24 @@ RSpec.describe FacebookCommentsAggregator do
       expect(@page).not_to be_nil
       expect(@page["name"]).to eq("B Free of Tobacco")
     end
+    
+    it 'gets comments for an individual post' do
+      VCR.use_cassette 'facebook_comments_aggregator/get_post_comments' do
+      
+        @facebook_comments_aggregator.get_post_comments(@page["id"])
+      end
+    end
 
-    it 'does not duplicate comments' do
-      VCR.use_cassette 'facebook_comments_aggregator/get_comments_once' do
-        @facebook_comments_aggregator.get_comments
-        file_lines_count_first = CSV.read("facebook_ads_comments.csv").count
-        @facebook_comments_aggregator.get_comments
-        file_lines_count_second = CSV.read("facebook_ads_comments.csv").count
+    it 'saves comments to the matching message' do
+      messages = []
+      messages << create(:message, buffer_update: create(:buffer_update, published_text: "Hydrogen cyanide is found in rat poison. It’s also in #cigarette smoke. http://bit.ly/2t2KVBd"))
+      messages << create(:message, buffer_update: create(:buffer_update, published_text: "Hydrogen cyanide is found in rat poison. It’s also in #cigarette smoke. http://bit.ly/7o3PALs"))
+      messages << create(:message, buffer_update: create(:buffer_update, published_text: "Hydrogen cyanide is found in rat poison. It’s also in #cigarette smoke. http://bit.ly/6nBSWg"))
 
-        expect(file_lines_count_first).to eq(968)
-        expect(file_lines_count_first).to eq(file_lines_count_second)
+      VCR.use_cassette 'facebook_comments_aggregator/get_comments' do
+        @facebook_comments_aggregator.get_comments(@page["id"])
+        
+        expect(messages[0].comments[0].comment_text).to include("how gross is that!!!!!")
       end
     end
   end
