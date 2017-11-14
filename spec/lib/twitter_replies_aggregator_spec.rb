@@ -18,18 +18,18 @@ RSpec.describe TwitterRepliesAggregator do
       
       expect(@handle).to eq("BeFreeOfTobacco")
     end
-  end
   
-  it 'gets the timeline of the main account' do
-    VCR.use_cassette 'twitter_replies_aggregator/get_tweets' do
-        tweets = @twitter_replies_aggregator.get_tweets
-        file_lines_count_first = CSV.read("twitter_replies.csv").count
-        @twitter_replies_aggregator.get_tweets
-        file_lines_count_second = CSV.read("twitter_replies.csv").count
-
-        expect(tweets).to eq([])
-        expect(file_lines_count_first).to eq(0)
-        expect(file_lines_count_first).to eq(file_lines_count_second)
+    it 'gets the timeline of the main account' do
+      VCR.use_cassette 'twitter_replies_aggregator/get_tweets' do
+          tweets = @twitter_replies_aggregator.get_tweets
+          file_lines_count_first = CSV.read("twitter_replies.csv").count
+          @twitter_replies_aggregator.get_tweets
+          file_lines_count_second = CSV.read("twitter_replies.csv").count
+  
+          expect(tweets.count).to eq(4)
+          expect(file_lines_count_first).to eq(5)
+          expect(file_lines_count_first).to eq(file_lines_count_second)
+      end
     end
   end
 end
