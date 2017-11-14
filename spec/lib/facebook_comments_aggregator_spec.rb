@@ -35,7 +35,7 @@ RSpec.describe FacebookCommentsAggregator do
       VCR.use_cassette 'facebook_comments_aggregator/get_comments' do
         @facebook_comments_aggregator.get_comments(@page["id"])
         
-        expect(messages[0].comments[0].comment_text).to include("how gross is that!!!!!")
+        expect(messages[0].comments.map(&:comment_text)).to include("how gross is that!!!!!")
       end
     end
   end
