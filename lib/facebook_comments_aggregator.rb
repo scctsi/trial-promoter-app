@@ -17,7 +17,7 @@ class FacebookCommentsAggregator
   
   def get_post_comments(post_id, published_text)
     post_comments = @graph.get_connections(post_id, "comments", filter: 'stream')
-    begin
+    loop do
       post_comments.each do |comment|
         make_comment = Comment.find_or_create_by(social_media_comment_id: comment["id"]) do |new_comment|
           new_comment.commentator_username = comment["from"]["name"],
@@ -30,16 +30,18 @@ class FacebookCommentsAggregator
         make_comment.save
       end
       post_comments = post_comments.next_page
-    end while post_comments != nil
+      break if post_comments == nil
+    end
   end
 
   def get_comments(page_id)
     paginated_posts = get_paginated_posts(page_id)
-    begin
+    loop do
       paginated_posts.each do |fb_post|
         get_post_comments(fb_post["id"], fb_post["message"]) 
       end
       paginated_posts = paginated_posts.next_page
-    end while paginated_posts != nil
+      break if paginated_posts == nil
+    end
   end
 end
