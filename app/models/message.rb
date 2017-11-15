@@ -228,4 +228,12 @@ class Message < ActiveRecord::Base
     visits.reject!{ |visit| exclude_ip_address_list.include?(visit.ip) }
     return visits
   end
+  
+  def self.find_by_published_text(published_text)
+    messages = Message.joins(:buffer_update).where("published_text like ?", published_text.squish)
+
+    raise ActiveRecord::RecordNotUnique, '' if messages.length > 1
+
+    return messages.first
+  end
 end
