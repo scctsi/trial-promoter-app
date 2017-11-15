@@ -16,22 +16,32 @@ class TwitterRepliesAggregator
     return @client.user(account).name
   end
 
-  def get_tweets
-    tweets = @client.home_timeline
-p tweets
-    # begin
-      CSV.open("twitter_replies.csv", "ab") do |csv|
-        # tweets.each do |tweet|
-          # all_comments = @graph.get_connections(tweet["id"], "comments", filter: 'stream')
-          # begin
-          #   all_comments.each do |c|
-              csv << tweets
-          #   end
-          #   all_comments = all_comments.next_page
-          # end while all_comments != nil
-        # end
-        # all_posts = all_posts.next_page
+  def get_tweets(since_id = nil)
+    options = {}
+    options[:since_id] = since_id unless since_id.nil?
+    tweets = @client.home_timeline(options)
+    CSV.open("twitter_replies.csv", "w+", :headers => ["Date of tweet", "Tweet text", "Id", "Hashtags"], :write_headers => true) do |csv|
+      tweets.each do |tweet|
+        hashtags = []
+        hashtags = tweet.hashtags if tweet.entities?
+          csv << [tweet.created_at, tweet.text, tweet.id, hashtags]
       end
-    # end while all_posts != nil
+    end
   end
+  
+  # private
+  
+  # def collect_with_since_id(collection=[], since_id=nil, &block)
+  #   response = yield(since_id)
+  #   collection += response
+  #   response.empty? ? collection.flatten : collect_with_since_id(collection, response.last.id - 1, &block)
+  # end
+  
+  # def client.get_recent_tweets(user)
+  #   collect_with_since_id do |since_id|
+  #     options = {count: 200, include_rts: true}
+  #     options[:since_id] = since_id unless since_id.nil?
+  #     user_timeline(user, options)
+  #   end
+  # end
 end
