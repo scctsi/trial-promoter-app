@@ -473,4 +473,43 @@ RSpec.describe ExperimentsController, type: :controller do
       expect(@paged_messages).to have_received(:order).with('scheduled_date_time ASC')
     end
   end
+  
+  describe 'GET #comments_page' do
+    before do
+      comments = build_list(:comment, 3)
+      @message = build(:message, comments: comments)
+      @message_comments = double('message_comments')
+      @experiment = create(:experiment)
+      @ordered_comments = []
+      @paged_comments = double('paged_comments')
+      allow(Comment).to receive(:joins).with(:message).and_return(@message_comments)
+      allow(@message_comments).to receive(:page).and_return(@paged_comments)
+      allow(@paged_comments).to receive(:per).and_return(@paged_comments)
+      allow(@paged_comments).to receive(:order).and_return(@ordered_comments)
+    end
+
+    it 'renders generated comments' do
+
+      get :comments_page, id: @experiment.id, page: '2'
+
+      expect(response).to render_template("shared/_comments_page")
+    end
+
+    it 'redirects an unauthorized user' do
+      sign_out(:user)
+
+      get :comments_page, id: @experiment.id
+
+      expect(response).to redirect_to :new_user_session
+    end
+
+    it 'assigns all comments to @comments' do
+      get :comments_page, id: @experiment, page: '2'
+
+      expect(Comment).to have_received(:joins).with(:message)
+      expect(@message_comments).to have_received(:page).with('2')      
+      expect(@paged_comments).to have_received(:per).with(100)
+      expect(@paged_comments).to have_received(:order).with('toxicity_score DESC')
+    end
+  end
 end
