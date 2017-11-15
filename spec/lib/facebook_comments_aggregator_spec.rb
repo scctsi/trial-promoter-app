@@ -19,14 +19,8 @@ RSpec.describe FacebookCommentsAggregator do
       expect(@page["name"]).to eq("B Free of Tobacco")
     end
     
-    it 'gets comments for an individual post' do
-      VCR.use_cassette 'facebook_comments_aggregator/get_post_comments' do
-      
-        @facebook_comments_aggregator.get_post_comments(@page["id"])
-      end
-    end
 
-    it 'saves comments to the matching message' do
+    it 'getting all comments for a page and matching them to the correct message via published text' do
       messages = []
       messages << create(:message, buffer_update: create(:buffer_update, published_text: "Hydrogen cyanide is found in rat poison. It’s also in #cigarette smoke. http://bit.ly/2t2KVBd"))
       messages << create(:message, buffer_update: create(:buffer_update, published_text: "Hydrogen cyanide is found in rat poison. It’s also in #cigarette smoke. http://bit.ly/7o3PALs"))
@@ -36,6 +30,23 @@ RSpec.describe FacebookCommentsAggregator do
         @facebook_comments_aggregator.get_comments(@page["id"])
         
         expect(messages[0].comments.map(&:comment_text)).to include("how gross is that!!!!!")
+      end
+    end
+  
+    it 'gets 25 posts (pagination limit) for a facebook page' do
+      VCR.use_cassette 'facebook_comments_aggregator/get_paginated_posts' do
+        posts = @facebook_comments_aggregator.get_paginated_posts(@page["id"])
+        expect(posts[0]["message"]).to include("100 million+ US non-smokers are exposed to toxic secondhand smoke. Protect your loved ones by living #tobaccofree. http:\/\/bit.ly\/2trX166")
+        expect(posts.count).to eq(25)
+      end
+    end
+    
+    it 'gets comments for an individual post' do
+      VCR.use_cassette 'facebook_comments_aggregator/get_post_comments' do
+        posts = @facebook_comments_aggregator.get_paginated_posts(@page["id"])
+        @facebook_comments_aggregator.get_post_comments(posts[5]["id"], posts[5]["message"])
+
+        expect(Comment.count).to eq(3)
       end
     end
   end
