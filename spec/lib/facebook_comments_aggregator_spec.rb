@@ -45,8 +45,7 @@ RSpec.describe FacebookCommentsAggregator do
       VCR.use_cassette 'facebook_comments_aggregator/get_post_comments' do
         posts = @facebook_comments_aggregator.get_paginated_posts(@page["id"])
         @facebook_comments_aggregator.get_post_comments(posts[5]["id"], posts[5]["message"])
-
-        expect(Comment.count).to eq(3)
+        expect(Comment.count).to eq(1)
       end
     end
   end
