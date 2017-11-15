@@ -3,12 +3,12 @@
   - if f.object.new_record?
     %td= f.input :source, label: false, :selected => 'experiment', disabled: true
   - else
-    %td= f.input :source, label: false
+    %td= f.object.source.titlecase
   - if f.object.new_record?
     %td= f.input :variable_name, label: false
   - else
     %td= f.object.variable_name
   %td= f.input :report_label, label: false
-  %td= f.input :allowed_values, as: :string, label: false
-  %td= f.input :value_mapping, as: :string, label: false
-  %td= f.input :note, as: :string, label: false
+  %td= f.input :allowed_values, as: :text, label: false
+  %td= f.input :value_mapping, as: :text, label: false
+  %td= f.input :note, as: :text, label: false

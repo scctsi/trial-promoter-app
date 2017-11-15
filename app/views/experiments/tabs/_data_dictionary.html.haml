@@ -1,13 +1,16 @@
+%a.ui.primary.labeled.icon.button
+  %i.download.icon
+  Download data dictionary
 = simple_form_for @experiment.data_dictionary, class: 'ui form' do |f|
   %table.ui.celled.table
     %thead 
       %tr
-        %th.collapsing.center.aligned Include?
+        %th.collapsing.center.aligned Include in report?
         %th Source
         %th Variable name
-        %th Report label
+        %th Variable label
         %th Allowed values
-        %th Value mapping
+        %th Value labels
         %th Note
     %tbody
       = f.simple_fields_for :data_dictionary_entries do |dde|
