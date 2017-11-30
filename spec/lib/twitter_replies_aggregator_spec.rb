@@ -20,7 +20,6 @@ RSpec.describe TwitterRepliesAggregator do
   describe "(development only tests)", :development_only_tests => true do
     
     it 'gets an account handle' do
-      
       expect(@handle).to eq("BeFreeOfTobacco")
     end
     
@@ -45,7 +44,7 @@ RSpec.describe TwitterRepliesAggregator do
     
     it 'gets the comments for all tweets' do
       VCR.use_cassette 'twitter_replies_aggregator/get_comments' do
-        comments = @twitter_replies_aggregator.get_comments("BeFreeOfTobacco")
+        comments = @twitter_replies_aggregator.get_comments
 
         expect(comments.count).to eq(6)
         expect(comments[0]['comment_text']).to eq("@BeFreeOfTobacco so many replies")
