@@ -19,8 +19,7 @@ RSpec.describe FacebookCommentsAggregator do
       expect(@page["name"]).to eq("B Free of Tobacco")
     end
     
-
-    it 'getting all comments for a page and matching them to the correct message via published text' do
+    it 'gets all comments for a page and matching them to the correct message via published text' do
       messages = []
       messages << create(:message, buffer_update: create(:buffer_update, published_text: "Hydrogen cyanide is found in rat poison. It’s also in #cigarette smoke. http://bit.ly/2t2KVBd"))
       messages << create(:message, buffer_update: create(:buffer_update, published_text: "Hydrogen cyanide is found in rat poison. It’s also in #cigarette smoke. http://bit.ly/7o3PALs"))
@@ -44,6 +43,16 @@ RSpec.describe FacebookCommentsAggregator do
     it 'gets comments for an individual post' do
       VCR.use_cassette 'facebook_comments_aggregator/get_post_comments' do
         posts = @facebook_comments_aggregator.get_paginated_posts(@page["id"])
+        @facebook_comments_aggregator.get_post_comments(posts[5]["id"], posts[5]["message"])
+
+        expect(Comment.count).to eq(3)
+      end
+    end
+    
+    it 'does not add repeat comments' do
+      VCR.use_cassette 'facebook_comments_aggregator/get_double_post_comments' do
+        posts = @facebook_comments_aggregator.get_paginated_posts(@page["id"])
+        @facebook_comments_aggregator.get_post_comments(posts[5]["id"], posts[5]["message"])
         @facebook_comments_aggregator.get_post_comments(posts[5]["id"], posts[5]["message"])
 
         expect(Comment.count).to eq(3)
