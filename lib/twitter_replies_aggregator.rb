@@ -16,7 +16,7 @@ class TwitterRepliesAggregator
     return @client.user(account).name
   end
 
-  def get_comments(handle)
+  def get_comments
     tweets = get_all_mentions_for_a_handle
     comments = []
 
