@@ -15,10 +15,6 @@ RSpec.describe TwitterRepliesAggregator do
     VCR.use_cassette 'twitter_replies_aggregator/test_setup' do
       @handle = @twitter_replies_aggregator.get_account('BeFreeOfTobacco')
     end
-    
-    VCR.use_cassette 'twitter_replies_aggregator/get_all_tweets_for_a_handle' do
-      @tweets = @twitter_replies_aggregator.get_all_tweets_for_a_handle('BeFreeOfTobacco')
-    end
   end
 
   describe "(development only tests)", :development_only_tests => true do
