@@ -45,7 +45,7 @@ RSpec.describe TwitterRepliesAggregator do
     it 'gets the comments for all tweets' do
       VCR.use_cassette 'twitter_replies_aggregator/get_comments' do
         comments = @twitter_replies_aggregator.get_comments
-
+        
         expect(comments.count).to eq(6)
         expect(comments[0]['comment_text']).to eq("@BeFreeOfTobacco so many replies")
         expect(comments[0]['parent_tweet_id']).to eq("931668280883871744")
@@ -59,7 +59,6 @@ RSpec.describe TwitterRepliesAggregator do
         expect(comments[5]['parent_tweet_id']).to eq("860207525777559552")
         expect(comments[5].message.social_network_id).to eq("860207525777559552")
         expect(comments[5].message.buffer_update.published_text).to eq("Polonium-210 is a chemical in nuclear reactors. It’s also found in #cigarette smoke. https://t.co/y9vTJ05EVU https://t.co/PWhxTazzzs")
-      
       end
     end
   end
