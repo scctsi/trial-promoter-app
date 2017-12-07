@@ -1,5 +1,3 @@
-require "csv"
-
 class FacebookCommentsAggregator
   def initialize
     secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
