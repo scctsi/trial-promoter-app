@@ -30,6 +30,14 @@ RSpec.describe FacebookAdsClient do
       end
     end
     
+    # it 'gets all the campaigns' do
+    #   VCR.use_cassette 'facebook_ads_client/get_all_campaigns' do
+    #     all_campaigns = @facebook_ads_client.get_all_campaigns
+
+    #     expect(all_campaigns.count).to eq(732)
+    #   end
+    # end
+        
     it 'gets the campaign ids' do
       VCR.use_cassette 'facebook_ads_client/get_all_campaign_ids' do
         all_campaign_ids = @facebook_ads_client.get_all_campaign_ids
@@ -38,17 +46,29 @@ RSpec.describe FacebookAdsClient do
       end
     end
     
-    it 'gets the ads from a campaign id' do
-      VCR.use_cassette 'facebook_ads_client/get_ads' do
-        campaign_id = "6076509762239"
+    #Each campaign has a corresponding ad set - for TCORS, it's a one-to-one relationship, 
+    # see Ad Sets section: https://github.com/tophatter/facebook-ruby-ads-sdk
+    it 'gets the ad sets from a campaign id' do
+      VCR.use_cassette 'facebook_ads_client/get_ad_sets' do
+      ads =  @facebook_ads_client.get_ad_sets
 
-        ads = @facebook_ads_client.get_ads(campaign_id)
-
-        expect(ads.body["ads"]).to eq("ads")
+      expect(ads.count).to eq(732)
+      expect(ads[0].name).to eq(:adsets)
+      #This is actually the campaign id
+      expect(ads[0].node.id).to eq("6076520279839")
       end
     end
     
-    it 'gets the comments from an ad id' do
+    it 'gets the ads from the ad sets' do
+      VCR.use_cassette 'facebook_ads_client/get_ads' do
+
+        ads = @facebook_ads_client.get_ads
+
+        expect(ads.count).to eq(731)
+      end
+    end 
+    
+    xit 'gets the comments from an ad id' do
       VCR.use_cassette 'facebook_ads_client/get_comments' do
         ad_id = "6075124407239"
         
