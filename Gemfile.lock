@@ -129,6 +129,9 @@ GEM
     errbase (0.0.3)
     erubis (2.7.0)
     execjs (2.7.0)
+    facebookads (0.2.11.0)
+      faraday
+      json
     factory_girl (4.8.0)
       activesupport (>= 3.0.0)
     factory_girl_rails (4.8.0)
@@ -465,6 +468,7 @@ DEPENDENCIES
   devise
   dropbox-sdk-v2
   enumerize
+  facebookads
   factory_girl_rails (~> 4.0)
   faker
   fastimage

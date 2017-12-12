@@ -4,6 +4,11 @@ class FacebookMetricsAggregator
     Setting[:facebook_access_token] = secrets['facebook_access_token']
     Koala.config.api_version = "v2.10"
     @graph = Koala::Facebook::API.new(Setting[:facebook_access_token])
+    @ad_session = FacebookAds::Session.new(access_token: Setting[:facebook_access_token])
+  end
+  
+  def get_ad_account(account, name)
+    @ad_account = FacebookAds::AdAccount.get(account, name, @ad_session)
   end
 
   def get_user_object
