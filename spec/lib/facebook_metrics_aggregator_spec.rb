@@ -19,7 +19,16 @@ RSpec.describe FacebookMetricsAggregator do
       expect(@page["name"]).to eq("B Free of Tobacco")
     end
     
-    it 'gets the impressions for an individual ad' do
+    it 'gets the ad account B Free Of Tobacco' do
+      VCR.use_cassette 'facebook_metrics_aggregator/get_ad_account' do
+        ad_account = @facebook_metrics_aggregator.get_ad_account(@page["id"], @page["name"])
+        
+        expect(ad_account).not_to be_nil
+        expect(ad_account["id"]).to eq("980601328736431")
+      end
+    end
+    
+    xit 'gets the impressions for an individual ad' do
       ad_id = '6073750722439'
       campaign_id = '6073750720839'
       ad_set = '6073750722239'
