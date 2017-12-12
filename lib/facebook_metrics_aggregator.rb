@@ -2,6 +2,7 @@ class FacebookMetricsAggregator
   def initialize
     secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
     Setting[:facebook_access_token] = secrets['facebook_access_token']
+    Koala.config.api_version = "v2.10"
     @graph = Koala::Facebook::API.new(Setting[:facebook_access_token])
   end
 
@@ -9,31 +10,37 @@ class FacebookMetricsAggregator
     return @graph.get_connections("me", "accounts")
   end
 
-  def get_paginated_posts(page_id)
-    return @graph.get_connections(page_id, 'posts')
+  def get_ad_impressions(ad_id)
+    ad_impressions = @graph.get_connections(ad_id, "action_report_time", since: "2017-04-20", until: "2017-07-13")
+    return ad_impressions
   end
   
-  def get_post_impressions(post_id, published_text)
+  
+  
+  
+  
+  
+  
+  
+  def get_paginated_posts(page_id, start_date, end_date)
+    return @graph.get_connections(page_id, 'insights/page_impressions', since: start_date, until: end_date)
+  end
+  
+  def get_post_impressions(post_id, published_text, start_date = "2017-04-19", end_date = "2017-07-13")
     # post_comments = @graph.get_connections(post_id, "comments", period: 'day', filter: 'stream')
     # post_likes = @graph.get_connections(post_id,"likes", period: 'day', filter: 'stream')
-    post_impressions = @graph.get_connections(post_id, "ad_set")
-    # page_impressions_paid = @graph.get_connections(post_id,"insights/page_impressions_paid", period: 'day', filter: 'stream')
+    # post_impressions = @graph.get_connections(post_id, 'likes', since: "2017-05-17", until: "2017-05-18")
+    page_impressions_paid = @graph.get_connections(post_id,"insights/page_impressions_paid", since: start_date, until: end_date)
     # post_shares = @graph.get_connections(post_id,"shares", period: 'day', filter: 'stream')
-    p post_impressions
+
     loop do
-      post_impressions.each do |impression|
-        # metric_impression = Message.find_by_alternative_identifier(campaign_id: impression["id"]) do |new_impression|
-        #   new_impression.impressionator_username = impression["from"]["name"],
-        #   new_impression.impressionator_id = impression["from"]["id"],  
-        #   new_impression.impression_text = impression["message"]
-        # end
-        # make_impression.impression_date = make_impression["created_time"]
-        # make_impression.message = Message.find_by_published_text(published_text.squish)
-        
-        # make_impression.save
+      page_impressions_paid.each do |impression|
+        message = Message.find_by_alternative_identifier(campaign_id: impression["id"]) 
+
+
       end
-      post_impressions = post_impressions.next_page
-      break if post_impressions == nil
+      page_impressions_paid = page_impressions_paid.next_page
+      break if page_impressions_paid == nil
     end
   end
 
