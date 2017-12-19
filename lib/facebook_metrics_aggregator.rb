@@ -21,50 +21,57 @@ class FacebookMetricsAggregator
     return FacebookAds::AdAccount.get(account, name, @ad_session)
   end
 
-
-
+  def get_page_token(page_id)
+    page_token = @graph.get_page_access_token(page_id)
+    return Koala::Facebook::API.new(page_token)
+  end
 
   def get_ad_impressions(ad_id)
     ad_impressions = @graph.get_connections(ad_id, "insights/action_report_time", since: "2017-04-20", until: "2017-07-13")
+
     return ad_impressions
   end
   
   
-  
-  
-  
-  
-  
-  
   def get_paginated_posts(page_id, start_date = "2017-04-19", end_date = "2017-07-13")
-    page_token = @graph.get_page_access_token(page_id)
-    @page_graph = Koala::Facebook::API.new(page_token)
-    return @page_graph.get_connections(page_id, 'posts', since: start_date, until: end_date)
+    page_graph = get_page_token(page_id)
+    return page_graph.get_connections(page_id, 'posts', since: start_date, until: end_date)
   end
   
-  def get_post_impressions(page_graph, post_id, start_date = "2017-04-19", end_date = "2017-07-13")
-    # post_comments = @graph.get_connections(post_id, "comments", period: 'day', filter: 'stream')
-    # post_likes = @graph.get_connections(post_id,"likes", period: 'day', filter: 'stream')
-    # post_likes = @graph.get_connections(post_id, "reactions", filter: 'stream')
-    # p @graph.get_object(post_id)
-    # post_insights = @graph.get_connections(post_id, "likes", since: "2017-04-19", until: "2017-07-13", filter: 'stream')
+  def get_post_impressions(page_id, post_id, start_date = "2017-04-19", end_date = "2017-07-13")
+    impressions = {}
+    page_graph = get_page_token(page_id)
 
-    # @graph.get_connection(post_id, "likes")
+    comments = @graph.get_connections(post_id, "comments", period: 'day', filter: 'stream')
+    impressions['comments'] = !comments.nil? ? comments : nil
     
-p @graph.get_objects(post_id, :fields => "likes.summary(true)")
-
-
+    likes = page_graph.get_connections(post_id, "likes", period: 'day', filter: 'stream')
+    impressions['likes'] = !likes.nil? ? likes.count : nil
+    
+    shares = page_graph.get_connections(post_id, "sharedposts", since: "2017-04-19", until: "2017-07-13", filter: 'stream')
+    impressions["shares"] = shares.first if !shares.first.nil?
+    
+    return impressions
   end
 
   def get_posts(page_id)
-    page_token = @graph.get_page_access_token(page_id)
+    # page_token = @graph.get_page_access_token(page_id)
+    
     @posts = []
-    page_graph = Koala::Facebook::API.new(page_token)
     paginated_posts = get_paginated_posts(page_id)
     @posts << paginated_posts
     loop do
       paginated_posts.each do |fb_post|
-        get_post_impressions(page_graph, fb_post["id"]) 
+        impressions = get_post_impressions(page_id, fb_post["id"]) 
+        message = Message.find_by_alternative_identifier(fb_post["id"])
+
+        if !message.nil?
+          impressions["comments"].each do |comment|
+            (message.comments << Comment.create(comment_text: comment["message"], social_media_comment_id: comment["id"])) if !comment.nil?
+          end
+          message.metrics << Metric.create(source: "facebook", data: { shares: impressions["shares"], likes: impressions["likes"] })
+          message.save
+        end
       end
       paginated_posts = paginated_posts.next_page
       @posts << paginated_posts
