@@ -6,12 +6,6 @@ class FacebookMetricsAggregator
     @graph = Koala::Facebook::API.new(Setting[:facebook_access_token])
     # @ad_session = FacebookAds::Session.new(access_token: Setting[:facebook_access_token])
   end
-  
-  # def get_ad_account(account_number, name)
-  #   ad_account =  FacebookAds::AdAccount.get(account_number, name, @ad_session)
-  #   p ad_account
-  #   return ad_account
-  # end
 
   def get_user_object
     return @graph.get_connections("me", "accounts")
@@ -26,10 +20,10 @@ class FacebookMetricsAggregator
     return Koala::Facebook::API.new(page_token)
   end
 
-  def get_ad_impressions(ad_id)
-    ad_impressions = @graph.get_connections(ad_id, "insights/action_report_time", since: "2017-04-20", until: "2017-07-13")
-
-    return ad_impressions
+  def get_post_impressions(page_id, post_id, start_date = "2017-04-19", end_date = "2017-07-13")
+    page_graph = get_page_token(page_id)
+    impressions = page_graph.get_connections(post_id, "insights/post_impressions", since: "2017-04-20", until: "2017-07-13")
+    return impressions[0]["values"][0]["value"]
   end
   
   
@@ -38,45 +32,48 @@ class FacebookMetricsAggregator
     return page_graph.get_connections(page_id, 'posts', since: start_date, until: end_date)
   end
   
-  def get_post_impressions(page_id, post_id, start_date = "2017-04-19", end_date = "2017-07-13")
-    impressions = {}
+  def get_post_metrics(page_id, post_id, start_date = "2017-04-19", end_date = "2017-07-13")
+    metrics = {}
     page_graph = get_page_token(page_id)
 
     comments = @graph.get_connections(post_id, "comments", period: 'day', filter: 'stream')
-    impressions['comments'] = !comments.nil? ? comments : nil
+    metrics['comments'] = comments.nil? ? nil : comments
     
     likes = page_graph.get_connections(post_id, "likes", period: 'day', filter: 'stream')
-    impressions['likes'] = !likes.nil? ? likes.count : nil
+    metrics['likes'] = likes.nil? ? nil : likes.count
     
+    clicks = page_graph.get_connections(post_id, "insights/post_consumptions_by_type", fields: 'values', period: 'day', filter: 'stream')
+    metrics['clicks'] = clicks.nil? ? nil : clicks
+    # p metrics['clicks']
     shares = page_graph.get_connections(post_id, "sharedposts", since: "2017-04-19", until: "2017-07-13", filter: 'stream')
-    impressions["shares"] = shares.first if !shares.first.nil?
+    metrics["shares"] = shares.first.nil? ? 0 : shares.first.count
     
-    return impressions
+    metrics["impressions"] =  get_post_impressions(page_id, post_id)
+    return metrics
   end
 
-  def get_posts(page_id)
-    # page_token = @graph.get_page_access_token(page_id)
-    
-    @posts = []
+  def get_posts(page_id, date)
+    posts = []
     paginated_posts = get_paginated_posts(page_id)
-    @posts << paginated_posts
+    posts << paginated_posts
     loop do
       paginated_posts.each do |fb_post|
-        impressions = get_post_impressions(page_id, fb_post["id"]) 
+        metrics = get_post_metrics(page_id, fb_post["id"]) 
         message = Message.find_by_alternative_identifier(fb_post["id"])
-
         if !message.nil?
-          impressions["comments"].each do |comment|
+          metrics["comments"].each do |comment|
             (message.comments << Comment.create(comment_text: comment["message"], social_media_comment_id: comment["id"])) if !comment.nil?
           end
-          message.metrics << Metric.create(source: "facebook", data: { shares: impressions["shares"], likes: impressions["likes"] })
+          #this is going to be a job in order to record the current date
+          MetricsManager.update_impressions_by_day(date, message.social_network_id => metrics["impressions"])
+          message.metrics << Metric.create(source: "facebook", data: { shares: metrics["shares"], likes: metrics["likes"] })
           message.save
         end
       end
       paginated_posts = paginated_posts.next_page
-      @posts << paginated_posts
+      posts << paginated_posts
       break if paginated_posts == nil
     end
-    return @posts
+    return posts
   end
 end
