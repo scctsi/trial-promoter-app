@@ -22,7 +22,7 @@ class FacebookMetricsAggregator
 
   def get_post_impressions(page_id, post_id, start_date, end_date)
     page_graph = get_page_token(page_id)
-    impressions = page_graph.get_connections(post_id, "insights/post_impressions", since: "2017-04-20", until: "2017-07-13")
+    impressions = page_graph.get_connections(post_id, "insights/post_impressions", since: start_date, until: end_date)
     return impressions[0]["values"][0]["value"]
   end
   
