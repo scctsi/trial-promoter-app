@@ -32,22 +32,13 @@ class FacebookMetricsAggregator
   end
   
   def get_post_metrics(page_id, post_id, start_date, end_date)
-    metrics = {}
     page_graph = get_page_token(page_id)
-
+    metrics = {}
     metrics['comments'] = get_comments(post_id)
     metrics["impressions"] = get_impressions(page_id, post_id, start_date, end_date)
-    
-    
-    likes = page_graph.get_connections(post_id, "likes", period: 'day', filter: 'stream')
-    metrics['likes'] = likes.nil? ? nil : likes.count
-    
-    clicks = page_graph.get_connections(post_id, "insights/post_consumptions_by_type", fields: 'values', period: 'day', filter: 'stream')
-    metrics['clicks'] = clicks[0]["values"][0]["value"]["other clicks"]
-    
-    shares = page_graph.get_connections(post_id, "sharedposts", since: start_date, until: end_date, filter: 'stream')
-    metrics["shares"] = shares.first.nil? ? 0 : shares.first.count
-    
+    metrics['likes'] = get_likes(page_graph, post_id) 
+    metrics['clicks'] = get_clicks(page_graph, post_id)
+    metrics["shares"] = get_shares(page_graph, post_id, start_date, end_date)
     return metrics
   end
 
@@ -74,13 +65,13 @@ class FacebookMetricsAggregator
     end
   end
   
-  def record_metrics(message, metrics, start_date)
+  def record_metrics(message, metrics, impressions_date)
     if !message.nil?
       metrics["comments"].each do |comment|
         (message.comments << Comment.create(comment_text: comment["message"], social_media_comment_id: comment["id"])) if !comment.nil?
       end
-      #this is going to be a job in order to record the current start_date
-      MetricsManager.update_impressions_by_day(start_date, message.social_network_id => metrics["impressions"])
+      #this is going to be a job in order to record the current impressions_date
+      MetricsManager.update_impressions_by_day(impressions_date, message.social_network_id => metrics["impressions"])
       message.metrics << Metric.create(source: "facebook", data: { shares: metrics["shares"], likes: metrics["likes"] })
       message.save
     end
@@ -94,5 +85,20 @@ class FacebookMetricsAggregator
   def get_impressions(page_id, post_id, start_date, end_date)
     impressions =  get_post_impressions(page_id, post_id, start_date, end_date)
     return impressions.nil? ? 0 : impressions
+  end
+  
+  def get_likes(page_graph, post_id)
+    likes = page_graph.get_connections(post_id, "likes", period: 'day', filter: 'stream')
+    return likes.nil? ? nil : likes.count
+  end
+    
+  def get_clicks(page_graph, post_id)
+    clicks = page_graph.get_connections(post_id, "insights/post_consumptions_by_type", fields: 'values', period: 'day', filter: 'stream')
+    return clicks[0]["values"][0]["value"]["other clicks"]
+  end
+  
+  def get_shares(page_graph, post_id, start_date, end_date)
+    shares = page_graph.get_connections(post_id, "sharedposts", since: start_date, until: end_date, filter: 'stream')
+    return shares.first.nil? ? 0 : shares.first.count
   end
 end

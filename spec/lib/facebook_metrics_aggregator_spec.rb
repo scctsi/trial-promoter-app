@@ -34,7 +34,7 @@ RSpec.describe FacebookMetricsAggregator do
       end
     end
     
-    it 'gets the impressions for an individual post' do
+    it 'gets the lifetime metrics for an individual post' do
       post_ids = ["980601328736431_1009727572490473", "980601328736431_1056074954522401", "980601328736431_1060154484114448"]
 
       VCR.use_cassette 'facebook_metrics_aggregator/get_post_metrics' do
