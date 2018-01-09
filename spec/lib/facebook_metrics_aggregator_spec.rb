@@ -28,7 +28,7 @@ RSpec.describe FacebookMetricsAggregator do
 
       VCR.use_cassette 'facebook_metrics_aggregator/get_post_impressions' do
         
-        impressions = @facebook_metrics_aggregator.get_post_impressions(@page["id"], post_id)
+        impressions = @facebook_metrics_aggregator.get_post_impressions(@page["id"], post_id, "2017-04-19", "2017-07-13")
       
         expect(impressions).to eq(502)
       end
@@ -41,7 +41,7 @@ RSpec.describe FacebookMetricsAggregator do
         metrics = []
         
         post_ids.each do |post_id|
-          metrics << @facebook_metrics_aggregator.get_post_metrics(@page["id"], post_id)
+          metrics << @facebook_metrics_aggregator.get_post_metrics(@page["id"], post_id, "2017-04-19", "2017-07-13")
         end
         expect(metrics[0]["likes"]).to eq(19)
         expect(metrics[0]["comments"].count).to eq(1)
@@ -60,7 +60,7 @@ RSpec.describe FacebookMetricsAggregator do
     
     it 'gets posts for the page B Free of Tobacco on a specific day' do
       VCR.use_cassette 'facebook_metrics_aggregator/get_posts' do
-        posts_day = @facebook_metrics_aggregator.get_posts(@page["id"], Date.new(2017, 4, 19))
+        posts_day = @facebook_metrics_aggregator.get_posts(@page["id"], Date.new(2017, 4, 19), "2017-04-19", "2017-07-13")
 
         @messages.each{|m| m.reload }
         

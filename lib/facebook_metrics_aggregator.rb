@@ -20,7 +20,7 @@ class FacebookMetricsAggregator
     return Koala::Facebook::API.new(page_token)
   end
 
-  def get_post_impressions(page_id, post_id, start_date = "2017-04-19", end_date = "2017-07-13")
+  def get_post_impressions(page_id, post_id, start_date, end_date)
     page_graph = get_page_token(page_id)
     impressions = page_graph.get_connections(post_id, "insights/post_impressions", since: "2017-04-20", until: "2017-07-13")
     return impressions[0]["values"][0]["value"]
@@ -31,7 +31,7 @@ class FacebookMetricsAggregator
     return page_graph.get_connections(page_id, 'posts', since: start_date, until: end_date)
   end
   
-  def get_post_metrics(page_id, post_id, start_date = "2017-04-19", end_date = "2017-07-13")
+  def get_post_metrics(page_id, post_id, start_date, end_date)
     metrics = {}
     page_graph = get_page_token(page_id)
 
@@ -47,19 +47,19 @@ class FacebookMetricsAggregator
     shares = page_graph.get_connections(post_id, "sharedposts", since: "2017-04-19", until: "2017-07-13", filter: 'stream')
     metrics["shares"] = shares.first.nil? ? 0 : shares.first.count
     
-    impressions =  get_post_impressions(page_id, post_id)
+    impressions =  get_post_impressions(page_id, post_id, start_date, end_date)
     metrics["impressions"] = impressions.nil? ? 0 : impressions
     
     return metrics
   end
 
-  def get_posts(page_id, date)
+  def get_posts(page_id, date, start_date, end_date)
     posts = []
     paginated_posts = get_paginated_posts(page_id)
     posts << paginated_posts
     loop do
       paginated_posts.each do |fb_post|
-        metrics = get_post_metrics(page_id, fb_post["id"]) 
+        metrics = get_post_metrics(page_id, fb_post["id"], start_date, end_date) 
         message = Message.find_by_alternative_identifier(fb_post["id"])
         if !message.nil?
           metrics["comments"].each do |comment|
