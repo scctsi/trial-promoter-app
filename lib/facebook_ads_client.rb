@@ -19,9 +19,9 @@ class FacebookAdsClient
     return @graph.get_connections(ad_id, 'ads')
   end
   
-  # def get_all_campaigns
-  #   return @account.campaigns
-  # end
+  def get_all_campaigns
+    return @account.campaigns
+  end
     
   def get_all_campaign_ids
     return @account.campaigns(fields: 'id').map(&:id)

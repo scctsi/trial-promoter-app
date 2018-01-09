@@ -30,13 +30,13 @@ RSpec.describe FacebookAdsClient do
       end
     end
     
-    # it 'gets all the campaigns' do
-    #   VCR.use_cassette 'facebook_ads_client/get_all_campaigns' do
-    #     all_campaigns = @facebook_ads_client.get_all_campaigns
+    it 'gets all the campaigns' do
+      VCR.use_cassette 'facebook_ads_client/get_all_campaigns' do
+        all_campaigns = @facebook_ads_client.get_all_campaigns
 
-    #     expect(all_campaigns.count).to eq(732)
-    #   end
-    # end
+        expect(all_campaigns.count).to eq(732)
+      end
+    end
         
     it 'gets the campaign ids' do
       VCR.use_cassette 'facebook_ads_client/get_all_campaign_ids' do
