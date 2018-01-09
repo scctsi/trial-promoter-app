@@ -26,7 +26,6 @@ class FacebookMetricsAggregator
     return impressions[0]["values"][0]["value"]
   end
   
-  
   def get_paginated_posts(page_id, start_date = "2017-04-19", end_date = "2017-07-13")
     page_graph = get_page_token(page_id)
     return page_graph.get_connections(page_id, 'posts', since: start_date, until: end_date)
@@ -43,12 +42,14 @@ class FacebookMetricsAggregator
     metrics['likes'] = likes.nil? ? nil : likes.count
     
     clicks = page_graph.get_connections(post_id, "insights/post_consumptions_by_type", fields: 'values', period: 'day', filter: 'stream')
-    metrics['clicks'] = clicks.nil? ? nil : clicks
-    # p metrics['clicks']
+    metrics['clicks'] = clicks[0]["values"][0]["value"]["other clicks"]
+    
     shares = page_graph.get_connections(post_id, "sharedposts", since: "2017-04-19", until: "2017-07-13", filter: 'stream')
     metrics["shares"] = shares.first.nil? ? 0 : shares.first.count
     
-    metrics["impressions"] =  get_post_impressions(page_id, post_id)
+    impressions =  get_post_impressions(page_id, post_id)
+    metrics["impressions"] = impressions.nil? ? 0 : impressions
+    
     return metrics
   end
 

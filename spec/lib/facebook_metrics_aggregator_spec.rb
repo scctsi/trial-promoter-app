@@ -45,18 +45,15 @@ RSpec.describe FacebookMetricsAggregator do
         end
         expect(metrics[0]["likes"]).to eq(19)
         expect(metrics[0]["comments"].count).to eq(1)
-        expect(metrics[0]["clicks"][0]["values"][0]["value"]["other clicks"]).to eq(3)
-        expect(metrics[0]["clicks"][0]["values"][0]["value"]["photo view"]).to eq(9)
+        expect(metrics[0]["clicks"]).to eq(3)
         expect(metrics[0]["shares"]).to eq(0)
         expect(metrics[1]["likes"]).to eq(25)
         expect(metrics[1]["comments"].count).to eq(24)
-        expect(metrics[1]["clicks"][0]["values"][0]["value"]["other clicks"]).to eq(90)
-        expect(metrics[1]["clicks"][0]["values"][0]["value"]["photo view"]).to eq(105)
+        expect(metrics[1]["clicks"]).to eq(90)
         expect(metrics[1]["shares"]).to eq(3)
         expect(metrics[2]["likes"]).to eq(25)
         expect(metrics[2]["comments"].count).to eq(3)
-        expect(metrics[2]["clicks"][0]["values"][0]["value"]["other clicks"]).to eq(10)
-        expect(metrics[2]["clicks"][0]["values"][0]["value"]["photo view"]).to eq(9)
+        expect(metrics[2]["clicks"]).to eq(10)
         expect(metrics[2]["shares"]).to eq(0)
       end
     end
