@@ -35,8 +35,7 @@ class FacebookMetricsAggregator
     metrics = {}
     page_graph = get_page_token(page_id)
 
-    comments = @graph.get_connections(post_id, "comments", period: 'day', filter: 'stream')
-    metrics['comments'] = comments.nil? ? nil : comments
+    metrics['comments'] = get_comments(post_id)
     
     likes = page_graph.get_connections(post_id, "likes", period: 'day', filter: 'stream')
     metrics['likes'] = likes.nil? ? nil : likes.count
@@ -44,7 +43,7 @@ class FacebookMetricsAggregator
     clicks = page_graph.get_connections(post_id, "insights/post_consumptions_by_type", fields: 'values', period: 'day', filter: 'stream')
     metrics['clicks'] = clicks[0]["values"][0]["value"]["other clicks"]
     
-    shares = page_graph.get_connections(post_id, "sharedposts", since: "2017-04-19", until: "2017-07-13", filter: 'stream')
+    shares = page_graph.get_connections(post_id, "sharedposts", since: start_date, until: end_date, filter: 'stream')
     metrics["shares"] = shares.first.nil? ? 0 : shares.first.count
     
     impressions =  get_post_impressions(page_id, post_id, start_date, end_date)
@@ -58,7 +57,7 @@ class FacebookMetricsAggregator
     paginated_posts = get_paginated_posts(page_id)
     posts << paginated_posts
     loop do
-        get_metrics(paginated_posts, page_id, start_date, end_date)
+      get_metrics(paginated_posts, page_id, start_date, end_date)
       paginated_posts = paginated_posts.next_page
       posts << paginated_posts
       break if paginated_posts == nil
@@ -86,5 +85,10 @@ class FacebookMetricsAggregator
       message.metrics << Metric.create(source: "facebook", data: { shares: metrics["shares"], likes: metrics["likes"] })
       message.save
     end
+  end
+  
+  def get_comments(post_id)
+    comments = @graph.get_connections(post_id, "comments", period: 'day', filter: 'stream')
+    return comments.nil? ? nil : comments
   end
 end
