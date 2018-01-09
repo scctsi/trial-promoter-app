@@ -53,12 +53,12 @@ class FacebookMetricsAggregator
     return metrics
   end
 
-  def get_posts(page_id, impressions_date, start_date, end_date)
+  def get_posts(page_id, start_date, end_date)
     posts = []
     paginated_posts = get_paginated_posts(page_id)
     posts << paginated_posts
     loop do
-      get_metrics(paginated_posts, page_id, impressions_date, start_date, end_date)
+        get_metrics(paginated_posts, page_id, start_date, end_date)
       paginated_posts = paginated_posts.next_page
       posts << paginated_posts
       break if paginated_posts == nil
@@ -68,19 +68,23 @@ class FacebookMetricsAggregator
   
   private
   
-  def get_metrics(paginated_posts, page_id, impressions_date, start_date, end_date)
+  def get_metrics(paginated_posts, page_id, start_date, end_date)
     paginated_posts.each do |fb_post|
       metrics = get_post_metrics(page_id, fb_post["id"], start_date, end_date) 
       message = Message.find_by_alternative_identifier(fb_post["id"])
-      if !message.nil?
-        metrics["comments"].each do |comment|
-          (message.comments << Comment.create(comment_text: comment["message"], social_media_comment_id: comment["id"])) if !comment.nil?
-        end
-        #this is going to be a job in order to record the current impressions_date
-        MetricsManager.update_impressions_by_day(impressions_date, message.social_network_id => metrics["impressions"])
-        message.metrics << Metric.create(source: "facebook", data: { shares: metrics["shares"], likes: metrics["likes"] })
-        message.save
+      record_metrics(message, metrics, start_date)
+    end
+  end
+  
+  def record_metrics(message, metrics, start_date)
+    if !message.nil?
+      metrics["comments"].each do |comment|
+        (message.comments << Comment.create(comment_text: comment["message"], social_media_comment_id: comment["id"])) if !comment.nil?
       end
+      #this is going to be a job in order to record the current start_date
+      MetricsManager.update_impressions_by_day(start_date, message.social_network_id => metrics["impressions"])
+      message.metrics << Metric.create(source: "facebook", data: { shares: metrics["shares"], likes: metrics["likes"] })
+      message.save
     end
   end
 end
