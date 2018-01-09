@@ -36,6 +36,8 @@ class FacebookMetricsAggregator
     page_graph = get_page_token(page_id)
 
     metrics['comments'] = get_comments(post_id)
+    metrics["impressions"] = get_impressions(page_id, post_id, start_date, end_date)
+    
     
     likes = page_graph.get_connections(post_id, "likes", period: 'day', filter: 'stream')
     metrics['likes'] = likes.nil? ? nil : likes.count
@@ -45,9 +47,6 @@ class FacebookMetricsAggregator
     
     shares = page_graph.get_connections(post_id, "sharedposts", since: start_date, until: end_date, filter: 'stream')
     metrics["shares"] = shares.first.nil? ? 0 : shares.first.count
-    
-    impressions =  get_post_impressions(page_id, post_id, start_date, end_date)
-    metrics["impressions"] = impressions.nil? ? 0 : impressions
     
     return metrics
   end
@@ -90,5 +89,10 @@ class FacebookMetricsAggregator
   def get_comments(post_id)
     comments = @graph.get_connections(post_id, "comments", period: 'day', filter: 'stream')
     return comments.nil? ? nil : comments
+  end
+  
+  def get_impressions(page_id, post_id, start_date, end_date)
+    impressions =  get_post_impressions(page_id, post_id, start_date, end_date)
+    return impressions.nil? ? 0 : impressions
   end
 end
