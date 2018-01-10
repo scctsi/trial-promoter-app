@@ -91,6 +91,7 @@ class FacebookMetricsAggregator
     
   def get_clicks(page_graph, post_id)
     clicks = page_graph.get_connections(post_id, "insights/post_consumptions_by_type", fields: 'values', period: 'day', filter: 'stream')
+    p clicks
     return clicks[0]["values"][0]["value"]["other clicks"]
   end
   
