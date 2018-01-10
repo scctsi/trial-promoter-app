@@ -54,9 +54,7 @@ class FacebookMetricsAggregator
     end
     return posts
   end
-  
-  private
-  
+
   def get_metrics(paginated_posts, page_id, start_date, end_date)
     paginated_posts.each do |fb_post|
       metrics = get_post_metrics(page_id, fb_post["id"], start_date, end_date) 
@@ -68,11 +66,11 @@ class FacebookMetricsAggregator
   def record_metrics(message, metrics, impressions_date)
     if !message.nil?
       metrics["comments"].each do |comment|
-        (message.comments << Comment.create(comment_text: comment["message"], social_media_comment_id: comment["id"])) if !comment.nil?
+        (message.comments << Comment.where(social_media_comment_id: comment["id"], comment_text: comment["message"], comment_date: comment["created_time"]).first_or_create) if !comment.nil?
       end
       #this is going to be a job in order to record the current impressions_date
       MetricsManager.update_impressions_by_day(impressions_date, message.social_network_id => metrics["impressions"])
-      message.metrics << Metric.create(source: "facebook", data: { shares: metrics["shares"], likes: metrics["likes"] })
+      message.metrics << Metric.create(source: "facebook", data: { shares: metrics["shares"], likes: metrics["likes"], clicks: metrics["clicks"] })
       message.save
     end
   end

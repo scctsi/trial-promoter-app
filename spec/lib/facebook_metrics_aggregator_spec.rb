@@ -91,9 +91,17 @@ RSpec.describe FacebookMetricsAggregator do
     
     it 'does not add repeat comments' do
       VCR.use_cassette 'facebook_metrics_aggregator/get_double_post_comments' do
-        paginated_posts = @facebook_metrics_aggregator.get_paginated_posts(@page["id"])
+        metrics = {}
+        metrics["comments"] = [{"created_time"=>"2017-04-24T19:55:42+0000", "message"=>"Still not meeting requirements but I applaud your effort 👏🏼", "id"=>"1009727572490473_1010968539033043"}]
+        metrics["likes"] = nil
+        metrics["shares"] = nil
+        metrics["impressions"] = nil
+        metrics["clicks"] = nil
+        
+        @facebook_metrics_aggregator.record_metrics(@messages[1], metrics, Date.new(2017, 4, 30))
+        @facebook_metrics_aggregator.record_metrics(@messages[1], metrics, Date.new(2017, 4, 30))
 
-        expect(paginated_posts.count).to eq(25)
+        expect(@messages[1].comments.count).to eq(1)
       end
     end
   end
