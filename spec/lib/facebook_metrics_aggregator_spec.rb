@@ -8,7 +8,7 @@ RSpec.describe FacebookMetricsAggregator do
     @messages = create_list(:message, 3)
     @messages[0].social_network_id = "980601328736431_1061544820642081"
     @messages[1].social_network_id = "980601328736431_1009727572490473"
-    @messages[2].social_network_id = "1009727572490473_1010968539033043"
+    @messages[2].social_network_id = "980601328736431_1008996322563598"
     @messages.each{|message| message.save}
     
     VCR.use_cassette 'facebook_metrics_aggregator/test_setup' do
@@ -34,27 +34,31 @@ RSpec.describe FacebookMetricsAggregator do
       end
     end
     
-    it 'gets the lifetime metrics for an individual post' do
-      post_ids = ["980601328736431_1009727572490473", "980601328736431_1056074954522401", "980601328736431_1060154484114448"]
+    it 'gets the metrics for 24 hours for an individual post' do
+      post_id = "980601328736431_1009727572490473"
 
       VCR.use_cassette 'facebook_metrics_aggregator/get_post_metrics' do
-        metrics = []
+        metrics = @facebook_metrics_aggregator.get_post_metrics(@page["id"], post_id, Date.new(2017, 4, 19), Date.new(2017, 4, 20))
         
-        post_ids.each do |post_id|
-          metrics << @facebook_metrics_aggregator.get_post_metrics(@page["id"], post_id, Date.new(2017, 4, 19), Date.new(2017, 7, 13))
-        end
-        expect(metrics[0]["likes"]).to eq(19)
-        expect(metrics[0]["comments"].count).to eq(1)
-        expect(metrics[0]["clicks"]).to eq(3)
-        expect(metrics[0]["shares"]).to eq(0)
-        expect(metrics[1]["likes"]).to eq(25)
-        expect(metrics[1]["comments"].count).to eq(24)
-        expect(metrics[1]["clicks"]).to eq(90)
-        expect(metrics[1]["shares"]).to eq(3)
-        expect(metrics[2]["likes"]).to eq(25)
-        expect(metrics[2]["comments"].count).to eq(3)
-        expect(metrics[2]["clicks"]).to eq(10)
-        expect(metrics[2]["shares"]).to eq(0)
+        expect(metrics["likes"]).to eq(19)
+        expect(metrics["comments"].count).to eq(1)
+        expect(metrics["clicks"]).to eq(3)
+        expect(metrics["shares"]).to eq(0)
+        expect(metrics["impressions"]).to eq(502)
+      end
+    end    
+    
+    it 'gets the lifetime metrics for an individual post' do
+      post_id = "980601328736431_1008996322563598"
+
+      VCR.use_cassette 'facebook_metrics_aggregator/get_post_metrics_lifetime' do
+        metrics = @facebook_metrics_aggregator.get_post_metrics(@page["id"], post_id, Date.new(2017, 4, 19), Date.new(2017, 7, 13))
+        
+        expect(metrics["likes"]).to eq(19)
+        expect(metrics["comments"].count).to eq(1)
+        expect(metrics["clicks"]).to eq(3)
+        expect(metrics["shares"]).to eq(0)
+        expect(metrics["impressions"]).to eq(502)
       end
     end
     

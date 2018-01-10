@@ -68,7 +68,6 @@ class FacebookMetricsAggregator
       metrics["comments"].each do |comment|
         (message.comments << Comment.where(social_media_comment_id: comment["id"], comment_text: comment["message"], comment_date: comment["created_time"]).first_or_create) if !comment.nil?
       end
-      #this is going to be a job in order to record the current impressions_date
       MetricsManager.update_impressions_by_day(impressions_date, message.social_network_id => metrics["impressions"])
       message.metrics << Metric.create(source: "facebook", data: { shares: metrics["shares"], likes: metrics["likes"], clicks: metrics["clicks"] })
       message.save
