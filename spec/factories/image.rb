@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :image do
     sequence :url do |n|
       "http://www.image-#{n}.com"

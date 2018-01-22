@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :message_template do
     content "Some content for Twitter with a {parameter}"
     platforms [:twitter]

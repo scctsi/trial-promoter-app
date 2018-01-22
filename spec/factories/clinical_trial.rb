@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :clinical_trial do
     title "Cancer Study"
     pi_first_name "John"

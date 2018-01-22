@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :buffer_update do
     buffer_id 'abc'
     status :pending

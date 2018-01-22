@@ -74,7 +74,7 @@ RSpec.configure do |config|
   end
 
   # Additional factory_girl configuration
-  config.include FactoryGirl::Syntax::Methods
+  config.include FactoryBot::Syntax::Methods
   config.before(:suite) do
     begin
       DatabaseCleaner.start
