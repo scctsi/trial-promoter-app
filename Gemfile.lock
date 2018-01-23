@@ -259,7 +259,7 @@ GEM
     notiffany (0.1.1)
       nenv (~> 0.1)
       shellany (~> 0.0)
-    oauth (0.5.3)
+    oauth (0.5.4)
     oauth2 (1.3.1)
       faraday (>= 0.8, < 0.12)
       jwt (~> 1.0)
@@ -423,6 +423,9 @@ GEM
       memoizable (~> 0.4.2)
       naught (~> 1.1)
       simple_oauth (~> 0.3.1)
+    twitter-ads (2.0.0)
+      multi_json (~> 1.11)
+      oauth (~> 0.4)
     tzinfo (1.2.3)
       thread_safe (~> 0.1)
     uber (0.1.0)
@@ -479,7 +482,6 @@ DEPENDENCIES
   kaminari
   koala
   lazyload-rails
-  oauth
   pg
   puma
   pundit
@@ -499,6 +501,7 @@ DEPENDENCIES
   spring
   spring-commands-rspec
   twitter
+  twitter-ads
   uglifier (>= 1.3.0)
   vcr
   web-console (~> 2.0)
