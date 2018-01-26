@@ -98,14 +98,14 @@ RSpec.describe FacebookAdsClient do
             countries: ['US']
           }
         }
-        bid_amount = 1
-        daily_budget = 1000
+        bid_amount = 3000
+        daily_budget = 15000
         promoted_object = {
           application_id: '135216893922228'
         }
         ad_set = @facebook_ads_client.create_ad_set("Eat More Fat", "120330000020421803", targeting, bid_amount, daily_budget, promoted_object, 'REACH')
 
-        expect(ad_set.id).to eq("120330000020422403")
+        expect(ad_set.id).to eq("120330000021337603")
       end
     end 
 
@@ -162,12 +162,10 @@ RSpec.describe FacebookAdsClient do
 
       VCR.use_cassette 'facebook_ads_client/create_ad' do
         object_story_spec = {
+          creative: { creative_id: 120330000018226903 },
           adset_id: "120330000016968403",
           tracking_specs: @ad_pixel[0][:id],
-          name: "Track this",
-          creative_id: "120330000018226903",
-          status: "paused",
-          bid_amount: "5000"
+          name: "Track this"
         }
         
         ad = @facebook_ads_client.create_ad(object_story_spec)

@@ -49,7 +49,7 @@ class FacebookAdsClient
 
   # REF https://developers.facebook.com/docs/marketing-api/reference/ad-campaign
   # targeting https://developers.facebook.com/docs/marketing-api/targeting-specs
-  def create_ad_set(ad_set_name, campaign_id, billing_event = "IMPRESSIONS", targeting, bid_amount, daily_budget, promoted_object, optimization_goal)
+  def create_ad_set(ad_set_name, campaign_id, billing_event = "IMPRESSIONS",  status = "PAUSED", targeting, bid_amount, daily_budget, promoted_object, optimization_goal)
     @ad_account.adsets.create({
       name: ad_set_name,
       campaign_id: campaign_id,
@@ -58,7 +58,8 @@ class FacebookAdsClient
       bid_amount: bid_amount,
       daily_budget: daily_budget,
       promoted_object: promoted_object,
-      optimization_goal: optimization_goal
+      optimization_goal: optimization_goal,
+      status: status
     })
   end
   
@@ -70,19 +71,9 @@ class FacebookAdsClient
   end
   
   def create_ad(object_story_spec)
-    #ARRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRGH
-    
-    
-    
-    
-    
-    @ad_account.ads.create(          
-          adset_id: "120330000016968403",
-          tracking_specs: 146149006094052,
-          name: "Track this",
-          creative: { creative_id: "120330000018226903" },
-          status: "ACTIVE",
-          bid_amount: "5000")
+    @ad_account.ads.create([
+      MultiJson.dump(object_story_spec)
+    ])
   end
   
   def create_ad_pixel(account_id, name)
@@ -115,4 +106,4 @@ class FacebookAdsClient
     campaign = FacebookAds::Campaign.get(campaign_id)
     campaign.destroy
   end
-end
+end  
