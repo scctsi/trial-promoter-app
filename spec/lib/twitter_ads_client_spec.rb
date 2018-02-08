@@ -6,7 +6,6 @@ RSpec.describe TwitterAdsClient do
     secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
     allow(Setting).to receive(:[]).with(:twitter).and_return(secrets['twitter'])
     @twitter_ads_client = TwitterAdsClient.new(true)
-    # campaign = nil
     VCR.use_cassette 'twitter_ads_client/test_setup' do
       @account = @twitter_ads_client.get_account.first
     end
@@ -22,7 +21,7 @@ RSpec.describe TwitterAdsClient do
       VCR.use_cassette 'twitter_ads_client/get_campaigns' do
         @campaigns = @twitter_ads_client.get_campaigns(@account.id)
 
-        expect(@campaigns.count).to be(115)
+        expect(@campaigns.count).to be(125)
       end
     end
       
@@ -38,7 +37,7 @@ RSpec.describe TwitterAdsClient do
         
         campaign = @twitter_ads_client.create_campaign(@account, campaign_params)
         
-        expect(campaign.id).to include("hqbn")
+        expect(campaign.id).to include("hqe5")
         expect(campaign.name).to include("my first campaign")
         expect(campaign.entity_status).to include("ACTIVE")
         
@@ -55,7 +54,7 @@ RSpec.describe TwitterAdsClient do
           @line_item = @twitter_ads_client.create_line_item(@account, campaign.id, line_item_params)
         
           expect(@line_item.name).to include("my first objective")
-          expect(@line_item.id).to include("ek2k")
+          expect(@line_item.id).to include("ek4x")
         end
         
         VCR.use_cassette 'twitter_ads_client/create_targeting_criteria' do
@@ -67,7 +66,7 @@ RSpec.describe TwitterAdsClient do
           
           @targeting_value = @twitter_ads_client.create_targeting_criteria(@account, @line_item, targeting_criteria_params)
           
-          expect(@targeting_value.id).to include("38r08")
+          expect(@targeting_value.id).to include("38r18")
         end
       end
     end
@@ -76,20 +75,22 @@ RSpec.describe TwitterAdsClient do
       VCR.use_cassette 'twitter_ads_client/get_campaigns' do
         @campaigns = @twitter_ads_client.get_campaigns(@account.id)
 
-        expect(@campaigns.count).to be(115)
+        expect(@campaigns.count).to be(125)
       end
 
       VCR.use_cassette 'twitter_ads_client/delete_campaign' do
-        @twitter_ads_client.delete_campaign(@campaigns.last)
+        campaign = @twitter_ads_client.get_campaign(@account.id, 'hqe2')
+        
+        @twitter_ads_client.delete_campaign(campaign)
         campaigns = @twitter_ads_client.get_campaigns(@account.id)
         
-        expect(campaigns.count).to eq(114)
+        expect(campaigns.count).to eq(124)
       end
     end
     
     it 'gets a campaign' do
       VCR.use_cassette 'twitter_ads_client/get_campaign' do
-        campaign_id = "hqac"
+        campaign_id = "hqe3"
         campaign = @twitter_ads_client.get_campaign(@account.id, campaign_id)
         
         expect(campaign.name).to eq('my first campaign')
@@ -115,15 +116,124 @@ RSpec.describe TwitterAdsClient do
       end
     end
     
-    it 'updates a campaign' do
-      VCR.use_cassette 'twitter_ads_client/update_campaign' do
-        campaign_id = "hqbn"
+    it 'pauses a campaign' do
+      VCR.use_cassette 'twitter_ads_client/pause_campaign' do
+        campaign_id = "hqe5"
         campaign = @twitter_ads_client.get_campaign(@account.id, campaign_id)
         expect(campaign.entity_status).to eq('ACTIVE')
 
         @twitter_ads_client.pause_campaign(campaign)
         expect(campaign.entity_status).to eq('PAUSED')
       end      
+    end
+    
+    describe "run ad account tests" do
+      before do
+        @twitter_ads_client = TwitterAdsClient.new(false)
+        VCR.use_cassette 'twitter_ads_client/real_setup' do
+          @ad_account = @twitter_ads_client.get_account.first
+        end
+      end
+      
+      it 'creates an account outside of the sandbox' do
+        expect(@ad_account.id).to eq('18ce53zp9m8')
+        expect(@ad_account.name).to eq('USC Clinical Trials')
+      end
+
+      it 'creates an actual campaign associated with the ad account' do
+        VCR.use_cassette 'twitter_ads_client/create_ad_campaign' do
+          campaign_params = {
+            total_budget_amount_local_micro: 1_000_000_000,
+            daily_budget_amount_local_micro: 1_000_000,
+            name: 'my first REAL campaign',
+            entity_status: 'ACTIVE',
+            start_time: Time.new(2018, 2, 8, 2, 2, "+00:00")
+          }
+          
+          campaign = @twitter_ads_client.create_campaign(@ad_account, campaign_params)
+          
+          expect(campaign.id).to include("ac61o")
+          expect(campaign.name).to include("my first REAL campaign")
+          expect(campaign.entity_status).to include("ACTIVE")
+          
+          VCR.use_cassette 'twitter_ads_client/create_ad_line_item' do
+            line_item_params = {
+              name: 'my first objective',
+              product_type: 'PROMOTED_TWEETS',
+              placements: 'ALL_ON_TWITTER',
+              objective: 'AWARENESS',
+              bid_type: 'AUTO',
+              entity_status: 'PAUSED'
+            }
+            
+            @line_item = @twitter_ads_client.create_line_item(@ad_account, 'ac5vs', line_item_params)
+          
+            expect(@line_item.name).to include("my first objective")
+            expect(@line_item.id).to include("b0skf")
+          end
+          
+          VCR.use_cassette 'twitter_ads_client/create_ad_targeting_criteria' do
+            targeting_criteria_params = {      
+            targeting_type: 'LOCATION',
+            location_type: 'REGIONS',
+            targeting_value: 'fbd6d2f5a4e4a15e'
+            }
+            
+            @targeting_value = @twitter_ads_client.create_targeting_criteria(@ad_account, @line_item, targeting_criteria_params)
+            
+            expect(@targeting_value.id).to include("hl8uz0")
+          end
+          
+          VCR.use_cassette 'twitter_ads_client/get_actual_ad_campaigns' do
+            campaigns = @twitter_ads_client.get_campaigns(@ad_account.id)
+          
+            expect(campaigns.count).to eq(1)
+          end
+        end
+      end
+            
+      it 'gets actual campaign' do
+        VCR.use_cassette 'twitter_ads_client/get_ad_campaign' do
+          campaign_id = "ac5vs"
+          campaign = @twitter_ads_client.get_campaign(@ad_account.id, campaign_id)
+          
+          expect(campaign.name).to eq('Awareness campaign')
+        end
+      end
+      
+      it 'gets actual line_item' do
+        VCR.use_cassette 'twitter_ads_client/get_ad_line_item' do
+          line_item_id = "b0sjz"
+          line_item = @twitter_ads_client.get_line_item(@ad_account.id, line_item_id)
+          
+          expect(line_item.name).to eq('my first objective')
+        end
+      end
+      
+      it 'gets actual targeting_criteria' do
+        VCR.use_cassette 'twitter_ads_client/get_ad_targeting_criteria' do
+          line_item_id = "b0sjz"
+          targeting_criteria_id = "hl8tfo"
+          targeting_criteria = @twitter_ads_client.get_targeting_criteria(@ad_account.id, line_item_id, targeting_criteria_id)
+          
+          expect(targeting_criteria.targeting_type).to eq('LOCATION')
+        end
+      end
+          
+      it 'deletes any campaigns associated with the ad account' do
+        VCR.use_cassette 'twitter_ads_client/get_actual_campaigns_for_deletion' do
+          @campaigns = @twitter_ads_client.get_campaigns(@ad_account.id)
+  
+          expect(@campaigns.count).to be(2)
+          
+          #delete actual campaigns
+          @campaigns.each{ |campaign| @twitter_ads_client.delete_campaign(campaign)}
+          
+          @campaigns = @twitter_ads_client.get_campaigns(@ad_account.id)
+  
+          expect(@campaigns.count).to be(0)
+        end
+      end
     end
   end
 end

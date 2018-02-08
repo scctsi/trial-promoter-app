@@ -75,11 +75,4 @@ class TwitterAdsClient
   def delete_campaign(campaign)
     campaign.delete!
   end
-  
-  def get_organic_tweets
-    
-  end
-  
-  def promote_tweet 
-  end
 end
