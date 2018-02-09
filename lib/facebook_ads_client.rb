@@ -18,19 +18,17 @@ class FacebookAdsClient
     return account.name
   end
   
-  
-  
   def get_campaign_names
     return @ad_account.campaigns(fields: 'name').map(&:name)
   end
   
   # REF ad-campaign-group for kpi_type (tracks link clicks on ads) https://developers.facebook.com/docs/marketing-api/reference/ad-campaign-group
-  def create_campaign(campaign_name, objective = 'CONVERSIONS', status = 'ACTIVE', kpi_type = 'LINK_CLICKS')
+  def create_campaign(campaign_name, objective = 'LINK_CLICKS', status = 'ACTIVE', kpi_type = 'OFFSITE_CONVERSIONS')
     @ad_account.campaigns.create({
       name: campaign_name,
       objective: objective,
-      status: status,
-      kpi_type: kpi_type
+      status: status
+      # kpi_type: kpi_type
     })
   end
   
@@ -71,9 +69,7 @@ class FacebookAdsClient
   end
   
   def create_ad(object_story_spec)
-    @ad_account.ads.create([
-      MultiJson.dump(object_story_spec)
-    ])
+    @ad_account.ads.create(object_story_spec)
   end
   
   def create_ad_pixel(account_id, name)

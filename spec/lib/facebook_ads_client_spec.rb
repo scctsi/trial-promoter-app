@@ -71,7 +71,7 @@ RSpec.describe FacebookAdsClient do
         @ad_account = @facebook_ads_client.get_account("act_115443465928527")
 
         expect(@facebook_ads_client.get_campaign_ids.count).to eq(1)
-        expect(@facebook_ads_client.get_campaign_ids[0]).to eq("120330000020421803")
+        expect(@facebook_ads_client.get_campaign_ids[0]).to eq("120330000025682803")
       end
     end
     
@@ -81,7 +81,7 @@ RSpec.describe FacebookAdsClient do
 
       expect(ad_sets.count).to eq(1)
       expect(ad_sets[0].name).to eq(:adsets)
-      expect(ad_sets[0].node.id).to eq("120330000020421803")
+      expect(ad_sets[0].node.id).to eq("120330000025682803")
       end
     end
     
@@ -103,9 +103,9 @@ RSpec.describe FacebookAdsClient do
         promoted_object = {
           application_id: '135216893922228'
         }
-        ad_set = @facebook_ads_client.create_ad_set("Eat More Fat", "120330000020421803", targeting, bid_amount, daily_budget, promoted_object, 'REACH')
+        ad_set = @facebook_ads_client.create_ad_set("Eat More Fat", "120330000025682803", targeting, bid_amount, daily_budget, promoted_object, 'REACH')
 
-        expect(ad_set.id).to eq("120330000021337603")
+        expect(ad_set.id).to eq("120330000025683203")
       end
     end 
 
@@ -125,7 +125,7 @@ RSpec.describe FacebookAdsClient do
 
         adcreative_id = @facebook_ads_client.create_adcreative(name, object_story_spec)
 
-        expect(adcreative_id.id).to eq("120330000020421903")
+        expect(adcreative_id.id).to eq("120330000025689603")
       end
     end 
     
@@ -153,7 +153,6 @@ RSpec.describe FacebookAdsClient do
     
     #The sandbox account only returns the ad id and will not appear in the ads manager
     it 'creates an ad' do
-      
       VCR.use_cassette 'facebook_ads_client/get_ad_pixel' do
         account_id = "act_115443465928527"
         name = "Track this"
@@ -163,14 +162,15 @@ RSpec.describe FacebookAdsClient do
       VCR.use_cassette 'facebook_ads_client/create_ad' do
         object_story_spec = {
           creative: { creative_id: 120330000018226903 },
-          adset_id: "120330000016968403",
-          tracking_specs: @ad_pixel[0][:id],
-          name: "Track this"
+          adset_id: "120330000025683203",
+          tracking_specs: "146149006094052",
+          name: "Track this",
+          status: 'PAUSED'
         }
         
         ad = @facebook_ads_client.create_ad(object_story_spec)
         
-        expect(ad.id).to eq("2349058734")
+        expect(ad.id).to eq("120330000025695603")
       end
     end
   end
