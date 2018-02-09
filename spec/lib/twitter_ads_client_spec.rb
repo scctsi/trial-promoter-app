@@ -127,7 +127,7 @@ RSpec.describe TwitterAdsClient do
       end      
     end
     
-    describe "run ad account tests" do
+    describe "run ad account tests on the actual ad account" do
       before do
         @twitter_ads_client = TwitterAdsClient.new(false)
         VCR.use_cassette 'twitter_ads_client/real_setup' do
@@ -232,6 +232,42 @@ RSpec.describe TwitterAdsClient do
           @campaigns = @twitter_ads_client.get_campaigns(@ad_account.id)
   
           expect(@campaigns.count).to be(0)
+        end
+      end
+          
+      it 'promotes an organic tweet to an ad associated with a campaign' do
+        VCR.use_cassette 'twitter_ads_client/promote_tweet' do
+          #Select a campaign that was created successfully
+          #obtained through the 'twitter-ads' cli
+          # enter 'twitter-ads' in bash to get the twitter-ads prompt
+          # enter 'CLIENT.account.first' in the cli to get the account
+          # enter 'CLIENT.account.first.campaigns.first' in the cli to get the campaign
+          # enter 'CLIENT.account.first.line_items.first' in the cli to get the line_item
+          # campaign = @twitter_ads_client.get_campaigns(@ad_account.id).first
+          
+          campaign_id = "ac6w5"
+          tweet_id = @twitter_ads_client.get_scoped_timeline(@ad_account.id, campaign_id).first[:id]
+  
+          expect(tweet_id).to eq(822248659043520512)
+  
+          line_item_id = "b0tgt"
+          
+          promoted_tweet = @twitter_ads_client.promote_tweet(@ad_account, line_item_id, tweet_id)
+  
+          expect(promoted_tweet.id).to eq("1qxss9")
+        end
+      end
+      
+      it 'pauses the campaign with the promoted tweet' do
+        VCR.use_cassette 'twitter_ads_client/pause_ad_campaign' do
+          campaign_id = "ac6w5"
+          campaign = @twitter_ads_client.get_campaign(@ad_account.id, campaign_id)
+          
+          expect(campaign.entity_status).to eq('ACTIVE')
+          
+          @twitter_ads_client.pause_campaign(campaign)
+        
+          expect(campaign.entity_status).to eq('PAUSED')
         end
       end
     end

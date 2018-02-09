@@ -75,4 +75,15 @@ class TwitterAdsClient
   def delete_campaign(campaign)
     campaign.delete!
   end
+
+  def get_scoped_timeline(ad_account_id, campaign_id)
+    @client.accounts(ad_account_id).scoped_timeline(campaign_id)
+  end
+  
+  def promote_tweet(account, line_item_id, tweet_id)
+    promoted_tweet = TwitterAds::Creative::PromotedTweet.new(account)
+    promoted_tweet.line_item_id = line_item_id
+    promoted_tweet.tweet_id = tweet_id
+    promoted_tweet.save
+  end
 end
