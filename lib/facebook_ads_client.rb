@@ -27,7 +27,7 @@ class FacebookAdsClient
     @ad_account.campaigns.create({
       name: campaign_name,
       objective: objective,
-      status: status
+      status: status,
       # kpi_type: kpi_type
     })
   end
