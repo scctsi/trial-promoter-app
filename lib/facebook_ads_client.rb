@@ -46,10 +46,6 @@ class FacebookAdsClient
     return @ad_sets
   end
   
-  def update_ad_set(ad_set_id)
-    
-  end
-
   # REF https://developers.facebook.com/docs/marketing-api/reference/ad-campaign
   # targeting https://developers.facebook.com/docs/marketing-api/targeting-specs
   def create_ad_set(ad_set)
@@ -126,14 +122,14 @@ class FacebookAdsClient
     @ad_account.ads.create(object_story_spec)
   end
     
-  def create_ad_from_message
+  def create_ad_from_message(creative_id, ad_set_id)
     object_story_spec = {
-      creative: { creative_id: 120330000026551103 },
-      adset_id: "120330000026551503",
+      creative: creative_id,
+      adset_id: ad_set_id,
       name: "Dat Ad",
       status: 'ACTIVE'
     }
-    return @ad_account.ads.create(object_story_spec)
+    return create_ad(object_story_spec)
   end
   
   def create_ad_pixel(account_id, name)

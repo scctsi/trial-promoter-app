@@ -257,9 +257,21 @@ RSpec.describe FacebookAdsClient do
     
     it 'creates an ad from message text' do
       VCR.use_cassette 'facebook_ads_client/create_ad_from_message' do
-        ad = @facebook_ads_client.create_ad_from_message
+        creative_id = { creative_id: 120330000026551103 }
+        ad_set_id = "120330000026551503"
+        object_story_spec = {
+        creative: creative_id,
+        adset_id: ad_set_id,
+        name: "Dat Ad",
+        status: 'ACTIVE'
+        }
         
-        expect(ad.id).to eq("120330000027026003")
+        allow(@facebook_ads_client).to receive(:create_ad)
+        allow(@facebook_ads_client).to receive(:create_ad_from_message).and_call_original
+  
+        @facebook_ads_client.create_ad_from_message(creative_id, ad_set_id)
+        
+        expect(@facebook_ads_client).to have_received(:create_ad).with(object_story_spec)
       end
     end
     
