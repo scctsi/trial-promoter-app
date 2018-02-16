@@ -7,6 +7,8 @@ RSpec.describe CreateAdFromMessageJob, type: :job do
     ActiveJob::Base.queue_adapter = :test
     allow(FacebookAdsClient).to receive(:new)
     @facebook_ads_client = FacebookAdsClient.new('act_115443465928527')
+    @creative_id = 120330000026551103 
+    @ad_set_id = "120330000026551503"
     
     @messages = build_list(:message, 5)
     (0..1).each do |index|
@@ -29,10 +31,10 @@ RSpec.describe CreateAdFromMessageJob, type: :job do
     
     @messages.each do |message|
       message.save
-    allow_message_expectations_on_nil
-    allow(@facebook_ads_client).to receive(:create_adcreative_from_message).with(message)
-    allow(@facebook_ads_client).to receive(:create_ad_set_from_message).with(message)
-    allow(@facebook_ads_client).to receive(:create_ad_from_message)
+      allow_message_expectations_on_nil
+      allow(@facebook_ads_client).to receive(:create_adcreative_from_message).with(message)
+      allow(@facebook_ads_client).to receive(:create_ad_set_from_message).with(message)
+      allow(@facebook_ads_client).to receive(:create_ad_from_message).with(@creative_id, @ad_set_id)
     end
   end
   
