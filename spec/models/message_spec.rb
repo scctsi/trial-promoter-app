@@ -31,8 +31,8 @@
 #  website_session_count        :integer
 #  impressions_by_day           :text
 #  note                         :text
+#  ad_published                 :boolean
 #
-
 
 require 'rails_helper'
 
@@ -548,6 +548,38 @@ describe Message do
     published_post = "Hydrogen cyanide is found in rat poison. It’s also in #cigarette smoke. http://bit.ly/2t2KVBd"
     
     expect { Message.find_by_published_text(published_post) }.to raise_error(ActiveRecord::RecordNotUnique)
+  end
+  
+  it 'saves an ad as a published message' do
+    messages = create_list(:message, 2)
+    
+    messages[0].set_ad_as_published
+    
+    expect(messages[0].ad_published).to be(true)
+    expect(messages[1].ad_published).to be(nil)
+  end
+  
+  #REF  For facebook ad scheduling https://developers.facebook.com/docs/marketing-api/pacing
+  describe 'scheduling an ad' do
+    before do
+      experiment = build(:experiment)
+      message_generation_parameter_set = build(:message_generation_parameter_set, message_generating: experiment, message_run_duration_in_days: 2)
+      experiment.message_generation_parameter_set = message_generation_parameter_set
+      
+      @message = build(:message, message_generating: experiment, scheduled_date_time: Time.new(2018, 2, 15, 8, 2, 2, "+08:00"))
+    end
+    
+    it 'sets up the start minute for scheduling an ad' do
+      expect(@message.setup_start_minute).to eq(960)
+    end
+    
+    it 'sets up the ending minute for scheduling an ad' do
+      expect(@message.setup_end_minute).to eq(1020)
+    end
+    
+    it 'sets up the start minute for scheduling an ad' do
+      expect(@message.end_time).to eq(Time.new(2018, 2, 17, 8, 2, 2, "+08:00"))
+    end
   end
   
   private

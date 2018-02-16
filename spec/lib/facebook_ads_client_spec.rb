@@ -5,8 +5,8 @@ RSpec.describe FacebookAdsClient do
     secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
     allow(Setting).to receive(:[]).with(:facebook_ads_access_token).and_return(secrets['facebook_ads_access_token'])
     allow(Setting).to receive(:[]).with(:facebook_app_secret).and_return(secrets['facebook_app_secret'])
-    @facebook_ads_client = FacebookAdsClient.new
-    @ad_account = @facebook_ads_client.get_account("act_115443465928527")
+    @facebook_ads_client = FacebookAdsClient.new("act_115443465928527")
+    @ad_account = @facebook_ads_client.get_account
   end
 
   describe "(development only tests)", :development_only_tests => true do
@@ -27,8 +27,16 @@ RSpec.describe FacebookAdsClient do
         @facebook_ads_client.get_campaign_ids.each{ |campaign| @facebook_ads_client.delete_campaign(campaign) }
         
         expect(@facebook_ads_client.get_campaign_names.count).to eq(0)
-        @facebook_ads_client.create_campaign('Healthy Living Campaign') 
-        @facebook_ads_client.get_account('act_115443465928527')
+        
+        campaign_params = {
+          name: "Healthy Living Campaign",
+          objective: "LINK_CLICKS",
+          status: "ACTIVE",
+          kpi_type: "LINK_CLICKS"
+        }
+        
+        @facebook_ads_client.create_campaign(campaign_params) 
+        @facebook_ads_client.get_account
         
         expect(@facebook_ads_client.get_campaign_names.count).to eq(1)
         expect(@facebook_ads_client.get_campaign_names).to include('Healthy Living Campaign')
@@ -37,7 +45,13 @@ RSpec.describe FacebookAdsClient do
     
     it 'destroys a campaign' do
       VCR.use_cassette 'facebook_ads_client/delete_campaign' do
-        @facebook_ads_client.create_campaign("Keep Kalm and Keto On Kampaign")  
+        campaign_params = {
+          name: "Keep Kalm and Keto On Kampaign",
+          objective: "LINK_CLICKS",
+          status: "ACTIVE",
+          kpi_type: "LINK_CLICKS"
+        }
+        @facebook_ads_client.create_campaign(campaign_params)  
         all_campaign_ids = @facebook_ads_client.get_campaign_ids
         
         expect(@facebook_ads_client.get_campaign_names.count).to be > 0
@@ -48,7 +62,7 @@ RSpec.describe FacebookAdsClient do
         end
 
         # reload the ad_account 
-        @ad_account = @facebook_ads_client.get_account("act_115443465928527")
+        @ad_account = @facebook_ads_client.get_account
     
         expect(@facebook_ads_client.get_campaign_names.count).to eq(0)
         expect(@facebook_ads_client.get_campaign_ids.count).to eq(0)
@@ -60,57 +74,135 @@ RSpec.describe FacebookAdsClient do
       end
     end
     
-    it 'gets the campaign ids' do
+    it 'gets the campaigns' do
       VCR.use_cassette 'facebook_ads_client/get_campaign_ids' do
         @facebook_ads_client.get_campaign_ids.each{ |campaign| @facebook_ads_client.delete_campaign(campaign) }
-        @ad_account = @facebook_ads_client.get_account("act_115443465928527")
+        @ad_account = @facebook_ads_client.get_account
         
         expect(@facebook_ads_client.get_campaign_ids.count).to eq(0)
         
-        @facebook_ads_client.create_campaign('Live Long and Prosper Campaign')
-        @ad_account = @facebook_ads_client.get_account("act_115443465928527")
+        campaign_params = {
+          name: "Live Long and Prosper Campaign",
+          objective: "LINK_CLICKS",
+          status: "ACTIVE",
+          kpi_type: "LINK_CLICKS"
+        }
+        @facebook_ads_client.create_campaign(campaign_params)
+        @ad_account = @facebook_ads_client.get_account
 
         expect(@facebook_ads_client.get_campaign_ids.count).to eq(1)
-        expect(@facebook_ads_client.get_campaign_ids[0]).to eq("120330000025726903")
+        expect(@facebook_ads_client.get_campaign_ids[0]).to eq("120330000026550903")
       end
     end
     
-    it 'gets the ad sets from a campaign id' do
+    it 'gets the ad sets from a campaign' do
       VCR.use_cassette 'facebook_ads_client/get_ad_sets' do
       ad_sets =  @facebook_ads_client.get_ad_sets
 
       expect(ad_sets.count).to eq(1)
       expect(ad_sets[0].name).to eq(:adsets)
-      expect(ad_sets[0].node.id).to eq("120330000025726903")
+      expect(ad_sets[0].node.id).to eq("120330000026550903")
       end
     end
     
     #REF https://developers.facebook.com/docs/marketing-api/reference/ad-campaign
-    it 'creates an ad set id' do
+    it 'creates an ad set' do
+      # Set up both parent child and child parent relationships between experiment and message_genreation_parameter_set
+      experiment = build(:experiment)
+      message_generation_parameter_set = build(:message_generation_parameter_set, message_generating: experiment, message_run_duration_in_days: 2)
+      experiment.message_generation_parameter_set = message_generation_parameter_set
+      
+      message = build(:message, message_generating: experiment)
+      message.scheduled_date_time = Time.now
+
       VCR.use_cassette 'facebook_ads_client/create_ad_set' do
-        
-        
-        #TODO Clean this up!!!
-        
-        
-        targeting = {
+        ad_set_targeting = {
           geo_locations: {
             countries: ['US']
           }
         }
-        bid_amount = 3000
-        daily_budget = 15000
-        promoted_object = {
+        ad_set_promoted_object = {
           application_id: '135216893922228'
         }
-        ad_set = @facebook_ads_client.create_ad_set("Eat More Fat", "120330000025726903", targeting, bid_amount, daily_budget, promoted_object, 'REACH')
+        
+        ad_set_params = {
+          name: "Eat More Fat",
+          campaign_id: "120330000026550903",
+          billing_event: "IMPRESSIONS",  
+          status: "PAUSED", 
+          targeting: ad_set_targeting,
+          bid_amount: 3000,
+          daily_budget: nil,
+          lifetime_budget: 100000,
+          pacing_type: ['day_parting'],
+          end_time: message.end_time,
+          adset_schedule: [{
+            start_minute: message.setup_start_minute,
+            end_minute: message.setup_end_minute,
+            days: [0, 1, 2, 3, 4, 5, 6],
+          }],
+          promoted_object: ad_set_promoted_object,
+          optimization_goal: 'IMPRESSIONS'
+        }
+        
+        ad_set = @facebook_ads_client.create_ad_set(ad_set_params)
 
-        expect(ad_set.id).to eq("120330000025727503")
+        expect(ad_set.id).to eq("120330000026551503")
       end
     end 
-
+        
+    #REF https://developers.facebook.com/docs/marketing-api/reference/ad-campaign
+    it 'creates an ad set schedule from a message (message_generating)' do
+      # Set up both parent child and child parent relationships between experiment and message_genreation_parameter_set
+      experiment = build(:experiment)
+      message_generation_parameter_set = build(:message_generation_parameter_set, message_generating: experiment, message_run_duration_in_days: 2)
+      experiment.message_generation_parameter_set = message_generation_parameter_set
+      
+      message = build(:message, message_generating: experiment)
+      message.scheduled_date_time = Time.now
+      # start_minute = message.scheduled_date_time.strftime("%-H").to_i * 60
+      # end_minute = start_minute + 60
+      VCR.use_cassette 'facebook_ads_client/create_ad_set_from_message' do
+        ad_set_targeting = {
+          geo_locations: {
+            countries: ['US']
+          }
+        }
+        ad_set_promoted_object = {
+          application_id: '135216893922228'
+        }
+        
+        ad_set_params = {
+          name: "Eat More Fat",
+          campaign_id: "120330000026550903",
+          billing_event: "IMPRESSIONS",  
+          status: "ACTIVE", 
+          targeting: ad_set_targeting,
+          bid_amount: 3000,
+          daily_budget: nil,
+          lifetime_budget: 100000,
+          pacing_type: ['day_parting'],
+          end_time: message.end_time,
+          adset_schedule: [{
+            start_minute: message.setup_start_minute,
+            end_minute: message.setup_end_minute,
+            days: [0, 1, 2, 3, 4, 5, 6],
+          }],
+          promoted_object: ad_set_promoted_object,
+          optimization_goal: 'IMPRESSIONS'
+        }
+              
+        allow(@facebook_ads_client).to receive(:create_ad_set)
+        allow(@facebook_ads_client).to receive(:create_ad_set_from_message).and_call_original
+  
+        @facebook_ads_client.create_ad_set_from_message(message)
+        
+        expect(@facebook_ads_client).to have_received(:create_ad_set).with(ad_set_params)
+      end
+    end 
+    
     #REF https://developers.facebook.com/docs/marketing-api/reference/ad-campaign/ads/
-    it 'creates an ad creative id' do
+    it 'creates an ad creative' do
       VCR.use_cassette 'facebook_ads_client/create_adcreative' do
         name = "Try fasting!"
         object_story_spec = {
@@ -125,53 +217,64 @@ RSpec.describe FacebookAdsClient do
 
         adcreative_id = @facebook_ads_client.create_adcreative(name, object_story_spec)
 
-        expect(adcreative_id.id).to eq("120330000025727003")
+        expect(adcreative_id.id).to eq("120330000026551003")
+      end
+    end
+    
+    it 'allows adcreative to be created with message content and tracking url' do
+      message = build(:message, tracking_url: 'http://www.test.com')
+
+      object_story_spec = {
+          page_id: "641520102717189",
+          template_data: {
+            additional_image_index: 0,
+            call_to_action: { type: 'LEARN_MORE' },
+            description: 'Live Longer',
+            message: message.content,
+            link: message.tracking_url,
+            name: "Treat Yoself!"
+          }
+        }
+      
+      allow(@facebook_ads_client).to receive(:create_adcreative)
+      allow(@facebook_ads_client).to receive(:create_adcreative_from_message).and_call_original
+
+      @facebook_ads_client.create_adcreative_from_message(message)
+      
+      expect(@facebook_ads_client).to have_received(:create_adcreative).with("Stress Less!", object_story_spec)
+    end
+    
+    it 'creates an ad creative using a message' do
+      message = create(:message)
+      message.tracking_url = 'www.example.com'
+      
+      VCR.use_cassette 'facebook_ads_client/create_adcreative_from_message' do
+        adcreative_id = @facebook_ads_client.create_adcreative_from_message(message)
+
+        expect(adcreative_id.id).to eq("120330000026551103")
       end
     end 
     
-    it 'creates an ad pixel' do
-      VCR.use_cassette 'facebook_ads_client/create_ad_pixel' do
-        account_id = "act_115443465928527"
-        name = "Track this 2.0"
+    it 'creates an ad from message text' do
+      VCR.use_cassette 'facebook_ads_client/create_ad_from_message' do
+        ad = @facebook_ads_client.create_ad_from_message
         
-        @ad_pixel = @facebook_ads_client.create_ad_pixel(account_id, name)
-
-        expect(@ad_pixel[:data][0]["id"]).to eq("146149006094052")
+        expect(ad.id).to eq("120330000027026003")
       end
     end
     
-    #The ad pixel is only needed if the campaign objective is 'CONVERSIONS'
-    #this ad pixel is not used, but here if needed in the future
-    it 'gets an ad pixel' do
-      VCR.use_cassette 'facebook_ads_client/get_ad_pixel' do
-        account_id = "act_115443465928527"
-        name = "Track this 2.0"
-        
-        @ad_pixel = @facebook_ads_client.get_ad_pixel(account_id, name)
-
-        expect(@ad_pixel[0][:id]).to eq("146149006094052")
-      end
-    end
-    
-    #The sandbox account only returns the ad id and will not appear in the ads manager
     it 'creates an ad' do
-      VCR.use_cassette 'facebook_ads_client/get_ad_pixel' do
-        account_id = "act_115443465928527"
-        name = "Track this"
-        @ad_pixel = @facebook_ads_client.get_ad_pixel(account_id, name)
-      end
-
       VCR.use_cassette 'facebook_ads_client/create_ad' do
         object_story_spec = {
-          creative: { creative_id: 120330000025727003 },
-          adset_id: "120330000025727503",
+          creative: { creative_id: 120330000026551003 },
+          adset_id: "120330000026551503",
           name: "Track this",
           status: 'PAUSED'
         }
-        
+    
         ad = @facebook_ads_client.create_ad(object_story_spec)
         
-        expect(ad.id).to eq("120330000025728303")
+        expect(ad.id).to eq("120330000026552403")
       end
     end
   end

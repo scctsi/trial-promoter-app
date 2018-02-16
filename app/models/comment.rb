@@ -12,6 +12,7 @@
 #  message_id              :integer
 #  social_media_comment_id :string
 #  commentator_id          :string
+#  parent_tweet_id         :string
 #
 
 class Comment < ActiveRecord::Base
