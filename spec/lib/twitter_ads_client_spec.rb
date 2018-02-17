@@ -237,8 +237,8 @@ RSpec.describe TwitterAdsClient do
           
       it 'promotes an organic tweet to an ad associated with a campaign' do
         VCR.use_cassette 'twitter_ads_client/promote_tweet' do
-          #Select a campaign that was created successfully
-          #obtained through the 'twitter-ads' cli
+          # Select a campaign that was created successfully
+          # obtained through the 'twitter-ads' cli
           # enter 'twitter-ads' in bash to get the twitter-ads prompt
           # enter 'CLIENT.account.first' in the cli to get the account
           # enter 'CLIENT.account.first.campaigns.first' in the cli to get the campaign
