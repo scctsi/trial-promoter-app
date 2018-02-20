@@ -31,7 +31,6 @@
 #  website_session_count        :integer
 #  impressions_by_day           :text
 #  note                         :text
-#  ad_published                 :boolean
 #
 
 class Message < ActiveRecord::Base
@@ -235,6 +234,7 @@ class Message < ActiveRecord::Base
 
     raise ActiveRecord::RecordNotUnique, '' if messages.length > 1
 
+    return messages.first
     return messages.first
   end
   
