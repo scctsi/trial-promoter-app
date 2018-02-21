@@ -1,8 +1,5 @@
 class FacebookAdsClient  
   def initialize(account_id)
-    secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
-    Setting[:facebook_ads_access_token] = secrets['facebook_ads_access_token']
-    Setting[:facebook_app_secret] = secrets['facebook_app_secret']
     FacebookAds.configure do |config|
       config.access_token = Setting[:facebook_ads_access_token]
       config.app_secret = Setting[:facebook_app_secret]
