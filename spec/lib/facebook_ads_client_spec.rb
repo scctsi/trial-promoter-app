@@ -97,11 +97,11 @@ RSpec.describe FacebookAdsClient do
     
     it 'gets the ad sets from a campaign' do
       VCR.use_cassette 'facebook_ads_client/get_ad_sets' do
-      ad_sets =  @facebook_ads_client.get_ad_sets
-
-      expect(ad_sets.count).to eq(1)
-      expect(ad_sets[0].name).to eq(:adsets)
-      expect(ad_sets[0].node.id).to eq("120330000026550903")
+        ad_sets =  @facebook_ads_client.get_ad_sets
+  
+        expect(ad_sets.count).to eq(1)
+        expect(ad_sets[0].name).to eq(:adsets)
+        expect(ad_sets[0].node.id).to eq("120330000026550903")
       end
     end
     
@@ -158,6 +158,7 @@ RSpec.describe FacebookAdsClient do
       message_generation_parameter_set = build(:message_generation_parameter_set, message_generating: experiment, message_run_duration_in_days: 2)
       experiment.message_generation_parameter_set = message_generation_parameter_set
       
+      campaign_id = "120330000026550903"
       message = build(:message, message_generating: experiment)
       message.scheduled_date_time = Time.now
       # start_minute = message.scheduled_date_time.strftime("%-H").to_i * 60
@@ -185,8 +186,7 @@ RSpec.describe FacebookAdsClient do
           end_time: message.end_time,
           adset_schedule: [{
             start_minute: message.setup_start_minute,
-            end_minute: message.setup_end_minute,
-            days: [0, 1, 2, 3, 4, 5, 6],
+            end_minute: message.setup_end_minute
           }],
           promoted_object: ad_set_promoted_object,
           optimization_goal: 'IMPRESSIONS'
@@ -195,7 +195,7 @@ RSpec.describe FacebookAdsClient do
         allow(@facebook_ads_client).to receive(:create_ad_set)
         allow(@facebook_ads_client).to receive(:create_ad_set_from_message).and_call_original
   
-        @facebook_ads_client.create_ad_set_from_message(message)
+        @facebook_ads_client.create_ad_set_from_message(campaign_id, message)
         
         expect(@facebook_ads_client).to have_received(:create_ad_set).with(ad_set_params)
       end
@@ -203,7 +203,7 @@ RSpec.describe FacebookAdsClient do
     
     #REF https://developers.facebook.com/docs/marketing-api/reference/ad-campaign/ads/
     it 'creates an ad creative' do
-      VCR.use_cassette 'facebook_ads_client/create_adcreative' do
+      VCR.use_cassette 'facebook_ads_client/create_ad_creative' do
         name = "Try fasting!"
         object_story_spec = {
           page_id: "641520102717189",
@@ -215,13 +215,13 @@ RSpec.describe FacebookAdsClient do
           }
         }
 
-        adcreative_id = @facebook_ads_client.create_adcreative(name, object_story_spec)
+        ad_creative_id = @facebook_ads_client.create_ad_creative(name, object_story_spec)
 
-        expect(adcreative_id.id).to eq("120330000026551003")
+        expect(ad_creative_id.id).to eq("120330000027414503")
       end
     end
     
-    it 'allows adcreative to be created with message content and tracking url' do
+    it 'allows ad creative to be created with message content and tracking url' do
       message = build(:message, tracking_url: 'http://www.test.com')
 
       object_story_spec = {
@@ -236,40 +236,40 @@ RSpec.describe FacebookAdsClient do
           }
         }
       
-      allow(@facebook_ads_client).to receive(:create_adcreative)
-      allow(@facebook_ads_client).to receive(:create_adcreative_from_message).and_call_original
+      allow(@facebook_ads_client).to receive(:create_ad_creative)
+      allow(@facebook_ads_client).to receive(:create_ad_creative_from_message).and_call_original
 
-      @facebook_ads_client.create_adcreative_from_message(message)
+      @facebook_ads_client.create_ad_creative_from_message(message)
       
-      expect(@facebook_ads_client).to have_received(:create_adcreative).with("Stress Less!", object_story_spec)
+      expect(@facebook_ads_client).to have_received(:create_ad_creative).with("Stress Less!", object_story_spec)
     end
     
     it 'creates an ad creative using a message' do
       message = create(:message)
       message.tracking_url = 'www.example.com'
       
-      VCR.use_cassette 'facebook_ads_client/create_adcreative_from_message' do
-        adcreative_id = @facebook_ads_client.create_adcreative_from_message(message)
+      VCR.use_cassette 'facebook_ads_client/create_ad_creative_from_message' do
+        ad_creative_id = @facebook_ads_client.create_ad_creative_from_message(message)
 
-        expect(adcreative_id.id).to eq("120330000026551103")
+        expect(ad_creative_id.id).to eq("120330000027548403")
       end
     end 
     
-    it 'creates an ad from message text' do
-      VCR.use_cassette 'facebook_ads_client/create_ad_from_message' do
+    it 'creates an ad from preset ad_creative and ad_set' do
+      VCR.use_cassette 'facebook_ads_client/create_ad_from_ad_creative_and_ad_set' do
         creative_id = { creative_id: 120330000026551103 }
         ad_set_id = "120330000026551503"
         object_story_spec = {
-        creative: creative_id,
-        adset_id: ad_set_id,
-        name: "Dat Ad",
-        status: 'ACTIVE'
+          creative: creative_id,
+          adset_id: ad_set_id,
+          name: "Some Ad",
+          status: 'ACTIVE'
         }
         
         allow(@facebook_ads_client).to receive(:create_ad)
-        allow(@facebook_ads_client).to receive(:create_ad_from_message).and_call_original
+        allow(@facebook_ads_client).to receive(:create_ad_from_ad_creative_and_ad_set).and_call_original
   
-        @facebook_ads_client.create_ad_from_message(creative_id, ad_set_id)
+        @facebook_ads_client.create_ad_from_ad_creative_and_ad_set(creative_id, ad_set_id)
         
         expect(@facebook_ads_client).to have_received(:create_ad).with(object_story_spec)
       end

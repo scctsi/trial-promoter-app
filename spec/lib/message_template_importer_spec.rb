@@ -86,7 +86,7 @@ RSpec.describe MessageTemplateImporter do
 
     WebMock.allow_net_connect!
     VCR.turn_off!
-    content = reader.read('http://sc-ctsi.org/trial-promoter/message_templates.xlsx')
+    content = reader.read('https://sc-ctsi.org/trial-promoter/message_templates.xlsx')
     WebMock.disable_net_connect!
     VCR.turn_on!
     @message_template_importer = MessageTemplateImporter.new(content, @experiment_tag)

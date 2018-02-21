@@ -66,10 +66,10 @@ class FacebookAdsClient
     })
   end
   
-  def create_ad_set_from_message(message)
+  def create_ad_set_from_message(campaign_id, message)
     ad_set_template = {
       name: "Eat More Fat",
-      campaign_id: "120330000026550903",
+      campaign_id: campaign_id,
       billing_event: "IMPRESSIONS", 
       targeting: {
           geo_locations: {
@@ -83,8 +83,7 @@ class FacebookAdsClient
       end_time: message.end_time,
       adset_schedule: [{
             start_minute: message.setup_start_minute,
-            end_minute: message.setup_end_minute,
-            days: [0, 1, 2, 3, 4, 5, 6],
+            end_minute: message.setup_end_minute
           }],
       promoted_object: { application_id: '135216893922228' },
       optimization_goal: 'IMPRESSIONS',
@@ -94,7 +93,7 @@ class FacebookAdsClient
     return create_ad_set(ad_set_template)
   end
   
-  def create_adcreative_from_message(message)
+  def create_ad_creative_from_message(message)
     name = "Stress Less!"
     object_story_spec = {
       page_id: "641520102717189",
@@ -108,10 +107,10 @@ class FacebookAdsClient
       }
     }
     
-    return create_adcreative(name, object_story_spec)
+    return create_ad_creative(name, object_story_spec)
   end
   
-  def create_adcreative(ad_name, object_story_spec)
+  def create_ad_creative(ad_name, object_story_spec)
     @ad_account.adcreatives.create({
       name: ad_name,
       object_story_spec: object_story_spec
@@ -122,11 +121,11 @@ class FacebookAdsClient
     @ad_account.ads.create(object_story_spec)
   end
     
-  def create_ad_from_message(creative_id, ad_set_id)
+  def create_ad_from_ad_creative_and_ad_set(creative_id, ad_set_id)
     object_story_spec = {
       creative: creative_id,
       adset_id: ad_set_id,
-      name: "Dat Ad",
+      name: "Some Ad",
       status: 'ACTIVE'
     }
     return create_ad(object_story_spec)
