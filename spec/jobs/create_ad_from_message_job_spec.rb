@@ -5,8 +5,8 @@ RSpec.describe CreateAdFromMessageJob, type: :job do
   
   before do
     ActiveJob::Base.queue_adapter = :test
-    @facebook_ads_client = FacebookAdsClient.new('act_115443465928527')
     allow(FacebookAdsClient).to receive(:new).and_return(@facebook_ads_client)
+    @facebook_ads_client = FacebookAdsClient.new('act_115443465928527')
     @campaign_id = "120330000027414503"
     
     @messages = build_list(:message, 5)
