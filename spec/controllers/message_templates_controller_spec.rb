@@ -33,7 +33,7 @@ RSpec.describe MessageTemplatesController, type: :controller do
   describe 'GET #import' do
     it 'imports message templates from an Excel file accessible at a URL' do
       experiment = create(:experiment)
-      excel_url = 'http://sc-ctsi.org/trial-promoter/message_templates.xlsx'
+      excel_url = 'https://sc-ctsi.org/trial-promoter/message_templates.xlsx'
       expected_json = { success: true, imported_count: 2}.to_json
 
       message_template_importer = nil
