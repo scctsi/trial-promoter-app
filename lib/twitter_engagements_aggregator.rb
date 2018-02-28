@@ -1,6 +1,6 @@
 require "csv"
 
-class TwitterRepliesAggregator
+class TwitterEngagementsAggregator
   def initialize
     secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
     Setting[:twitter]=secrets['twitter']
@@ -80,4 +80,8 @@ class TwitterRepliesAggregator
       retry
     end
   end  
+  
+  def get_all_direct_messages_for_a_handle
+   return @client.direct_messages
+  end
 end
