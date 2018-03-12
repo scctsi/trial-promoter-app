@@ -9,14 +9,14 @@ class DataReportMapper
     return message.id
   end
   
-  def campaign_id(message)
-    return "CI: #{message.campaign_id}"
-  end
-  
   def social_network_id(message)
     return "SNI: #{message.social_network_id}"
   end
-  
+
+  def campaign_id(message)
+    return "CI: #{message.campaign_id}"
+  end
+
   def backdated(message)
     return "Yes" if message.backdated
     return "No"
@@ -25,36 +25,23 @@ class DataReportMapper
   def note(message)
     return message.note
   end
-
-  def stem(message)
-    return message.message_template.experiment_variables['stem_id']
+  
+  def experiment_variable(message, variable_name, value_mapping = nil)
+    # A value mapping maps the actual value of an experiment variable to a numerical value, usually used for statistical analysis
+    return value_mapping[message.message_template.experiment_variables['theme']] if value_mapping != nil
+    return message.message_template.experiment_variables[variable_name]
   end
 
-  def fda_campaign(message, fda_campaign_mapper = { 'FE' => '1', 'TFL' => '2' }) 
-    return fda_campaign_mapper[message.message_template.experiment_variables['fda_campaign']]
+  def variant(message)
+    return message.message_template.content.chomp("{url}")
   end
 
-  def theme(message,  theme_mapper = { 'health' => '1', 'appearace' => '2', 'money' => '3', 'love of family' => '4', 'addiction' => '5', 'health + community' => '6', 'health + family' => '7', 'UNCLEAR' => 'UNCLEAR' })
-    return theme_mapper[message.message_template.experiment_variables['theme'].to_s]
-  end
-
-  def lin_meth_factor(message)
-    return message.message_template.experiment_variables['lin_meth_factor'].to_s
-  end
-
-  def lin_meth_level(message)
-    return message.message_template.experiment_variables['lin_meth_level'].to_s
-  end
-
-  def variant(message, content = message.message_template.content.chomp("{url}"))
-    return content
-  end
-
-  def sm_type(message, platform_mapper = {:twitter => 'T', :facebook => 'F', :instagram => 'I'})
-    return platform_mapper[message.platform]
+  def sm_type(message, platform_mapping = {:twitter => 'T', :facebook => 'F', :instagram => 'I'})
+    return platform_mapping[message.platform]
   end
 
   def day_experiment(message)
+    # Ordinal day of the experiment: 1 for first day of experiment, 2 for second day of experiment etc
     return (message.scheduled_date_time.to_i - experiment.message_distribution_start_date.to_i) / 1.day.seconds + 1
   end
 
@@ -62,7 +49,7 @@ class DataReportMapper
     return message.scheduled_date_time.strftime("%Y-%m-%d")
   end
 
-  #Ruby maps Sunday as 0, so mapper follows data dictionary
+  # Ruby maps Sunday as 0, so mapper follows data dictionary
   def day_sent(message, day_of_week_mapper = {'Sunday' => '7', 'Monday' => '1', 'Tuesday' => '2', 'Wednesday' => '3', 'Thursday' => '4', 'Friday' => '5', 'Saturday' => '6'})
     return day_of_week_mapper[message.scheduled_date_time.strftime("%A")]
   end
@@ -77,41 +64,27 @@ class DataReportMapper
     end
   end
 
-  def medium(message, medium_mapper = {:organic => '1', :ad => '2'})
-    return medium_mapper[message.medium]
+  def medium(message, medium_mapping = {:organic => '1', :ad => '2'})
+    return medium_mapping[message.medium]
   end
 
-  def image_included(message, image_mapper = {'without' => '0', 'with' => '1'})
-    return image_mapper[message.image_present]
+  def image_included(message, image_mapping = {'without' => '0', 'with' => '1'})
+    return image_mapping[message.image_present]
   end
 
-  def total_clicks_day(message, day_offset = 0)
-    all_clicks = message.click_meter_tracking_link.clicks.select{|click| click.click_time.to_date == (message.scheduled_date_time.to_date + day_offset.day)}
-    return all_clicks
+  def clicks_for_day(message, day_offset = 0)
+    return message.click_meter_tracking_link.clicks.select{|click| click.click_time.to_date == (message.scheduled_date_time.to_date + day_offset.day)}
   end 
   
-  def total_clicks_experiment(message)
+  def clicks_for_experiment(message)
     return message.click_meter_tracking_link.clicks.map
   end
 
-  def click_time(all_clicks, creature = 'human', unique = true, timezone = "America/Los_Angeles")  
-    if creature == 'human'
-      if unique == true
-        click_times = all_clicks.map{|click| click.click_time.in_time_zone(timezone).strftime("%H:%M:%S") if (click.human? && click.unique == true) }.compact
-      else
-        click_times = all_clicks.map{|click| click.click_time.in_time_zone(timezone).strftime("%H:%M:%S") if (click.human? && !click.unique) }.compact
-      end
-    else
-      if unique == true
-        click_times = all_clicks.map{|click| click.click_time.in_time_zone(timezone).strftime("%H:%M:%S") if (!click.human? && click.unique == true) }.compact
-      else
-        click_times = all_clicks.map{|click| click.click_time.in_time_zone(timezone).strftime("%H:%M:%S") if (!click.human? && !click.unique) }.compact
-      end
-    end
-    return click_times
+  def click_times(clicks, human = true, unique = true, timezone = "America/Los_Angeles")  
+    return clicks.map{|click| click.click_time.in_time_zone(timezone).strftime("%H:%M:%S") if (click.human? == human && click.unique? == unique) }.compact
   end
 
-  def total_impressions_day(message, offset)
+  def impressions_for_day(message, offset)
     if message.impressions_by_day[(message.scheduled_date_time + offset.day).to_date].nil?
       return 'NDA'
     else
@@ -126,7 +99,7 @@ class DataReportMapper
     end
   end
 
-  def total_impressions_experiment(message)
+  def impressions_for_experiment(message)
     return get_metric(message, message.platform, 'impressions')
   end
 
@@ -168,13 +141,14 @@ class DataReportMapper
     return get_metric(message, :instagram, 'reactions', 'likes')
   end
 
-  def total_sessions_day(message, offset = 0, ip_exclusion_list)
+  def sessions_for_day(message, offset = 0, ip_exclusion_list)
     scheduled_start_of_day = (message.scheduled_date_time + offset.day)
     scheduled_end_of_day = scheduled_start_of_day.end_of_day
+    
     return message.get_sessions(scheduled_start_of_day, scheduled_end_of_day, ip_exclusion_list).count
   end
 
-  def total_sessions_experiment(message, ip_exclusion_list)
+  def sessions_for_experiment(message, ip_exclusion_list)
     return message.get_sessions(DateTime.new(1970, 1, 1), DateTime.new(2100, 1, 1), ip_exclusion_list).count
   end
   
