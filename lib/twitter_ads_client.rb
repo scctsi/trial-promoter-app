@@ -100,10 +100,6 @@ class TwitterAdsClient
     promoted_tweet.tweet_id = tweet_id
     promoted_tweet.save
   end
-  
-  def promote_tweet_from_message(account_id, line_item_id, message)
-    
-  end
 
   private
   def get_account(account_id)
