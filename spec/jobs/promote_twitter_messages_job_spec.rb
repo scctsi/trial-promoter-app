@@ -7,8 +7,19 @@ RSpec.describe PromoteTwitterMessagesJob, type: :job do
     ActiveJob::Base.queue_adapter = :test
     @twitter_ads_client = double('twitter_ads_client')
     @account = '@USCTrials'
+    @campaign_id = 'ag1g3'
     allow(TwitterAdsClient).to receive(:new).and_return(@twitter_ads_client)
-    @line_item_id = 'b0sjz'
+    @line_item_params = {
+      name: 'my first objective',
+      product_type: 'PROMOTED_TWEETS',
+      placements: 'ALL_ON_TWITTER',
+      objective: 'AWARENESS',
+      bid_type: 'AUTO',
+      entity_status: 'PAUSED'
+    }
+    @line_item = '{"data":{"bid_type":"AUTO","advertiser_user_id":3194630402,"name":"my
+        other objective","placements":["ALL_ON_TWITTER"],"start_time":null,"bid_amount_local_micro":null,"automatically_select_bid":true,"advertiser_domain":null,"target_cpa_local_micro":null,"primary_web_event_tag":null,"charge_by":"IMPRESSION","product_type":"PROMOTED_TWEETS","end_time":null,"bid_unit":"VIEW","total_budget_amount_local_micro":null,"objective":"AWARENESS","id":"ekzp","entity_status":"ACTIVE","account_id":"gq1azc","optimization":"DEFAULT","categories":[],"currency":"USD","created_at":"2018-02-27T02:01:14Z","tracking_tags":[],"updated_at":"2018-02-27T02:01:14Z","include_sentiment":"POSITIVE_ONLY","campaign_id":"hppy","creative_source":"MANUAL","deleted":false},"request":{"params":{"bid_type":"AUTO","name":"my
+        other objective","placements":["ALL_ON_TWITTER"],"product_type":"PROMOTED_TWEETS","objective":"AWARENESS","entity_status":"ACTIVE","account_id":"gq1azc","campaign_id":"hppy"}}}'
     tweet_id = '822248659043520512'
       
     @messages = build_list(:message, 5)
@@ -36,6 +47,8 @@ RSpec.describe PromoteTwitterMessagesJob, type: :job do
     
     # Set up mocks for promoting tweets
     (0..1).each do |index|
+      allow(@twitter_ads_client).to receive(:create_ad_line_item_from_message).with(@account, @campaign_id, @line_item_params, @messages[index]).and_return(@line_item)
+      allow(@twitter_ads_client).to receive(:get_ad_line_item).with(@account, @line_item_id).and_return(@line_item)
       allow(@twitter_ads_client).to receive(:promote_tweet).with(@account, @line_item_id, @messages[index].social_network_id)
     end
   end
@@ -53,6 +66,14 @@ RSpec.describe PromoteTwitterMessagesJob, type: :job do
     perform_enqueued_jobs { PromoteTwitterMessagesJob.perform_later(@account) }
   end
   
+  it 'promotes messages that are twitter ads which have not been published' do
+    (0..1).each do |index|
+      expect(@twitter_ads_client).to receive(:create_ad_line_item).with(@account, @campaign_id, @line_item_params)
+    end
+    
+    perform_enqueued_jobs { PromoteTwitterMessagesJob.perform_later(@account, @line_item_params) }
+  end
+      
   it 'promotes messages that are twitter ads which have not been published' do
     (0..1).each do |index|
       expect(@twitter_ads_client).to receive(:promote_tweet).with(@account, @line_item_id, @messages[index].social_network_id)

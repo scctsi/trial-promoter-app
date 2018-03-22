@@ -57,6 +57,7 @@ class TwitterAdsClient
   end
   
   #REF https://developer.twitter.com/en/docs/ads/campaign-management/overview/target-bidding
+  #REF https://developer.twitter.com/en/docs/ads/campaign-management/api-reference/targeting-options
   def create_line_item_from_message(ad_account, campaign_id, line_item_params = {}, message)
     line_item = TwitterAds::LineItem.new(ad_account)
     line_item.campaign_id = campaign_id
@@ -66,8 +67,6 @@ class TwitterAdsClient
     line_item.objective = line_item_params[:objective]
     line_item.bid_type = line_item_params[:bid_type]
     line_item.entity_status = line_item_params[:entity_status]
-    # line_item.start_time = message.
-    # line_item.end_time = 
     line_item.save
   end
 

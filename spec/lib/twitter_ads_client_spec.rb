@@ -78,30 +78,40 @@ RSpec.describe TwitterAdsClient do
         @targeting_value = @twitter_ads_client.create_targeting_criteria(twitter_ads_client.account, line_item, targeting_criteria_params)
           
         expect(@targeting_value.id).to include("38rc2")
+   
+   
+   
+   
+   
+
+   
+   
+   
+   
+   
+   
+        
+        # Set up both parent child and child parent relationships between experiment and message_genreation_parameter_set
+        experiment = build(:experiment)
+        message_generation_parameter_set = build(:message_generation_parameter_set, message_generating: experiment, message_run_duration_in_days: 2)
+        experiment.message_generation_parameter_set = message_generation_parameter_set
+        
+        message = build(:message, message_generating: experiment)
+        message.scheduled_date_time = Time.now
       
-      # Set up both parent child and child parent relationships between experiment and message_genreation_parameter_set
-      experiment = build(:experiment)
-      message_generation_parameter_set = build(:message_generation_parameter_set, message_generating: experiment, message_run_duration_in_days: 2)
-      experiment.message_generation_parameter_set = message_generation_parameter_set
-      
-      message = build(:message, message_generating: experiment)
-      message.scheduled_date_time = Time.now
-      
-        line_item = nil
-        VCR.use_cassette 'twitter_ads_client/create_line_item_from_message' do
-          line_item_params = {
-            name: 'my other objective',
-            product_type: 'PROMOTED_TWEETS',
-            placements: 'ALL_ON_TWITTER',
-            objective: 'AWARENESS',
-            bid_type: 'AUTO',
-            entity_status: 'ACTIVE'
+        targeting_criteria = nil
+        VCR.use_cassette 'twitter_ads_client/create_targeting_criteria_from_message' do
+          targeting_criteria_params = {
+            targeting_type: 'LOCATION',
+            location_type: 'REGIONS',
+            targeting_value: 'fbd6d2f5a4e4a15e',
+            start_time: "2018-3-31T00:00:00Z",
+            end_time: "2018-4-2T00:00:00Z"
           }
-          line_item = @twitter_ads_client.create_line_item_from_message(@twitter_ads_client.account, @campaign.id, line_item_params, message)
+          targeting_value = @twitter_ads_client.create_targeting_criteria_from_message(@twitter_ads_client.account, @line_item, targeting_criteria_params, message)
         end
       
-        expect(line_item.name).to include("my other objective")
-        expect(line_item.id).to include("ekzp")
+        expect(@targeting_value.id).to include("hthgkm")
       end
     end
 
@@ -213,7 +223,9 @@ RSpec.describe TwitterAdsClient do
             targeting_criteria_params = {      
             targeting_type: 'LOCATION',
             location_type: 'REGIONS',
-            targeting_value: 'fbd6d2f5a4e4a15e'
+            targeting_value: 'fbd6d2f5a4e4a15e',
+            start_time: "2018-3-31T00:00:00Z",
+            end_time: "2018-4-2T00:00:00Z"
             }
             
             @targeting_value = @twitter_ads_client.create_targeting_criteria(@twitter_ads_client.account, @line_item, targeting_criteria_params)
