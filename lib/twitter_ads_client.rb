@@ -55,20 +55,6 @@ class TwitterAdsClient
     line_item.entity_status = line_item_params[:entity_status]
     line_item.save
   end
-  
-  #REF https://developer.twitter.com/en/docs/ads/campaign-management/overview/target-bidding
-  #REF https://developer.twitter.com/en/docs/ads/campaign-management/api-reference/targeting-options
-  def create_line_item_from_message(ad_account, campaign_id, line_item_params = {}, message)
-    line_item = TwitterAds::LineItem.new(ad_account)
-    line_item.campaign_id = campaign_id
-    line_item.name = line_item_params[:name]
-    line_item.product_type = line_item_params[:product_type]
-    line_item.placements = line_item_params[:placements]
-    line_item.objective = line_item_params[:objective]
-    line_item.bid_type = line_item_params[:bid_type]
-    line_item.entity_status = line_item_params[:entity_status]
-    line_item.save
-  end
 
   def create_targeting_criteria(ad_account, line_item, targeting_criteria_params = {})
     targeting_criteria = TwitterAds::TargetingCriteria.new(ad_account)
@@ -88,10 +74,19 @@ class TwitterAdsClient
     campaign.delete!
   end
 
-#TODO this should actually check for the scheduled tweets 
-  # def get_scoped_timeline(ad_account_id, campaign_id)
-  #   client.accounts(ad_account_id).scoped_timeline(campaign_id)
-  # end
+  def create_scheduled_tweet(account_id, message)
+    scheduled_tweet = TwitterAds::Creative::ScheduledTweet.new(account_id)
+    scheduled_tweet.scheduled_at = message.scheduled_date_time
+    scheduled_tweet.text = message.content
+    scheduled_tweet.save
+  end
+
+  def create_scheduled_promoted_tweet(account_id, line_item_id, scheduled_tweet_id)
+    scheduled_promoted_tweet = TwitterAds::Creative::PromotedTweet.new(account_id)
+    scheduled_promoted_tweet.line_item_id = line_item_id
+    scheduled_promoted_tweet.tweet_id = scheduled_tweet_id
+    scheduled_promoted_tweet.save
+  end
   
   def promote_tweet(account, line_item_id, tweet_id)
     promoted_tweet = TwitterAds::Creative::PromotedTweet.new(account)

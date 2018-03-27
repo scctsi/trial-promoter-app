@@ -17,75 +17,83 @@ RSpec.describe PromoteTwitterMessagesJob, type: :job do
       bid_type: 'AUTO',
       entity_status: 'PAUSED'
     }
-    @line_item = '{"data":{"bid_type":"AUTO","advertiser_user_id":3194630402,"name":"my
-        other objective","placements":["ALL_ON_TWITTER"],"start_time":null,"bid_amount_local_micro":null,"automatically_select_bid":true,"advertiser_domain":null,"target_cpa_local_micro":null,"primary_web_event_tag":null,"charge_by":"IMPRESSION","product_type":"PROMOTED_TWEETS","end_time":null,"bid_unit":"VIEW","total_budget_amount_local_micro":null,"objective":"AWARENESS","id":"ekzp","entity_status":"ACTIVE","account_id":"gq1azc","optimization":"DEFAULT","categories":[],"currency":"USD","created_at":"2018-02-27T02:01:14Z","tracking_tags":[],"updated_at":"2018-02-27T02:01:14Z","include_sentiment":"POSITIVE_ONLY","campaign_id":"hppy","creative_source":"MANUAL","deleted":false},"request":{"params":{"bid_type":"AUTO","name":"my
-        other objective","placements":["ALL_ON_TWITTER"],"product_type":"PROMOTED_TWEETS","objective":"AWARENESS","entity_status":"ACTIVE","account_id":"gq1azc","campaign_id":"hppy"}}}'
-    tweet_id = '822248659043520512'
+    @line_item_id = "b0sjz"
+    @tweet_id = '822248659043520512'
       
-    @messages = build_list(:message, 5)
-    (0..1).each do |index|
-      @messages[index].social_network_id = '822248659043520512'
-      @messages[index].medium = :ad
-      @messages[index].platform = :twitter
-    end
-  
-    @messages[2].social_network_id = nil
-    @messages[2].medium = :ad
-    @messages[2].platform = :twitter
-    
-    @messages[3].social_network_id = nil
-    @messages[3].medium = :organic
-    @messages[3].platform = :twitter
-    
+    @messages = create_list(:message, 6)
+    @messages[0].social_network_id = nil
+    @messages[0].medium = :ad
+    @messages[0].platform = :twitter
+    @messages[0].publish_status = :pending
+    @messages[0].scheduled_date_time = Time.now + 1.month
+
+    @messages[1].scheduled_date_time = Time.now - 1.month
+    @messages[2].platform = :facebook
+    @messages[2].social_network_id = '822248659043520512'
+    @messages[3].publish_status = :published_to_social_network
     @messages[4].social_network_id = nil
     @messages[4].medium = :ad
     @messages[4].platform = :facebook
+    @messages[4].publish_status = :pending
+    
+    @messages[5].scheduled_date_time = Time.now - 1.day
+    @messages[5].social_network_id = '822248659043520512'
+    @messages[5].medium = :ad
+    @messages[5].platform = :twitter
+    @messages[5].publish_status = :pending
     
     @messages.each do |message|
       message.save
     end
     
-    # Set up mocks for promoting tweets
-    (0..1).each do |index|
-      allow(@twitter_ads_client).to receive(:create_ad_line_item_from_message).with(@account, @campaign_id, @line_item_params, @messages[index]).and_return(@line_item)
-      allow(@twitter_ads_client).to receive(:get_ad_line_item).with(@account, @line_item_id).and_return(@line_item)
-      allow(@twitter_ads_client).to receive(:promote_tweet).with(@account, @line_item_id, @messages[index].social_network_id)
-    end
+    allow(@twitter_ads_client).to receive(:create_scheduled_tweet).with(@account, @messages[0]).and_return(@tweet_id)
+    allow(@twitter_ads_client).to receive(:create_scheduled_promoted_tweet).with(@account, @line_item_id, @tweet_id)
+    allow(@twitter_ads_client).to receive(:promote_tweet).with(@account, @line_item_id, @tweet_id)
   end
 
   it 'queues the job' do
-    expect { PromoteTwitterMessagesJob.perform_later }.to change(ActiveJob::Base.queue_adapter.enqueued_jobs, :size).by(1)
+    expect { PromoteTwitterMessagesJob.perform_later(@account) }.to change(ActiveJob::Base.queue_adapter.enqueued_jobs, :size).by(1)
   end
   
   it 'queues the job in the default queue' do
     expect(PromoteTwitterMessagesJob.new.queue_name).to eq('default')
   end
   
-  #TODO add method to make message attribute :ad_published (from facebook automatic ads branch)
-  xit 'saves ad_published to true for the published messages' do
-    perform_enqueued_jobs { PromoteTwitterMessagesJob.perform_later(@account) }
-  end
-  
-  it 'promotes messages that are twitter ads which have not been published' do
-    (0..1).each do |index|
-      expect(@twitter_ads_client).to receive(:create_ad_line_item).with(@account, @campaign_id, @line_item_params)
-    end
+  it 'promotes messages that are twitter ads which are scheduled to be published to Twitter in the next month' do
+    expect(@twitter_ads_client).to receive(:promote_tweet).with(@account, @line_item_id, @tweet_id)
+    expect(@twitter_ads_client).not_to receive(:promote_tweet).with(@account, @line_item_id, @messages[1].social_network_id)
+    expect(@twitter_ads_client).not_to receive(:promote_tweet).with(@account, @line_item_id, @messages[2].social_network_id)
     
-    perform_enqueued_jobs { PromoteTwitterMessagesJob.perform_later(@account, @line_item_params) }
-  end
-      
-  it 'promotes messages that are twitter ads which have not been published' do
-    (0..1).each do |index|
-      expect(@twitter_ads_client).to receive(:promote_tweet).with(@account, @line_item_id, @messages[index].social_network_id)
-    end
-    
-    perform_enqueued_jobs { PromoteTwitterMessagesJob.perform_later(@account) }
+    perform_enqueued_jobs { PromoteTwitterMessagesJob.perform_later }
   end
     
   it 'does not execute perform on non-twitter message' do
-    expect(@twitter_ads_client).not_to receive(:promote_tweet).with(@account, @line_item_id, @messages[2].social_network_id)
+    expect(@twitter_ads_client).not_to receive(:create_scheduled_tweet).with(@account, @line_item_id, @messages[2].social_network_id)
+    expect(@twitter_ads_client).not_to receive(:create_scheduled_tweet).with(@account, @line_item_id, @messages[4].social_network_id)
+    expect(@twitter_ads_client).not_to receive(:create_scheduled_tweet).with(@account, @line_item_id, @messages[5].social_network_id)
     
-    perform_enqueued_jobs { PromoteTwitterMessagesJob.perform_later(@account) }
+    perform_enqueued_jobs { PromoteTwitterMessagesJob.perform_later }
+  end
+    
+  it 'does not execute perform on an already published message' do
+    expect(@twitter_ads_client).not_to receive(:create_scheduled_promoted_tweet).with(@account, @line_item_id, @messages[3].social_network_id)
+    
+    perform_enqueued_jobs { PromoteTwitterMessagesJob.perform_later }
+  end
+
+  it 'saves the publish status as published to social network for the published messages' do
+    perform_enqueued_jobs { PromoteTwitterMessagesJob.perform_later }
+    
+    @messages.each{ |message| message.reload }
+     
+    expect(@messages[0].publish_status).to eq(:published_to_social_network)
+    (1..2).each do |index|
+      expect(@messages[index].publish_status).to eq(:pending)
+    end
+    expect(@messages[3].publish_status).to eq(:published_to_social_network)
+    (4..5).each do |index|
+      expect(@messages[index].publish_status).to eq(:pending)
+    end
   end
 
   after do

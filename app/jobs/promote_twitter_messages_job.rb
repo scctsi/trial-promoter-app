@@ -1,23 +1,24 @@
 class PromoteTwitterMessagesJob < ActiveJob::Base
   queue_as :default
  
-  def perform(account, line_item_params = {})
-    @twitter_ads_client = TwitterAdsClient.new(account)
-    campaign_id = 'ag1g3'
-    #TODO refactor this to add the method that creates a line item in order to 
+  def perform
+    @twitter_ads_client = TwitterAdsClient.new('@USCTrials')
+    account_id = '@USCTrials'
+
     # schedule twitter ads promotion
-    twitter_messages = Message.where(medium: :ad, platform: :twitter).where.not(social_network_id: nil )
-    twitter_messages.each do |twitter_message|
-      line_item = @twitter_ads_client.create_ad_line_item_from_message(account, campaign_id, line_item_params, message)
-    end    
-    # line_item_id = "b0sjz"
+    #Notes for Alicia to do right now: buffer client status of message should set the real value :published_to_social_network
+    twitter_messages = Message.where(platform: :twitter, medium: :ad, publish_status: :pending, social_network_id: nil).where('scheduled_date_time BETWEEN ? AND ?', Time.now, Time.now + 1.month)
+    line_item_id = "b0sjz"
     
-    
-    tweet_id = '822248659043520512'
     twitter_messages.each do |message|
-      next if message.social_network_id.nil?
-      tweet_id = message.social_network_id 
-      @twitter_ads_client.promote_tweet(account, line_item.id, tweet_id)
+      message.social_network_id = @twitter_ads_client.create_scheduled_tweet(account_id, message)
+      
+      
+      #this has to promote scheduled tweet
+      @twitter_ads_client.create_scheduled_promoted_tweet(account_id, line_item_id, message.social_network_id)
+      @twitter_ads_client.promote_tweet(account_id, line_item_id, message.social_network_id)
+      message.publish_status = :published_to_social_network
+      message.save
     end
   end
 end
