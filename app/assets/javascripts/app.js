@@ -662,23 +662,41 @@ $(document).ready(function() {
       e.preventDefault();
       var targetUrl = $(this).attr('href');
       var experimentId = $('.paginated-content').data('experiment-id');
+      var model = $('.paginated-content#model').data('model');
       var page = '';
       if (targetUrl.includes("page=")){
         page = targetUrl.match(/page=(\d+)/)[1];
       }
-
-      $.ajax({
-        url: '/experiments/' + experimentId + '/messages_page.html',
-        data: { page: page },
-        success: function(res){
-          $('.paginated-content').html(res);
-          setUpAjaxPagination();
-          setUpSaveCampaignIdFormEvents();
-          setUpEditCampaignIdLabelEvents();
-          setUpSaveNoteFormEvents();
-          setUpEditNoteEvents();
-        }
-      });
+      if (model == 'comment'){
+        $.ajax({
+          url: '/experiments/' + experimentId + '/comments_page.html',
+          data: { page: page },
+          success: function(res){
+            $('.paginated-content').html(res);
+            setUpAjaxPagination();
+            $('.ui.dropdown').dropdown({
+              onChange: function() {
+                var commentId = $(this).data("comment-id");
+                $("#edit-comment-codes-" + commentId).find('.save-comment-codes').first().removeClass('disabled');
+              }
+            });
+            setUpEditCommentCodesFormEvents();
+          }
+        });
+      } else {
+        $.ajax({
+          url: '/experiments/' + experimentId + '/messages_page.html',
+          data: { page: page },
+          success: function(res){
+            $('.paginated-content').html(res);
+            setUpAjaxPagination();
+            setUpSaveCampaignIdFormEvents();
+            setUpEditCampaignIdLabelEvents();
+            setUpSaveNoteFormEvents();
+            setUpEditNoteEvents();
+          }
+        });
+      }
     });
   }
 
@@ -710,7 +728,7 @@ $(document).ready(function() {
     historyType: 'hash',
     context: 'parent'
   });
-  $('.table').tablesort();
+  $('.table.sortable').tablesort();
   $('.ui.dropdown').dropdown({
     onChange: function() {
       var imageId = $(this).data("image-id");

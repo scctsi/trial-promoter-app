@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170929205952) do
+ActiveRecord::Schema.define(version: 20171108005622) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -102,13 +102,15 @@ ActiveRecord::Schema.define(version: 20170929205952) do
   end
 
   create_table "comments", force: :cascade do |t|
-    t.date     "comment_date"
+    t.datetime "comment_date"
     t.text     "comment_text"
     t.text     "commentator_username"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
-    t.string   "message_id"
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
     t.string   "toxicity_score"
+    t.integer  "message_id"
+    t.string   "social_media_comment_id"
+    t.string   "commentator_id"
   end
 
   create_table "daily_metric_parser_results", force: :cascade do |t|
@@ -168,6 +170,7 @@ ActiveRecord::Schema.define(version: 20170929205952) do
     t.integer  "click_meter_domain_id"
     t.text     "comment_codes"
     t.text     "image_codes"
+    t.text     "ip_exclusion_list"
   end
 
   create_table "experiments_social_media_profiles", force: :cascade do |t|

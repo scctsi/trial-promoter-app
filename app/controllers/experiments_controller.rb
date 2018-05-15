@@ -1,5 +1,6 @@
 class ExperimentsController < ApplicationController
-  before_action :set_experiment, only: [:show, :edit, :update, :parameterized_slug, :send_to_buffer, :create_messages, :correctness_analysis, :messages_page]
+  before_action :set_experiment, only: [:show, :edit, :update, :parameterized_slug, :send_to_buffer, :create_messages, :correctness_analysis, :messages_page, :comments_page
+  ]
   before_action :set_click_meter_groups_and_domains, only: [:new, :edit]
   layout "workspace", only: [:show, :correctness_analysis]
 
@@ -20,8 +21,7 @@ class ExperimentsController < ApplicationController
     @top_messages_by_click_rate = Message.where('message_generating_id = ? AND click_rate is not null', @experiment.id).order('click_rate desc')
     @top_messages_by_website_goal_rate = Message.where('message_generating_id = ? AND website_goal_rate is not null', @experiment.id).order('website_goal_rate desc, website_session_count desc')
 
-  #This is not correct
-    @comments = (Comment.all).page(params[:page])
+    @comments = Comment.joins(:message).page(params[:page]).per(20).order('toxicity_score DESC')
 
     respond_to do |format|
       format.html
@@ -78,12 +78,20 @@ class ExperimentsController < ApplicationController
   end
 
   def messages_page
-    authorize @experiment
     messages = Message.where(:message_generating_id => @experiment.id).page(params[:page]).order('scheduled_date_time ASC')
 
     respond_to do |format|
       format.json
       format.html { render :partial => 'shared/messages_page', locals: { messages: messages } }
+    end
+  end
+  
+  def comments_page
+    comments = Comment.joins(:message).page(params[:page]).per(100).order('toxicity_score DESC')
+
+    respond_to do |format|
+      format.json
+      format.html { render :partial => 'shared/comments_page', locals: { comments: comments } }
     end
   end
 

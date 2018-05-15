@@ -27,7 +27,7 @@
                 %td= message.metric_twitter_impressions
                 %td
                   .ui.label.basic.teal
-                    = message.percentage_twitter_clicks_impressions.to_s + "%"
+                    = message.percentage_twitter_clicks_impressions.round(2).to_s + "%"
                     Click rate
                 %td= message.metric_twitter_likes
                 %td= message.metric_twitter_shares

@@ -13,8 +13,9 @@
 #  instagram_posting_times         :text
 #  click_meter_group_id            :integer
 #  click_meter_domain_id           :integer
-#  comment_codes                   :string
+#  comment_codes                   :text
 #  image_codes                     :text
+#  ip_exclusion_list               :text
 #
 
 require 'rails_helper'
