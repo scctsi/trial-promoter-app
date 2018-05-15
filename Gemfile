@@ -7,6 +7,7 @@ gem 'addressable'
 gem 'ahoy_matey'
 gem 'annotate'
 gem 'aws-sdk', '~> 2'
+gem 'axlsx_rails'
 gem 'bitly'
 gem 'cocoon'
 gem 'delayed_job_active_record'
@@ -31,13 +32,13 @@ gem 'rack-cors', :require => 'rack/cors'
 gem 'rails', '4.2.6'
 gem 'rails-settings-cached'
 gem "roo"
-gem "roo-xls"
 gem 'sass-rails', '~> 5.0'
 gem 'semantic-ui-sass', github: 'doabit/semantic-ui-sass'
 gem 'simple_form'
 # gem 'turbolinks', '~> 5.0.0'
 gem 'twitter'
 gem 'uglifier', '>= 1.3.0'
+gem 'zip-zip'
 gem 'zuck', '3.5.1', github: 'scctsi/zuck'
 
 group :development, :test do
