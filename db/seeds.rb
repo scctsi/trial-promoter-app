@@ -14,7 +14,7 @@ comments = Comment.select{ |comment| comment.message.platform == :twitter || com
 comments.each{ |comment| comment.destroy }
 
 CSV.parse(Net::HTTP.get(URI.parse('https://s3-us-west-1.amazonaws.com/scctsi-tp-production/1-tcors/comments/instagram_comments.csv'))) do |row|
-  comment = Comment.new(message_id: row[0], comment_date: row[2], comment_text: row[3], commentator_username: row[4])
+  comment = Comment.new(message_id: row[0], comment_date: row[2], comment_text: row[1], commentator_username: row[3])
   if !(row[0].nil?)
     comment.save
     message = Message.find(row[0]).comments << comment
