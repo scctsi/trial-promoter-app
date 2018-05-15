@@ -80,6 +80,13 @@ GEM
     aws-sdk-resources (2.9.15)
       aws-sdk-core (= 2.9.15)
     aws-sigv4 (1.0.0)
+    axlsx (1.3.6)
+      htmlentities (~> 4.3.1)
+      nokogiri (>= 1.4.1)
+      rubyzip (>= 0.9.5)
+    axlsx_rails (0.1.5)
+      axlsx
+      rails (>= 3.1)
     bcrypt (3.1.11)
     better_errors (2.1.1)
       coderay (>= 1.0.0)
@@ -189,6 +196,7 @@ GEM
       haml (>= 4.0, < 6)
       nokogiri (>= 1.6.0)
       ruby_parser (~> 3.5)
+    htmlentities (4.3.4)
     http (2.2.2)
       addressable (~> 2.3)
       http-cookie (~> 1.0)
@@ -335,10 +343,6 @@ GEM
     roo (2.7.1)
       nokogiri (~> 1)
       rubyzip (~> 1.1, < 2.0.0)
-    roo-xls (1.0.0)
-      nokogiri
-      roo (>= 2.0.0beta1, < 3)
-      spreadsheet (> 0.9.0)
     rspec (3.6.0)
       rspec-core (~> 3.6.0)
       rspec-expectations (~> 3.6.0)
@@ -360,7 +364,6 @@ GEM
       rspec-mocks (~> 3.6.0)
       rspec-support (~> 3.6.0)
     rspec-support (3.6.0)
-    ruby-ole (1.2.12.1)
     ruby_dep (1.5.0)
     ruby_parser (3.9.0)
       sexp_processor (~> 4.1)
@@ -395,8 +398,6 @@ GEM
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.0)
     slop (3.6.0)
-    spreadsheet (1.1.4)
-      ruby-ole (>= 1.0)
     spring (2.0.1)
       activesupport (>= 4.2)
     spring-commands-rspec (1.0.4)
@@ -444,6 +445,8 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff
+    zip-zip (0.3)
+      rubyzip (>= 1.0.0)
 
 PLATFORMS
   ruby
@@ -454,6 +457,7 @@ DEPENDENCIES
   ahoy_matey
   annotate
   aws-sdk (~> 2)
+  axlsx_rails
   better_errors
   binding_of_caller
   bitly
@@ -487,7 +491,6 @@ DEPENDENCIES
   rails-settings-cached
   rails_12factor
   roo
-  roo-xls
   rspec-rails (~> 3.5)
   sass-rails (~> 5.0)
   semantic-ui-sass!
@@ -501,10 +504,11 @@ DEPENDENCIES
   vcr
   web-console (~> 2.0)
   webmock
+  zip-zip
   zuck (= 3.5.1)!
 
 RUBY VERSION
    ruby 2.3.3p222
 
 BUNDLED WITH
-   1.15.4
+   1.16.1
