@@ -17,7 +17,8 @@ CSV.parse(Net::HTTP.get(URI.parse('https://s3-us-west-1.amazonaws.com/scctsi-tp-
   comment = Comment.new(message_id: row[0], comment_date: row[2], comment_text: row[1], commentator_username: row[3])
   if !(row[0].nil?)
     comment.save
-    message = Message.find(row[0]).comments << comment
+    message = Message.find(row[0])
+    message.comments << comment
     message.save
   end
 end
@@ -28,7 +29,8 @@ for index in (2..message_ids.last_row)
   comment = Comment.new(message_id: message_ids.cell(index, 1), comment_date: message_ids.cell(index, 3), comment_text: message_ids.cell(index, 2), commentator_username: message_ids.cell(index, 4))
   if !(comment.message_id.nil?)
     comment.save
-    message = Message.find(message_id).comments << comment
+    message = Message.find(message_id)
+    message.comments << comment
     message.save
   end
 end
