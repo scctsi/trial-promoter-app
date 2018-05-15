@@ -31,7 +31,7 @@ gem 'pusher'
 gem 'rack-cors', :require => 'rack/cors'
 gem 'rails', '4.2.6'
 gem 'rails-settings-cached'
-# gem "roo"
+gem "roo"
 gem 'sass-rails', '~> 5.0'
 gem 'semantic-ui-sass', github: 'doabit/semantic-ui-sass'
 gem 'simple_form'
