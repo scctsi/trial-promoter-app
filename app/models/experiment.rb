@@ -114,4 +114,8 @@ class Experiment < ActiveRecord::Base
   def end_date
     message_distribution_start_date + message_generation_parameter_set.length_of_experiment_in_days(MessageTemplate.belonging_to(self).count).days
   end
+  
+  def configure_settings
+    Settings
+  end
 end

@@ -157,4 +157,20 @@ RSpec.describe Experiment, type: :model do
     
     expect(experiment.timeline.events).to eq(Timeline.build_default_timeline(experiment).events)
   end
+    
+  describe "(development only tests)", :development_only_tests => true do
+    it 'returns the config settings for the correct environment' do
+      Rails.env = "production"
+      Settings.reload_from_files(
+        Rails.root.join("config", "settings.yml").to_s,
+        Rails.root.join("config", "settings", "#{Rails.env}.yml").to_s,
+        Rails.root.join("config", "environments", "#{Rails.env}.yml").to_s
+      )
+      secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
+      experiment = build(:experiment)
+      allow(experiment).to receive(:configure_settings).and_return(secrets['google_auth_json_file'])
+  
+      expect(experiment.configure_settings).to eq(Settings.google_auth_json_file)
+    end
+  end
 end
