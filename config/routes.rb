@@ -52,7 +52,6 @@ Rails.application.routes.draw do
 
   # App settings
   namespace :admin do
-    resources :settings
   end
 
   # Images
