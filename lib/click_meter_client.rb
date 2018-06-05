@@ -20,7 +20,7 @@ class ClickMeterClient
   end
 
   def self.get_tracking_link(tracking_link_id)
-    response = get("http://apiv2.clickmeter.com:80/datapoints/#{tracking_link_id}", :headers => { 'Content-Type' => 'application/json; charset=UTF-8', 'X-Clickmeter-Authkey' => Setting[:click_meter_api_key]} )
+    response = get("http://apiv2.clickmeter.com:80/datapoints/#{tracking_link_id}", :headers => { 'Content-Type' => 'application/json; charset=UTF-8', 'X-Clickmeter-Authkey' => @experiment.settings(:click_meter).api_key} )
     # Non-existant tracking link?
     return nil if response.parsed_response['httpErrorCode'] && response.parsed_response['httpErrorCode'] == 404
     # Deleted link?
@@ -66,7 +66,7 @@ class ClickMeterClient
 
   def self.get_groups
     # Click Meter API key not set?
-    return [] if Setting[:click_meter_api_key].blank?
+    return []
     groups = []
 
     response = get("http://apiv2.clickmeter.com:80/groups", :headers => { 'Content-Type' => 'application/json; charset=UTF-8', 'X-Clickmeter-Authkey' => Setting[:click_meter_api_key]} )
@@ -83,7 +83,7 @@ class ClickMeterClient
 
   def self.get_domains
     # Click Meter API key not set?
-    return [] if Setting[:click_meter_api_key].blank?
+    return [] 
     domains = []
 
     # Get both system and dedicated domains

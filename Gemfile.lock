@@ -227,6 +227,8 @@ GEM
       json (>= 1.8)
     lazyload-rails (0.3.1)
       nokogiri (~> 1.5)
+    ledermann-rails-settings (2.4.3)
+      activerecord (>= 3.1)
     listen (3.1.5)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
@@ -306,8 +308,6 @@ GEM
       rails-deprecated_sanitizer (>= 1.0.1)
     rails-html-sanitizer (1.0.3)
       loofah (~> 2.0)
-    rails-settings-cached (0.6.5)
-      rails (>= 4.2.0)
     rails_12factor (0.0.3)
       rails_serve_static_assets
       rails_stdout_logging
@@ -473,13 +473,13 @@ DEPENDENCIES
   kaminari
   koala
   lazyload-rails
+  ledermann-rails-settings
   pg
   puma
   pundit
   pusher
   rack-cors
   rails (= 4.2.6)
-  rails-settings-cached
   rails_12factor
   roo
   rspec-rails (~> 3.5)
