@@ -21,6 +21,7 @@ gem 'haml-rails', '~> 0.9'
 gem 'httparty'
 gem 'jquery-rails'
 gem 'kaminari'
+gem 'koala'
 gem 'lazyload-rails'
 gem 'pg'
 gem 'puma'
@@ -30,12 +31,14 @@ gem 'rack-cors', :require => 'rack/cors'
 gem 'rails', '4.2.6'
 gem 'rails-settings-cached'
 gem "roo"
-gem "roo-xls"
 gem 'sass-rails', '~> 5.0'
 gem 'semantic-ui-sass', github: 'doabit/semantic-ui-sass'
 gem 'simple_form'
 # gem 'turbolinks', '~> 5.0.0'
+gem 'twitter'
 gem 'uglifier', '>= 1.3.0'
+gem 'zip-zip'
+gem 'zuck', '3.5.1', github: 'scctsi/zuck'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

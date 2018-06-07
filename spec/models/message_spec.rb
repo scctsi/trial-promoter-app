@@ -33,6 +33,7 @@
 #  note                         :text
 #
 
+
 require 'rails_helper'
 
 describe Message do
@@ -43,6 +44,7 @@ describe Message do
   it { is_expected.to have_many :metrics }
   it { is_expected.to have_many :comments }
   it { is_expected.to have_many :image_replacements }
+  it { is_expected.to have_many :comments }
   it { is_expected.to belong_to(:message_generating) }
   it { is_expected.to enumerize(:platform).in(:twitter, :facebook, :instagram) }
   it { is_expected.to enumerize(:medium).in(:ad, :organic).with_default(:organic) }
@@ -535,6 +537,24 @@ describe Message do
     expect(message.scheduled_date_time).to eq(DateTime.new(2017, 5, 27, 0, 0, 0))
   end
   
+  it 'finds a message by the text that was published to the social media platform' do
+    messages = create_list(:message, 3)
+    messages[0].buffer_update = create(:buffer_update, published_text: "Hydrogen cyanide is found in rat poison. It’s also in #cigarette smoke. http://bit.ly/2t2KVBd")
+    messages[1].buffer_update = create(:buffer_update, published_text: "#Smoking can shorten your life by over 12%. If you smoke, you may be cuttin’ your time with the fam short. http://bit.ly/2uvKzrc")
+    messages[2].buffer_update = create(:buffer_update, published_text: "#Tobacco use causes ~20% of all US deaths-more than AIDS, alcohol, car accidents, homicides & illegal drugs combined http://bit.ly/2sDLTYh")
+    published_post = "Hydrogen cyanide is found in rat poison. It’s also in #cigarette smoke. http://bit.ly/2t2KVBd"
+
+    expect(Message.find_by_published_text(published_post)).to eq(messages[0])
+  end
+   
+  it 'raises an exception if a duplicate message text is found' do
+    messages = create_list(:message, 3)
+    messages.each{|message| message.buffer_update = create(:buffer_update, published_text: "Hydrogen cyanide is found in rat poison. It’s also in #cigarette smoke. http://bit.ly/2t2KVBd") }
+    published_post = "Hydrogen cyanide is found in rat poison. It’s also in #cigarette smoke. http://bit.ly/2t2KVBd"
+    
+    expect { Message.find_by_published_text(published_post) }.to raise_error(ActiveRecord::RecordNotUnique)
+  end
+  
   private
   def expect_backdated(message, message_scheduled_date_time)
     message.reload
@@ -552,4 +572,5 @@ describe Message do
     expect(message.backdated).to be nil
     expect(message.original_scheduled_date_time).to be nil
   end
+  
 end

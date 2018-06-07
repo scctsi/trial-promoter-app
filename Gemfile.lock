@@ -5,6 +5,16 @@ GIT
     semantic-ui-sass (2.2.10.1)
       sass (>= 3.2)
 
+GIT
+  remote: git://github.com/scctsi/zuck.git
+  revision: c1df99e3b49f861dd216a1f19e52f943e0d38169
+  specs:
+    zuck (3.5.1)
+      activesupport
+      bundler
+      koala
+      rvm
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -82,6 +92,7 @@ GEM
       multi_json (~> 1.3)
       oauth2 (>= 0.5.0, < 2.0)
     browser (2.3.0)
+    buftok (0.2.0)
     builder (3.2.3)
     byebug (9.0.6)
     cocoon (1.2.9)
@@ -114,6 +125,7 @@ GEM
       http (~> 2.0)
     enumerize (2.1.1)
       activesupport (>= 3.2)
+    equalizer (0.0.11)
     errbase (0.0.3)
     erubis (2.7.0)
     execjs (2.7.0)
@@ -209,6 +221,10 @@ GEM
       activerecord
       kaminari-core (= 1.0.1)
     kaminari-core (1.0.1)
+    koala (3.0.0)
+      addressable
+      faraday
+      json (>= 1.8)
     lazyload-rails (0.3.1)
       nokogiri (~> 1.5)
     listen (3.1.5)
@@ -225,6 +241,8 @@ GEM
     mail (2.6.5)
       mime-types (>= 1.16, < 4)
     memoist (0.15.0)
+    memoizable (0.4.2)
+      thread_safe (~> 0.3, >= 0.3.1)
     method_source (0.8.2)
     mime-types (3.1)
       mime-types-data (~> 3.2015)
@@ -234,6 +252,7 @@ GEM
     multi_json (1.12.1)
     multi_xml (0.6.0)
     multipart-post (2.0.0)
+    naught (1.1.0)
     nenv (0.3.0)
     nokogiri (1.7.1)
       mini_portile2 (~> 2.1.0)
@@ -316,10 +335,6 @@ GEM
     roo (2.7.1)
       nokogiri (~> 1)
       rubyzip (~> 1.1, < 2.0.0)
-    roo-xls (1.0.0)
-      nokogiri
-      roo (>= 2.0.0beta1, < 3)
-      spreadsheet (> 0.9.0)
     rspec (3.6.0)
       rspec-core (~> 3.6.0)
       rspec-expectations (~> 3.6.0)
@@ -341,11 +356,11 @@ GEM
       rspec-mocks (~> 3.6.0)
       rspec-support (~> 3.6.0)
     rspec-support (3.6.0)
-    ruby-ole (1.2.12.1)
     ruby_dep (1.5.0)
     ruby_parser (3.9.0)
       sexp_processor (~> 4.1)
     rubyzip (1.2.1)
+    rvm (1.11.3.9)
     safe_yaml (1.0.4)
     safely_block (0.2.0)
       errbase
@@ -368,14 +383,13 @@ GEM
     simple_form (3.4.0)
       actionpack (> 4, < 5.1)
       activemodel (> 4, < 5.1)
+    simple_oauth (0.3.1)
     simplecov (0.13.0)
       docile (~> 1.1.0)
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.0)
     slop (3.6.0)
-    spreadsheet (1.1.4)
-      ruby-ole (>= 1.0)
     spring (2.0.1)
       activesupport (>= 4.2)
     spring-commands-rspec (1.0.4)
@@ -391,6 +405,16 @@ GEM
     thor (0.19.4)
     thread_safe (0.3.6)
     tilt (2.0.7)
+    twitter (6.1.0)
+      addressable (~> 2.5)
+      buftok (~> 0.2.0)
+      equalizer (= 0.0.11)
+      faraday (~> 0.11.0)
+      http (~> 2.1)
+      http_parser.rb (~> 0.6.0)
+      memoizable (~> 0.4.2)
+      naught (~> 1.1)
+      simple_oauth (~> 0.3.1)
     tzinfo (1.2.3)
       thread_safe (~> 0.1)
     uber (0.1.0)
@@ -413,6 +437,8 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff
+    zip-zip (0.3)
+      rubyzip (>= 1.0.0)
 
 PLATFORMS
   ruby
@@ -445,6 +471,7 @@ DEPENDENCIES
   httparty
   jquery-rails
   kaminari
+  koala
   lazyload-rails
   pg
   puma
@@ -455,7 +482,6 @@ DEPENDENCIES
   rails-settings-cached
   rails_12factor
   roo
-  roo-xls
   rspec-rails (~> 3.5)
   sass-rails (~> 5.0)
   semantic-ui-sass!
@@ -464,13 +490,16 @@ DEPENDENCIES
   simplecov
   spring
   spring-commands-rspec
+  twitter
   uglifier (>= 1.3.0)
   vcr
   web-console (~> 2.0)
   webmock
+  zip-zip
+  zuck (= 3.5.1)!
 
 RUBY VERSION
    ruby 2.3.3p222
 
 BUNDLED WITH
-   1.14.6
+   1.16.1

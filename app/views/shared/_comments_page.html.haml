@@ -1,0 +1,44 @@
+.ui.header
+  .content
+    = paginate comments, :remote => true
+  .ui.right.floated.segment.object-count
+    %h3.ui.header
+      = page_entries_info comments
+%table.ui.celled.striped.table
+  %thead
+    %tr
+      %th.center.aligned Platform
+      %th.center.aligned Message
+      %th.center.aligned Message date
+      %th.center.aligned Comment text
+      %th.center.aligned Comment date
+      %th.center.aligned Codes
+      %th.center.aligned Toxicity score
+  %tbody
+    - comments.each do |comment|
+      %tr
+        %td.center.aligned
+          = comment.message.social_media_profile.platform_icon_and_name('big')
+        %td
+          = comment.message.content
+        %td
+          - if comment.message.buffer_update 
+            - if comment.message.buffer_update.sent_from_date_time
+              = comment.message.buffer_update.sent_from_date_time.strftime("%m/%d/%Y")
+            - else
+              N/A
+          - else
+            = comment.message.scheduled_date_time.strftime("%m/%d/%Y")
+        %td
+          = comment.comment_text
+        %td
+          - if comment.comment_date
+            = comment.comment_date.strftime("%m/%d/%Y")
+          - else
+            N/A
+        %td
+          - if current_user.role != :read_only
+            = render partial: 'shared/forms/input_comment_codes.html.haml', locals: { experiment: @experiment, comment: comment }
+        %td
+          - if current_user.role != :read_only
+            = comment.toxicity_score
