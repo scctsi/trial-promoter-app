@@ -1,23 +1,7 @@
-[![Code Climate](https://codeclimate.com/repos/5845b92d5aa4776c11000a26/badges/95808bfbcdb3701e47cc/gpa.svg)](https://codeclimate.com/repos/5845b92d5aa4776c11000a26/feed)
-[![Test Coverage](https://codeclimate.com/repos/5845b92d5aa4776c11000a26/badges/95808bfbcdb3701e47cc/coverage.svg)](https://codeclimate.com/repos/5845b92d5aa4776c11000a26/coverage)
+This repository contains the code used for the following experiment described in [Link to publication will be added as soon as it is available]. The code in this repository was deployed to Heroku and used by the research team over the course of 85 days to support the production, distribution, and assessment of hundreds of health promotion messages across Facebook, Instagram and Twitter with the highest degree of functional correctness and minimal human interaction.
+ 
+The software code supports six functions used in the experiment: (1) data import; (2) message generation deploying randomization techniques to reduce selection bias; (3) message distribution across social media; (4) import of message comments and their toxicity score; (5) collection and display of message performance data; and (6) output reporting based on a predetermined data dictionary.
+ 
+The tool was setup with parameterized message templates based upon two anti-tobacco public health campaigns, extracted images from these campaigns as well as a free stock photo platform, and topic-related hashtags from Twitter.
 
-# UTM parameters
-* http://blog.rafflecopter.com/2014/04/utm-parameters-best-practices
-* http://blog.rafflecopter.com/2014/04/utm-naming-conventions
-* https://www.ometria.com/blog/the-definitive-guide-to-utm-tagging-in-ecommerce
-* http://www.terminusapp.com/blog/7-faqs-about-utm-parameters/
-* http://www.bytefive.com/blogs/understanding-utm_source-utm_medium-and-utm_campaign
-* https://blog.kissmetrics.com/how-to-use-utm-parameters/
-
-# Hashtags
-
-# Google ad guidelines (AdWords)
-* http://www.boostmedia.com/blog/ad-text-tips/adcenter-google-ad-text-guidelines-ad-text-limits-ad-text-lengths-editorial-guidelines/
-
-### Steps for Installation
-
-##### For Non-Technical Users: [Install Trial Promoter on a Heroku Server](https://github.com/scctsi/trial-promoter-app/wiki/Deploy to Heroku for non technical users)
-
-##### For Technical Users: Detailed [Installation Instructions](https://github.com/scctsi/trial-promoter-app/wiki/Installation on Ubuntu for technical users) for hosting Trial Promoter on servers other than Heroku
-
-##### [View the code] (https://github.com/scctsi/trial-promoter-app/tree/experiment) used in the experiment described in paper “Trial Promoter: a Web-based Tool for Boosting the Promotion of Clinical Research Through Social Media”
+If you'd like to view the latest version of the Trial Promoter code with bug fixes and feature enhancements, please switch to the master branch.
