@@ -2,9 +2,10 @@ require 'rails_helper'
 
 RSpec.describe FacebookCommentsAggregator do
   before do
+    experiment = build(:experiment)
     secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
-    allow(Setting).to receive(:[]).with(:facebook_access_token).and_return(secrets['facebook_access_token'])
-    @facebook_comments_aggregator = FacebookCommentsAggregator.new
+    experiment.set_api_key('facebook', secrets['facebook_access_token'])
+    @facebook_comments_aggregator = FacebookCommentsAggregator.new(experiment)
 
     VCR.use_cassette 'facebook_comments_aggregator/test_setup' do
       pages = @facebook_comments_aggregator.get_user_object

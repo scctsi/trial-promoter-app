@@ -37,7 +37,7 @@ class Experiment < ActiveRecord::Base
 
   accepts_nested_attributes_for :message_generation_parameter_set, update_only: true
   
-  has_settings :aws, :bitly, :buffer, :click_meter, :dropbox, :facebook, :google, :perspective, :twitter
+  has_settings :aws, :bitly, :buffer, :click_meter, :dropbox, :facebook, :google, :google_perspective, :twitter
 
   def set_aws_key(key, secret)
     self.settings(:aws).access_key = key
@@ -77,6 +77,11 @@ class Experiment < ActiveRecord::Base
   
   def to_param
     "#{id}-#{name.parameterize}"
+  end
+  
+  def self.find_by_param(param)
+    id = param[0...param.rindex('-')]
+    Experiment.find(id)
   end
 
   def disable_message_generation?

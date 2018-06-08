@@ -231,4 +231,13 @@ RSpec.describe Experiment, type: :model do
     
     expect(experiment.settings(:google).auth_json_file).to eq(auth_json_file)
   end
+  
+  it 'finds a message by the param' do
+    create(:experiment, name: 'experiment')
+
+    experiment = Experiment.find_by_param(Experiment.first.to_param)
+
+    expect(experiment).to eq(Experiment.first)
+  end
+
 end

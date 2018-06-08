@@ -1,8 +1,8 @@
 require 'aws-sdk'
 
 class S3Client
-  def initialize
-    credentials = Aws::Credentials.new(Setting[:aws_access_key_id], Setting[:aws_secret_access_key])
+  def initialize(experiment)
+    credentials = Aws::Credentials.new(experiment.settings(:aws).access_key, experiment.settings(:aws).secret_access_key)
 
     Aws.config.update({
       region: 'us-west-1',

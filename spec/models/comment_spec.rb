@@ -20,6 +20,9 @@ describe Comment do
   it { is_expected.to belong_to :message }
 
   before do
+    @experiment = build(:experiment)
+    secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
+    @experiment.set_api_key('google_perspective', secrets['google_perspective_api_key'])
     @messages = create_list(:message, 6, :platform => :facebook, :publish_status => :published_to_social_network)
     @messages.each{|message| message.buffer_update = create(:buffer_update)}
     @messages[0].buffer_update.published_text = "#Tobacco use causes 1300 US deaths daily-more than AIDS, alcohol, car accidents, homicides & illegal drugs combined http://bit.ly/2pyWcHR"
@@ -60,7 +63,7 @@ describe Comment do
     comment = create(:comment)
     
     allow(PerspectiveClient).to receive(:calculate_toxicity_score).and_return("0.78")
-    comment.save_toxicity_score
+    comment.save_toxicity_score(@experiment)
 
     comment.reload
     expect(comment.toxicity_score).to eq("0.78")
@@ -70,8 +73,8 @@ describe Comment do
     allow(PerspectiveClient).to receive(:calculate_toxicity_score).and_return("0.78")
     comment = create(:comment)
     
-    comment.save_toxicity_score
-    comment.save_toxicity_score
+    comment.save_toxicity_score(@experiment)
+    comment.save_toxicity_score(@experiment)
     
     expect(PerspectiveClient).to have_received(:calculate_toxicity_score).once
   end
