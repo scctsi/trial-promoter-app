@@ -143,7 +143,7 @@ RSpec.describe MessageFactory do
     end
     
     # Was a Click Meter tracking link created for each message?
-    expect(ClickMeterClient).to have_received(:create_click_meter_tracking_link).exactly(expected_generated_message_count).times.with(an_instance_of(Message), @experiment.click_meter_group_id, @experiment.click_meter_domain_id)
+    expect(ClickMeterClient).to have_received(:create_click_meter_tracking_link).exactly(expected_generated_message_count).times.with(@experiment, an_instance_of(Message), @experiment.click_meter_group_id, @experiment.click_meter_domain_id)
     messages.each do |message|
       expect(message.click_meter_tracking_link).not_to be_nil
       # These next 4 lines are really only useful to ensure that on development machines we are getting back fake ClickMeter links.

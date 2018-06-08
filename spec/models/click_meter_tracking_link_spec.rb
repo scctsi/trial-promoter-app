@@ -12,13 +12,18 @@
 #  updated_at      :datetime         not null
 #
 
+require 'rails_helper'
+
 RSpec.describe ClickMeterTrackingLink, type: :model do
   it { is_expected.to belong_to(:message) }
   it { is_expected.to validate_presence_of(:message) }
   it { is_expected.to have_many(:clicks) }
 
   before do
-    @click_meter_tracking_link = create(:click_meter_tracking_link, :click_meter_id => '101')
+    @experiment = build(:experiment)
+    secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
+    @experiment.set_api_key('click_meter', secrets['click_meter_api_key'])
+    @click_meter_tracking_link = build(:click_meter_tracking_link, :click_meter_id => '101')
   end
 
   it 'triggers a callback when destroyed' do
@@ -35,7 +40,7 @@ RSpec.describe ClickMeterTrackingLink, type: :model do
 
     @click_meter_tracking_link.delete_click_meter_tracking_link
 
-    expect(ClickMeterClient).to have_received(:delete_tracking_link).with('101')
+    expect(ClickMeterClient).to have_received(:delete_tracking_link).with(@click_meter_tracking_link.message.message_generating, '101')
   end
 
   it 'asks Click Meter to delete the corresponding tracking link during the before destroy callback (on development environment)' do
@@ -44,7 +49,7 @@ RSpec.describe ClickMeterTrackingLink, type: :model do
 
     @click_meter_tracking_link.delete_click_meter_tracking_link
 
-    expect(ClickMeterClient).to have_received(:delete_tracking_link).with('101')
+    expect(ClickMeterClient).to have_received(:delete_tracking_link).with(@click_meter_tracking_link.message.message_generating, '101')
   end
 
   it 'ignores asking Click Meter to delete the corresponding tracking link during the before destroy callback (on test environment)' do
@@ -53,7 +58,7 @@ RSpec.describe ClickMeterTrackingLink, type: :model do
 
     @click_meter_tracking_link.delete_click_meter_tracking_link
 
-    expect(ClickMeterClient).not_to have_received(:delete_tracking_link).with('101')
+    expect(ClickMeterClient).not_to have_received(:delete_tracking_link).with(@experiment, '101')
   end
 
   it 'throttles requests to delete Click Meter tracking links' do

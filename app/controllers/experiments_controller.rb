@@ -103,8 +103,8 @@ class ExperimentsController < ApplicationController
   end
 
   def set_click_meter_groups_and_domains
-    @click_meter_groups = ClickMeterClient.get_groups
-    @click_meter_domains = ClickMeterClient.get_domains
+    @click_meter_groups = ClickMeterClient.get_groups(@experiment)
+    @click_meter_domains = ClickMeterClient.get_domains(@experiment)
   end
 
   def experiment_params

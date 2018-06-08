@@ -25,9 +25,10 @@ RSpec.describe DailyMetricParser do
 
   describe "(development only tests)", :development_only_tests => true do
     before do
+      @experiment = build(:experiment)
       secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
-      allow(Setting).to receive(:[]).with(:dropbox_access_token).and_return(secrets['dropbox_access_token'])
-      @dropbox_client = DropboxClient.new
+      @experiment.set_api_key('dropbox', secrets['dropbox_access_token'])
+      @dropbox_client = DropboxClient.new(@experiment)
     end
     
     it 'converts a hierarchical list of folders and files to a processable list by converting folder names to dates and removing files it should ignore' do
@@ -49,7 +50,7 @@ RSpec.describe DailyMetricParser do
       parsed_metrics = {}
       
       VCR.use_cassette 'daily_metric_parser/parse_metric_from_csv_file' do
-        parsed_metrics = @daily_metric_parser.parse_metric_from_file('/tcors/analytics_files/04-19-2017/tweet_activity_metrics_BeFreeOfTobacco_20170419_20170421_en.csv', 0, 4)
+        parsed_metrics = @daily_metric_parser.parse_metric_from_file(@experiment, '/tcors/analytics_files/04-19-2017/tweet_activity_metrics_BeFreeOfTobacco_20170419_20170421_en.csv', 0, 4)
       end
   
       expect(parsed_metrics.length).to eq(3)
@@ -63,7 +64,7 @@ RSpec.describe DailyMetricParser do
       parsed_metrics = {}
       
       VCR.use_cassette 'daily_metric_parser/parse_metric_from_excel_file' do
-        parsed_metrics = @daily_metric_parser.parse_metric_from_file('/tcors/analytics_files/04-19-2017/2017-04-19-to-2017-04-19-6tpc94axlwcg.xlsx', 6, 8)
+        parsed_metrics = @daily_metric_parser.parse_metric_from_file(@experiment, '/tcors/analytics_files/04-19-2017/2017-04-19-to-2017-04-19-6tpc94axlwcg.xlsx', 6, 8)
       end
   
       expect(parsed_metrics.length).to eq(3)
