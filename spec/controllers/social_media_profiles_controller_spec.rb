@@ -7,8 +7,8 @@ RSpec.describe SocialMediaProfilesController, type: :controller do
     @experiment = build(:experiment)
     @experiment.set_api_key('buffer', secrets["buffer_access_token"])
   end
-
-  describe "GET #sync_with_buffer" do
+  
+  describe "GET #sync_with_buffer (development only tests)", :development_only_tests => true do 
     before do
       allow(BufferClient).to receive(:get_social_media_profiles)
       get :sync_with_buffer, experiment: @experiment
