@@ -41,7 +41,7 @@ class MessageFactory
                 message.image_id = random_image_id
                 message.save
                 message.reload
-                ClickMeterClient.create_click_meter_tracking_link(message, experiment.click_meter_group_id, experiment.click_meter_domain_id)
+                ClickMeterClient.create_click_meter_tracking_link(experiment, message, experiment.click_meter_group_id, experiment.click_meter_domain_id)
                 message.save
                 throttle(9)
                 Pusher['progress'].trigger('progress', {:value => message_index / 2, :total => parameters[:total_count], :event => 'Message generated'})
@@ -57,7 +57,7 @@ class MessageFactory
     
     # Update {url} variables in all the messages
     generated_messages.each do |message|
-      ClickMeterClient.update_tracking_link(message.click_meter_tracking_link)
+      ClickMeterClient.update_tracking_link(experiment, message.click_meter_tracking_link)
       throttle(9)
       parameters[:message_constructor].replace_url_variable(message, message.click_meter_tracking_link.tracking_url)
       message.save

@@ -2,13 +2,13 @@ class BufferClient
   include HTTParty
 
   # This class is a facade to the Buffer API
-  def self.post_request_body_for_create(message)
+  def self.post_request_body_for_create(experiment, message)
     # REF: https://buffer.com/developers/api/updates#updatescreate
     request_body = {
       :profile_ids => message.social_media_profile.buffer_id,
       :text => message.content,
       :shorten => true,
-      :access_token => Setting[:buffer_access_token]
+      :access_token => experiment.settings(:buffer).api_key
     }
 
     request_body[:media] = {"thumbnail" => message.image.url, "photo" => message.image.url} if message.image_present == :with
@@ -17,8 +17,8 @@ class BufferClient
     request_body
   end
 
-  def self.get_social_media_profiles
-    response = get("https://api.bufferapp.com/1/profiles.json?access_token=#{Setting[:buffer_access_token]}")
+  def self.get_social_media_profiles(experiment)
+    response = get("https://api.bufferapp.com/1/profiles.json?access_token=#{experiment.settings(:buffer).api_key}")
     response.parsed_response.each do |social_media_profile|
       if SocialMediaProfile.find_by(buffer_id: social_media_profile["_id"]).nil?
         SocialMediaProfile.create!(buffer_id: social_media_profile["_id"],
@@ -30,8 +30,8 @@ class BufferClient
     end
   end
 
-  def self.get_update(message)
-    response = get("https://api.bufferapp.com/1/updates/#{message.buffer_update.buffer_id}.json?access_token=#{Setting[:buffer_access_token]}")
+  def self.get_update(experiment, message)
+    response = get("https://api.bufferapp.com/1/updates/#{message.buffer_update.buffer_id}.json?access_token=#{experiment.settings(:buffer).api_key}")
     if response.parsed_response["status"] == 'sent'
       message.buffer_update.status = :sent
       sent_time = Time.at(response.parsed_response["sent_at"])
@@ -47,8 +47,8 @@ class BufferClient
     end
   end
 
-  def self.create_update(message)
-    response = post('https://api.bufferapp.com/1/updates/create.json', {:body => BufferClient.post_request_body_for_create(message)})
+  def self.create_update(experiment, message)
+    response = post('https://api.bufferapp.com/1/updates/create.json', {:body => BufferClient.post_request_body_for_create(experiment, message)})
 
     # Handle failures
     if response.parsed_response['success'] == false

@@ -17,9 +17,9 @@ class CsvFileReader
     parsed_csv_content
   end
   
-  def self.read_from_dropbox(dropbox_file_path, options = {})
+  def self.read_from_dropbox(experiment, dropbox_file_path, options = {})
     # TODO: Unit test the :skip_first_row functionality for Dropbox
-    dropbox_client = DropboxClient.new
+    dropbox_client = DropboxClient.new(experiment)
     
     parsed_csv_content = []
     file, body = dropbox_client.get_file(dropbox_file_path)

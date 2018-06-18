@@ -47,9 +47,9 @@ class Comment < ActiveRecord::Base
     end
   end
   
-  def save_toxicity_score
+  def save_toxicity_score(experiment)
     return if !toxicity_score.nil?
-    self.toxicity_score = PerspectiveClient.calculate_toxicity_score(comment_text)
+    self.toxicity_score = PerspectiveClient.calculate_toxicity_score(experiment, comment_text)
     
     save
   end

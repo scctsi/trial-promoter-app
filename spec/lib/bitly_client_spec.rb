@@ -3,9 +3,10 @@ require 'yaml'
 
 RSpec.describe BitlyClient do
   before do
+    experiment = build(:experiment)
     secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
-    allow(Setting).to receive(:[]).with(:bitly_access_token).and_return(secrets['bitly_access_token'])
-    @bitly_client = BitlyClient.new
+    experiment.set_api_key('bitly', secrets["bitly_access_token"])
+    @bitly_client = BitlyClient.new(experiment)
   end
 
   describe "(development only tests)", :development_only_tests => true do

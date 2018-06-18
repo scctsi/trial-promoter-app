@@ -23,7 +23,10 @@
           = comment.message.content
         %td
           - if comment.message.buffer_update 
-            = comment.message.buffer_update.sent_from_date_time.strftime("%m/%d/%Y")
+            - if comment.message.buffer_update.sent_from_date_time
+              = comment.message.buffer_update.sent_from_date_time.strftime("%m/%d/%Y")
+            - else
+              N/A
           - else
             = comment.message.scheduled_date_time.strftime("%m/%d/%Y")
         %td
