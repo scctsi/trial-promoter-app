@@ -26,7 +26,7 @@
           -elsif message.click_rate == 0.0 |
             = "0 %"
           -else
-            = number_with_precision(message.click_rate, precision: 3, significant: true)
+            = number_with_precision(message.click_rate / 100, precision: 3, significant: true)
           \% click rate
         %br
           (

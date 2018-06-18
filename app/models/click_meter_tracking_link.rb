@@ -22,7 +22,7 @@ class ClickMeterTrackingLink < ActiveRecord::Base
 
   def delete_click_meter_tracking_link
     if !Rails.env.test?
-      ClickMeterClient.delete_tracking_link(click_meter_id)
+      ClickMeterClient.delete_tracking_link(message.message_generating, click_meter_id)
       Kernel.sleep(0.1)
     end
   end

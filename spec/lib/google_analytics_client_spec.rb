@@ -2,13 +2,14 @@ require 'rails_helper'
 
 RSpec.describe GoogleAnalyticsClient do
   before do
+    @experiment = build(:experiment)
     secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
-    allow(Setting).to receive(:[]).with(:google_auth_json_file).and_return(secrets['google_auth_json_file'])
+    @experiment.set_google_api_key(secrets['google_auth_json_file'])
   end
 
   describe "(development only tests)", :development_only_tests => true do
     it 'can be initialized given a profiles ID (Analytics view ID)' do
-      google_analytics_client = GoogleAnalyticsClient.new('100')
+      google_analytics_client = GoogleAnalyticsClient.new(@experiment, '100')
 
       expect(google_analytics_client.profile_id).to eq('100')
       expect(google_analytics_client.table_id).to eq('ga:100')
@@ -26,7 +27,7 @@ RSpec.describe GoogleAnalyticsClient do
     end
 
     it 'calls the correct method on the service object given a start and end date (using the default metrics and dimensions)' do
-      google_analytics_client = GoogleAnalyticsClient.new('92952002')
+      google_analytics_client = GoogleAnalyticsClient.new(@experiment, '92952002')
       allow(google_analytics_client.service).to receive(:get_ga_data)
 
       google_analytics_client.get_data('2016-01-01', '2016-01-02')
@@ -35,7 +36,7 @@ RSpec.describe GoogleAnalyticsClient do
     end
 
     it 'calls the correct method on the service object given a start date, end date, metric and dimension list' do
-      google_analytics_client = GoogleAnalyticsClient.new('92952002')
+      google_analytics_client = GoogleAnalyticsClient.new(@experiment, '92952002')
       allow(google_analytics_client.service).to receive(:get_ga_data)
 
       google_analytics_client.get_data('2016-01-01', '2016-01-02', %w(ga:sessions ga:users), %w(ga:campaign,ga:sourceMedium))
@@ -43,7 +44,7 @@ RSpec.describe GoogleAnalyticsClient do
     end
 
     it 'gets data from Google Analytics' do
-      google_analytics_client = GoogleAnalyticsClient.new('92952002')
+      google_analytics_client = GoogleAnalyticsClient.new(@experiment, '92952002')
       ga_data = nil
       metric_list = %w(ga:sessions ga:users)
       dimension_list = %w(ga:campaign ga:sourceMedium)
