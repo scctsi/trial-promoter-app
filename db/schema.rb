@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180601215825) do
+ActiveRecord::Schema.define(version: 20180611203717) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -180,6 +180,14 @@ ActiveRecord::Schema.define(version: 20180601215825) do
   end
 
   add_index "experiments_social_media_profiles", ["experiment_id", "social_media_profile_id"], name: "index_experiments_social_media_profiles", unique: true, using: :btree
+
+  create_table "experiments_users", id: false, force: :cascade do |t|
+    t.integer "experiment_id"
+    t.integer "user_id"
+  end
+
+  add_index "experiments_users", ["experiment_id"], name: "index_experiments_users_on_experiment_id", using: :btree
+  add_index "experiments_users", ["user_id"], name: "index_experiments_users_on_user_id", using: :btree
 
   create_table "hashtags", force: :cascade do |t|
     t.string   "phrase"

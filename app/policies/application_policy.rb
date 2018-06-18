@@ -8,29 +8,27 @@ class ApplicationPolicy
   end
 
   def index?
-    ['administrator', 'read_only'].include? user.role
+    false
   end
 
   def show?
-    if ['administrator', 'statistician', 'read_only'].include? user.role
-      scope.where(:id => record.id).exists?
-    end
+    false
   end
 
   def create?
-    user.role.administrator?
+    false
   end
 
   def new?
-    create?
+    false
   end
 
   def update?
-    user.role.administrator?
+    false
   end
 
   def edit?
-    update?
+    false
   end
 
   def scope
