@@ -14,7 +14,8 @@ class SocialMediaProfilesController < ApplicationController
     redirect_to social_media_profiles_url
   end
 
-  def sync_with_buffer(experiment = params[:experiment])
+  def sync_with_buffer
+    experiment = Experiment.find(params[:experiment])
     authorize SocialMediaProfile
     BufferClient.get_social_media_profiles(experiment)
     redirect_to social_media_profiles_url
