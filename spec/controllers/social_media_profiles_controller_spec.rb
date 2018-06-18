@@ -4,7 +4,7 @@ RSpec.describe SocialMediaProfilesController, type: :controller do
   before do
     sign_in create(:administrator)
     secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
-    @experiment = build(:experiment)
+    @experiment = create(:experiment)
     @experiment.set_api_key('buffer', secrets["buffer_access_token"])
   end
   
@@ -12,11 +12,11 @@ RSpec.describe SocialMediaProfilesController, type: :controller do
     describe "GET #sync_with_buffer" do
       before do
         allow(BufferClient).to receive(:get_social_media_profiles)
-        get :sync_with_buffer, experiment: @experiment
+        get :sync_with_buffer, experiment: @experiment.id
       end
   
       it 'calls the Buffer library to sync up the social media profiles' do
-        expect(BufferClient).to have_received(:get_social_media_profiles)
+        expect(BufferClient).to have_received(:get_social_media_profiles).with(@experiment)
       end
   
       it 'redirects to the social media profiles index page' do
