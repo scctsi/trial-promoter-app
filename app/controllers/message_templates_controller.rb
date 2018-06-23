@@ -3,7 +3,7 @@ class MessageTemplatesController < ApplicationController
 
   def index
     authorize MessageTemplate
-    @message_templates = MessageTemplate.all
+    @message_templates = policy_scope(MessageTemplate)
   end
 
   def get_image_selections

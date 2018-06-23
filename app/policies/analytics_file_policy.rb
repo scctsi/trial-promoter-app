@@ -1,4 +1,12 @@
 class AnalyticsFilePolicy < ApplicationPolicy
+  class Scope < Scope
+    def resolve
+      if user.role.administrator?
+        scope.all
+      end
+    end
+  end
+  
   def update?
     user.role.administrator?
   end

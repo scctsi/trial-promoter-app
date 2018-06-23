@@ -150,6 +150,13 @@ RSpec.describe MessageTemplate do
     expect(message_templates_for_first_experiment.count).to eq(1)
     expect(message_templates_for_first_experiment[0].experiment_list).to eq([experiments[0].to_param])
   end
+  
+  it 'finds an experiment based on a message template tag' do
+    experiment = create(:experiment)
+    message_template = build(:message_template, experiment_list: experiment.to_param)
+    
+    expect(message_template.experiment).to eq(experiment)
+  end
 
   describe 'storing hashtags' do
     before do

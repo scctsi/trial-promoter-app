@@ -1,6 +1,16 @@
 class ExperimentPolicy < ApplicationPolicy
+  class Scope < Scope
+    def resolve
+      if user.role.administrator?
+        scope.all
+      else
+        User.find(user.id).experiments
+      end
+    end
+  end
+  
   def index?
-    user.role.administrator? || record.users.include?(user)
+    true
   end
 
   def new?
@@ -20,7 +30,7 @@ class ExperimentPolicy < ApplicationPolicy
   end
 
   def edit?
-    update?
+    user.role.administrator?
   end
   
   def send_to_buffer?

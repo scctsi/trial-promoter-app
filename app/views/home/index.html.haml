@@ -7,12 +7,13 @@ Before you begin using Trial Promoter
     It looks like you have not yet entered your Buffer access token. To fix this:
   %ul.list
     %li Setup a <a href='www.buffer.com' target='_blank'>Buffer</a> account.
-.ui.container
-  .ui.two.column.middle.aligned.grid
-    .column
-      %a.ui.fluid.huge.teal.labeled.icon.button.start-experiment-button{:href => new_experiment_path}
-        %i.line.chart.icon
-        Start a new experiment
+- if current_user.role.administrator?    
+  .ui.container
+    .ui.two.column.middle.aligned.grid
+      .column
+        %a.ui.fluid.huge.teal.labeled.icon.button.start-experiment-button{:href => new_experiment_path}
+          %i.line.chart.icon
+          Start a new experiment
 - if @experiments.count > 0
   %h3.ui.header
     Ongoing experiments

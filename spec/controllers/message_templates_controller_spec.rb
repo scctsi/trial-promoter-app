@@ -6,11 +6,10 @@ RSpec.describe MessageTemplatesController, type: :controller do
     end
 
    describe 'GET #index' do
-    let(:message_templates) { build_pair(:message_template) }
-
+    let(:message_templates) { create_list(:message_template, 2) }
 
     before do
-      allow(MessageTemplate).to receive(:all).and_return(message_templates)
+      allow(MessageTemplate).to receive(:scope).and_return(message_templates)
       get :index
     end
 

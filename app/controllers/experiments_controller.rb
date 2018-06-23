@@ -6,7 +6,7 @@ class ExperimentsController < ApplicationController
 
   def index
     authorize Experiment
-    @experiments = Experiment.all
+    @experiments = policy_scope(Experiment)
   end
 
   def parameterized_slug
