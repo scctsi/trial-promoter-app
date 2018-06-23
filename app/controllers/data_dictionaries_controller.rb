@@ -3,6 +3,7 @@ class DataDictionariesController < ApplicationController
   layout "workspace", only: [:show, :edit]
 
   def show
+    authorize @data_dictionary
   end
 
   def edit

@@ -3,8 +3,8 @@ require 'rails_helper'
 RSpec.describe ExperimentPolicy, type: :policy do
   context "for a user not assigned to an experiment" do
     before(:each) do
-      @experiment = build(:experiment) 
-      @user = build(:user)
+      @experiment = create(:experiment) 
+      @user = create(:user)
     end
     subject { ExperimentPolicy.new(@user, @experiment) }
 
@@ -20,12 +20,18 @@ RSpec.describe ExperimentPolicy, type: :policy do
     it { should_not be_permitted_to(:calculate_message_count) }
     it { should_not be_permitted_to(:messages_page) }
     it { should_not be_permitted_to(:comments_page) }
+    
+    it 'returns experiments for this scope' do
+      experiments = ExperimentPolicy::Scope.new(@user, Experiment).resolve
+  
+      expect(experiments.count).to eq(0)
+    end
   end
 
   context "for a administrator" do
     before(:each) do
-      @experiment = build(:experiment) 
-      @user = build(:administrator)
+      @experiment = create(:experiment) 
+      @user = create(:administrator)
     end
     subject { ExperimentPolicy.new(@user, @experiment) }
 
@@ -41,15 +47,23 @@ RSpec.describe ExperimentPolicy, type: :policy do
     it { should be_permitted_to(:calculate_message_count) }
     it { should be_permitted_to(:messages_page) }
     it { should be_permitted_to(:comments_page) }
+        
+    it 'returns experiments for this scope' do
+      experiments = ExperimentPolicy::Scope.new(@user, Experiment).resolve
+  
+      expect(experiments.count).to eq(1)
+      expect(experiments[0]).to eq(@experiment)
     end
+  end
 
   context "for a user assigned to the experiment" do
     before(:each) do
-      @experiment = build(:experiment) 
-      @user = build(:user)
-      @experiment.users << @user
+      @experiments = create_pair(:experiment) 
+      @user = create(:user)
+      @experiments[0].users << @user
+      @experiments[0].save
     end
-    subject { ExperimentPolicy.new(@user, @experiment) }
+    subject { ExperimentPolicy.new(@user, @experiments[0]) }
 
     it { should be_permitted_to(:index) }
     it { should_not be_permitted_to(:new) }
@@ -63,5 +77,13 @@ RSpec.describe ExperimentPolicy, type: :policy do
     it { should_not be_permitted_to(:calculate_message_count) }
     it { should be_permitted_to(:messages_page) }
     it { should be_permitted_to(:comments_page) }
+        
+    # context 'current user is associated with experiments' do
+    it 'returns experiments for this scope' do
+      experiments = ExperimentPolicy::Scope.new(@user, Experiment).resolve
+  
+      expect(experiments.count).to eq(1)
+      expect(experiments[0]).to eq(@experiments[0])
+    end
   end
 end

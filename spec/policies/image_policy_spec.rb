@@ -22,22 +22,4 @@ RSpec.describe ImagePolicy, type: :policy do
     it { should be_permitted_to(:check_validity_for_instagram_ads) }
     it { should be_permitted_to(:edit_codes) }
   end
-
-  context "for a statistician" do
-    let(:user) { create(:statistician) }
-
-    it { should_not be_permitted_to(:add) }
-    it { should_not be_permitted_to(:import) }
-    it { should_not be_permitted_to(:check_validity_for_instagram_ads) }
-    it { should_not be_permitted_to(:edit_codes) }
-  end
-
-  context "for a read_only" do
-    let(:user) { create(:read_only) }
-
-    it { should_not be_permitted_to(:add) }
-    it { should_not be_permitted_to(:import) }
-    it { should_not be_permitted_to(:check_validity_for_instagram_ads) }
-    it { should_not be_permitted_to(:edit_codes) }
-  end
 end

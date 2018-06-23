@@ -3,7 +3,7 @@ class SocialMediaProfilesController < ApplicationController
 
   def index
     authorize SocialMediaProfile
-    @social_media_profiles = SocialMediaProfile.all
+    @social_media_profiles = policy_scope(SocialMediaProfile)
   end
 
   def edit
