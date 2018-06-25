@@ -111,7 +111,6 @@ ActiveRecord::Schema.define(version: 20180611203717) do
     t.integer  "message_id"
     t.string   "social_media_comment_id"
     t.string   "commentator_id"
-    t.string   "parent_tweet_id"
   end
 
   create_table "daily_metric_parser_results", force: :cascade do |t|
@@ -169,8 +168,8 @@ ActiveRecord::Schema.define(version: 20180611203717) do
     t.text     "instagram_posting_times"
     t.integer  "click_meter_group_id"
     t.integer  "click_meter_domain_id"
-    t.text     "comment_codes"
     t.text     "image_codes"
+    t.text     "comment_codes"
     t.text     "ip_exclusion_list"
   end
 
@@ -225,7 +224,6 @@ ActiveRecord::Schema.define(version: 20180611203717) do
     t.text     "medium_choices"
     t.text     "image_present_choices"
     t.integer  "number_of_cycles"
-    t.integer  "message_run_duration_in_days"
   end
 
   add_index "message_generation_parameter_sets", ["message_generating_type", "message_generating_id"], name: "index_on_message_generating_type_and_message_generating_id", using: :btree
@@ -262,16 +260,15 @@ ActiveRecord::Schema.define(version: 20180611203717) do
     t.integer  "social_media_profile_id"
     t.string   "platform"
     t.string   "promoted_website_url",         limit: 2000
-    t.string   "campaign_id"
     t.boolean  "backdated"
     t.datetime "original_scheduled_date_time"
+    t.string   "campaign_id"
     t.float    "click_rate"
     t.float    "website_goal_rate"
     t.integer  "website_goal_count"
     t.integer  "website_session_count"
     t.text     "impressions_by_day"
     t.text     "note"
-    t.boolean  "ad_published"
   end
 
   add_index "messages", ["message_generating_type", "message_generating_id"], name: "index_on_message_generating_for_analytics_files", using: :btree
