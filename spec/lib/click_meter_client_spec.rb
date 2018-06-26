@@ -4,7 +4,8 @@ require 'yaml'
 RSpec.describe ClickMeterClient do
   before do
     secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
-    allow(Setting).to receive(:[]).with(:click_meter_api_key).and_return(secrets['click_meter_api_key'])
+    @experiment = build(:experiment)
+    @experiment.set_api_key('click_meter', secrets["click_meter_api_key"])
     allow(ClickMeterClient).to receive(:post).and_call_original
   end
 
@@ -23,7 +24,7 @@ RSpec.describe ClickMeterClient do
       click_meter_tracking_link = nil
 
       VCR.use_cassette 'click_meter/get_tracking_link' do
-        click_meter_tracking_link = ClickMeterClient.get_tracking_link('9948001')
+        click_meter_tracking_link = ClickMeterClient.get_tracking_link(@experiment, '9948001')
       end
 
       expect(click_meter_tracking_link.click_meter_id).to eq('9948001')
@@ -38,7 +39,7 @@ RSpec.describe ClickMeterClient do
       allow(ClickMeterClient).to receive(:get_tracking_link).and_return(click_meter_tracking_link)
       click_meter_tracking_link = create(:click_meter_tracking_link)
 
-      ClickMeterClient.update_tracking_link(click_meter_tracking_link)
+      ClickMeterClient.update_tracking_link(@experiment, click_meter_tracking_link)
 
       click_meter_tracking_link.reload
       expect(click_meter_tracking_link.tracking_url).to eq('http://9nl.es/name-unique-to-sc-ctsi')
@@ -49,7 +50,7 @@ RSpec.describe ClickMeterClient do
       click_meter_tracking_link = nil
 
       VCR.use_cassette 'click_meter/get_non_existent_tracking_link' do
-        click_meter_tracking_link = ClickMeterClient.get_tracking_link('non-existent')
+        click_meter_tracking_link = ClickMeterClient.get_tracking_link(@experiment, 'non-existent')
       end
 
       expect(click_meter_tracking_link).to be nil
@@ -59,7 +60,7 @@ RSpec.describe ClickMeterClient do
       click_meter_tracking_link = nil
 
       VCR.use_cassette 'click_meter/get_deleted_tracking_link' do
-        click_meter_tracking_link = ClickMeterClient.get_tracking_link('11067935')
+        click_meter_tracking_link = ClickMeterClient.get_tracking_link(@experiment, '11067935')
       end
 
       expect(click_meter_tracking_link).to be nil
@@ -68,32 +69,32 @@ RSpec.describe ClickMeterClient do
     it 'uses the Click Meter API to create a tracking link' do
       click_meter_tracking_link = nil
       VCR.use_cassette 'click_meter/get_tracking_link' do
-        click_meter_tracking_link = ClickMeterClient.get_tracking_link('9948001')
+        click_meter_tracking_link = ClickMeterClient.get_tracking_link(@experiment, '9948001')
       end
       allow(ClickMeterClient).to receive(:get_tracking_link).and_return(click_meter_tracking_link)
       tracking_link = nil
 
       VCR.use_cassette 'click_meter/create_tracking_link' do
-        tracking_link = ClickMeterClient.create_tracking_link(571973, 1501, 'http://www.sc-ctsi.org', 'SC CTSI', 'name-unique-to-sc-ctsi')
+        tracking_link = ClickMeterClient.create_tracking_link(@experiment, 571973, 1501, 'http://www.sc-ctsi.org', 'SC CTSI', 'name-unique-to-sc-ctsi')
       end
 
-      expect(ClickMeterClient).to have_received(:post).with('http://apiv2.clickmeter.com:80/datapoints', :body => ClickMeterClient.post_request_body_for_create_tracking_link(571973, 1501, 'http://www.sc-ctsi.org', 'SC CTSI', 'name-unique-to-sc-ctsi').to_json, :headers => { 'Content-Type' => 'application/json; charset=UTF-8', 'X-Clickmeter-Authkey' => Setting[:click_meter_api_key] })
+      expect(ClickMeterClient).to have_received(:post).with('http://apiv2.clickmeter.com:80/datapoints', :body => ClickMeterClient.post_request_body_for_create_tracking_link(571973, 1501, 'http://www.sc-ctsi.org', 'SC CTSI', 'name-unique-to-sc-ctsi').to_json, :headers => { 'Content-Type' => 'application/json; charset=UTF-8', 'X-Clickmeter-Authkey' => @experiment.settings(:click_meter).api_key })
       expect(tracking_link.click_meter_id).to eq('9948001')
       expect(tracking_link.click_meter_uri).to eq('/datapoints/9948001')
     end
 
     it 'raises an exception when creating a tracking link with a name that already exists on that domain' do
       VCR.use_cassette 'click_meter/create_tracking_link_with_existing_name' do
-        expect { ClickMeterClient.create_tracking_link(571973, 1501, 'http://www.sc-ctsi.org', 'SC CTSI', 'abc') }.to raise_error(ClickMeterTrackingLinkNameExistsError, 'Click Meter already has a URL named abc on domain ID 1501')
+        expect { ClickMeterClient.create_tracking_link(@experiment, 571973, 1501, 'http://www.sc-ctsi.org', 'SC CTSI', 'abc') }.to raise_error(ClickMeterTrackingLinkNameExistsError, 'Click Meter already has a URL named abc on domain ID 1501')
       end
     end
 
     it 'deletes a Click Meter tracking link using the Click Meter API' do
       VCR.use_cassette 'click_meter/delete_tracking_link' do
-        tracking_link = ClickMeterClient.create_tracking_link(571973, 1501, 'http://www.sc-ctsi.org', 'SC CTSI', 'name-unique-to-sc-ctsi-to-be-deleted-3')
+        tracking_link = ClickMeterClient.create_tracking_link(@experiment, 571973, 1501, 'http://www.sc-ctsi.org', 'SC CTSI', 'name-unique-to-sc-ctsi-to-be-deleted-3')
         tracking_link_id = tracking_link.click_meter_id
-        ClickMeterClient.delete_tracking_link(tracking_link_id)
-        click_meter_tracking_link = ClickMeterClient.get_tracking_link(tracking_link_id)
+        ClickMeterClient.delete_tracking_link(@experiment, tracking_link_id)
+        click_meter_tracking_link = ClickMeterClient.get_tracking_link(@experiment, tracking_link_id)
         expect(click_meter_tracking_link).to be nil
       end
     end
@@ -175,7 +176,7 @@ RSpec.describe ClickMeterClient do
       click_meter_tracking_link = create(:click_meter_tracking_link, click_meter_id: '12691042')
       VCR.use_cassette 'click_meter/get_clicks' do
 
-        clicks = ClickMeterClient.get_clicks(click_meter_tracking_link)
+        clicks = ClickMeterClient.get_clicks(@experiment, click_meter_tracking_link)
 
         expect(clicks.count).to eq(15)
         expect(clicks[0].click_meter_event_id).to eq('012691042@20170426212421792704001')
@@ -199,8 +200,8 @@ RSpec.describe ClickMeterClient do
       click_meter_tracking_link = create(:click_meter_tracking_link, click_meter_id: '12691042')
       VCR.use_cassette 'click_meter/get_clicks_once' do
 
-        ClickMeterClient.get_clicks(click_meter_tracking_link)
-        ClickMeterClient.get_clicks(click_meter_tracking_link)
+        ClickMeterClient.get_clicks(@experiment, click_meter_tracking_link)
+        ClickMeterClient.get_clicks(@experiment, click_meter_tracking_link)
 
         click_meter_tracking_link.reload
         expect(click_meter_tracking_link.clicks.count).to eq(15)
