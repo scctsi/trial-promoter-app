@@ -9,7 +9,7 @@ RSpec.describe ClickMeterClient do
     allow(ClickMeterClient).to receive(:post).and_call_original
   end
 
-  describe "(development only tests)" do
+  describe "(development only tests)", :development_only_tests => true do
     it 'returns the body of the POST request for creating a tracking link via the Click Meter API' do
       post_request_body = ClickMeterClient.post_request_body_for_create_tracking_link(571973, 1501, 'http://www.sc-ctsi.org', '1-tcors-message-1', BijectiveFunction.encode(1))
 
