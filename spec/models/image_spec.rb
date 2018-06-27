@@ -142,4 +142,12 @@ RSpec.describe Image do
 
     expect(image.experiment_list[0]).to eq(experiment.to_param)
   end
+  
+  it "returns the tagged experiment" do
+    experiment = create(:experiment, name: 'TCORS 2')
+    image = build(:image)
+    image.experiment_list.add(experiment.to_param)
+
+    expect(image.experiment).to eq(experiment)
+  end
 end
