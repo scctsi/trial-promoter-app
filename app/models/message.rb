@@ -236,4 +236,8 @@ class Message < ActiveRecord::Base
 
     return messages.first
   end
+  
+  def experiment
+    Experiment.find_by_param(self.experiment_list[0])
+  end
 end

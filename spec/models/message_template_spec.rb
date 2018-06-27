@@ -308,7 +308,5 @@ RSpec.describe MessageTemplate do
       
       expect(message_template.promoted_website_url).to eq('http://url.com/#anchor')
     end
-
   end
-  
 end
