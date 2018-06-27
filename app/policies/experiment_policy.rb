@@ -10,7 +10,7 @@ class ExperimentPolicy < ApplicationPolicy
   end
   
   def index?
-    user.role.administrator? || record.users.include?(user)
+    user.role.administrator? || User.find(user.id).experiments.include?(record)
   end
 
   def new?

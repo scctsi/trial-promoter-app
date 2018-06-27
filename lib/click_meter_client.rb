@@ -64,8 +64,10 @@ class ClickMeterClient
   end
 
   def self.get_groups(experiment)
+    return nil if !experiment.try(:users) || !experiment.settings(:click_meter).api_key
+    
     groups = []
-
+    
     response = get("http://apiv2.clickmeter.com:80/groups", :headers => { 'Content-Type' => 'application/json; charset=UTF-8', 'X-Clickmeter-Authkey' => experiment.settings(:click_meter).api_key } )
 
     response.parsed_response["entities"].each do |group|
@@ -79,6 +81,8 @@ class ClickMeterClient
   end
 
   def self.get_domains(experiment)
+    return nil if !experiment.try(:users) || !experiment.settings(:click_meter).api_key
+    
     domains = []
 
     # Get both system and dedicated domains
