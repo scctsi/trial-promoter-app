@@ -8,7 +8,7 @@ RSpec.describe ExperimentPolicy, type: :policy do
     end
     subject { ExperimentPolicy.new(@user, @experiment) }
 
-    it { should_not be_permitted_to(:index) }
+    it { should be_permitted_to(:index) }
     it { should_not be_permitted_to(:show) }
     it { should_not be_permitted_to(:new) }
     it { should_not be_permitted_to(:create) }
