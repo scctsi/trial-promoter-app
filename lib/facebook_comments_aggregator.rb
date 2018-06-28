@@ -1,8 +1,6 @@
 class FacebookCommentsAggregator
-  def initialize
-    secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
-    Setting[:facebook_access_token] = secrets['facebook_access_token']
-    @graph = Koala::Facebook::API.new(Setting[:facebook_access_token])
+  def initialize(experiment)
+    @graph = Koala::Facebook::API.new(experiment.settings(:facebook).api_key)
   end
 
   def get_user_object

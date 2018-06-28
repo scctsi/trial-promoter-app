@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171108005622) do
+ActiveRecord::Schema.define(version: 20180601215825) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -111,6 +111,7 @@ ActiveRecord::Schema.define(version: 20171108005622) do
     t.integer  "message_id"
     t.string   "social_media_comment_id"
     t.string   "commentator_id"
+    t.string   "parent_tweet_id"
   end
 
   create_table "daily_metric_parser_results", force: :cascade do |t|
@@ -168,8 +169,8 @@ ActiveRecord::Schema.define(version: 20171108005622) do
     t.text     "instagram_posting_times"
     t.integer  "click_meter_group_id"
     t.integer  "click_meter_domain_id"
-    t.text     "comment_codes"
     t.text     "image_codes"
+    t.text     "comment_codes"
     t.text     "ip_exclusion_list"
   end
 
@@ -252,9 +253,9 @@ ActiveRecord::Schema.define(version: 20171108005622) do
     t.integer  "social_media_profile_id"
     t.string   "platform"
     t.string   "promoted_website_url",         limit: 2000
-    t.string   "campaign_id"
     t.boolean  "backdated"
     t.datetime "original_scheduled_date_time"
+    t.string   "campaign_id"
     t.float    "click_rate"
     t.float    "website_goal_rate"
     t.integer  "website_goal_count"
@@ -284,15 +285,15 @@ ActiveRecord::Schema.define(version: 20171108005622) do
   end
 
   create_table "settings", force: :cascade do |t|
-    t.string   "var",                   null: false
+    t.string   "var",         null: false
     t.text     "value"
-    t.integer  "thing_id"
-    t.string   "thing_type", limit: 30
+    t.integer  "target_id",   null: false
+    t.string   "target_type", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "settings", ["thing_type", "thing_id", "var"], name: "index_settings_on_thing_type_and_thing_id_and_var", unique: true, using: :btree
+  add_index "settings", ["target_type", "target_id", "var"], name: "index_settings_on_target_type_and_target_id_and_var", unique: true, using: :btree
 
   create_table "social_media_profiles", force: :cascade do |t|
     t.string   "platform"

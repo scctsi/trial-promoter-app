@@ -19,6 +19,8 @@ RSpec.describe ImageImporter do
     s3_client_double = double('s3_client').as_null_object
     allow(S3Client).to receive(:new).and_return(s3_client_double)
     create_list(:image, 2, experiment_list: [@experiment.to_param])
+    # TODO: This is not going to work in production so the S3 URLs will be deleted in a separate step
+    allow(Experiment).to receive(:find_by_param).and_return(@experiment)
 
     @image_importer.pre_import
 

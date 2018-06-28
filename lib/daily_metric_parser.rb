@@ -21,18 +21,18 @@ class DailyMetricParser
     processable_list
   end
   
-  def parse_metric_from_file(dropbox_file_path, identifier_column_index, metric_value_column_index)
+  def parse_metric_from_file(experiment, dropbox_file_path, identifier_column_index, metric_value_column_index)
     parsed_metrics = {}
     
     # TODO: Unit test this next block
     if dropbox_file_path.ends_with?('.xlsx')
-      parsed_file_contents = ExcelFileReader.read_from_dropbox(dropbox_file_path)
+      parsed_file_contents = ExcelFileReader.read_from_dropbox(experiment, dropbox_file_path)
     else
       # TODO: Unit test this next block
       if dropbox_file_path.downcase.index('insights').nil?
-        parsed_file_contents = CsvFileReader.read_from_dropbox(dropbox_file_path)
+        parsed_file_contents = CsvFileReader.read_from_dropbox(experiment, dropbox_file_path)
       else
-        parsed_file_contents = CsvFileReader.read_from_dropbox(dropbox_file_path, {:skip_first_row => true})
+        parsed_file_contents = CsvFileReader.read_from_dropbox(experiment, dropbox_file_path, {:skip_first_row => true})
       end
     end
     

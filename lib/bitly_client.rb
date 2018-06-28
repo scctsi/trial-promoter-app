@@ -1,9 +1,9 @@
 class BitlyClient
-  def initialize
+  def initialize(experiment)
     Bitly.use_api_version_3
 
     Bitly.configure do |config|
-      config.access_token = Setting[:bitly_access_token]
+      config.access_token = experiment.settings(:bitly).api_key
     end
   end
 

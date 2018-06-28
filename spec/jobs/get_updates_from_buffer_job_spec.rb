@@ -38,10 +38,10 @@ RSpec.describe GetUpdatesFromBufferJob, type: :job do
 
   it 'executes perform and gets update for only Buffer updates that are currently pending' do
     (8..9).each do |index|
-      expect(BufferClient).to receive(:get_update).with(@messages[index])
+      expect(BufferClient).to receive(:get_update).with(@experiment, @messages[index])
     end
 
-    perform_enqueued_jobs { GetUpdatesFromBufferJob.perform_later }
+    perform_enqueued_jobs { GetUpdatesFromBufferJob.perform_later(@experiment) }
   end
 
   it 'throttles the job to 1 request per second (based on Buffer rate limits)' do
@@ -49,7 +49,7 @@ RSpec.describe GetUpdatesFromBufferJob, type: :job do
       expect(Throttler).to receive(:throttle).with(1)
     end
 
-    perform_enqueued_jobs { GetUpdatesFromBufferJob.perform_later }
+    perform_enqueued_jobs { GetUpdatesFromBufferJob.perform_later(@experiment) }
   end
 
   after do
