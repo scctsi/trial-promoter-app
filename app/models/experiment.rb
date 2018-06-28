@@ -61,9 +61,9 @@ class Experiment < ActiveRecord::Base
     save
   end
   
-  def set_twitter_keys(key, secret, access_token, access_token_secret)
-    self.settings(:twitter).consumer_key = key
-    self.settings(:twitter).consumer_secret = secret
+  def set_twitter_keys(consumer_key, consumer_secret, access_token, access_token_secret)
+    self.settings(:twitter).consumer_key = consumer_key
+    self.settings(:twitter).consumer_secret = consumer_secret
     self.settings(:twitter).access_token = access_token
     self.settings(:twitter).access_token_secret = access_token_secret
     
@@ -71,7 +71,7 @@ class Experiment < ActiveRecord::Base
   end
   
   def set_api_key(service_name, key)
-    self.settings(service_name.to_sym).api_key = key
+    self.settings(service_name).api_key = key
     
     save
   end

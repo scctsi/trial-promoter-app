@@ -5,7 +5,7 @@ RSpec.describe PerspectiveClient do
   before do
     @experiment = build(:experiment)
     secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
-    @experiment.set_api_key('google_perspective', secrets['google_perspective_api_key'])
+    @experiment.set_api_key(:google_perspective, secrets['google_perspective_api_key'])
     @text = "This message is stupid."
   end
 
