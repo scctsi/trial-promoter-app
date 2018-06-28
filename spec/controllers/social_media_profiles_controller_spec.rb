@@ -5,7 +5,7 @@ RSpec.describe SocialMediaProfilesController, type: :controller do
     sign_in create(:administrator)
     secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
     @experiment = create(:experiment)
-    @experiment.set_api_key('buffer', secrets["buffer_access_token"])
+    @experiment.set_api_key(:buffer, secrets["buffer_access_token"])
   end
   
   describe "Social Media Profiles Controller methods (development only tests)", :development_only_tests => true do 
