@@ -17,7 +17,7 @@ RSpec.describe CsvFileReader do
     before do 
       @experiment = build(:experiment)
       secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
-      @experiment.set_api_key('dropbox', secrets['dropbox_access_token'])
+      @experiment.set_api_key(:dropbox, secrets['dropbox_access_token'])
       @dropbox_client = DropboxClient.new(@experiment)
     end
 

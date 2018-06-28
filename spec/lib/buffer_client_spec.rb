@@ -5,7 +5,7 @@ RSpec.describe BufferClient do
   before do
     secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
     @experiment = build(:experiment)
-    @experiment.set_api_key('buffer', secrets["buffer_access_token"])
+    @experiment.set_api_key(:buffer, secrets["buffer_access_token"])
     allow(BufferClient).to receive(:post).and_call_original
     allow(BufferClient).to receive(:get).and_call_original
     @message = build(:message)
