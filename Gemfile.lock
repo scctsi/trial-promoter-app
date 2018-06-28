@@ -473,10 +473,7 @@ DEPENDENCIES
   kaminari
   koala
   lazyload-rails
-<<<<<<< HEAD
-=======
   ledermann-rails-settings
->>>>>>> development
   pg
   puma
   pundit

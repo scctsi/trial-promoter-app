@@ -4,7 +4,7 @@ RSpec.describe FacebookCommentsAggregator do
   before do
     experiment = build(:experiment)
     secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
-    experiment.set_api_key('facebook', secrets['facebook_access_token'])
+    experiment.set_api_key(:facebook, secrets['facebook_access_token'])
     @facebook_comments_aggregator = FacebookCommentsAggregator.new(experiment)
 
     VCR.use_cassette 'facebook_comments_aggregator/test_setup' do
