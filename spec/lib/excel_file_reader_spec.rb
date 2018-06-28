@@ -25,7 +25,7 @@ RSpec.describe ExcelFileReader do
     before do
       @experiment = build(:experiment)
       secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
-      @experiment.set_api_key('dropbox', secrets['dropbox_access_token'])
+      @experiment.set_api_key(:dropbox, secrets['dropbox_access_token'])
     end
     
     it 'successfully reads an Excel (.xlsx) file from a private Dropbox file path' do

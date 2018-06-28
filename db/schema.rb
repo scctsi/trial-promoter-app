@@ -111,6 +111,7 @@ ActiveRecord::Schema.define(version: 20180611203717) do
     t.integer  "message_id"
     t.string   "social_media_comment_id"
     t.string   "commentator_id"
+    t.string   "parent_tweet_id"
   end
 
   create_table "daily_metric_parser_results", force: :cascade do |t|

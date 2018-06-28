@@ -23,7 +23,7 @@ RSpec.describe ClickMeterTrackingLink, type: :model do
     before do
       @experiment = build(:experiment)
       secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
-      @experiment.set_api_key('click_meter', secrets['click_meter_api_key'])
+      @experiment.set_api_key(:click_meter, secrets['click_meter_api_key'])
       @click_meter_tracking_link = build(:click_meter_tracking_link, :click_meter_id => '101')
     end
   

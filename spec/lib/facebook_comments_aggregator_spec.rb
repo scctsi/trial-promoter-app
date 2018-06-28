@@ -4,7 +4,7 @@ RSpec.describe FacebookCommentsAggregator do
   before do
     experiment = build(:experiment)
     secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
-    experiment.set_api_key('facebook', secrets['facebook_access_token'])
+    experiment.set_api_key(:facebook, secrets['facebook_access_token'])
     @facebook_comments_aggregator = FacebookCommentsAggregator.new(experiment)
 
     VCR.use_cassette 'facebook_comments_aggregator/test_setup' do
@@ -20,7 +20,6 @@ RSpec.describe FacebookCommentsAggregator do
       expect(@page["name"]).to eq("B Free of Tobacco")
     end
     
-
     it 'gets all comments for a page and matching them to the correct message via published text' do
       messages = []
       messages << create(:message, buffer_update: create(:buffer_update, published_text: "Hydrogen cyanide is found in rat poison. It’s also in #cigarette smoke. http://bit.ly/2t2KVBd"))
@@ -46,7 +45,7 @@ RSpec.describe FacebookCommentsAggregator do
       VCR.use_cassette 'facebook_comments_aggregator/get_post_comments' do
         posts = @facebook_comments_aggregator.get_paginated_posts(@page["id"])
         @facebook_comments_aggregator.get_post_comments(posts[5]["id"], posts[5]["message"])
-        
+
         expect(Comment.count).to eq(3)
       end
     end
@@ -56,7 +55,7 @@ RSpec.describe FacebookCommentsAggregator do
         posts = @facebook_comments_aggregator.get_paginated_posts(@page["id"])
         @facebook_comments_aggregator.get_post_comments(posts[5]["id"], posts[5]["message"])
         @facebook_comments_aggregator.get_post_comments(posts[5]["id"], posts[5]["message"])
-        
+
         expect(Comment.count).to eq(3)
       end
     end

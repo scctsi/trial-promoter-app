@@ -160,11 +160,12 @@ RSpec.describe Experiment, type: :model do
   end
   
   it 'sets api key settings' do
-    service_name = 'click_meter'
+    service_name = :click_meter
     key = 'fake_api_key'
     experiment = build(:experiment)
     
     experiment.set_api_key(service_name, key)
+    experiment.reload
     
     expect(experiment.settings(:click_meter).api_key).to eq(key)
   end
@@ -181,18 +182,20 @@ RSpec.describe Experiment, type: :model do
     experiment = build(:experiment)
     
     experiment.set_aws_key(key, secret_key)
+    experiment.reload
     
     expect(experiment.settings(:aws).access_key).to eq(key)
     expect(experiment.settings(:aws).secret_access_key).to eq(secret_key)
   end
   
   it 'sets api tokens and api secrets settings for Facebook' do
-    token = 'fake_api_key'    
-    ads_token = 'fake_secret_api_key'
-    app_secret = 'app_token'
+    token = 'fake_token'    
+    ads_token = 'fake_ads_token'
+    app_secret = 'fake_app_secret'
     experiment = build(:experiment)
     
     experiment.set_facebook_keys(token, ads_token, app_secret)
+    experiment.reload
     
     expect(experiment.settings(:facebook).access_token).to eq(token)
     expect(experiment.settings(:facebook).ads_access_token).to eq(ads_token)
@@ -207,6 +210,7 @@ RSpec.describe Experiment, type: :model do
     experiment = build(:experiment)
     
     experiment.set_twitter_keys(consumer_key, consumer_secret, access_token, access_token_secret)
+    experiment.reload
     
     expect(experiment.settings(:twitter).consumer_key).to eq(consumer_key)
     expect(experiment.settings(:twitter).consumer_secret).to eq(consumer_secret)
@@ -229,16 +233,16 @@ RSpec.describe Experiment, type: :model do
     experiment = build(:experiment)
     
     experiment.set_google_api_key(auth_json_file)
+    experiment.reload
     
     expect(experiment.settings(:google).auth_json_file).to eq(auth_json_file)
   end
   
-  it 'finds a message by the param' do
+  it 'finds an experiment by its param' do
     create(:experiment, name: 'experiment')
 
     experiment = Experiment.find_by_param(Experiment.first.to_param)
 
     expect(experiment).to eq(Experiment.first)
   end
-
 end
