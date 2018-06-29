@@ -1,35 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe MessageTemplatesController, type: :controller do
+  describe 'GET #import' do
     before do
       sign_in create(:administrator)
     end
-
-   describe 'GET #index' do
-    let(:message_templates) { create_list(:message_template, 2) }
-
-    before do
-      allow(MessageTemplate).to receive(:scope).and_return(message_templates)
-      get :index
-    end
-
-    it 'assigns all existing message templates to @message_templates' do
-      expect(assigns(:message_templates)).to eq(message_templates)
-    end
-
-    it { is_expected.to respond_with :ok }
-    it { is_expected.to render_template :index }
-
-    it 'redirects unauthenticated user to sign-in page' do
-      sign_out(:user)
-
-      get :index
-
-      expect(response).to redirect_to :new_user_session
-    end
-  end
-
-  describe 'GET #import' do
+    
     it 'imports message templates from an Excel file accessible at a URL' do
       experiment = create(:experiment)
       excel_url = 'https://sc-ctsi.org/trial-promoter/message_templates.xlsx'
@@ -62,6 +38,7 @@ RSpec.describe MessageTemplatesController, type: :controller do
 
   describe 'POST #get_image_selections' do
     before do
+      sign_in create(:administrator)
       @experiments = create_list(:experiment, 2)
       @images = create_list(:image, 5)
       @images[0..3].each do |image|
@@ -93,6 +70,7 @@ RSpec.describe MessageTemplatesController, type: :controller do
 
   describe 'POST #add_image_to_image_pool' do
     before do
+      sign_in create(:administrator)
       @images = create_list(:image, 5)
       @message_templates = create_list(:message_template, 3)
     end
@@ -118,6 +96,7 @@ RSpec.describe MessageTemplatesController, type: :controller do
 
   describe 'POST #remove_image_from_image_pool' do
     before do
+      sign_in create(:administrator)
       @images = create_list(:image, 5)
       @message_templates = create_list(:message_template, 3)
     end

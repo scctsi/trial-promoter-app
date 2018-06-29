@@ -1,18 +1,4 @@
 class MessageTemplatePolicy < ApplicationPolicy
-  class Scope < Scope
-    def resolve
-      if user.role.administrator?
-        scope.all
-      else
-        User.find(user.id).experiments
-      end
-    end
-  end
-  
-  def index?
-    user.role.administrator? || record.users.include?(user)
-  end
-  
   def new?
     user.role.administrator?
   end

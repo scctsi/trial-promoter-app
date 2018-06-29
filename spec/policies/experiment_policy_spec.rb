@@ -21,7 +21,7 @@ RSpec.describe ExperimentPolicy, type: :policy do
     it { should_not be_permitted_to(:messages_page) }
     it { should_not be_permitted_to(:comments_page) }
     
-    it 'returns experiments for this scope' do
+    it 'returns experiments user is authorized to see (zero)' do
       experiments = ExperimentPolicy::Scope.new(@user, Experiment).resolve
   
       expect(experiments.count).to eq(0)
@@ -30,7 +30,7 @@ RSpec.describe ExperimentPolicy, type: :policy do
 
   context "for a administrator" do
     before(:each) do
-      @experiment = create(:experiment) 
+      @experiments = create_list(:experiment, 2) 
       @user = create(:administrator)
     end
     subject { ExperimentPolicy.new(@user, @experiment) }
@@ -48,11 +48,11 @@ RSpec.describe ExperimentPolicy, type: :policy do
     it { should be_permitted_to(:messages_page) }
     it { should be_permitted_to(:comments_page) }
         
-    it 'returns experiments for this scope' do
+    it 'returns experiments that the administrator is allowed to see (all)' do
       experiments = ExperimentPolicy::Scope.new(@user, Experiment).resolve
   
-      expect(experiments.count).to eq(1)
-      expect(experiments[0]).to eq(@experiment)
+      expect(experiments.count).to eq(2)
+      expect(experiments).to match_array(@experiments)
     end
   end
 
@@ -79,7 +79,7 @@ RSpec.describe ExperimentPolicy, type: :policy do
     it { should be_permitted_to(:comments_page) }
         
     # context 'current user is associated with experiments' do
-    it 'returns experiments for this scope' do
+    it 'returns experiments that an authenticated user is allowed to see' do
       experiments = ExperimentPolicy::Scope.new(@user, Experiment).resolve
   
       expect(experiments.count).to eq(1)
