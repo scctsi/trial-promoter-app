@@ -89,7 +89,7 @@ class MessageTemplate < ActiveRecord::Base
   end
   
   def experiment
-    Experiment.find_by_param(self.experiment_list[0])
+    return Experiment.find_by_param(self.experiment_list[0])
   end
 
   def warnings

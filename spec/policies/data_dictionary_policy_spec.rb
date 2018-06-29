@@ -6,11 +6,11 @@ RSpec.describe DataDictionaryPolicy, type: :policy do
     @users = create_pair(:user)
     @experiment.users << @users[0]
     @experiment.save
-    @data_dictionary = create(:data_dictionary)
+    @data_dictionary = create(:data_dictionary, experiment: @experiment)
   end
   
   context "for a user not assigned to an experiment" do
-    subject { DataDictionaryPolicy.new(@users[1], @experiment) }
+    subject { DataDictionaryPolicy.new(@users[1], @data_dictionary) }
 
     it { should_not be_permitted_to(:show) }
     it { should_not be_permitted_to(:edit) }
@@ -18,7 +18,7 @@ RSpec.describe DataDictionaryPolicy, type: :policy do
   end
   
   context "for a user assigned to an experiment" do
-    subject { DataDictionaryPolicy.new(@users[0], @experiment) }
+    subject { DataDictionaryPolicy.new(@users[0], @data_dictionary) }
 
     it { should be_permitted_to(:show) }
     it { should be_permitted_to(:edit) }
@@ -27,7 +27,7 @@ RSpec.describe DataDictionaryPolicy, type: :policy do
 
   context "for a administrator" do
     let(:user) { create(:administrator) }
-    subject { DataDictionaryPolicy.new(user, @experiment) }
+    subject { DataDictionaryPolicy.new(user, @data_dictionary) }
 
     it { should be_permitted_to(:show) }
     it { should be_permitted_to(:edit) }
