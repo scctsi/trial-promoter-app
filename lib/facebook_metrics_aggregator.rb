@@ -1,9 +1,7 @@
 class FacebookMetricsAggregator
-  def initialize
-    secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
-    Setting[:facebook_access_token] = secrets['facebook_access_token']
+  def initialize(experiment)
     Koala.config.api_version = "v2.11"
-    @graph = Koala::Facebook::API.new(Setting[:facebook_access_token])
+    @graph = Koala::Facebook::API.new(experiment.settings(:facebook).facebook_access_token)
     # @ad_session = FacebookAds::Session.new(access_token: Setting[:facebook_access_token])
   end
 

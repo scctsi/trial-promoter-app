@@ -2,9 +2,10 @@ require 'rails_helper'
 
 RSpec.describe FacebookMetricsAggregator do
   before do
+    experiment = build(:experiment)
     secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
-    allow(Setting).to receive(:[]).with(:facebook_access_token).and_return(secrets['facebook_access_token'])
-    @facebook_metrics_aggregator = FacebookMetricsAggregator.new
+    experiment.set_api_key(:facebook, secrets['facebook_access_token'])
+    @facebook_metrics_aggregator = FacebookMetricsAggregator.new(experiment)
     @messages = create_list(:message, 3)
     @messages[0].social_network_id = "980601328736431_1061544820642081"
     @messages[1].social_network_id = "980601328736431_1009727572490473"
