@@ -4,8 +4,12 @@ require 'yaml'
 RSpec.describe ClickMeterClient do
   before do
     secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
+<<<<<<< HEAD
     @experiment = build(:experiment)
     @experiment.set_api_key(:click_meter, secrets["click_meter_api_key"])
+=======
+    @experiment.set_api_key(:click_meter, secrets['click_meter_api_key'])
+>>>>>>> 60c7d98c6af1a2b770b67c9f19ef75370829dc3b
     allow(ClickMeterClient).to receive(:post).and_call_original
   end
 

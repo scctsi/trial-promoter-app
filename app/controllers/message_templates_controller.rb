@@ -1,11 +1,6 @@
 class MessageTemplatesController < ApplicationController
   before_action :set_message_template, only: [:get_image_selections, :add_image_to_image_pool, :remove_image_from_image_pool]
 
-  def index
-    authorize MessageTemplate
-    @message_templates = policy_scope(MessageTemplate)
-  end
-
   def get_image_selections
     authorize @message_template
     image_pool_manager = ImagePoolManager.new
