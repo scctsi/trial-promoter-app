@@ -1,7 +1,8 @@
 %h2.header
   %i.line.chart.icon
   Ongoing experiments
-%a.ui.teal.labeled.icon.button{:href => new_experiment_path}
-  %i.line.chart.icon
-  Add experiment
+- if current_user.role.administrator?  
+  %a.ui.teal.labeled.icon.button{:href => new_experiment_path}
+    %i.line.chart.icon
+    Add experiment
 = render partial: 'shared/experiments', locals: {experiments: @experiments}

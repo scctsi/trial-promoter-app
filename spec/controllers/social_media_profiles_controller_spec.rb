@@ -33,10 +33,10 @@ RSpec.describe SocialMediaProfilesController, type: :controller do
     end
   
     describe 'GET #index' do
-      let(:social_media_profiles) { build_pair(:social_media_profile) }
+      let(:social_media_profiles) { create_pair(:social_media_profile) }
   
       before do
-        allow(SocialMediaProfile).to receive(:all).and_return(social_media_profiles)
+        allow(SocialMediaProfile).to receive(:scope).and_return(social_media_profiles)
         get :index
       end
   
@@ -57,8 +57,10 @@ RSpec.describe SocialMediaProfilesController, type: :controller do
     end
 
     describe 'GET #edit' do
+      
       before do
-        @social_media_profile = create(:social_media_profile)
+      @social_media_profile = create(:social_media_profile)
+        allow(SocialMediaProfile).to receive(:scope).and_return(@social_media_profile)
         get :edit, id: @social_media_profile
       end
   

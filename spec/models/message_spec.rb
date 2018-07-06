@@ -549,6 +549,14 @@ describe Message do
     
     expect { Message.find_by_published_text(published_post) }.to raise_error(ActiveRecord::RecordNotUnique)
   end
+      
+  it "returns the tagged experiment" do
+    experiment = create(:experiment, name: 'TCORS 2')
+    message = build(:message)
+    message.experiment_list.add(experiment.to_param)
+
+    expect(message.experiment).to eq(experiment)
+  end
   
   private
   def expect_backdated(message, message_scheduled_date_time)
@@ -567,5 +575,4 @@ describe Message do
     expect(message.backdated).to be nil
     expect(message.original_scheduled_date_time).to be nil
   end
-  
 end

@@ -10,6 +10,8 @@ RSpec.describe SocialMediaProfilePolicy, type: :policy do
 
     it { should_not be_permitted_to(:sync_with_buffer) }
     it { should_not be_permitted_to(:index) }
+    it { should_not be_permitted_to(:edit) }
+    it { should_not be_permitted_to(:update) }
   end
 
   context "for a administrator" do
@@ -17,19 +19,7 @@ RSpec.describe SocialMediaProfilePolicy, type: :policy do
 
     it { should be_permitted_to(:sync_with_buffer) }
     it { should be_permitted_to(:index) }
-  end
-
-  context "for a statistician" do
-    let(:user) { create(:statistician) }
-
-    it { should_not be_permitted_to(:sync_with_buffer) }
-    it { should_not be_permitted_to(:index) }
-  end
-
-  context "for a read_only" do
-    let(:user) { create(:read_only) }
-
-    it { should_not be_permitted_to(:sync_with_buffer) }
-    it { should_not be_permitted_to(:index) }
+    it { should be_permitted_to(:edit) }
+    it { should be_permitted_to(:update) }
   end
 end

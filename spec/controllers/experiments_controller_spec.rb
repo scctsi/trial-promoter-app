@@ -9,10 +9,10 @@ RSpec.describe ExperimentsController, type: :controller do
   end
 
   describe 'GET #index' do
-    let(:experiments) { build_pair(:experiment) }
-
+    let(:experiments) { create_list(:experiment, 3) }
+    
     before do
-      allow(Experiment).to receive(:all).and_return(experiments)
+      allow(Experiment).to receive(:scope).and_return(experiments)
       get :index
     end
 

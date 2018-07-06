@@ -1,15 +1,15 @@
 require 'rails_helper'
 require 'yaml'
 
-RSpec.describe ClickMeterClient, :development_only_tests => true do
+RSpec.describe ClickMeterClient do
   before do
-    @experiment = build(:experiment)
     secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
-    @experiment.set_api_key(:click_meter, secrets['click_meter_api_key'])
+    @experiment = build(:experiment)
+    @experiment.set_api_key(:click_meter, secrets["click_meter_api_key"])
     allow(ClickMeterClient).to receive(:post).and_call_original
   end
 
-  describe "(development only tests)" do
+  describe "(development only tests)", :development_only_tests => true do
     it 'returns the body of the POST request for creating a tracking link via the Click Meter API' do
       post_request_body = ClickMeterClient.post_request_body_for_create_tracking_link(571973, 1501, 'http://www.sc-ctsi.org', '1-tcors-message-1', BijectiveFunction.encode(1))
 
@@ -19,7 +19,7 @@ RSpec.describe ClickMeterClient, :development_only_tests => true do
       expect(post_request_body["name"]).to eq(BijectiveFunction.encode(1))
       expect(post_request_body["typeTL"]).to eq( { "domainId" => 1501, "redirectType" => 301, "url" => 'http://www.sc-ctsi.org' })
     end
-    
+
     it 'uses the Click Meter API to get information about a tracking link (datapoint)' do
       click_meter_tracking_link = nil
 
@@ -175,7 +175,9 @@ RSpec.describe ClickMeterClient, :development_only_tests => true do
     it 'gets all clicks given a tracking link' do
       click_meter_tracking_link = create(:click_meter_tracking_link, click_meter_id: '12691042')
       VCR.use_cassette 'click_meter/get_clicks' do
+
         clicks = ClickMeterClient.get_clicks(@experiment, click_meter_tracking_link)
+
         expect(clicks.count).to eq(15)
         expect(clicks[0].click_meter_event_id).to eq('012691042@20170426212421792704001')
         expect(clicks[0].click_time).to eq(DateTime.strptime('20170426212421 Pacific Time (US & Canada)', '%Y%m%d%H%M%S %Z'))
@@ -197,8 +199,10 @@ RSpec.describe ClickMeterClient, :development_only_tests => true do
     it 'only saves clicks once' do
       click_meter_tracking_link = create(:click_meter_tracking_link, click_meter_id: '12691042')
       VCR.use_cassette 'click_meter/get_clicks_once' do
+
         ClickMeterClient.get_clicks(@experiment, click_meter_tracking_link)
         ClickMeterClient.get_clicks(@experiment, click_meter_tracking_link)
+
         click_meter_tracking_link.reload
         expect(click_meter_tracking_link.clicks.count).to eq(15)
       end

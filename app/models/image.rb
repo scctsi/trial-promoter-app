@@ -43,9 +43,12 @@ class Image < ActiveRecord::Base
     duplicated_image.save
   end
   
+  def experiment
+    return Experiment.find_by_param(experiment_list[0])
+  end
+  
   def delete_image_from_s3
-    experiment = Experiment.find_by_param(self.experiment_list[0])
     s3 = S3Client.new(experiment)
-    s3.delete(s3.bucket(self.url), s3.key(self.url)) 
+    s3.delete(s3.bucket(url), s3.key(url)) 
   end
 end
