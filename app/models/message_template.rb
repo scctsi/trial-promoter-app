@@ -87,6 +87,10 @@ class MessageTemplate < ActiveRecord::Base
 
     self[:hashtags] = cleaned_hashtags
   end
+  
+  def experiment
+    return Experiment.find_by_param(self.experiment_list[0])
+  end
 
   def warnings
     warnings = []

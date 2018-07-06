@@ -15,7 +15,6 @@ RSpec.describe FacebookCommentsAggregator do
 
   describe "(development only tests)", :development_only_tests => true do
     it 'gets the page B Free Of Tobacco' do
-
       expect(@page).not_to be_nil
       expect(@page["name"]).to eq("B Free of Tobacco")
     end
