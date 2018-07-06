@@ -1,26 +1,45 @@
 require 'rails_helper'
 
 RSpec.describe DataDictionariesController, type: :controller do
-  before do
-    sign_in create(:administrator)
-  end
-
   describe 'GET #show' do
-    before do
-      @data_dictionary = create(:data_dictionary)
-      get :show, id: @data_dictionary
+    context 'for an administrator' do
+      before do
+        sign_in create(:administrator)
+        @data_dictionary = create(:data_dictionary)
+        get :show, id: @data_dictionary
+      end
+      
+      it 'assigns the requested data dictionary to @data_dictionary' do
+        expect(assigns(:data_dictionary)).to eq(@data_dictionary)
+      end
+      
+      it 'uses the workspace layout' do
+        expect(response).to render_template :workspace
+      end
     end
-    
-    it 'assigns the requested data dictionary to @data_dictionary' do
-      expect(assigns(:data_dictionary)).to eq(@data_dictionary)
-    end
-    
-    it 'uses the workspace layout' do
-      expect(response).to render_template :workspace
+  
+    context 'for an authorized user' do 
+      before do
+        user = create(:user)
+        sign_in user
+        @data_dictionary = create(:data_dictionary)
+        @data_dictionary.experiment.users << user 
+        get :show, id: @data_dictionary
+      end
+      
+      it 'assigns the requested data dictionary to @data_dictionary' do
+        expect(assigns(:data_dictionary)).to eq(@data_dictionary)
+      end
+      
+      it 'allows an authorized user to see the data dictionary' do
+        expect(response).to render_template :workspace
+      end
     end
     
     it 'redirects unauthenticated user to sign-in page' do
-      sign_out(:user)
+      sign_in create(:user)
+      sign_out :user
+      @data_dictionary = create(:data_dictionary)
 
       get :show, id: @data_dictionary
 
@@ -30,6 +49,7 @@ RSpec.describe DataDictionariesController, type: :controller do
   
   describe 'GET #edit' do
     before do
+      sign_in create(:administrator)
       @data_dictionary = create(:data_dictionary)
       get :edit, id: @data_dictionary
     end
@@ -57,6 +77,7 @@ RSpec.describe DataDictionariesController, type: :controller do
 
   describe 'PATCH update' do
     before do
+      sign_in create(:administrator)
       experiment = create(:experiment)
       DataDictionary.create_data_dictionary(experiment)
       
