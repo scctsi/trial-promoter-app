@@ -39,10 +39,12 @@ RSpec.describe ExperimentsController, type: :controller do
       allow(MessageTemplate).to receive(:belonging_to).with(@experiment).and_return(@message_templates)
       @images = []
       allow(Image).to receive(:belonging_to).with(@experiment).and_return(@images)
+      @eager_loaded_messages = double('eager_loaded_messages')
       @experiment_messages = double('experiment_messages')
-      @ordered_messages = []
       @paged_messages = double('paged_messages')
-      allow(Message).to receive(:where).with(:message_generating_id => @experiment.id).and_return(@experiment_messages)
+      @ordered_messages = []
+      allow(Message).to receive(:includes).with([:click_meter_tracking_link, :message_template, :social_media_profile, :image, :metrics, :buffer_update]).and_return(@eager_loaded_messages)
+      allow(@eager_loaded_messages).to receive(:where).with(:message_generating_id => @experiment.id).and_return(@experiment_messages)
       allow(@experiment_messages).to receive(:page).and_return(@paged_messages)
       allow(@paged_messages).to receive(:order).with('scheduled_date_time ASC').and_return(@ordered_messages)
 
@@ -76,7 +78,8 @@ RSpec.describe ExperimentsController, type: :controller do
     end
 
     it 'assigns all messages to @messages' do
-      expect(Message).to have_received(:where).with(:message_generating_id => @experiment.id)
+      expect(Message).to have_received(:includes).with([:click_meter_tracking_link, :message_template, :social_media_profile, :image, :metrics, :buffer_update])
+      expect(@eager_loaded_messages).to have_received(:where).with(:message_generating_id => @experiment.id)
       expect(@experiment_messages).to have_received(:page).with('2')
       expect(@paged_messages).to have_received(:order).with('scheduled_date_time ASC')
       expect(assigns(:messages)).to eq(@ordered_messages)
