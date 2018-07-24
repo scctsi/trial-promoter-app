@@ -13,7 +13,9 @@ class BasicTrackingLinkClient
   end
 
   def self.create_tracking_link(experiment, group_id, domain_id, url, title, name)
-    click_meter_tracking_link.click_meter_id = message.id
+    click_meter_tracking_link = ClickMeterTrackingLink.new
+    
+    click_meter_tracking_link.click_meter_id = title
     click_meter_tracking_link.click_meter_uri = url
     click_meter_tracking_link.tracking_url = url
     click_meter_tracking_link.destination_url = url
