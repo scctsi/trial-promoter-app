@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180724194623) do
+ActiveRecord::Schema.define(version: 20180724211820) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -172,6 +172,7 @@ ActiveRecord::Schema.define(version: 20180724194623) do
     t.text     "image_codes"
     t.text     "comment_codes"
     t.text     "ip_exclusion_list"
+    t.boolean  "use_click_meter"
   end
 
   create_table "experiments_social_media_profiles", force: :cascade do |t|

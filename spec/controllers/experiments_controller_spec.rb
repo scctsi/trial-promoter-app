@@ -391,7 +391,7 @@ RSpec.describe ExperimentsController, type: :controller do
       @social_media_profiles[2].platform = :facebook
       @social_media_profiles[2].allowed_mediums = [:organic]
       @social_media_profiles[2].save
-      patch :update, id: @experiment, experiment: attributes_for(:experiment, name: 'New name', message_distribution_start_date: Time.local(2000, 3, 1, 9, 0, 0), click_meter_group_id: 1, click_meter_domain_id: 2, facebook_posting_times: '4:09 PM,6:22 PM,9:34 AM,10:02 PM,2:12 AM', instagram_posting_times: '4:09 PM,6:22 PM,9:34 AM,10:02 PM,2:12 AM', twitter_posting_times: '4:09 PM,6:22 PM,9:34 AM,10:02 PM,2:12 AM', social_media_profile_ids: [@social_media_profiles[1].id, @social_media_profiles[2].id], message_generation_parameter_set_attributes: {number_of_cycles: 4, number_of_messages_per_social_network: 5, number_of_days_between_posting: 5, social_network_choices: ['facebook', 'twitter'], medium_choices: ['organic'], image_present_choices: :no_messages})
+      patch :update, id: @experiment, experiment: attributes_for(:experiment, name: 'New name', message_distribution_start_date: Time.local(2000, 3, 1, 9, 0, 0), click_meter_group_id: 1, click_meter_domain_id: 2, facebook_posting_times: '4:09 PM,6:22 PM,9:34 AM,10:02 PM,2:12 AM', instagram_posting_times: '4:09 PM,6:22 PM,9:34 AM,10:02 PM,2:12 AM', twitter_posting_times: '4:09 PM,6:22 PM,9:34 AM,10:02 PM,2:12 AM', social_media_profile_ids: [@social_media_profiles[1].id, @social_media_profiles[2].id], message_generation_parameter_set_attributes: {number_of_cycles: 4, number_of_messages_per_social_network: 5, number_of_days_between_posting: 5, social_network_choices: ['facebook', 'twitter'], medium_choices: ['organic'], image_present_choices: :no_messages}, use_click_meter: true)
     end
 
     context 'with valid attributes' do
@@ -409,6 +409,7 @@ RSpec.describe ExperimentsController, type: :controller do
         expect(@experiment.twitter_posting_times).to eq('4:09 PM,6:22 PM,9:34 AM,10:02 PM,2:12 AM')
         expect(@experiment.facebook_posting_times).to eq('4:09 PM,6:22 PM,9:34 AM,10:02 PM,2:12 AM')
         expect(@experiment.instagram_posting_times).to eq('4:09 PM,6:22 PM,9:34 AM,10:02 PM,2:12 AM')
+        expect(@experiment.use_click_meter).to be true
       end
 
       it "changes the associated message generation parameter set's attribute" do
