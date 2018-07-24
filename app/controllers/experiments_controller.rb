@@ -109,6 +109,6 @@ class ExperimentsController < ApplicationController
 
   def experiment_params
     # TODO: Unit test this
-    params.require(:experiment).permit(:name, :message_distribution_start_date, :click_meter_group_id, :click_meter_domain_id, :twitter_posting_times, :facebook_posting_times, :instagram_posting_times, {:social_media_profile_ids => []}, message_generation_parameter_set_attributes: [:number_of_cycles, :number_of_messages_per_social_network, :image_present_choices, social_network_choices: [], medium_choices: []])
+    params.require(:experiment).permit(:name, :message_distribution_start_date, :click_meter_group_id, :click_meter_domain_id, :twitter_posting_times, :facebook_posting_times, :instagram_posting_times, {:social_media_profile_ids => []}, message_generation_parameter_set_attributes: [:number_of_cycles, :number_of_messages_per_social_network, :number_of_days_between_posting, :image_present_choices, social_network_choices: [], medium_choices: []])
   end
 end
