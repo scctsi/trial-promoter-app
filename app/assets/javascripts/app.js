@@ -500,7 +500,7 @@ $(document).ready(function() {
           var selectedImages = retdata.selected_images;
           var unselectedImages = retdata.unselected_images;
 
-          html = getImagePoolInterfaceHtml(selectedImages, unselectedImages, messageContent, readonly);
+          html = getImagePoolInterfaceHtml(selectedImages, unselectedImages, messageContent, filenameStartswithRestriction.toLowerCase(), readonly);
 
           $loadingButton.removeClass('loading');
           $('#lightbox .image-list').html(html);
