@@ -437,25 +437,14 @@ $(document).ready(function() {
     return html;
   }
 
-  function getImagePoolInterfaceHtml(selectedImages, unselectedImages, messageContent, filenameStartswithRestriction, readonly) {
+  function getImagePoolInterfaceHtml(selectedImages, unselectedImages, messageContent, filenameStartswithRestriction, readonly = false) {
     var html = '<div class="ui segment">' + messageContent + '</div>';
     html += '<div class="ui segment filenames-list">Filenames: ';
     html += getFilenames(selectedImages) + '</div>';
 
-    if (filenameStartswithRestriction == 'tfl') {
-      html += '<h3 class="ui block header">Selected images from "This Free Life" campaign</h3>';
-    }
-    if (filenameStartswithRestriction == 'fe') {
-      html += '<h3 class="ui block header">Selected images from "Fresh Empire" campaign</h3>';
-    }
-    html += getImageCardsHtml(selectedImages, 'remove', filenameStartswithRestriction, readonly);
+    html += '<h3 class="ui block header">Selected images from this campaign</h3>';
 
-    if (filenameStartswithRestriction == 'tfl') {
-      html += '<h3 class="ui block header">Unselected images from "This Free Life" campaign</h3>';
-    }
-    if (filenameStartswithRestriction == 'fe') {
-      html += '<h3 class="ui block header">Unselected images from "Fresh Empire" campaign</h3>';
-    }
+    html += getImageCardsHtml(selectedImages, 'remove', filenameStartswithRestriction, readonly);
     html += getImageCardsHtml(unselectedImages, 'add', filenameStartswithRestriction, readonly);
 
     return html;
@@ -511,7 +500,7 @@ $(document).ready(function() {
           var selectedImages = retdata.selected_images;
           var unselectedImages = retdata.unselected_images;
 
-          html = getImagePoolInterfaceHtml(selectedImages, unselectedImages, messageContent, filenameStartswithRestriction.toLowerCase(), readonly);
+          html = getImagePoolInterfaceHtml(selectedImages, unselectedImages, messageContent, readonly);
 
           $loadingButton.removeClass('loading');
           $('#lightbox .image-list').html(html);
@@ -608,12 +597,6 @@ $(document).ready(function() {
     });
   }
   
-  
-
-  /* Under Construction */
-  /* Under Construction */
-  /* Under Construction */
-
   function setUpSaveNoteFormEvents() {
     $('.button.save-note').click(function(event){
       var $inputForm = $(this).parent();
