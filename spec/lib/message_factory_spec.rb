@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe MessageFactory do
   before do
     @experiment = create(:experiment)
+    @experiment.use_click_meter = true
     @experiment.click_meter_group_id = 1
     @experiment.click_meter_domain_id = 2
     @suitable_social_media_profiles = create_list(:social_media_profile, 5)
@@ -80,6 +81,7 @@ RSpec.describe MessageFactory do
     expect(parameters[:message_constructor]).not_to be_nil
     expect(parameters[:number_of_cycles]).to eq(@experiment.message_generation_parameter_set.number_of_cycles)
     expect(parameters[:number_of_messages_per_day]).to eq(@experiment.message_generation_parameter_set.number_of_messages_per_social_network)
+    expect(parameters[:number_of_days_between_posting]).to eq(@experiment.message_generation_parameter_set.number_of_days_between_posting)
     expect(parameters[:platforms]).to eq(@experiment.message_generation_parameter_set.social_network_choices)
     expect(parameters[:mediums]).to eq(@experiment.message_generation_parameter_set.medium_choices)
     expect(parameters[:message_templates]).to eq(MessageTemplate.belonging_to(@experiment).to_a)
@@ -87,6 +89,25 @@ RSpec.describe MessageFactory do
     expect(parameters[:posting_times]).to eq(@experiment.posting_times)
     expect(parameters[:total_count]).to eq(@experiment.message_generation_parameter_set.expected_generated_message_count(parameters[:message_templates].count))
     expect(parameters[:social_media_profiles]).to eq(@experiment.social_media_profiles)
+    expect(parameters[:tracking_link_client]).to eq(ClickMeterClient)
+  end
+
+  it 'returns a BasicTrackingLinkClient if the experiment does not use Click Meter' do
+    @experiment.facebook_posting_times = "12:30 PM"
+    @experiment.use_click_meter = false
+    @experiment.save
+    message_generation_parameter_set = MessageGenerationParameterSet.new do |m|
+      m.social_network_choices = [:facebook]
+      m.medium_choices = ['ad']
+      m.image_present_choices = :no_messages
+      m.number_of_cycles = 1
+      m.number_of_messages_per_social_network = 1
+    end
+    @experiment.message_generation_parameter_set = message_generation_parameter_set
+
+    parameters = @message_factory.get_message_generation_parameters(@experiment)
+
+    expect(parameters[:tracking_link_client]).to eq(BasicTrackingLinkClient)
   end
 
   it 'creates a set of messages given five message templates, 1 social network, 1 medium, images for all messages, 1 cycle, 1 message per network per day (no hashtags)' do
