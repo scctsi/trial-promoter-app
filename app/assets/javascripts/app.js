@@ -417,7 +417,7 @@ $(document).ready(function() {
       html += '<div class="description">' + image.original_filename + '</div>';
       html += '</div>';
       html += '</div>';
-      console.log(image);
+
       if (buttonType == 'add' && image.meets_instagram_ad_requirements) {
         html += '<div class="extra content"><div class="ui labeled icon fluid tiny button add-image-to-image-pool-button" data-image-id="' + image.id + '"><i class="checkmark icon"></i>Add</div></div>';
       }
