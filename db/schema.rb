@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180724211820) do
+ActiveRecord::Schema.define(version: 20180728011748) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -162,17 +162,17 @@ ActiveRecord::Schema.define(version: 20180724211820) do
     t.string   "name",                            limit: 1000
     t.datetime "end_date"
     t.datetime "message_distribution_start_date"
-    t.datetime "created_at",                                   null: false
-    t.datetime "updated_at",                                   null: false
+    t.datetime "created_at",                                                   null: false
+    t.datetime "updated_at",                                                   null: false
     t.text     "twitter_posting_times"
     t.text     "facebook_posting_times"
     t.text     "instagram_posting_times"
     t.integer  "click_meter_group_id"
     t.integer  "click_meter_domain_id"
-    t.text     "image_codes"
     t.text     "comment_codes"
+    t.text     "image_codes"
     t.text     "ip_exclusion_list"
-    t.boolean  "use_click_meter"
+    t.boolean  "use_click_meter",                              default: false
   end
 
   create_table "experiments_social_media_profiles", force: :cascade do |t|
@@ -226,6 +226,7 @@ ActiveRecord::Schema.define(version: 20180724211820) do
     t.text     "medium_choices"
     t.text     "image_present_choices"
     t.integer  "number_of_cycles"
+    t.integer  "message_run_duration_in_days"
     t.integer  "number_of_days_between_posting",        default: 1
   end
 
@@ -263,15 +264,16 @@ ActiveRecord::Schema.define(version: 20180724211820) do
     t.integer  "social_media_profile_id"
     t.string   "platform"
     t.string   "promoted_website_url",         limit: 2000
+    t.string   "campaign_id"
     t.boolean  "backdated"
     t.datetime "original_scheduled_date_time"
-    t.string   "campaign_id"
     t.float    "click_rate"
     t.float    "website_goal_rate"
     t.integer  "website_goal_count"
     t.integer  "website_session_count"
     t.text     "impressions_by_day"
     t.text     "note"
+    t.boolean  "ad_published"
   end
 
   add_index "messages", ["message_generating_type", "message_generating_id"], name: "index_on_message_generating_for_analytics_files", using: :btree

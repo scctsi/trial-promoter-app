@@ -1,4 +1,5 @@
 class BasicTrackingLinkClient
+  include HTTParty
   # TODO: Test this class!
   def self.post_request_body_for_create_tracking_link(group_id, domain_id, url, title, name)
     # Do nothing
