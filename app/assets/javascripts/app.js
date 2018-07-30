@@ -437,7 +437,7 @@ $(document).ready(function() {
     return html;
   }
 
-  function getImagePoolInterfaceHtml(selectedImages, unselectedImages, messageContent, filenameStartswithRestriction, readonly) {
+  function getImagePoolInterfaceHtml(selectedImages, unselectedImages, messageContent, filenameStartswithRestriction, readonly = false) {
     var html = '<div class="ui segment">' + messageContent + '</div>';
     html += '<div class="ui segment filenames-list">Filenames: ';
     html += getFilenames(selectedImages) + '</div>';
