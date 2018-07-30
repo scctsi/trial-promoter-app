@@ -1,7 +1,8 @@
+/ TODO: Rename this tab
 - grouped_messages = @messages.group_by{ |message| message.message_template.experiment_variables["fda_campaign"] }
 - grouped_messages.each do |campaign, messages_by_campaign|
   %h3.ui.dividing.header
-    = campaign.upcase
+    = campaign.upcase if campaign
   - messages_by_campaign.each do |message|
     .ui.items
       .item
