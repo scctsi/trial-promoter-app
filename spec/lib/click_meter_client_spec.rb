@@ -4,7 +4,7 @@ require 'yaml'
 RSpec.describe ClickMeterClient do
   before do
     secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
-    @experiment = build(:experiment)
+    @experiment = create(:experiment, use_click_meter: true)
     @experiment.set_api_key(:click_meter, secrets["click_meter_api_key"])
     allow(ClickMeterClient).to receive(:post).and_call_original
   end
@@ -97,6 +97,18 @@ RSpec.describe ClickMeterClient do
         click_meter_tracking_link = ClickMeterClient.get_tracking_link(@experiment, tracking_link_id)
         expect(click_meter_tracking_link).to be nil
       end
+    end
+    
+    it 'does not delete a non-Click Meter tracking link if click meter is not used' do
+      @experiment.use_click_meter = false
+      tracking_link = nil
+      VCR.use_cassette 'click_meter/create_tracking_link' do
+        tracking_link = ClickMeterClient.create_tracking_link(@experiment, 571973, 1501, 'http://www.sc-ctsi.org', 'SC CTSI', 'name-unique-to-sc-ctsi')
+      end
+
+      ClickMeterClient.delete_tracking_link(@experiment, tracking_link.click_meter_id)
+
+      expect(tracking_link).not_to eq(nil)
     end
 
     it 'gets an array of all groups using the Click Meter API' do
