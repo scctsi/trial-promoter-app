@@ -60,7 +60,7 @@ class ClickMeterClient
   end
 
   def self.delete_tracking_link(experiment, tracking_link_id)
-    if experiment.use_click_meter == true
+    if experiment.use_click_meter
       delete("http://apiv2.clickmeter.com:80/datapoints/#{tracking_link_id}", :headers => { 'Content-Type' => 'application/json; charset=UTF-8', 'X-Clickmeter-Authkey' => experiment.settings(:click_meter).api_key } )
     end
   end
