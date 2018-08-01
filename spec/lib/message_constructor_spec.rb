@@ -181,7 +181,8 @@ RSpec.describe MessageConstructor do
     end
     
     it 'returns an empty array of fittable hashtags and all the hashtags for unfittable hashtags if no hashtag can be appended to some content' do
-      content = 'A' * 281
+      # Create a message whose length is 1 character longer than the maximum allowed Tweet length.
+      content = 'A' * (MessageTemplate::MAXIMUM_TWEET_LENGTH + 1)
       
       fittable_hashtags = MessageConstructor.fittable_hashtags(content, @hashtags)
       unfittable_hashtags = MessageConstructor.unfittable_hashtags(content, @hashtags)
@@ -191,7 +192,8 @@ RSpec.describe MessageConstructor do
     end
 
     it 'returns an empty array of fittable hashtags and all the hashtags for unfittable hashtags if no hashtag can be appended to some content (which includes a URL)' do
-      content = "#{'A' * 258}{url}"
+      # Create a message whose length is 1 character longer than than a Tweet that has a URL (23 characters) and a space for the URL.
+      content = "#{'A' * (MessageTemplate::MAXIMUM_TWEET_LENGTH + MessageTemplate::TWEET_URL_LENGTH + 1 + 1)}{url}"
       
       fittable_hashtags = MessageConstructor.fittable_hashtags(content, @hashtags)
       unfittable_hashtags = MessageConstructor.unfittable_hashtags(content, @hashtags)
@@ -202,7 +204,7 @@ RSpec.describe MessageConstructor do
 
     it 'returns the single hashtag for fittable hashtags and an empty array for unfittable hashtags if the single hashtag can be appended to some content (which includes a URL)' do
       @hashtags = ['#short']
-      content = 'A' * (117 - @hashtags[0].length) + "{url}"
+      content = 'A' * (MessageTemplate::MAXIMUM_TWEET_LENGTH - MessageTemplate::TWEET_URL_LENGTH - @hashtags[0].length) + "{url}"
       
       fittable_hashtags = MessageConstructor.fittable_hashtags(content, @hashtags)
       unfittable_hashtags = MessageConstructor.unfittable_hashtags(content, @hashtags)
@@ -212,7 +214,7 @@ RSpec.describe MessageConstructor do
     end
 
     it 'returns the only hashtags that are fittable and the list of the other hashtags as unfittable hashtags when only a few hashtags can be appended to some content (which includes a URL)' do
-      content = 'A' * (257 - @hashtags[1].length) + "{url}"
+      content = 'A' * (MessageTemplate::MAXIMUM_TWEET_LENGTH - MessageTemplate::TWEET_URL_LENGTH - @hashtags[1].length) + "{url}"
       
       fittable_hashtags = MessageConstructor.fittable_hashtags(content, @hashtags)
       unfittable_hashtags = MessageConstructor.unfittable_hashtags(content, @hashtags)
@@ -222,7 +224,7 @@ RSpec.describe MessageConstructor do
     end
 
     it 'returns all hashtags if every hashtag is fittable and an empty array for unfittable hashtags when all the hashtags can be appended to some content (which includes a URL)' do
-      content = 'A' * (117 - @hashtags[2].length) + "{url}"
+      content = 'A' * (MessageTemplate::MAXIMUM_TWEET_LENGTH - MessageTemplate::TWEET_URL_LENGTH - @hashtags[2].length) + "{url}"
       
       fittable_hashtags = MessageConstructor.fittable_hashtags(content, @hashtags)
       unfittable_hashtags = MessageConstructor.unfittable_hashtags(content, @hashtags)
