@@ -16,7 +16,7 @@
 
 
 class MessageTemplate < ActiveRecord::Base
-  MAXIMUM_TWEET_LENGTH = 140
+  MAXIMUM_TWEET_LENGTH = 280
 
   acts_as_ordered_taggable
   acts_as_ordered_taggable_on :experiments
@@ -97,14 +97,14 @@ class MessageTemplate < ActiveRecord::Base
     return [] if content.nil?
     return [] if !platforms.include?(:twitter)
 
-    warnings << 'Too long for use in Twitter' if content.length > 140
-    warnings << 'Too long for use in Twitter (URL takes up 23 characters and we need atleast one space preceding the URL)' if content.include?('{url}') and content.length > 116 + '{url}'.length
+    warnings << 'Too long for use in Twitter' if content.length > 280
+    warnings << 'Too long for use in Twitter (URL takes up 23 characters and we need at least one space preceding the URL)' if content.include?('{url}') and content.length > (280 - 24) + '{url}'.length
 
     # Hashtag inclusion checks
     if !hashtags.nil? && !(hashtags.length == 0)
-      if content.length + hashtags.map(&:length).min > 140
+      if content.length + hashtags.map(&:length).min > 280
         warnings << 'Too long for use in Twitter (None of the hashtags will ever be included)'
-      elsif content.length + hashtags.map(&:length).max > 140
+      elsif content.length + hashtags.map(&:length).max > 280
         warnings << 'Too long for use in Twitter (At least one of the hashtags will never be included)'
       end
     end
