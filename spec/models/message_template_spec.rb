@@ -216,36 +216,36 @@ RSpec.describe MessageTemplate do
 
     it 'only returns warning messages if the platforms for the message template includes Twitter' do
       @message_template.platforms = [:facebook, :instagram]
-      @message_template.content = 'A' * 141
+      @message_template.content = 'A' * 281
       
       expect(@message_template.warnings.count).to eq(0)
     end
 
     it 'returns a warning if the content is too long for Twitter' do
-      @message_template.content = 'A' * 141
+      @message_template.content = 'A' * 281
       
       expect(@message_template.warnings.count).to eq(1)
       expect(@message_template.warnings[0]).to eq('Too long for use in Twitter')
     end
 
     it 'returns a warning if the content is too long for Twitter (including a URL)' do
-      @message_template.content = "#{'A' * 117}{url}"
+      @message_template.content = "#{'A' * 257}{url}"
 
       expect(@message_template.warnings.count).to eq(1)
-      expect(@message_template.warnings[0]).to eq('Too long for use in Twitter (URL takes up 23 characters and we need atleast one space preceding the URL)')
+      expect(@message_template.warnings[0]).to eq('Too long for use in Twitter (URL takes up 23 characters and we need at least one space preceding the URL)')
     end
 
     it 'does not raise an error if the hashtags are an empty array' do
       @message_template.hashtags = []
-      @message_template.content = "#{'A' * 117}{url}"
+      @message_template.content = "#{'A' * 257}{url}"
 
       expect(@message_template.warnings.count).to eq(1)
-      expect(@message_template.warnings[0]).to eq('Too long for use in Twitter (URL takes up 23 characters and we need atleast one space preceding the URL)')
+      expect(@message_template.warnings[0]).to eq('Too long for use in Twitter (URL takes up 23 characters and we need at least one space preceding the URL)')
     end
 
     it 'returns a warning if the content is too long for Twitter (including a single hashtag)' do
       @message_template.hashtags = ['#hashtag1']
-      @message_template.content = 'A' * (141 - '#hashtag1'.length)
+      @message_template.content = 'A' * (281 - '#hashtag1'.length)
 
       expect(@message_template.warnings.count).to eq(1)
       expect(@message_template.warnings[0]).to eq('Too long for use in Twitter (None of the hashtags will ever be included)')
@@ -253,7 +253,7 @@ RSpec.describe MessageTemplate do
 
     it 'returns a warning if the content is too long for Twitter (including any of the allowed hashtags)' do
       @message_template.hashtags = ['#hashtag1', '#longer-hashtag1', '#longest-hashtag1', '#tag']
-      @message_template.content = 'A' * (141 - '#tag'.length)
+      @message_template.content = 'A' * (281 - '#tag'.length)
 
       expect(@message_template.warnings.count).to eq(1)
       expect(@message_template.warnings[0]).to eq('Too long for use in Twitter (None of the hashtags will ever be included)')
@@ -261,7 +261,7 @@ RSpec.describe MessageTemplate do
 
     it 'returns a warning if the content is too long for Twitter (at least any of the allowed hashtags will never be included)' do
       @message_template.hashtags = ['#hashtag1', '#longer-hashtag1', '#longest-hashtag1', '#tag']
-      @message_template.content = 'A' * (141 - '#longer-hashtag1'.length)
+      @message_template.content = 'A' * (281 - '#longer-hashtag1'.length)
 
       expect(@message_template.warnings.count).to eq(1)
       expect(@message_template.warnings[0]).to eq('Too long for use in Twitter (At least one of the hashtags will never be included)')
