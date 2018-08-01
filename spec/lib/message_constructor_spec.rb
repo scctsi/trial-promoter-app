@@ -181,7 +181,7 @@ RSpec.describe MessageConstructor do
     end
     
     it 'returns an empty array of fittable hashtags and all the hashtags for unfittable hashtags if no hashtag can be appended to some content' do
-      content = 'A' * 141
+      content = 'A' * 281
       
       fittable_hashtags = MessageConstructor.fittable_hashtags(content, @hashtags)
       unfittable_hashtags = MessageConstructor.unfittable_hashtags(content, @hashtags)
@@ -191,7 +191,7 @@ RSpec.describe MessageConstructor do
     end
 
     it 'returns an empty array of fittable hashtags and all the hashtags for unfittable hashtags if no hashtag can be appended to some content (which includes a URL)' do
-      content = "#{'A' * 118}{url}"
+      content = "#{'A' * 258}{url}"
       
       fittable_hashtags = MessageConstructor.fittable_hashtags(content, @hashtags)
       unfittable_hashtags = MessageConstructor.unfittable_hashtags(content, @hashtags)
@@ -212,7 +212,7 @@ RSpec.describe MessageConstructor do
     end
 
     it 'returns the only hashtags that are fittable and the list of the other hashtags as unfittable hashtags when only a few hashtags can be appended to some content (which includes a URL)' do
-      content = 'A' * (117 - @hashtags[1].length) + "{url}"
+      content = 'A' * (257 - @hashtags[1].length) + "{url}"
       
       fittable_hashtags = MessageConstructor.fittable_hashtags(content, @hashtags)
       unfittable_hashtags = MessageConstructor.unfittable_hashtags(content, @hashtags)
