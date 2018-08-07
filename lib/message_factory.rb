@@ -41,7 +41,7 @@ class MessageFactory
                 message.image_id = random_image_id
                 message.save
                 message.reload
-                ClickMeterClient.create_click_meter_tracking_link(message, experiment.click_meter_group_id, experiment.click_meter_domain_id)
+                parameters[:tracking_link_client].create_click_meter_tracking_link(experiment, message, experiment.click_meter_group_id, experiment.click_meter_domain_id)
                 message.save
                 throttle(9)
                 Pusher['progress'].trigger('progress', {:value => message_index / 2, :total => parameters[:total_count], :event => 'Message generated'})
@@ -51,13 +51,13 @@ class MessageFactory
             end
           end
         end
-        publish_date += 1.day
+        publish_date += parameters[:number_of_days_between_posting].day
       end
     end
     
     # Update {url} variables in all the messages
     generated_messages.each do |message|
-      ClickMeterClient.update_tracking_link(message.click_meter_tracking_link)
+      parameters[:tracking_link_client].update_tracking_link(experiment, message.click_meter_tracking_link)
       throttle(9)
       parameters[:message_constructor].replace_url_variable(message, message.click_meter_tracking_link.tracking_url)
       message.save
@@ -72,13 +72,21 @@ class MessageFactory
     parameters[:message_constructor] = MessageConstructor.new
     parameters[:number_of_cycles] = experiment.message_generation_parameter_set.number_of_cycles
     parameters[:number_of_messages_per_day] = experiment.message_generation_parameter_set.number_of_messages_per_social_network
+    parameters[:number_of_days_between_posting] = experiment.message_generation_parameter_set.number_of_days_between_posting
+    # TODO: Test the next line
+    parameters[:number_of_days_between_posting] = 1 if parameters[:number_of_days_between_posting].nil?
     parameters[:platforms] = experiment.message_generation_parameter_set.social_network_choices
     parameters[:mediums] = experiment.message_generation_parameter_set.medium_choices
     parameters[:message_templates] = MessageTemplate.belonging_to(experiment).to_a
     parameters[:posting_times] = experiment.posting_times
     parameters[:total_count] = experiment.message_generation_parameter_set.expected_generated_message_count(parameters[:message_templates].count)
     parameters[:social_media_profiles] = experiment.social_media_profiles
-
+    if experiment.use_click_meter
+      parameters[:tracking_link_client] = ClickMeterClient
+    else
+      parameters[:tracking_link_client] = BasicTrackingLinkClient
+    end
+    
     parameters
   end
   

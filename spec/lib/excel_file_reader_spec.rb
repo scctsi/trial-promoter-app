@@ -22,9 +22,10 @@ RSpec.describe ExcelFileReader do
   end 
 
   describe "(development only tests)", :development_only_tests => true do
-    before do 
+    before do
+      @experiment = build(:experiment)
       secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
-      allow(Setting).to receive(:[]).with(:dropbox_access_token).and_return(secrets['dropbox_access_token'])
+      @experiment.set_api_key(:dropbox, secrets['dropbox_access_token'])
     end
     
     it 'successfully reads an Excel (.xlsx) file from a private Dropbox file path' do
@@ -32,7 +33,7 @@ RSpec.describe ExcelFileReader do
       parsed_excel_content = ''
       
       VCR.use_cassette 'excel_file_reader/read_from_dropbox' do
-        parsed_excel_content = ExcelFileReader.read_from_dropbox(dropbox_file_path)
+        parsed_excel_content = ExcelFileReader.read_from_dropbox(@experiment, dropbox_file_path)
       end
   
       expect(parsed_excel_content.size).to eq(4)

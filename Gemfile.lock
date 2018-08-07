@@ -93,8 +93,11 @@ GEM
       oauth2 (>= 0.5.0, < 2.0)
     browser (2.5.2)
     builder (3.2.3)
-    byebug (10.0.0)
-    cocoon (1.2.11)
+    bullet (5.7.5)
+      activesupport (>= 3.0.0)
+      uniform_notifier (~> 1.11.0)
+    byebug (9.0.6)
+    cocoon (1.2.9)
     codeclimate-test-reporter (1.0.8)
       simplecov (<= 0.13)
     coderay (1.1.2)
@@ -231,6 +234,8 @@ GEM
       json (>= 1.8)
     lazyload-rails (0.3.1)
       nokogiri (~> 1.5)
+    ledermann-rails-settings (2.4.3)
+      activerecord (>= 3.1)
     listen (3.1.5)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
@@ -308,8 +313,11 @@ GEM
       rails-deprecated_sanitizer (>= 1.0.1)
     rails-html-sanitizer (1.0.3)
       loofah (~> 2.0)
+<<<<<<< HEAD
     rails-settings-cached (0.6.6)
       rails (>= 4.2.0)
+=======
+>>>>>>> development
     rails_12factor (0.0.3)
       rails_serve_static_assets
       rails_stdout_logging
@@ -338,6 +346,7 @@ GEM
     roo (2.7.1)
       nokogiri (~> 1)
       rubyzip (~> 1.1, < 2.0.0)
+<<<<<<< HEAD
     roo-xls (1.1.0)
       nokogiri
       roo (>= 2.0.0beta1, < 3)
@@ -349,6 +358,15 @@ GEM
     rspec-core (3.7.1)
       rspec-support (~> 3.7.0)
     rspec-expectations (3.7.0)
+=======
+    rspec (3.6.0)
+      rspec-core (~> 3.6.0)
+      rspec-expectations (~> 3.6.0)
+      rspec-mocks (~> 3.6.0)
+    rspec-core (3.6.0)
+      rspec-support (~> 3.6.0)
+    rspec-expectations (3.6.0)
+>>>>>>> development
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.7.0)
     rspec-mocks (3.7.0)
@@ -358,12 +376,20 @@ GEM
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       railties (>= 3.0)
+<<<<<<< HEAD
       rspec-core (~> 3.7.0)
       rspec-expectations (~> 3.7.0)
       rspec-mocks (~> 3.7.0)
       rspec-support (~> 3.7.0)
     rspec-support (3.7.1)
     ruby-ole (1.2.12.1)
+=======
+      rspec-core (~> 3.6.0)
+      rspec-expectations (~> 3.6.0)
+      rspec-mocks (~> 3.6.0)
+      rspec-support (~> 3.6.0)
+    rspec-support (3.6.0)
+>>>>>>> development
     ruby_dep (1.5.0)
     ruby_parser (3.10.1)
       sexp_processor (~> 4.9)
@@ -400,10 +426,16 @@ GEM
       docile (~> 1.1.0)
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
+<<<<<<< HEAD
     simplecov-html (0.10.2)
     spreadsheet (1.1.5)
       ruby-ole (>= 1.0)
     spring (2.0.2)
+=======
+    simplecov-html (0.10.0)
+    slop (3.6.0)
+    spring (2.0.1)
+>>>>>>> development
       activesupport (>= 4.2)
     spring-commands-rspec (1.0.4)
       spring (>= 0.9.1)
@@ -429,8 +461,14 @@ GEM
       execjs (>= 0.3.0, < 3)
     unf (0.1.4)
       unf_ext
+<<<<<<< HEAD
     unf_ext (0.0.7.5)
     user_agent_parser (2.4.1)
+=======
+    unf_ext (0.0.7.4)
+    uniform_notifier (1.11.0)
+    user_agent_parser (2.3.1)
+>>>>>>> development
     uuidtools (2.1.5)
     vcr (4.0.0)
     warden (1.2.7)
@@ -444,6 +482,8 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff
+    zip-zip (0.3)
+      rubyzip (>= 1.0.0)
 
 PLATFORMS
   ruby
@@ -457,6 +497,7 @@ DEPENDENCIES
   better_errors
   binding_of_caller
   bitly
+  bullet
   byebug
   cocoon
   codeclimate-test-reporter (~> 1.0.0)
@@ -479,17 +520,20 @@ DEPENDENCIES
   kaminari
   koala
   lazyload-rails
+<<<<<<< HEAD
   multi_json
   pg (= 0.21.0)
+=======
+  ledermann-rails-settings
+  pg
+>>>>>>> development
   puma
   pundit
   pusher
   rack-cors
   rails (= 4.2.6)
-  rails-settings-cached
   rails_12factor
   roo
-  roo-xls
   rspec-rails (~> 3.5)
   sass-rails (~> 5.0)
   semantic-ui-sass!
@@ -503,10 +547,11 @@ DEPENDENCIES
   vcr
   web-console (~> 2.0)
   webmock
+  zip-zip
   zuck (= 3.5.1)!
 
 RUBY VERSION
    ruby 2.3.3p222
 
 BUNDLED WITH
-   1.15.4
+   1.16.1

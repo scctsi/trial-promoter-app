@@ -9,10 +9,10 @@ RSpec.describe ExperimentsController, type: :controller do
   end
 
   describe 'GET #index' do
-    let(:experiments) { build_pair(:experiment) }
-
+    let(:experiments) { create_list(:experiment, 3) }
+    
     before do
-      allow(Experiment).to receive(:all).and_return(experiments)
+      allow(Experiment).to receive(:scope).and_return(experiments)
       get :index
     end
 
@@ -39,10 +39,12 @@ RSpec.describe ExperimentsController, type: :controller do
       allow(MessageTemplate).to receive(:belonging_to).with(@experiment).and_return(@message_templates)
       @images = []
       allow(Image).to receive(:belonging_to).with(@experiment).and_return(@images)
+      @eager_loaded_messages = double('eager_loaded_messages')
       @experiment_messages = double('experiment_messages')
-      @ordered_messages = []
       @paged_messages = double('paged_messages')
-      allow(Message).to receive(:where).with(:message_generating_id => @experiment.id).and_return(@experiment_messages)
+      @ordered_messages = []
+      allow(Message).to receive(:includes).with([:click_meter_tracking_link, :message_template, :social_media_profile, :image, :metrics, :buffer_update]).and_return(@eager_loaded_messages)
+      allow(@eager_loaded_messages).to receive(:where).with(:message_generating_id => @experiment.id).and_return(@experiment_messages)
       allow(@experiment_messages).to receive(:page).and_return(@paged_messages)
       allow(@paged_messages).to receive(:order).with('scheduled_date_time ASC').and_return(@ordered_messages)
 
@@ -76,7 +78,8 @@ RSpec.describe ExperimentsController, type: :controller do
     end
 
     it 'assigns all messages to @messages' do
-      expect(Message).to have_received(:where).with(:message_generating_id => @experiment.id)
+      expect(Message).to have_received(:includes).with([:click_meter_tracking_link, :message_template, :social_media_profile, :image, :metrics, :buffer_update])
+      expect(@eager_loaded_messages).to have_received(:where).with(:message_generating_id => @experiment.id)
       expect(@experiment_messages).to have_received(:page).with('2')
       expect(@paged_messages).to have_received(:order).with('scheduled_date_time ASC')
       expect(assigns(:messages)).to eq(@ordered_messages)
@@ -388,7 +391,7 @@ RSpec.describe ExperimentsController, type: :controller do
       @social_media_profiles[2].platform = :facebook
       @social_media_profiles[2].allowed_mediums = [:organic]
       @social_media_profiles[2].save
-      patch :update, id: @experiment, experiment: attributes_for(:experiment, name: 'New name', message_distribution_start_date: Time.local(2000, 3, 1, 9, 0, 0), click_meter_group_id: 1, click_meter_domain_id: 2, facebook_posting_times: '4:09 PM,6:22 PM,9:34 AM,10:02 PM,2:12 AM', instagram_posting_times: '4:09 PM,6:22 PM,9:34 AM,10:02 PM,2:12 AM', twitter_posting_times: '4:09 PM,6:22 PM,9:34 AM,10:02 PM,2:12 AM', social_media_profile_ids: [@social_media_profiles[1].id, @social_media_profiles[2].id], message_generation_parameter_set_attributes: {number_of_cycles: 4, number_of_messages_per_social_network: 5, social_network_choices: ['facebook', 'twitter'], medium_choices: ['organic'], image_present_choices: :no_messages})
+      patch :update, id: @experiment, experiment: attributes_for(:experiment, name: 'New name', message_distribution_start_date: Time.local(2000, 3, 1, 9, 0, 0), click_meter_group_id: 1, click_meter_domain_id: 2, facebook_posting_times: '4:09 PM,6:22 PM,9:34 AM,10:02 PM,2:12 AM', instagram_posting_times: '4:09 PM,6:22 PM,9:34 AM,10:02 PM,2:12 AM', twitter_posting_times: '4:09 PM,6:22 PM,9:34 AM,10:02 PM,2:12 AM', social_media_profile_ids: [@social_media_profiles[1].id, @social_media_profiles[2].id], message_generation_parameter_set_attributes: {number_of_cycles: 4, number_of_messages_per_social_network: 5, number_of_days_between_posting: 5, social_network_choices: ['facebook', 'twitter'], medium_choices: ['organic'], image_present_choices: :no_messages}, use_click_meter: true)
     end
 
     context 'with valid attributes' do
@@ -406,6 +409,7 @@ RSpec.describe ExperimentsController, type: :controller do
         expect(@experiment.twitter_posting_times).to eq('4:09 PM,6:22 PM,9:34 AM,10:02 PM,2:12 AM')
         expect(@experiment.facebook_posting_times).to eq('4:09 PM,6:22 PM,9:34 AM,10:02 PM,2:12 AM')
         expect(@experiment.instagram_posting_times).to eq('4:09 PM,6:22 PM,9:34 AM,10:02 PM,2:12 AM')
+        expect(@experiment.use_click_meter).to be true
       end
 
       it "changes the associated message generation parameter set's attribute" do
@@ -415,6 +419,7 @@ RSpec.describe ExperimentsController, type: :controller do
         expect(@experiment.message_generation_parameter_set.image_present_choices).to eq(:no_messages)
         expect(@experiment.message_generation_parameter_set.number_of_cycles).to eq(4)
         expect(@experiment.message_generation_parameter_set.number_of_messages_per_social_network).to eq(5)
+        expect(@experiment.message_generation_parameter_set.number_of_days_between_posting).to eq(5)
       end
 
       it "changes the associated social media profiles" do

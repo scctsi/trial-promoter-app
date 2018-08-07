@@ -3,7 +3,7 @@ class SocialMediaProfilesController < ApplicationController
 
   def index
     authorize SocialMediaProfile
-    @social_media_profiles = SocialMediaProfile.all
+    @social_media_profiles = policy_scope(SocialMediaProfile)
   end
 
   def edit
@@ -15,8 +15,9 @@ class SocialMediaProfilesController < ApplicationController
   end
 
   def sync_with_buffer
+    experiment = Experiment.find(params[:experiment])
     authorize SocialMediaProfile
-    BufferClient.get_social_media_profiles
+    BufferClient.get_social_media_profiles(experiment)
     redirect_to social_media_profiles_url
   end
 

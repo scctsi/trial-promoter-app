@@ -26,12 +26,12 @@ RSpec.describe GetAnalyticsFromClickMeterJob, type: :job do
 
   it 'executes perform only on messages that have a buffer_update' do
     (0..5).each do |index|
-      expect(ClickMeterClient).to receive(:get_clicks).with(@messages[index].click_meter_tracking_link)
+      expect(ClickMeterClient).to receive(:get_clicks).with(@experiment, @messages[index].click_meter_tracking_link)
     end
 
-    expect(ClickMeterClient).not_to receive(:get_clicks).with(@messages[5].click_meter_tracking_link)
+    expect(ClickMeterClient).not_to receive(:get_clicks).with(@experiment, @messages[5].click_meter_tracking_link)
 
-    perform_enqueued_jobs { GetAnalyticsFromClickMeterJob.perform_later }
+    perform_enqueued_jobs { GetAnalyticsFromClickMeterJob.perform_later(@experiment) }
   end
 
   it 'throttles the requests to 10 per second per the clickmeter api documentation' do
@@ -39,7 +39,7 @@ RSpec.describe GetAnalyticsFromClickMeterJob, type: :job do
       expect(Throttler).to receive(:throttle).with(10)
     end
 
-    perform_enqueued_jobs { GetAnalyticsFromClickMeterJob.perform_later }
+    perform_enqueued_jobs { GetAnalyticsFromClickMeterJob.perform_later(@experiment) }
   end
 
   after do

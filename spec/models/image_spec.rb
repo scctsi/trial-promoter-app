@@ -121,15 +121,33 @@ RSpec.describe Image do
   end
 
   it 'asks S3 to delete the corresponding object during the before destroy callback' do
+    experiment = create(:experiment)
     image = create(:image)
+    image.experiment_list.add(experiment.to_param)
+    image.save
     s3_client_double = double('s3_client')
     allow(s3_client_double).to receive(:delete)
     allow(s3_client_double).to receive(:bucket).and_return('bucket')
     allow(s3_client_double).to receive(:key).and_return('key')
     allow(S3Client).to receive(:new).and_return(s3_client_double)
 
-    image.delete_image_from_s3
+    image.delete_image_from_s3 
 
     expect(s3_client_double).to have_received(:delete).with('bucket', 'key')
+  end
+  
+  it "parameterizes id and the experiments's param together" do
+    experiment = build(:experiment, name: 'TCORS 2')
+    image = build(:image, experiment_list: experiment.to_param)
+
+    expect(image.experiment_list[0]).to eq(experiment.to_param)
+  end
+  
+  it "returns the tagged experiment" do
+    experiment = create(:experiment, name: 'TCORS 2')
+    image = build(:image)
+    image.experiment_list.add(experiment.to_param)
+
+    expect(image.experiment).to eq(experiment)
   end
 end

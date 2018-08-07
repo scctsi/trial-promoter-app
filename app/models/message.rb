@@ -224,7 +224,7 @@ class Message < ActiveRecord::Base
   end
 
   def get_sessions(exclude_ip_address_list = [])
-    visits = Visit.where(utm_content: self.to_param).to_a
+    visits = Visit.where(utm_content: to_param).to_a
     visits.reject!{ |visit| exclude_ip_address_list.include?(visit.ip) }
     return visits
   end
@@ -254,5 +254,9 @@ class Message < ActiveRecord::Base
   
   def end_time
     return self.scheduled_date_time + self.message_generating.message_generation_parameter_set.message_run_duration_in_days.days
+  end
+  
+  def experiment
+    Experiment.find_by_param(experiment_list[0])
   end
 end

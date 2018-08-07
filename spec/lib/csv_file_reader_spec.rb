@@ -15,9 +15,10 @@ RSpec.describe CsvFileReader do
 
   describe "(development only tests)", :development_only_tests => true do
     before do 
+      @experiment = build(:experiment)
       secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
-      allow(Setting).to receive(:[]).with(:dropbox_access_token).and_return(secrets['dropbox_access_token'])
-      @dropbox_client = DropboxClient.new
+      @experiment.set_api_key(:dropbox, secrets['dropbox_access_token'])
+      @dropbox_client = DropboxClient.new(@experiment)
     end
 
     it 'successfully reads a CSV file which raises an illegal quoting error from a URL (Facebook organic data, which has two header rows)' do
@@ -34,9 +35,8 @@ RSpec.describe CsvFileReader do
     it 'successfully reads a CSV file from a private Dropbox file path' do
       dropbox_file_path = '/tcors/analytics_files/04-19-2017/tweet_activity_metrics_BeFreeOfTobacco_20170419_20170421_en.csv'
       parsed_csv_content = ''
-      
       VCR.use_cassette 'csv_file_reader/read_from_dropbox' do
-        parsed_csv_content = CsvFileReader.read_from_dropbox(dropbox_file_path)
+        parsed_csv_content = CsvFileReader.read_from_dropbox(@experiment, dropbox_file_path)
       end
   
       expect(parsed_csv_content.size).to eq(4)
@@ -48,7 +48,7 @@ RSpec.describe CsvFileReader do
 
       VCR.use_cassette 'csv_file_reader/read_from_dropbox_with_illegal_quoting' do
         files = @dropbox_client.list_folder('/TCORS/analytics_files/04-19-2017')
-        csv_content = CsvFileReader.read_from_dropbox(files[1].path_lower, {:skip_first_row => true})
+        csv_content = CsvFileReader.read_from_dropbox(@experiment, files[1].path_lower, {:skip_first_row => true})
       end
   
       expect(csv_content.count).to eq(9)

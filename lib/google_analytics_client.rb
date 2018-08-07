@@ -6,10 +6,10 @@ class GoogleAnalyticsClient
 
   attr_reader :profile_id, :scopes, :google_auth_json_file, :service
 
-  def initialize(profile_id)
+  def initialize(experiment, profile_id)
     @profile_id = profile_id
     @scopes = ['https://www.googleapis.com/auth/analytics.readonly']
-    @google_auth_json_file = StringIO.new(Setting[:google_auth_json_file])
+    @google_auth_json_file = StringIO.new(experiment.settings(:google).auth_json_file)
 
     # Authenticate and create a service object
     Google::Apis::ClientOptions.default.application_name = 'Trial Promoter'
