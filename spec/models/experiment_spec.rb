@@ -38,7 +38,8 @@ RSpec.describe Experiment, type: :model do
   it { is_expected.to have_and_belong_to_many :social_media_profiles }
   it { is_expected.to serialize(:image_codes).as(Array) }
   it { is_expected.to serialize(:comment_codes).as(Array) }
-
+  it { is_expected.to have_and_belong_to_many(:users) }
+  
   it 'returns an array of all possible times in a day' do 
     expect(Experiment.allowed_times.count).to be(12 * 60 * 2)
   end
@@ -156,5 +157,92 @@ RSpec.describe Experiment, type: :model do
     allow(experiment).to receive(:end_date).and_return(experiment.message_distribution_start_date + 10.days)
     
     expect(experiment.timeline.events).to eq(Timeline.build_default_timeline(experiment).events)
+  end
+  
+  it 'sets api key settings' do
+    service_name = :click_meter
+    key = 'fake_api_key'
+    experiment = build(:experiment)
+    
+    experiment.set_api_key(service_name, key)
+    experiment.reload
+    
+    expect(experiment.settings(:click_meter).api_key).to eq(key)
+  end
+  
+  it 'returns nil for non-existant api key' do 
+    experiment = build(:experiment)
+
+    expect(experiment.settings(:click_meter).api_key).to eq(nil)
+  end
+  
+  it 'sets api keys and api secrets settings for AWS' do
+    key = 'fake_api_key'    
+    secret_key = 'fake_secret_api_key'
+    experiment = build(:experiment)
+    
+    experiment.set_aws_key(key, secret_key)
+    experiment.reload
+    
+    expect(experiment.settings(:aws).access_key).to eq(key)
+    expect(experiment.settings(:aws).secret_access_key).to eq(secret_key)
+  end
+  
+  it 'sets api tokens and api secrets settings for Facebook' do
+    token = 'fake_token'    
+    ads_token = 'fake_ads_token'
+    app_secret = 'fake_app_secret'
+    experiment = build(:experiment)
+    
+    experiment.set_facebook_keys(token, ads_token, app_secret)
+    experiment.reload
+    
+    expect(experiment.settings(:facebook).access_token).to eq(token)
+    expect(experiment.settings(:facebook).ads_access_token).to eq(ads_token)
+    expect(experiment.settings(:facebook).app_secret).to eq(app_secret)
+  end
+  
+  it 'sets api tokens and api secrets settings for Twitter' do
+    consumer_key = 'fake_api_key'    
+    consumer_secret = 'fake_api_key_secret'    
+    access_token = 'fake_access_token'
+    access_token_secret = 'fake_token_secret'
+    experiment = build(:experiment)
+    
+    experiment.set_twitter_keys(consumer_key, consumer_secret, access_token, access_token_secret)
+    experiment.reload
+    
+    expect(experiment.settings(:twitter).consumer_key).to eq(consumer_key)
+    expect(experiment.settings(:twitter).consumer_secret).to eq(consumer_secret)
+    expect(experiment.settings(:twitter).access_token).to eq(access_token)
+    expect(experiment.settings(:twitter).access_token_secret).to eq(access_token_secret)
+  end
+  
+  it 'sets the google auth file' do
+    auth_json_file = '{
+  "type": "fake_account",
+  "project_id": "fake",
+  "private_key_id": "fake",
+  "private_key": "-----BEGIN PRIVATE KEY-----fake/fake/fake=-----END PRIVATE KEY-----",
+  "client_email": "fake",
+  "client_id": "fake",
+  "auth_uri": "https://fake/o/oauth2/auth",
+  "token_uri": "https://fake/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://fake/oauth2/v1/certs",
+  "client_x509_cert_url": "https://fake%40appspot.gserviceaccount.com"}'
+    experiment = build(:experiment)
+    
+    experiment.set_google_api_key(auth_json_file)
+    experiment.reload
+    
+    expect(experiment.settings(:google).auth_json_file).to eq(auth_json_file)
+  end
+  
+  it 'finds an experiment by its param' do
+    create(:experiment, name: 'experiment')
+
+    experiment = Experiment.find_by_param(Experiment.first.to_param)
+
+    expect(experiment).to eq(Experiment.first)
   end
 end

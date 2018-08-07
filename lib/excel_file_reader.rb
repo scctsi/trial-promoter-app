@@ -22,8 +22,8 @@ class ExcelFileReader
     parsed_excel_content 
   end
   
-  def self.read_from_dropbox(dropbox_file_path)
-    dropbox_client = DropboxClient.new
+  def self.read_from_dropbox(experiment, dropbox_file_path)
+    dropbox_client = DropboxClient.new(experiment)
 
     parsed_excel_content = []
     file, body = dropbox_client.get_file(dropbox_file_path)

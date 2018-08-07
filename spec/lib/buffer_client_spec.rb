@@ -4,7 +4,8 @@ require 'yaml'
 RSpec.describe BufferClient do
   before do
     secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
-    allow(Setting).to receive(:[]).with(:buffer_access_token).and_return(secrets['buffer_access_token'])
+    @experiment = build(:experiment)
+    @experiment.set_api_key(:buffer, secrets["buffer_access_token"])
     allow(BufferClient).to receive(:post).and_call_original
     allow(BufferClient).to receive(:get).and_call_original
     @message = build(:message)
@@ -14,31 +15,31 @@ RSpec.describe BufferClient do
 
   describe "(development only tests)", :development_only_tests => true do
     it 'returns the body of the POST request for creating a Buffer update via the Buffer API' do
-      post_request_body = BufferClient.post_request_body_for_create(@message)
+      post_request_body = BufferClient.post_request_body_for_create(@experiment, @message)
 
       expect(post_request_body[:profile_ids]).to eq(@message.social_media_profile.buffer_id)
       expect(post_request_body[:text]).to eq(@message.content)
       expect(post_request_body[:shorten]).to eq(true)
-      expect(post_request_body[:access_token]).to eq(Setting[:buffer_access_token])
+      expect(post_request_body[:access_token]).to eq(@experiment.settings(:buffer).api_key)
     end
 
     it 'returns the body of the POST request when the message contains an image' do
       @message.image_present = :with
       @message.image = create(:image)
       @message.save
-      post_request_body = BufferClient.post_request_body_for_create(@message)
+      post_request_body = BufferClient.post_request_body_for_create(@experiment, @message)
 
       expect(post_request_body[:profile_ids]).to eq(@message.social_media_profile.buffer_id)
       expect(post_request_body[:text]).to eq(@message.content)
       expect(post_request_body[:shorten]).to eq(true)
-      expect(post_request_body[:access_token]).to eq(Setting[:buffer_access_token])
+      expect(post_request_body[:access_token]).to eq(@experiment.settings(:buffer).api_key)
       expect(post_request_body[:media]).to eq({"thumbnail" => @message.image.url, "photo" => @message.image.url})
     end
 
     it 'adds a scheduled_at key in the body of the POST request for a message that has a specifc scheduled date time' do
       @message.scheduled_date_time = DateTime.new(2000, 1, 1, 6, 30, 0)
 
-      post_request_body = BufferClient.post_request_body_for_create(@message)
+      post_request_body = BufferClient.post_request_body_for_create(@experiment, @message)
 
       expect(post_request_body[:scheduled_at]).to eq(@message.scheduled_date_time.to_s)
     end
@@ -46,10 +47,10 @@ RSpec.describe BufferClient do
     describe 'synchronizing the list of social profiles' do
       it 'uses the Buffer API to get an initial list of social media profiles' do
         VCR.use_cassette 'buffer/get_social_media_profiles' do
-          BufferClient.get_social_media_profiles
+          BufferClient.get_social_media_profiles(@experiment)
         end
 
-        expect(BufferClient).to have_received(:get).with("https://api.bufferapp.com/1/profiles.json?access_token=#{Setting[:buffer_access_token]}")
+        expect(BufferClient).to have_received(:get).with("https://api.bufferapp.com/1/profiles.json?access_token=#{@experiment.settings(:buffer).api_key}")
         expect(SocialMediaProfile.count).to eq(12)
         social_media_profile = SocialMediaProfile.first
         expect(social_media_profile.platform).to eq(:facebook)
@@ -63,7 +64,7 @@ RSpec.describe BufferClient do
         SocialMediaProfile.create!(buffer_id: '55c11ce246042c5e7f8ae843', service_id: '1', service_username: 'user', platform: :twitter)
 
         VCR.use_cassette 'buffer/get_social_media_profiles' do
-          BufferClient.get_social_media_profiles
+          BufferClient.get_social_media_profiles(@experiment)
         end
 
         social_media_profiles = SocialMediaProfile.all
@@ -76,10 +77,10 @@ RSpec.describe BufferClient do
 
     it 'uses the Buffer API to create an update' do
       VCR.use_cassette 'buffer/create_update' do
-        BufferClient.create_update(@message)
+        BufferClient.create_update(@experiment, @message)
       end
 
-      expect(BufferClient).to have_received(:post).with('https://api.bufferapp.com/1/updates/create.json', {:body => BufferClient.post_request_body_for_create(@message)})
+      expect(BufferClient).to have_received(:post).with('https://api.bufferapp.com/1/updates/create.json', {:body => BufferClient.post_request_body_for_create(@experiment, @message)})
       expect(@message.buffer_update).not_to be_nil
       # The response returned from Buffer contains a Buffer ID that we need to store in a newly created buffer_update
       expect(@message.buffer_update.buffer_id).not_to be_blank
@@ -104,10 +105,10 @@ RSpec.describe BufferClient do
       @message.content = "Even occasional #smoking can hurt you. If nobody smoked, about 30% of US cancer deaths could be prevented.http://go-staging.befreeoftobacco.org/0ix"
 
       VCR.use_cassette 'buffer/create_update_and_shorten_link' do
-        BufferClient.create_update(@message)
+        BufferClient.create_update(@experiment, @message)
       end
 
-      expect(BufferClient).to have_received(:post).with('https://api.bufferapp.com/1/updates/create.json', {:body => BufferClient.post_request_body_for_create(@message)})
+      expect(BufferClient).to have_received(:post).with('https://api.bufferapp.com/1/updates/create.json', {:body => BufferClient.post_request_body_for_create(@experiment, @message)})
       expect(@message.buffer_update).not_to be_nil
       # The response returned from Buffer contains a Buffer ID that we need to store in a newly created buffer_update
       expect(@message.buffer_update.buffer_id).not_to be_blank
@@ -121,27 +122,27 @@ RSpec.describe BufferClient do
     it 'ignores any update that Buffer rejects as being in the past (scheduled time is before now)' do
       @message.scheduled_date_time = DateTime.new(2017, 1, 1, 12, 0, 0)
       VCR.use_cassette 'buffer/ignore_past_update' do
-        BufferClient.create_update(@message)
+        BufferClient.create_update(@experiment, @message)
       end
 
-      expect(BufferClient).to have_received(:post).with('https://api.bufferapp.com/1/updates/create.json', {:body => BufferClient.post_request_body_for_create(@message)})
+      expect(BufferClient).to have_received(:post).with('https://api.bufferapp.com/1/updates/create.json', {:body => BufferClient.post_request_body_for_create(@experiment, @message)})
       expect(@message.buffer_update).to be_nil
     end
     
     it 'exhibits a bug where Buffer cannot post a message containing a URL that has no space preceding it and the rest of the message is exactly 117 characters long' do
       @message.content = 'Smoking can cause cancer almost anywhere in the body. 160,000+ US cancer deaths every year are linked to #smoking.http://go-staging.befreeoftobacco.org/0kn'
       VCR.use_cassette 'buffer/raise_error_length_for_twitter' do
-        expect{ BufferClient.create_update(@message) }.to raise_error(MessageTooLongForTwitterError, "Message content for message ID #{@message.id} is too long for Twitter.")
+        expect{ BufferClient.create_update(@experiment, @message) }.to raise_error(MessageTooLongForTwitterError, "Message content for message ID #{@message.id} is too long for Twitter.")
       end
     end
 
     it 'does not exhibit the above bug if the message length is exactly 116 characters, but there is a space preceding the URL' do
       @message.content = '#Tobacco use causes ~20% of all US deaths-more than AIDS, alcohol, car accidents, homicides & illegal drugs combined http://go-staging.befreeoftobacco.org/0kn'
       VCR.use_cassette 'buffer/does_not_raise_error_length_for_twitter' do
-        BufferClient.create_update(@message)
+        BufferClient.create_update(@experiment, @message)
       end
 
-      expect(BufferClient).to have_received(:post).with('https://api.bufferapp.com/1/updates/create.json', {:body => BufferClient.post_request_body_for_create(@message)})
+      expect(BufferClient).to have_received(:post).with('https://api.bufferapp.com/1/updates/create.json', {:body => BufferClient.post_request_body_for_create(@experiment, @message)})
       expect(@message.buffer_update).not_to be_nil
       # The response returned from Buffer contains a Buffer ID that we need to store in a newly created buffer_update
       expect(@message.buffer_update.buffer_id).not_to be_blank
@@ -157,10 +158,10 @@ RSpec.describe BufferClient do
       @message.buffer_update = BufferUpdate.new(:buffer_id => buffer_id)
 
       VCR.use_cassette 'buffer/get_update' do
-        BufferClient.get_update(@message)
+        BufferClient.get_update(@experiment, @message)
       end
 
-      expect(BufferClient).to have_received(:get).with("https://api.bufferapp.com/1/updates/#{buffer_id}.json?access_token=#{Setting[:buffer_access_token]}")
+      expect(BufferClient).to have_received(:get).with("https://api.bufferapp.com/1/updates/#{buffer_id}.json?access_token=#{@experiment.settings(:buffer).api_key}")
       expect(@message.buffer_update.status).to eq(:sent)
       # The sent_from_date_time should be equal to the update if the status is 'sent'
       expect(@message.buffer_update.sent_from_date_time).to eq('2015-09-17 14:35:22 +0000')

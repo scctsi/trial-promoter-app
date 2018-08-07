@@ -43,7 +43,7 @@ class MessageConstructor
     return_value = []
     
     hashtags.each do |hashtag|
-      return_value << hashtag if twitter_message_content.length <= (140 - 23 - hashtag.length)
+      return_value << hashtag if twitter_message_content.length <= (MessageTemplate::MAXIMUM_TWEET_LENGTH - MessageTemplate::TWEET_URL_LENGTH - hashtag.length)
     end
 
     return_value    

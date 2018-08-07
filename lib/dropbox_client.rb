@@ -1,8 +1,8 @@
 require 'dropbox'
 
 class DropboxClient
-  def initialize
-    @dropbox_client = Dropbox::Client.new(Setting[:dropbox_access_token])
+  def initialize(experiment)
+    @dropbox_client = Dropbox::Client.new(experiment.settings(:dropbox).api_key)
   end
   
   def list_folder(path)

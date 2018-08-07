@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171108005622) do
+ActiveRecord::Schema.define(version: 20180728011748) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -111,6 +111,7 @@ ActiveRecord::Schema.define(version: 20171108005622) do
     t.integer  "message_id"
     t.string   "social_media_comment_id"
     t.string   "commentator_id"
+    t.string   "parent_tweet_id"
   end
 
   create_table "daily_metric_parser_results", force: :cascade do |t|
@@ -161,8 +162,8 @@ ActiveRecord::Schema.define(version: 20171108005622) do
     t.string   "name",                            limit: 1000
     t.datetime "end_date"
     t.datetime "message_distribution_start_date"
-    t.datetime "created_at",                                   null: false
-    t.datetime "updated_at",                                   null: false
+    t.datetime "created_at",                                                   null: false
+    t.datetime "updated_at",                                                   null: false
     t.text     "twitter_posting_times"
     t.text     "facebook_posting_times"
     t.text     "instagram_posting_times"
@@ -171,6 +172,7 @@ ActiveRecord::Schema.define(version: 20171108005622) do
     t.text     "comment_codes"
     t.text     "image_codes"
     t.text     "ip_exclusion_list"
+    t.boolean  "use_click_meter",                              default: false
   end
 
   create_table "experiments_social_media_profiles", force: :cascade do |t|
@@ -179,6 +181,14 @@ ActiveRecord::Schema.define(version: 20171108005622) do
   end
 
   add_index "experiments_social_media_profiles", ["experiment_id", "social_media_profile_id"], name: "index_experiments_social_media_profiles", unique: true, using: :btree
+
+  create_table "experiments_users", id: false, force: :cascade do |t|
+    t.integer "experiment_id"
+    t.integer "user_id"
+  end
+
+  add_index "experiments_users", ["experiment_id"], name: "index_experiments_users_on_experiment_id", using: :btree
+  add_index "experiments_users", ["user_id"], name: "index_experiments_users_on_user_id", using: :btree
 
   create_table "hashtags", force: :cascade do |t|
     t.string   "phrase"
@@ -208,14 +218,16 @@ ActiveRecord::Schema.define(version: 20171108005622) do
   create_table "message_generation_parameter_sets", force: :cascade do |t|
     t.integer  "period_in_days"
     t.integer  "number_of_messages_per_social_network"
-    t.datetime "created_at",                            null: false
-    t.datetime "updated_at",                            null: false
+    t.datetime "created_at",                                        null: false
+    t.datetime "updated_at",                                        null: false
     t.integer  "message_generating_id"
     t.string   "message_generating_type"
     t.text     "social_network_choices"
     t.text     "medium_choices"
     t.text     "image_present_choices"
     t.integer  "number_of_cycles"
+    t.integer  "message_run_duration_in_days"
+    t.integer  "number_of_days_between_posting",        default: 1
   end
 
   add_index "message_generation_parameter_sets", ["message_generating_type", "message_generating_id"], name: "index_on_message_generating_type_and_message_generating_id", using: :btree
@@ -261,6 +273,7 @@ ActiveRecord::Schema.define(version: 20171108005622) do
     t.integer  "website_session_count"
     t.text     "impressions_by_day"
     t.text     "note"
+    t.boolean  "ad_published"
   end
 
   add_index "messages", ["message_generating_type", "message_generating_id"], name: "index_on_message_generating_for_analytics_files", using: :btree
@@ -284,15 +297,15 @@ ActiveRecord::Schema.define(version: 20171108005622) do
   end
 
   create_table "settings", force: :cascade do |t|
-    t.string   "var",                   null: false
+    t.string   "var",         null: false
     t.text     "value"
-    t.integer  "thing_id"
-    t.string   "thing_type", limit: 30
+    t.integer  "target_id",   null: false
+    t.string   "target_type", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "settings", ["thing_type", "thing_id", "var"], name: "index_settings_on_thing_type_and_thing_id_and_var", unique: true, using: :btree
+  add_index "settings", ["target_type", "target_id", "var"], name: "index_settings_on_target_type_and_target_id_and_var", unique: true, using: :btree
 
   create_table "social_media_profiles", force: :cascade do |t|
     t.string   "platform"

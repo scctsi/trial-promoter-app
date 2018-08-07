@@ -1,7 +1,7 @@
 class DataDictionariesController < ApplicationController
   before_action :set_data_dictionary, only: [:show, :edit, :update]
   layout "workspace", only: [:show, :edit]
-
+  
   def show
   end
 

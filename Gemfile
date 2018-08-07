@@ -24,13 +24,13 @@ gem 'jquery-rails'
 gem 'kaminari'
 gem 'koala'
 gem 'lazyload-rails'
+gem 'ledermann-rails-settings'
 gem 'pg'
 gem 'puma'
 gem 'pundit'
 gem 'pusher'
 gem 'rack-cors', :require => 'rack/cors'
 gem 'rails', '4.2.6'
-gem 'rails-settings-cached'
 gem "roo"
 gem 'sass-rails', '~> 5.0'
 gem 'semantic-ui-sass', github: 'doabit/semantic-ui-sass'
@@ -55,6 +55,7 @@ group :development, :test do
 end
 
 group :development do
+  gem 'bullet'
   gem 'guard-rspec', require: false
   gem 'spring'
   gem 'web-console', '~> 2.0'

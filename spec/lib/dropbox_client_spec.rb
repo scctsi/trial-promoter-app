@@ -2,10 +2,11 @@ require 'rails_helper'
 
 RSpec.describe DropboxClient do
   describe "(development only tests)", :development_only_tests => true do
-    before do 
+    before do
+      experiment = build(:experiment)
       secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
-      allow(Setting).to receive(:[]).with(:dropbox_access_token).and_return(secrets['dropbox_access_token'])
-      @dropbox_client = DropboxClient.new
+      experiment.set_api_key(:dropbox, secrets["dropbox_access_token"])
+      @dropbox_client = DropboxClient.new(experiment)
     end
     
     it 'gets a list of the folders in a folder' do

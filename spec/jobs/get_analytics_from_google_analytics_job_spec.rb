@@ -5,6 +5,7 @@ RSpec.describe GetAnalyticsFromGoogleAnalyticsJob, type: :job do
 
   before do
     ActiveJob::Base.queue_adapter = :test
+    @experiment = create(:experiment)
     @google_analytics_client = double('google_analytics')
     allow(GoogleAnalyticsClient).to receive(:new).and_return(@google_analytics_client)
     @data = []
@@ -23,7 +24,7 @@ RSpec.describe GetAnalyticsFromGoogleAnalyticsJob, type: :job do
   end
 
   it 'executes perform' do
-    perform_enqueued_jobs { GetAnalyticsFromGoogleAnalyticsJob.perform_later }
+    perform_enqueued_jobs { GetAnalyticsFromGoogleAnalyticsJob.perform_later(@experiment) }
 
     expect(@google_analytics_client).to have_received(:get_data).with(Date.new(2017,4,19).to_s, DateTime.now.to_date.to_s)
     expect(GoogleAnalyticsDataParser).to have_received(:parse).with(@data)

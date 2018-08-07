@@ -18,8 +18,9 @@
       = m.input :social_network_choices, as: :check_boxes, wrapper_class: 'inline fields', item_wrapper_class: 'ui field checkbox', collection: { 'Facebook' => :facebook, 'Instagram' => :instagram, 'Twitter' => :twitter }, label: 'Select the social media platform(s) you want to use in your experiment. Check all that apply:', required: false
       = m.input :medium_choices, as: :check_boxes, wrapper_class: 'inline fields', item_wrapper_class: 'ui field checkbox', collection: { 'Ad' => :ad, 'Organic/Unpaid' => :organic }, label: 'Select the type of message(s) you want to use. Check all that apply:', required: false
       = m.input :image_present_choices, as: :radio_buttons, wrapper_class: 'inline fields', item_wrapper_class: 'ui radio checkbox field', collection: { 'All (100%)' => :all_messages, 'Most (75%)' => :half_of_the_messages, 'Half (50%)' => :half_of_the_messages, 'Some (25%)' => :no_messages, 'None' => :no_messages }, label: 'Select whether you want to include images in the messages', required: false
-      =m.input :number_of_cycles, label: 'Number of times a message will be utilized throughout the experiment:', hint: 'All messages are distributed once over a single cycle'
-      =m.input :number_of_messages_per_social_network, label: 'Number of messages (for each ads and organic messages) per day per social network:'
+      = m.input :number_of_cycles, label: 'Number of times a message will be utilized throughout the experiment:', hint: 'All messages are distributed once over a single cycle'
+      = m.input :number_of_messages_per_social_network, label: 'Number of messages (for each ads and organic messages) per day per social network:'
+      = m.input :number_of_days_between_posting, label: 'Number of days between posting new messages:'
     .ui.header
       Social media profiles
     .ui.message.social-media-profile-details

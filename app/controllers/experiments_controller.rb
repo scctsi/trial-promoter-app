@@ -6,7 +6,7 @@ class ExperimentsController < ApplicationController
 
   def index
     authorize Experiment
-    @experiments = Experiment.all
+    @experiments = policy_scope(Experiment)
   end
 
   def parameterized_slug
@@ -16,8 +16,8 @@ class ExperimentsController < ApplicationController
   def show
     authorize @experiment
     @message_templates = MessageTemplate.belonging_to(@experiment)
-    @images = Image.belonging_to(@experiment)
-    @messages = Message.where(:message_generating_id => @experiment.id).page(params[:page]).order('scheduled_date_time ASC')
+    @images = Image.includes([:duplicated_image, :taggings]).belonging_to(@experiment)
+    @messages = Message.includes([:click_meter_tracking_link, :message_template, :social_media_profile, :image, :metrics, :buffer_update]).where(:message_generating_id => @experiment.id).page(params[:page]).order('scheduled_date_time ASC')
     @top_messages_by_click_rate = Message.where('message_generating_id = ? AND click_rate is not null', @experiment.id).order('click_rate desc')
     @top_messages_by_website_goal_rate = Message.where('message_generating_id = ? AND website_goal_rate is not null', @experiment.id).order('website_goal_rate desc, website_session_count desc')
 
@@ -103,12 +103,12 @@ class ExperimentsController < ApplicationController
   end
 
   def set_click_meter_groups_and_domains
-    @click_meter_groups = ClickMeterClient.get_groups
-    @click_meter_domains = ClickMeterClient.get_domains
+    @click_meter_groups = ClickMeterClient.get_groups(@experiment)
+    @click_meter_domains = ClickMeterClient.get_domains(@experiment)
   end
 
   def experiment_params
     # TODO: Unit test this
-    params.require(:experiment).permit(:name, :message_distribution_start_date, :click_meter_group_id, :click_meter_domain_id, :twitter_posting_times, :facebook_posting_times, :instagram_posting_times, {:social_media_profile_ids => []}, message_generation_parameter_set_attributes: [:number_of_cycles, :number_of_messages_per_social_network, :image_present_choices, social_network_choices: [], medium_choices: []])
+    params.require(:experiment).permit(:name, :message_distribution_start_date, :click_meter_group_id, :click_meter_domain_id, :twitter_posting_times, :facebook_posting_times, :instagram_posting_times, :use_click_meter, {:social_media_profile_ids => []}, message_generation_parameter_set_attributes: [:number_of_cycles, :number_of_messages_per_social_network, :number_of_days_between_posting, :image_present_choices, social_network_choices: [], medium_choices: []])
   end
 end
