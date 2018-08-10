@@ -86,7 +86,7 @@ RSpec.describe ExperimentsController, type: :controller do
       expect(assigns(:messages)).to eq(@ordered_messages)
     end
     
-    it 'assigns all the comments associated with messages to @comments' do
+    it 'assigns all the comments associated with the experiment to @comments' do
       expect(assigns(:comments)).to eq(@experiment_comments)
     end
 
