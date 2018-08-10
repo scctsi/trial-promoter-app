@@ -42,12 +42,13 @@ RSpec.describe ExperimentsController, type: :controller do
       @eager_loaded_messages = double('eager_loaded_messages')
       @experiment_messages = double('experiment_messages')
       @paged_messages = double('paged_messages')
+      @experiment_comments = double('experiment_comments')
       @ordered_messages = []
       allow(Message).to receive(:includes).with([:click_meter_tracking_link, :message_template, :social_media_profile, :image, :metrics, :buffer_update]).and_return(@eager_loaded_messages)
       allow(@eager_loaded_messages).to receive(:where).with(:message_generating_id => @experiment.id).and_return(@experiment_messages)
       allow(@experiment_messages).to receive(:page).and_return(@paged_messages)
       allow(@paged_messages).to receive(:order).with('scheduled_date_time ASC').and_return(@ordered_messages)
-
+      allow(Comment).to receive_message_chain(:includes, :where, :page, :per, :order).and_return(@experiment_comments)
       # Test set up for calculating the top 5 messages by click rate
       @top_messages_by_click_rate_double = double('top_messages_by_click_rate_double')
       allow(Message).to receive(:where).with('message_generating_id = ? AND click_rate is not null', @experiment.id).and_return(@top_messages_by_click_rate_double)
@@ -83,6 +84,10 @@ RSpec.describe ExperimentsController, type: :controller do
       expect(@experiment_messages).to have_received(:page).with('2')
       expect(@paged_messages).to have_received(:order).with('scheduled_date_time ASC')
       expect(assigns(:messages)).to eq(@ordered_messages)
+    end
+    
+    it 'assigns all the comments associated with the experiment to @comments' do
+      expect(assigns(:comments)).to eq(@experiment_comments)
     end
 
     it 'assigns the ordered messages with the highest click rate to @top_messages_by_click_rate' do
