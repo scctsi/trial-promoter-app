@@ -1,5 +1,3 @@
-require "csv"
-
 class FacebookCommentsAggregator
   def initialize(experiment)
     @graph = Koala::Facebook::API.new(experiment.settings(:facebook).api_key)
