@@ -158,4 +158,11 @@ class Experiment < ActiveRecord::Base
   def end_date
     message_distribution_start_date + message_generation_parameter_set.length_of_experiment_in_days(MessageTemplate.belonging_to(self).count).days
   end
+  
+  def has_experiment_variables?
+    message_templates = MessageTemplate.belonging_to(self)
+    experiment_variables = message_templates.map(&:experiment_variables)
+    experiment_variables_for_experiment = (experiment_variables.map{|experiment_variable| experiment_variable.compact }).delete_if(&:empty?)
+    experiment_variables_for_experiment.count > 0
+  end
 end
