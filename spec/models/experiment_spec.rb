@@ -245,4 +245,20 @@ RSpec.describe Experiment, type: :model do
 
     expect(experiment).to eq(Experiment.first)
   end
+  
+  it 'returns false if the experiment does not have experiment variables' do
+    experiment = build(:experiment)
+  
+    expect(experiment.has_experiment_variables?).to eq(false)
+  end
+  
+  it 'returns true if the experiment has experiment variables' do
+    experiment = create(:experiment, name: 'tcors')
+    message_template = create(:message_template)
+    message_template.experiment_list.add(experiment.to_param)
+    message_template.experiment_variables = {'health' => 'turn it up to 11'}
+    message_template.save
+
+    expect(experiment.has_experiment_variables?).to eq(true)
+  end
 end
