@@ -7,6 +7,8 @@
 .ui.divider
 %h2.ui.center.aligned.header
   #{@experiment.name} Pilot Project Workspace
+%h2.ui.center.aligned.header
+  PI: #{@experiment.pi_first_name} #{@experiment.pi_last_name}
 #experiment
   .ui.top.attached.tabular.menu
     %a{ class: 'item', 'data-tab': 'setup' }
