@@ -107,6 +107,10 @@ body {
   margin-top: 0px;
 }
 
+// Unbold PI name on workspace
+.ui.center.aligned.header.pi-name {
+  font-weight: none !important;
+}
 // ---------------------------
 // End theme changes for TCORS
 // ---------------------------
