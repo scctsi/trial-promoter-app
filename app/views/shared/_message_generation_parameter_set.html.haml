@@ -40,8 +40,8 @@
             .item
               = social_media_profile.platform_icon
               = social_media_profile.service_username
-  %tfoot.full-width
-    %tr
-      %th{ colspan: 2 }
-        - message_count = message_generation_parameter_set.expected_generated_message_count(MessageTemplate.belonging_to(message_generation_parameter_set.message_generating).count)
-        Total number of messages to be distributed: #{message_count}
+  // %tfoot.full-width
+  //   %tr
+  //     %th{ colspan: 2 }
+  //       - message_count = message_generation_parameter_set.expected_generated_message_count(MessageTemplate.belonging_to(message_generation_parameter_set.message_generating).count)
+  //       Total number of messages to be distributed: #{message_count}
