@@ -4,6 +4,9 @@
       %th
   %tbody
     %tr
+      %td.collapsing Length of promotion
+      %td 120 days
+    %tr
       %td.collapsing Social media types
       %td= message_generation_parameter_set.social_network_choices.join(', ').titleize.chomp(',')
     %tr
@@ -12,17 +15,23 @@
     %tr
       %td.collapsing Inclusion of images
       %td= message_generation_parameter_set.image_present_choices.split('_').join(' ').capitalize
-    - if message_generation_parameter_set.medium_choices.include?(:ad)
-      %tr
-        %td.collapsing Number of ads per day per social media type
-        %td= message_generation_parameter_set.number_of_messages_per_social_network
-    - if message_generation_parameter_set.medium_choices.include?(:organic)
-      %tr
-        %td.collapsing Number of organic messages per day per social media type
-        %td= message_generation_parameter_set.number_of_messages_per_social_network
     %tr
-      %td.collapsing Number of times a message will be utilized throughout experiment
-      %td= message_generation_parameter_set.number_of_cycles
+      %td.collapsing Posting frequency
+      %td 1 time per week
+    // - if message_generation_parameter_set.medium_choices.include?(:ad)
+    //   %tr
+    //     %td.collapsing Number of ads per day per social media type
+    //     %td= message_generation_parameter_set.number_of_messages_per_social_network
+    // - if message_generation_parameter_set.medium_choices.include?(:organic)
+    //   %tr
+    //     %td.collapsing Number of organic messages per day per social media type
+    //     %td= message_generation_parameter_set.number_of_messages_per_social_network
+    // %tr
+    //   %td.collapsing Number of times a message will be utilized throughout experiment
+    //   %td= message_generation_parameter_set.number_of_cycles
+    %tr
+      %td.collapsing Length of running ad
+      %td= message_generation_parameter_set.number_of_days_between_posting
     %tr
       %td.collapsing Social media profiles
       %td
