@@ -12,10 +12,11 @@
   %a.ui.labeled.icon.button{ href: "/images/check_validity_for_instagram_ads" }
     %i.image.icon
     Check image sizes (for instagram ads)
-  .or
-  %a#images-add-button.ui.labeled.icon.button{ 'data-experiment-id': @experiment.id, 'data-experiment-param': @experiment.to_param }
-    %i.image.icon
-    Add images
+  - if current_user.role == 'administrator'
+    .or
+    %a#images-add-button.ui.labeled.icon.button{ 'data-experiment-id': @experiment.id, 'data-experiment-param': @experiment.to_param }
+      %i.image.icon
+      Add images
 .ui.success.message.hidden.ask-refresh-page
   .header
     %p Your upload was successful. Please refresh the page to see the image(s).
