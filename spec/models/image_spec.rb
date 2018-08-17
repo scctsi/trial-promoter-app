@@ -67,8 +67,7 @@ RSpec.describe Image do
       
       @images.each { |image| image.reload }
       expect(@images[0].duplicates.count).to eq(2)
-      expect(@images[0].duplicates[0]).to eq(@images[3])
-      expect(@images[0].duplicates[1]).to eq(@images[2])
+      expect(@images[0].duplicates).to match_array([@images[2], @images[3]])
       expect(@images[0].duplicated_image).to be_nil
       expect(@images[2].duplicated_image).to eq(@images[0])
       expect(@images[3].duplicated_image).to eq(@images[0])
