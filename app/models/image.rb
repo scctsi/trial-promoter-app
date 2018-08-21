@@ -48,7 +48,8 @@ class Image < ActiveRecord::Base
   end
   
   def delete_image_from_s3
-    s3 = S3Client.new(experiment)
-    s3.delete(s3.bucket(url), s3.key(url)) 
+    # TODO: Fix callback; manual deletion in S3 for now
+    # s3 = S3Client.new(experiment)
+    # s3.delete(s3.bucket(url), s3.key(url)) 
   end
 end
