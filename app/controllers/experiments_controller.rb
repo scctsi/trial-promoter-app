@@ -20,7 +20,7 @@ class ExperimentsController < ApplicationController
     @messages = Message.includes([:click_meter_tracking_link, :message_template, :social_media_profile, :image, :metrics, :buffer_update]).where(:message_generating_id => @experiment.id).page(params[:page]).order('scheduled_date_time ASC')
     @top_messages_by_click_rate = Message.where('message_generating_id = ? AND click_rate is not null', @experiment.id).order('click_rate desc')
     @top_messages_by_website_goal_rate = Message.where('message_generating_id = ? AND website_goal_rate is not null', @experiment.id).order('website_goal_rate desc, website_session_count desc')
-    @comments = Comment.includes(:message).where(messages: {:message_generating_id => @experiment.id}).page(params[:page]).per(20).order('toxicity_score DESC')
+    @comments = Comment.includes(:message).where(messages: {:message_generating_id => @experiment.id}).page(params[:page]).per(20).order('toxicity_score ASC')
 
     respond_to do |format|
       format.html
