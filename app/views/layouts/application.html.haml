@@ -21,7 +21,7 @@
                 %p
                   = notice
             - if alert
-              .ui.negative.message
+              .ui.negative.message{:data => { 'cy' => 'unauthorized' }}
                 %p
                   = alert
             = yield

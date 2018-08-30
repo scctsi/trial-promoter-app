@@ -2,7 +2,7 @@
   = image_tag("logo.png", alt: "Trial Promoter logo")
   %h2 Developing Evidence-Based Health Communication Methods
   .ui.divider
-  .login-header
+  .login-header{:data => { 'cy' => 'email' }}
     - if user_signed_in?
       Welcome to Trial Promoter,
       %strong= current_user.email
