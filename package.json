@@ -1,0 +1,28 @@
+{
+  "name": "trial-promoter-app",
+  "devDependencies": {
+    "cypress": "^3.1.0",
+    "standard": "^11.0.1"
+  },
+  "version": "1.0.0",
+  "description": "[![Code Climate](https://codeclimate.com/repos/5845b92d5aa4776c11000a26/badges/95808bfbcdb3701e47cc/gpa.svg)](https://codeclimate.com/repos/5845b92d5aa4776c11000a26/feed)\r [![Test Coverage](https://codeclimate.com/repos/5845b92d5aa4776c11000a26/badges/95808bfbcdb3701e47cc/coverage.svg)](https://codeclimate.com/repos/5845b92d5aa4776c11000a26/coverage)",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "engines" : { "node" : ">=4.0.0"
+  },
+  "scripts": {
+    "test": "standard && node my-tests.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/scctsi/trial-promoter-app.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/scctsi/trial-promoter-app/issues"
+  },
+  "homepage": "https://github.com/scctsi/trial-promoter-app#readme"
+}
