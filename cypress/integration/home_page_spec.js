@@ -3,13 +3,13 @@ describe('The Home Page', function() {
     // there is a before action that creates a user for all tests
     // so this starts at the index page, rather than the login page
 
-    cy.visit('https://www.google.com')
-    cy.request('https://www.google.com')
+    cy.visit("http://localhost:8080")
+
     // cy.visit('/')
 
-    // cy.get('[data-method=delete]').should('contain', 'Logout')
+    cy.get('[data-method=delete]').should('contain', 'Logout')
 
-    // cy.get('[data-cy=email]').should('contain', 'faker@faker.com')
+    cy.get('[data-cy=email]').should('contain', 'faker@faker.com')
   })
 })
 
