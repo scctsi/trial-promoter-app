@@ -2,6 +2,8 @@ describe('The Home Page', function() {
   it('successfully loads', function() {
     // there is a before action that creates a user for all tests
     // so this starts at the index page, rather than the login page
+
+    cy.visit('https://www.google.com')
     cy.visit('/')
 
     cy.get('[data-method=delete]').should('contain', 'Logout')
