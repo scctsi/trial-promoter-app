@@ -3,7 +3,7 @@ describe('The Home Page', function() {
     // there is a before action that creates a user for all tests
     // so this starts at the index page, rather than the login page
 
-    cy.visit("http://localhost:8080")
+    cy.visit("http://www.localhost:8080")
 
     // cy.visit('/')
 
