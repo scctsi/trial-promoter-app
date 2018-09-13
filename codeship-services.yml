@@ -1,6 +1,6 @@
-codeship_example:
+demo:
   build:
-    image: codeship_example
+    image: trial-promoter-app
     dockerfile: Dockerfile
-  environment:
-    EXAMPLE_ENV_VAR: example-var
+  depends_on:
+    - postgres
