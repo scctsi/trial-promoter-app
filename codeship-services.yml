@@ -1,4 +1,4 @@
 demo:
-  build:
+  build: demo
     image: trial-promoter-app
     dockerfile: Dockerfile
