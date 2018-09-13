@@ -2,5 +2,3 @@ demo:
   build:
     image: trial-promoter-app
     dockerfile: Dockerfile
-  depends_on:
-    - postgres
