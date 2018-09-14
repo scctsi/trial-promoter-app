@@ -4,7 +4,7 @@ FROM ruby:2.3.3
 # well as RubyGems. As the Ruby image itself is based on a 
 # Debian image, we use apt-get to install those.
 RUN apt-get update && apt-get install -y
-RUN apt-get add nodejs build-base libxml2-dev libxslt-dev postgresql postgresql-dev -y
+RUN apt-get install nodejs build-base libxml2-dev libxslt-dev postgresql postgresql-dev -y
 
 # Configure the main working directory. This is the base 
 # directory used in any further RUN, COPY, and ENTRYPOINT 
