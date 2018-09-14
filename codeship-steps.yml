@@ -1,12 +1,3 @@
-- type: parallel
-  name: example_parallel_step
-  steps:
-    - service: demo
-      command: printenv
-    - service: demo
-      # shell wrapper not required unless passing along env vars or combining commands
-      command: /bin/bash -c 'ls && echo ${CI_BUILD_ID}'
-- name: example_tagged_step
-  tag: master
-  service: demo
-  command: echo "Deploy here!"
+- name: run_rails_test
+  command: /bin/bash -c 'bundle exec rake db:migrate && rails test' # bash wrapper not required unless passing along env variables or combining commands
+  service: app # our command will run on an instance of the `app` service that we've defined in the `codeship-services.yml` file

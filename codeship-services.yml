@@ -1,4 +1,19 @@
-demo:
-  build: demo
-    image: trial-promoter-app
+app:
+  build:
+    image: codeship/trial-promoter-app
     dockerfile: Dockerfile
+  environment:
+    PGHOST: pg-db
+    PGUSER: trial_promoter_app
+    PGPASSWORD: trial_promoter_app_password
+    PGDATABASE: postgres
+    RAILS_ENV: test  
+  depends_on:
+    - pg-db
+  cached: true
+pg-db:
+  image: healthcheck/postgres:alpine
+  environment:
+    POSTGRES_USER: trial_promoter_app
+    POSTGRES_DB: trial_promoter_app_password
+    POSTGRES_DATABASE: postgres
