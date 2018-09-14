@@ -3,10 +3,9 @@ FROM ruby:2.3.3
 # Install apt based dependencies required to run Rails as 
 # well as RubyGems. As the Ruby image itself is based on a 
 # Debian image, we use apt-get to install those.
-RUN apk update
-RUN apk upgrade
-RUN apk add curl wget bash
-RUN apk add nodejs build-base libxml2-dev libxslt-dev postgresql postgresql-dev
+RUN apt-get update && apt-get install -y
+RUN apt-get curl wget bash
+RUN apt-get add nodejs build-base libxml2-dev libxslt-dev postgresql postgresql-dev
 
 # Configure the main working directory. This is the base 
 # directory used in any further RUN, COPY, and ENTRYPOINT 
