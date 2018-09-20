@@ -36,7 +36,6 @@ gem 'semantic-ui-sass', github: 'doabit/semantic-ui-sass'
 gem 'simple_form'
 # gem 'turbolinks', '~> 5.0.0'
 gem 'twitter'
-gem 'uglifier', '>= 1.3.0'
 gem 'zip-zip'
 gem 'zuck', '3.5.1', github: 'scctsi/zuck'
 
