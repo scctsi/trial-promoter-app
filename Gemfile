@@ -24,7 +24,7 @@ gem 'kaminari'
 gem 'koala'
 gem 'lazyload-rails'
 gem 'ledermann-rails-settings'
-gem 'pg'
+gem 'pg-1.1.3'
 gem 'puma'
 gem 'pundit'
 gem 'pusher'
@@ -61,7 +61,7 @@ end
 
 group :test do
   gem "codeclimate-test-reporter", "~> 1.0.0"
-  gem 'factory_girl_rails', "~> 4.0"
+  gem 'factory_bot'
   gem 'shoulda-matchers', '~> 3.1', require: false
   gem "simplecov"
 end
