@@ -6,4 +6,4 @@ WORKDIR /app
 COPY Gemfile /app/Gemfile
 RUN bundle install
 # Copy the app source code into the image
-COPY . .
+COPY . /app
