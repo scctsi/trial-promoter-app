@@ -14,22 +14,41 @@
           = message.content
         .extra
           %table.ui.very.basic.compact.table
+            %caption Social media engagement 
             %thead
+              %th Primary outcome measure
               %th Clicks
               %th Impressions
-              %th Primary outcome measure
               %th Likes
               %th Shares
               %th Comments
             %tbody
               %tr
-                %td= message.metric_facebook_clicks
-                %td= message.percentage_facebook_clicks_impressions
                 %td
                   .ui.label.basic.teal
                     = message.percentage_facebook_clicks_impressions.to_s + "%"
                     Click rate
+                %td= message.metric_facebook_clicks
+                %td= message.percentage_facebook_clicks_impressions
                 %td= message.metric_facebook_likes
                 %td= message.metric_facebook_shares
                 %td= message.metric_facebook_comments
-
+        .extra
+          %table.ui.very.basic.compact.table
+            %caption Website engagement
+            %thead
+              %th Secondary outcome measure
+              %th Conversions
+              %th Sessions
+              %th Users
+              %th Average Session Duration
+            %tbody
+              %tr
+                %td
+                  .ui.label.basic.teal
+                    = MetricsManager.get_metric_value(message, :google_analytics, 'ga:goals').to_s + "%"
+                    Conversion rate
+                %td= MetricsManager.get_metric_value(message, :google_analytics, 'ga:goals')
+                %td= MetricsManager.get_metric_value(message, :google_analytics, 'ga:sessions')
+                %td= MetricsManager.get_metric_value(message, :google_analytics, 'ga:users')
+                %td= MetricsManager.get_metric_value(message, :google_analytics, 'ga:avgSessionDuration')
