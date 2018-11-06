@@ -25,7 +25,7 @@ RSpec.describe DataDictionaryPolicy, type: :policy do
     it { should be_permitted_to(:update) }
   end
 
-  context "for a administrator" do
+  context "for an administrator" do
     let(:user) { create(:administrator) }
     subject { DataDictionaryPolicy.new(user, @data_dictionary) }
 

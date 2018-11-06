@@ -5,14 +5,14 @@ RSpec.describe AnalyticsFilePolicy, type: :policy do
 
   let(:analytics_file) { create(:analytics_file) }
 
-  context "for an initial user" do
+  context "for a user with no role" do
     let(:user) { create(:user) }
 
     it { should_not be_permitted_to(:update) }
     it { should_not be_permitted_to(:process_all_files) }
   end
 
-  context "for a administrator" do
+  context "for an administrator" do
     let(:user) { create(:administrator) }
 
     it { should be_permitted_to(:update) }

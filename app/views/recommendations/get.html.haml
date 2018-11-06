@@ -1,0 +1,19 @@
+%h2.header
+  %i.thumbs.up.outline.icon
+  Recommendations
+- if current_user.role.administrator?  
+  #recommendations
+    .ui.top.attached.tabular.menu
+      %a{ class: 'active item', 'data-tab': 'messages' }
+        Messages
+      %a{ class: 'item', 'data-tab': 'images' }
+        Images
+      %a{ class: 'item', 'data-tab': 'irb' }
+        IRB documents
+    .ui.bottom.attached.active.tab.segment{ 'data-tab': 'messages' }
+      Test
+    .ui.bottom.attached.tab.segment{ 'data-tab': 'images' }
+      Test1
+    .ui.bottom.attached.tab.segment{ 'data-tab': 'irb' }
+      Test2
+
