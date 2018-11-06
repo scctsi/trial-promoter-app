@@ -286,17 +286,19 @@ $(document).ready(function() {
   }
 
   function setUpPusherChannels() {
-    var pusherKey = $('body').data('pusher-key');
-    var pusher = new Pusher(pusherKey); // uses your APP KEY
-    var channel = pusher.subscribe('progress');
-    channel.bind('progress', function(data) {
-      $('.ui.progress').progress('increment');
-
-      if(data.value === data.total) {
-        $('.ui.progress').progress('set success');
-        $('#message-generation-progress .approve.button').show();
-      }
-    });
+    if (typeof $('body').data('pusher-key') !== "undefined") {
+      var pusherKey = $('body').data('pusher-key');
+      var pusher = new Pusher(pusherKey); // uses your APP KEY
+      var channel = pusher.subscribe('progress');
+      channel.bind('progress', function(data) {
+        $('.ui.progress').progress('increment');
+  
+        if(data.value === data.total) {
+          $('.ui.progress').progress('set success');
+          $('#message-generation-progress .approve.button').show();
+        }
+      });
+    }
   }
 
   function generateMessages(experimentId, totalMessageCount) {
@@ -709,7 +711,7 @@ $(document).ready(function() {
   $('.menu .item').tab({
     history: true,
     historyType: 'hash',
-    context: 'parent'
+    context: false
   });
   $('.table.sortable').tablesort();
   $('.ui.dropdown').dropdown({
