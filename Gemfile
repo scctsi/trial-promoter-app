@@ -35,6 +35,7 @@ gem "roo"
 gem 'sass-rails', '~> 5.0'
 gem 'semantic-ui-sass', github: 'doabit/semantic-ui-sass'
 gem 'simple_form'
+gem 'sprockets', '~> 3.7.2'
 # gem 'turbolinks', '~> 5.0.0'
 gem 'twitter'
 gem 'uglifier', '>= 1.3.0'
