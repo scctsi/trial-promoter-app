@@ -32,4 +32,23 @@
                 %td= message.metric_twitter_likes
                 %td= message.metric_twitter_shares
                 %td= message.metric_twitter_comments
+        .extra
+          %table.ui.very.basic.compact.table
+            %caption Website engagement
+            %thead
+              %th Secondary outcome measure
+              %th Conversions
+              %th Sessions
+              %th Users
+              %th Average Session Duration
+            %tbody
+              %tr
+                %td
+                  .ui.label.basic.teal
+                    = message.calculate_goal_rate
+                    Conversion rate
+                %td= MetricsManager.get_metric_value(message, :google_analytics, 'ga:goals')
+                %td= MetricsManager.get_metric_value(message, :google_analytics, 'ga:sessions')
+                %td= MetricsManager.get_metric_value(message, :google_analytics, 'ga:users')
+                %td= MetricsManager.get_metric_value(message, :google_analytics, 'ga:avgSessionDuration')
 

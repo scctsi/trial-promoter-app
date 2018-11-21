@@ -166,10 +166,17 @@ class Message < ActiveRecord::Base
     end
     calculated_rate = nil if calculated_rate == 'N/A'
     calculated_rate *= 100 if calculated_rate != nil
-    self.click_rate = calculated_rate
+    self.click_rate = calculated_rate.to_s + '%'
 
     save
   end
+  
+  def calculate_goal_rate
+    return "N/A" if self.metrics[0].nil? || self.metrics[0][:data]["ga:sessions"].nil?
+    goal_rate = self.metrics[0][:data]["ga:goals"] / self.metrics[0][:data]["ga:sessions"]
+    return (goal_rate.to_f*100).to_s + '%'
+  end
+  
 
   def calculate_website_goal_rate(exclude_ip_address_list = [])
     calculate_goal_count

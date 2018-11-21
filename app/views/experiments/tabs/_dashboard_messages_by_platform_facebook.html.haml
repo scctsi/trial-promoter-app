@@ -2,53 +2,48 @@
   - @facebook_messages = @messages.select{ |message| message.social_media_profile.platform == :facebook}
   - @facebook_messages.each do |message|
     .item
-      .ui.small.image
+      .ui.tiny.image
         -if message.image
           = image_tag "#{message.image.url}"
         -else
           = image_tag "no-image.png"
       .content
-        .description
-          .ui.left.basic.label
-            = message.medium
-          = message.content
-        .extra
-          %table.ui.very.basic.compact.table
-            %caption Social media engagement 
-            %thead
-              %th Primary outcome measure
-              %th Clicks
-              %th Impressions
-              %th Likes
-              %th Shares
-              %th Comments
-            %tbody
-              %tr
-                %td
-                  .ui.label.basic.teal
-                    = message.percentage_facebook_clicks_impressions.to_s + "%"
-                    Click rate
-                %td= message.metric_facebook_clicks
-                %td= message.percentage_facebook_clicks_impressions
-                %td= message.metric_facebook_likes
-                %td= message.metric_facebook_shares
-                %td= message.metric_facebook_comments
-        .extra
-          %table.ui.very.basic.compact.table
-            %caption Website engagement
-            %thead
-              %th Secondary outcome measure
-              %th Conversions
-              %th Sessions
-              %th Users
-              %th Average Session Duration
-            %tbody
-              %tr
-                %td
-                  .ui.label.basic.teal
-                    = MetricsManager.get_metric_value(message, :google_analytics, 'ga:goals').to_s + "%"
-                    Conversion rate
-                %td= MetricsManager.get_metric_value(message, :google_analytics, 'ga:goals')
-                %td= MetricsManager.get_metric_value(message, :google_analytics, 'ga:sessions')
-                %td= MetricsManager.get_metric_value(message, :google_analytics, 'ga:users')
-                %td= MetricsManager.get_metric_value(message, :google_analytics, 'ga:avgSessionDuration')
+        = message.content
+        .ui.right.basic.label
+          = message.medium
+        .ui.two.column.grid
+          .column
+            .ui.two.column.grid
+              .column
+                .ui.mini.statistics
+                  .teal.statistic
+                    .label
+                      Click rate 
+                    .value
+                      = message.percentage_facebook_clicks_impressions.to_s
+                    .label
+                      (message click rate)
+              .column
+                .ui.column.grid
+                  .row
+                    .ui.row
+                      .statistic
+                        .value
+                          %i.like.icon
+                          = message.metric_facebook_likes + " Likes"
+                      .statistic
+                        .value
+                          %i.share.icon
+                          = message.metric_facebook_shares + " Shares"
+                      .statistic
+                        .value
+                          %i.comment.icon
+                          = message.metric_facebook_comments + " Comments"
+          .column
+            .ui.teal.mini.statistic
+              .label
+                Conversion rate 
+              .value
+                = message.calculate_goal_rate
+              .label
+                (website click rate)
