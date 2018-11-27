@@ -14,34 +14,32 @@
         = message.content
         .ui.right.basic.label
           = message.medium
-        .ui.two.column.grid
+        %br
+        .ui.three.column.grid
           .column
-            .ui.two.column.grid
-              .column
-                .ui.mini.statistics
-                  .teal.statistic
-                    .label
-                      Click rate 
-                    .value
-                      2.1%
-                    .label
-                      (message click rate)
-              .column
-                .ui.column.grid
-                  .row
-                    .ui.row
-                      .statistic
-                        .value
-                          %i.like.icon
-                          = "4" + " Likes"
-                      .statistic
-                        .value
-                          %i.share.icon
-                          = "3" + " Shares"
-                      .statistic
-                        .value
-                          %i.comment.icon
-                          = "2" + " Comments"
+            .row
+              .ui.row
+                .statistic
+                  .value
+                    %i.like.icon
+                    = "4" + " Likes"
+                .statistic
+                  .value
+                    %i.share.icon
+                    = "3" + " Shares"
+                .statistic
+                  .value
+                    %i.comment.icon
+                    = "2" + " Comments"
+          .column
+            .ui.mini.statistics
+              .teal.statistic
+                .label
+                  Click rate 
+                .value
+                  2.1%
+                .label
+                  (message click rate)
           .column
             .ui.teal.mini.statistic
               .label
