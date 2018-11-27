@@ -8,6 +8,9 @@
         -else
           = image_tag "no-image.png"
       .content
+        .ui.header.h6
+          Message:
+        %br
         = message.content
         .ui.right.basic.label
           = message.medium
@@ -20,7 +23,7 @@
                     .label
                       Click rate 
                     .value
-                      = message.percentage_facebook_clicks_impressions.to_s
+                      2.1%
                     .label
                       (message click rate)
               .column
@@ -30,20 +33,20 @@
                       .statistic
                         .value
                           %i.like.icon
-                          = message.metric_facebook_likes + " Likes"
+                          = "4" + " Likes"
                       .statistic
                         .value
                           %i.share.icon
-                          = message.metric_facebook_shares + " Shares"
+                          = "3" + " Shares"
                       .statistic
                         .value
                           %i.comment.icon
-                          = message.metric_facebook_comments + " Comments"
+                          = "2" + " Comments"
           .column
             .ui.teal.mini.statistic
               .label
                 Conversion rate 
               .value
-                = message.calculate_goal_rate
+                3.2%
               .label
                 (website click rate)
