@@ -685,6 +685,45 @@ $(document).ready(function() {
     });
   }
 
+  function setUpMessageRecommender() {
+    $('#image-recommendations').hide();
+
+    $('.form.message-recommender .button').click(function() {
+      $('#image-recommendations').show();
+    });
+    
+    $('.form.message-recommender #condition').dropdown({
+      onChange: function(val) {
+        $('.form.message-recommender #intervention').dropdown('clear');
+        if (val == '1') {
+          $('.form.message-recommender #intervention').html(
+            '<option value="">Select intervention</option>' +
+            '<option value="1">Information dissemination: Website</option>' +
+            '<option value="2">Drug: Oxycontin</option>'
+          );
+          $('.form.message-recommender #intervention').dropdown('refresh');
+          $('.form.message-recommender .intervention').removeClass('disabled');
+        }
+        if (val == '2') {
+          $('.form.message-recommender #intervention').html(
+            '<option value="">Select intervention</option>' +
+            '<option value="1">Information dissemination and gathering: Smartphone app</option>'
+          );
+          $('.form.message-recommender #intervention').dropdown('refresh');
+          $('.form.message-recommender .intervention').removeClass('disabled');
+        }
+        if (val == '3') {
+          $('.form.message-recommender #intervention').html(
+            '<option value="">Select intervention</option>' +
+            '<option value="1">Information gathering: Long survey</option>'
+          );
+          $('.form.message-recommender #intervention').dropdown('refresh');
+          $('.form.message-recommender .intervention').removeClass('disabled');
+        }
+      }
+    });    
+  }
+  
   // Initialize
   setUpSaveCampaignIdFormEvents();
   setUpEditCampaignIdLabelEvents();
@@ -714,15 +753,20 @@ $(document).ready(function() {
     context: false
   });
   $('.table.sortable').tablesort();
-  $('.ui.dropdown').dropdown({
-    onChange: function() {
-      var imageId = $(this).data("image-id");
-      $("#edit-image-codes-" + imageId).find('.save-image-codes').first().removeClass('disabled');
+
+  // TODO: Make this more specific to the image coding interface and rething coding interface
+  // $('.ui.dropdown').dropdown({
+  //   onChange: function() {
+  //     var imageId = $(this).data("image-id");
+  //     $("#edit-image-codes-" + imageId).find('.save-image-codes').first().removeClass('disabled');
       
-      var commentId = $(this).data("comment-id");
-      $("#edit-comment-codes-" + commentId).find('.save-comment-codes').first().removeClass('disabled');
-    }
-  });
+  //     var commentId = $(this).data("comment-id");
+  //     $("#edit-comment-codes-" + commentId).find('.save-comment-codes').first().removeClass('disabled');
+  //   }
+  // });
+
+  // Set up special onChange for intervention dropdown in message recommender
+  setUpMessageRecommender();
 
   // Lazyload for images
   $("img").lazyload({

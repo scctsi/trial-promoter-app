@@ -1,0 +1,72 @@
+%form.message-recommender.ui.form
+  .fields
+    .six.wide.field
+      %label Condition
+      %select.ui.fluid.search.dropdown{:id => "condition", :name => "condition"}
+        %option{:value => ""}
+          Select condition
+        %option{:value => "1"}
+          Smoking cessation
+        %option{:value => "2"}
+          Wildfire research
+        %option{:value => "3"}
+          Cannabis use
+    .six.wide.intervention.field.disabled
+      %label Intervention
+      %select.ui.fluid.search.dropdown{:id => "intervention", :name => "intervention"}
+    .four.wide.field
+      .ui.primary.button.bottom.attached{:tabindex => "0"} 
+        Recommend messages
+#image-recommendations
+  %h3 Messages by conversion rate
+  .ui.items
+    .item
+      .ui.small.image
+        %img{:src => "https://s3-us-west-1.amazonaws.com/scctsi-tp-production/1-tcors/images/WEWWqL6MTVuzIoWlavRA_fe-FE_HustlePlaybook_33.jpg"}/
+      .content
+        .description
+          .ui.left.basic.label
+            organic
+          3 out of 4 teen smokers become adult smokers. Teens underestimate how addictive #cigarettes are. http://go.befreeoftobacco.org/n6t
+        .extra
+          %table.ui.very.basic.compact.table
+            %thead
+              %th Goals
+              %th Sessions
+              %th Primary outcome measure
+            %tbody
+              %tr
+                %td 2
+                %td 100
+                %td
+                  .ui.label.basic.teal
+                    2% Goal rate
+  %h3 Messages by click rate (Useful for traffic)
+  .ui.items
+    .item
+      .ui.small.image
+        %img{:src => "https://s3-us-west-1.amazonaws.com/scctsi-tp-production/1-tcors/images/ohX3BeARsGYnF1RhGnSj_fe-CvudM3WWIAAx8wG.jpg"}/
+      .content
+        .description
+          .ui.left.basic.label
+            ad
+          Even if someone doesn't smoke, they could be breathing in the deadly mix by being around smokers. http://go.befreeoftobacco.org/n6m #smoking
+        .extra
+          %table.ui.very.basic.compact.table
+            %thead
+              %th Clicks
+              %th Impressions
+              %th Primary outcome measure
+              %th Likes
+              %th Shares
+              %th Comments
+            %tbody
+              %tr
+                %td 3
+                %td 100
+                %td
+                  .ui.label.basic.teal
+                    3% Click rate
+                %td N/A
+                %td 0
+                %td 0
