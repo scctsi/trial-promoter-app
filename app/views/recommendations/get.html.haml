@@ -11,9 +11,25 @@
       %a{ class: 'item', 'data-tab': 'irb' }
         IRB documents
     .ui.bottom.attached.active.tab.segment{ 'data-tab': 'messages' }
-      Test
+      = render partial: 'message_recommender', locals: { experiment: @experiment }
     .ui.bottom.attached.tab.segment{ 'data-tab': 'images' }
-      Test1
+      .ui.medium.header
+        If you're looking for images for your messages, we suggest using one of these sites:
+      .ui.relaxed.divided.list
+        .item
+          %i.large.image.outline.middle.aligned.icon
+          .content
+            %a{:class => "header", :href => "https://pixabay.com/en/"}
+              Pixabay
+            .description
+              Over 1.5 million royalty free stock photos and videos
+        .item
+          %i.large.image.outline.middle.aligned.icon
+          .content
+            %a{:class => "header", :href => "https://commons.wikimedia.org/wiki/Main_Page"}
+              Wikimedia Commons
+            .description
+              A collection of freely usable media files to which anyone can contribute
     .ui.bottom.attached.tab.segment{ 'data-tab': 'irb' }
-      Test2
+      Download a template that you can use to submit to the IRB for appoval of your messages and images <a href="">here</a>.
 
