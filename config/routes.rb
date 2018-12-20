@@ -90,4 +90,7 @@ Rails.application.routes.draw do
   # Data dictionaries
   resources :data_dictionaries do
   end
+  
+  # OAuth callbacks
+  get '/auth/:provider/callback', to: 'sessions#create'
 end

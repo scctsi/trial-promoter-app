@@ -24,6 +24,8 @@ gem 'kaminari'
 gem 'koala'
 gem 'lazyload-rails'
 gem 'ledermann-rails-settings'
+gem 'omniauth'
+gem 'omniauth-twitter'
 gem 'pg'
 gem 'puma'
 gem 'pundit'
@@ -54,13 +56,13 @@ group :development, :test do
 end
 
 group :development do
-  gem 'bullet'
   gem 'guard-rspec', require: false
   gem 'spring'
   gem 'web-console', '~> 2.0'
 end
 
 group :test do
+  gem 'capybara'
   gem "codeclimate-test-reporter", "~> 1.0.0"
   gem 'factory_girl_rails', "~> 4.0"
   gem 'shoulda-matchers', '~> 3.1', require: false
