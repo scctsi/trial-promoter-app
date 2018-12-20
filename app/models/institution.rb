@@ -3,4 +3,5 @@ class Institution < ActiveRecord::Base
   
   has_many :studies
   has_many :experiments, through: :studies
+  has_many :social_media_profiles
 end
