@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180814173241) do
+ActiveRecord::Schema.define(version: 20181220192112) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -175,6 +175,7 @@ ActiveRecord::Schema.define(version: 20180814173241) do
     t.boolean  "use_click_meter",                              default: false
     t.string   "pi_first_name"
     t.string   "pi_last_name"
+    t.integer  "study_id"
   end
 
   create_table "experiments_social_media_profiles", force: :cascade do |t|
@@ -215,6 +216,15 @@ ActiveRecord::Schema.define(version: 20180814173241) do
     t.integer  "height"
     t.boolean  "meets_instagram_ad_requirements"
     t.integer  "duplicated_image_id"
+  end
+
+  create_table "institutions", force: :cascade do |t|
+    t.string   "name"
+    t.string   "category"
+    t.string   "zip_code"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "study_id"
   end
 
   create_table "message_generation_parameter_sets", force: :cascade do |t|
@@ -317,6 +327,14 @@ ActiveRecord::Schema.define(version: 20180814173241) do
     t.datetime "updated_at",       null: false
     t.string   "allowed_mediums"
   end
+
+  create_table "studies", force: :cascade do |t|
+    t.integer "experiment_id"
+    t.integer "institution_id"
+  end
+
+  add_index "studies", ["experiment_id"], name: "index_studies_on_experiment_id", using: :btree
+  add_index "studies", ["institution_id"], name: "index_studies_on_institution_id", using: :btree
 
   create_table "taggings", force: :cascade do |t|
     t.integer  "tag_id"

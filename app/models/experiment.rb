@@ -35,7 +35,9 @@ class Experiment < ActiveRecord::Base
   has_many :modifications
   has_and_belongs_to_many :social_media_profiles
   has_and_belongs_to_many :users
-
+  has_many :studies
+  has_many :institutions, through: :studies
+  
   accepts_nested_attributes_for :message_generation_parameter_set, update_only: true
   
   has_settings :aws, :bitly, :buffer, :click_meter, :dropbox, :facebook, :google, :google_perspective, :twitter
