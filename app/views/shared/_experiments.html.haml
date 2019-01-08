@@ -5,6 +5,7 @@
       %th Start
       %th End
       %th Access
+      %th
   %tbody
     - experiments.includes(:message_generation_parameter_set).each do |experiment|
       %tr
@@ -22,3 +23,14 @@
             .or
             %a.ui.button.dashboard-button{ href: "#{experiment_path(experiment)}#/dashboard" }
               Dashboard
+        %td
+          - if !experiment.settings(:facebook).client_access_token.nil?
+            %a.ui.facebook.button
+              %i.facebook.icon
+              Log out
+          - else
+            %a.ui.facebook.button{ href: "/auth/facebook?state=#{experiment.id}" }
+              %i.facebook.icon
+              Facebook
+
+          

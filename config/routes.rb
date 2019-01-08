@@ -21,6 +21,7 @@ Rails.application.routes.draw do
     resources :message_generation_parameter_sets
   end
 
+
   # Clinical trials
   resources :clinical_trials do
   end
@@ -90,4 +91,7 @@ Rails.application.routes.draw do
   # Data dictionaries
   resources :data_dictionaries do
   end
+  
+  # FacebookSessions routes
+  get '/auth/facebook/callback', to: 'facebook_sessions#facebook_create'
 end

@@ -73,6 +73,13 @@ RSpec.configure do |config|
     config.filter_run_excluding :development_only_tests => true
   end
 
+  # Omniauth configuration
+  OmniAuth.config.test_mode = true
+  OmniAuth.config.mock_auth[:facebook] = OmniAuth::AuthHash.new({
+    :provider => 'facebook',
+    :uid => '123545'
+  })
+  
   # Additional factory_girl configuration
   config.include FactoryGirl::Syntax::Methods
   config.before(:suite) do

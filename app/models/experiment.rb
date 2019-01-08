@@ -44,21 +44,19 @@ class Experiment < ActiveRecord::Base
     self.settings(:aws).access_key = key
     self.settings(:aws).secret_access_key = secret
     
-    save
+    save!
   end
   
-  def set_facebook_keys(token, ads_token, app_secret)
-    self.settings(:facebook).access_token = token
-    self.settings(:facebook).ads_access_token = ads_token
-    self.settings(:facebook).app_secret = app_secret
+  def set_facebook_keys(token)
+    self.settings(:facebook).client_access_token = token
     
-    save
+    save!
   end
   
   def set_google_api_key(auth_json_file)
     self.settings(:google).auth_json_file = auth_json_file
 
-    save
+    save!
   end
   
   def set_twitter_keys(consumer_key, consumer_secret, access_token, access_token_secret)
@@ -67,13 +65,13 @@ class Experiment < ActiveRecord::Base
     self.settings(:twitter).access_token = access_token
     self.settings(:twitter).access_token_secret = access_token_secret
     
-    save
+    save!
   end
   
   def set_api_key(service_name, key)
     self.settings(service_name).api_key = key
     
-    save
+    save!
   end
   
   def to_param

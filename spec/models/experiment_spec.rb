@@ -188,18 +188,14 @@ RSpec.describe Experiment, type: :model do
     expect(experiment.settings(:aws).secret_access_key).to eq(secret_key)
   end
   
-  it 'sets api tokens and api secrets settings for Facebook' do
+  it 'sets api token for Facebook' do
     token = 'fake_token'    
-    ads_token = 'fake_ads_token'
-    app_secret = 'fake_app_secret'
     experiment = build(:experiment)
     
-    experiment.set_facebook_keys(token, ads_token, app_secret)
+    experiment.set_facebook_keys(token)
     experiment.reload
     
-    expect(experiment.settings(:facebook).access_token).to eq(token)
-    expect(experiment.settings(:facebook).ads_access_token).to eq(ads_token)
-    expect(experiment.settings(:facebook).app_secret).to eq(app_secret)
+    expect(experiment.settings(:facebook).client_access_token).to eq(token)
   end
   
   it 'sets api tokens and api secrets settings for Twitter' do

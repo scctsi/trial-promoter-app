@@ -24,6 +24,8 @@ gem 'kaminari'
 gem 'koala'
 gem 'lazyload-rails'
 gem 'ledermann-rails-settings'
+gem 'omniauth'
+gem 'omniauth-facebook'
 gem 'pg'
 gem 'puma'
 gem 'pundit'
@@ -47,6 +49,7 @@ group :development, :test do
   gem 'byebug'
   gem 'database_cleaner'
   gem 'faker'
+  gem 'railroady'
   gem 'rspec-rails', '~> 3.5'
   gem 'spring-commands-rspec'
   gem 'vcr'
@@ -54,7 +57,6 @@ group :development, :test do
 end
 
 group :development do
-  gem 'bullet'
   gem 'guard-rspec', require: false
   gem 'spring'
   gem 'web-console', '~> 2.0'
