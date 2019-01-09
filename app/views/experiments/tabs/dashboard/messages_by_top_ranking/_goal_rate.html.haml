@@ -1,0 +1,40 @@
+.ui.link.three.stackable.centered.cards
+  .ui.horizontal.divider.header
+    %br
+    Most effective messages (by goal rate)
+  - @top_messages_by_website_goal_rate[0..4].each do |message|
+    .card
+      .content
+        .header
+          .left.floated
+            = message.social_media_profile.platform_icon
+          .right.floated.meta
+            = message.scheduled_date_time.strftime("%b %-d, %Y @ %l:%M %p")
+      .ui.image.small.centered
+        -if message.image
+          = image_tag "#{message.image.url}"
+        -else
+          = image_tag "no-image.png"
+      .content
+        = message.content
+      .extra.content
+        .ui.label.basic.teal
+          -if message.website_goal_rate.nil?
+            = 'N/A'
+          -elsif message.website_goal_rate == 0.0
+            = "0 "
+          -else
+            = number_with_precision(message.website_goal_rate, precision: 3, significant: true)
+          \% goal rate
+        %br
+          (
+          -if message.website_goal_count.nil?
+            = 0
+          -else
+            = message.website_goal_count
+          goals /
+          -if message.website_session_count.nil?
+            = 'N/A'
+          -else
+            = message.website_session_count
+          sessions )
