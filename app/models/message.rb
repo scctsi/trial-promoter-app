@@ -166,7 +166,7 @@ class Message < ActiveRecord::Base
     end
     calculated_rate = nil if calculated_rate == 'N/A'
     calculated_rate *= 100 if calculated_rate != nil
-    self.click_rate = calculated_rate.to_s + '%'
+    self.click_rate = calculated_rate
 
     save
   end

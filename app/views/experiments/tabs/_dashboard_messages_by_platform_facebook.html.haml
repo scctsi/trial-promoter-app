@@ -22,22 +22,22 @@
                 .statistic
                   .value
                     %i.like.icon
-                    = "4" + " Likes"
+                    = message.send(:metric_facebook_likes).to_s + " Likes"
                 .statistic
                   .value
                     %i.share.icon
-                    = "3" + " Shares"
+                    = message.send(:metric_facebook_shares).to_s + " Shares"
                 .statistic
                   .value
                     %i.comment.icon
-                    = "2" + " Comments"
+                    = message.comments.count.to_s + " Comment(s)"
           .column
             .ui.mini.statistics
               .teal.statistic
                 .label
                   Click rate 
                 .value
-                  2.1%
+                  = message.click_rate.to_s + '%'
                 .label
                   (message click rate)
           .column
@@ -45,6 +45,6 @@
               .label
                 Conversion rate 
               .value
-                3.2%
+                = message.calculate_goal_rate
               .label
                 (website click rate)
