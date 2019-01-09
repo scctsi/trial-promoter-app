@@ -1,5 +1,5 @@
 [![Code Climate](https://codeclimate.com/repos/5845b92d5aa4776c11000a26/badges/95808bfbcdb3701e47cc/gpa.svg)](https://codeclimate.com/repos/5845b92d5aa4776c11000a26/feed)
-[![Test Coverage](https://codeclimate.com/repos/5845b92d5aa4776c11000a26/badges/95808bfbcdb3701e47cc/coverage.svg)](https://codeclimate.com/repos/5845b92d5aa4776c11000a26/coverage)
+[![Test Coverage](https://codeclimate.com/repos/5845b92d5aa4776c11000a26/badges/95808bfbcdb3701e47cc/coverage.svg)](https://codeclimate.com/repos/5845b92d5aa4776c11000a26/coverage) 
 
 # UTM parameters
 * http://blog.rafflecopter.com/2014/04/utm-parameters-best-practices
