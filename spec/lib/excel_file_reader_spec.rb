@@ -15,8 +15,8 @@ RSpec.describe ExcelFileReader do
 
     excel_content = @excel_file_reader.read(excel_url)
 
-    WebMock.disable_net_connect!
     VCR.turn_on!
+    WebMock.disable_net_connect!
 
     expect(excel_content).to eq(sample_excel_content)
   end 
