@@ -13,6 +13,7 @@ gem 'delayed_job_active_record'
 gem 'devise'
 gem 'dropbox-sdk-v2'
 gem 'enumerize'
+gem 'facebookads'
 gem 'fastimage'
 gem 'fit-commit'
 gem 'google-api-client', '~> 0.9'
@@ -64,7 +65,7 @@ end
 
 group :test do
   gem "codeclimate-test-reporter", "~> 1.0.0"
-  gem 'factory_girl_rails', "~> 4.0"
+  gem 'factory_bot_rails'
   gem 'shoulda-matchers', '~> 3.1', require: false
   gem "simplecov"
 end

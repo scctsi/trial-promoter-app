@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :analytics_file do
     association :social_media_profile
     association :message_generating, factory: :experiment

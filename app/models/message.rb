@@ -235,6 +235,25 @@ class Message < ActiveRecord::Base
     raise ActiveRecord::RecordNotUnique, '' if messages.length > 1
 
     return messages.first
+    return messages.first
+  end
+  
+  def set_ad_as_published
+    self.ad_published = true
+    save
+  end
+  
+  #REF  For facebook ad scheduling https://developers.facebook.com/docs/marketing-api/pacing
+  def setup_start_minute
+    return self.scheduled_date_time.strftime("%-H").to_i * 60
+  end
+  
+  def setup_end_minute
+    return self.scheduled_date_time.strftime("%-H").to_i * 60 + 60
+  end
+  
+  def end_time
+    return self.scheduled_date_time + self.message_generating.message_generation_parameter_set.message_run_duration_in_days.days
   end
   
   def experiment

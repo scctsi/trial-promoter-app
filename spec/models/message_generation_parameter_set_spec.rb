@@ -13,8 +13,8 @@
 #  medium_choices                        :text
 #  image_present_choices                 :text
 #  number_of_cycles                      :integer
+#  message_run_duration_in_days          :integer
 #
-
 
 require 'rails_helper'
 

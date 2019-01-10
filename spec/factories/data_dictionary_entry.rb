@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :data_dictionary_entry do
     data_dictionary
     variable_name 'sessions'

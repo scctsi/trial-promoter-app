@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :message_generation_parameter_set do
     association :message_generating, factory: :experiment
     social_network_choices ['facebook']

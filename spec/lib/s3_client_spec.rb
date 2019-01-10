@@ -33,6 +33,7 @@ RSpec.describe S3Client do
     end
 
     it 'deletes an asset from S3' do
+      #TODO Create a VCR cassette for this 
       WebMock.allow_net_connect!
       VCR.turn_off!
 
