@@ -100,13 +100,10 @@ GEM
     cocoon (1.2.9)
     codeclimate-test-reporter (1.0.8)
       simplecov (<= 0.13)
-<<<<<<< HEAD
-    coderay (1.1.2)
-    concurrent-ruby (1.0.5)
-=======
     coderay (1.1.1)
     concurrent-ruby (1.1.3)
->>>>>>> development
+    coderay (1.1.2)
+    concurrent-ruby (1.0.5)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
     crass (1.0.3)
@@ -260,16 +257,13 @@ GEM
     mime-types (3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0521)
-<<<<<<< HEAD
+    mini_portile2 (2.3.0)
+    minitest (5.10.1)
+    multi_json (1.12.1)
     mini_mime (1.0.0)
     mini_portile2 (2.3.0)
     minitest (5.11.3)
     multi_json (1.13.1)
-=======
-    mini_portile2 (2.3.0)
-    minitest (5.10.1)
-    multi_json (1.12.1)
->>>>>>> development
     multi_xml (0.6.0)
     multipart-post (2.0.0)
     nenv (0.3.0)
@@ -299,11 +293,8 @@ GEM
       multi_json (~> 1.0)
       pusher-signature (~> 0.1.8)
     pusher-signature (0.1.8)
-<<<<<<< HEAD
     rack (1.6.8)
-=======
     rack (1.6.11)
->>>>>>> development
     rack-attack (5.0.1)
       rack
     rack-cors (1.0.2)
@@ -328,11 +319,9 @@ GEM
       rails-deprecated_sanitizer (>= 1.0.1)
     rails-html-sanitizer (1.0.3)
       loofah (~> 2.0)
-<<<<<<< HEAD
     rails-settings-cached (0.6.6)
       rails (>= 4.2.0)
-=======
->>>>>>> development
+
     rails_12factor (0.0.3)
       rails_serve_static_assets
       rails_stdout_logging
@@ -361,7 +350,13 @@ GEM
     roo (2.7.1)
       nokogiri (~> 1)
       rubyzip (~> 1.1, < 2.0.0)
-<<<<<<< HEAD
+    rspec (3.6.0)
+      rspec-core (~> 3.6.0)
+      rspec-expectations (~> 3.6.0)
+      rspec-mocks (~> 3.6.0)
+    rspec-core (3.6.0)
+      rspec-support (~> 3.6.0)
+    rspec-expectations (3.6.0)
     roo-xls (1.1.0)
       nokogiri
       roo (>= 2.0.0beta1, < 3)
@@ -373,15 +368,6 @@ GEM
     rspec-core (3.7.1)
       rspec-support (~> 3.7.0)
     rspec-expectations (3.7.0)
-=======
-    rspec (3.6.0)
-      rspec-core (~> 3.6.0)
-      rspec-expectations (~> 3.6.0)
-      rspec-mocks (~> 3.6.0)
-    rspec-core (3.6.0)
-      rspec-support (~> 3.6.0)
-    rspec-expectations (3.6.0)
->>>>>>> development
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.7.0)
     rspec-mocks (3.7.0)
@@ -391,20 +377,17 @@ GEM
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       railties (>= 3.0)
-<<<<<<< HEAD
+      rspec-core (~> 3.6.0)
+      rspec-expectations (~> 3.6.0)
+      rspec-mocks (~> 3.6.0)
+      rspec-support (~> 3.6.0)
+    rspec-support (3.6.0)
       rspec-core (~> 3.7.0)
       rspec-expectations (~> 3.7.0)
       rspec-mocks (~> 3.7.0)
       rspec-support (~> 3.7.0)
     rspec-support (3.7.1)
     ruby-ole (1.2.12.1)
-=======
-      rspec-core (~> 3.6.0)
-      rspec-expectations (~> 3.6.0)
-      rspec-mocks (~> 3.6.0)
-      rspec-support (~> 3.6.0)
-    rspec-support (3.6.0)
->>>>>>> development
     ruby_dep (1.5.0)
     ruby_parser (3.10.1)
       sexp_processor (~> 4.9)
@@ -441,16 +424,13 @@ GEM
       docile (~> 1.1.0)
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
-<<<<<<< HEAD
+    simplecov-html (0.10.0)
+    slop (3.6.0)
+    spring (2.0.1)
     simplecov-html (0.10.2)
     spreadsheet (1.1.5)
       ruby-ole (>= 1.0)
     spring (2.0.2)
-=======
-    simplecov-html (0.10.0)
-    slop (3.6.0)
-    spring (2.0.1)
->>>>>>> development
       activesupport (>= 4.2)
     spring-commands-rspec (1.0.4)
       spring (>= 0.9.1)
@@ -476,14 +456,11 @@ GEM
       execjs (>= 0.3.0, < 3)
     unf (0.1.4)
       unf_ext
-<<<<<<< HEAD
-    unf_ext (0.0.7.5)
-    user_agent_parser (2.4.1)
-=======
     unf_ext (0.0.7.4)
     uniform_notifier (1.11.0)
     user_agent_parser (2.3.1)
->>>>>>> development
+    unf_ext (0.0.7.5)
+    user_agent_parser (2.4.1)
     uuidtools (2.1.5)
     vcr (4.0.0)
     warden (1.2.7)
@@ -535,14 +512,11 @@ DEPENDENCIES
   kaminari
   koala
   lazyload-rails
-<<<<<<< HEAD
-  multi_json
-  pg (= 0.21.0)
-=======
   ledermann-rails-settings
   nokogiri (= 1.8.2)
   pg
->>>>>>> development
+  multi_json
+  pg (= 0.21.0)
   puma
   pundit
   pusher
