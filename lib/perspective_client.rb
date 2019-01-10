@@ -2,9 +2,9 @@ require 'net/http'
 require 'uri'
 
 class PerspectiveClient
-  def self.calculate_toxicity_score(text)
+  def self.calculate_toxicity_score(experiment, text)
     text = text.tr('"', "'")
-    access_token = Setting[:google_perspective_api_key]
+    access_token = experiment.settings(:google_perspective).api_key
 
     uri = URI.parse("https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze?key=#{access_token}")
     request = Net::HTTP::Post.new(uri)

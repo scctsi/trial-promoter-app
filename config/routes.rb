@@ -16,6 +16,7 @@ Rails.application.routes.draw do
       get 'send_to_buffer', to: 'experiments#send_to_buffer'
       get 'correctness_analysis', to: 'experiments#correctness_analysis'
       get 'messages_page', to: 'experiments#messages_page'
+      get 'comments_page', to: 'experiments#comments_page'
     end
     resources :message_generation_parameter_sets
   end
@@ -51,7 +52,6 @@ Rails.application.routes.draw do
 
   # App settings
   namespace :admin do
-    resources :settings
   end
 
   # Images

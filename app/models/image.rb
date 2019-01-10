@@ -17,7 +17,7 @@ class Image < ActiveRecord::Base
   acts_as_ordered_taggable_on :experiments
   acts_as_taggable_on :codes
 
-  before_destroy :delete_image_from_s3 
+  before_destroy :delete_image_from_s3
 
   validates :url, presence: true
   validates :original_filename, presence: true
@@ -43,8 +43,13 @@ class Image < ActiveRecord::Base
     duplicated_image.save
   end
   
+  def experiment
+    return Experiment.find_by_param(experiment_list[0])
+  end
+  
   def delete_image_from_s3
-    s3 = S3Client.new
-    s3.delete(s3.bucket(self.url), s3.key(self.url)) 
+    # TODO: Fix callback; manual deletion in S3 for now
+    # s3 = S3Client.new(experiment)
+    # s3.delete(s3.bucket(url), s3.key(url)) 
   end
 end

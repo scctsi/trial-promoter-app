@@ -1,4 +1,20 @@
 class MessageTemplatePolicy < ApplicationPolicy
+  def new?
+    user.role.administrator?
+  end
+    
+  def edit?
+    user.role.administrator?
+  end
+      
+  def update?
+    user.role.administrator?
+  end
+      
+  def create?
+    user.role.administrator?
+  end
+  
   def import?
     user.role.administrator?
   end
@@ -8,7 +24,7 @@ class MessageTemplatePolicy < ApplicationPolicy
   end
   
   def get_image_selections?
-    user.role.administrator? || user.role.read_only?
+    user.role.administrator?
   end
   
   def add_image_to_image_pool?

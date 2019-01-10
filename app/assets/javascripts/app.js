@@ -417,7 +417,7 @@ $(document).ready(function() {
       html += '<div class="description">' + image.original_filename + '</div>';
       html += '</div>';
       html += '</div>';
-      console.log(image);
+
       if (buttonType == 'add' && image.meets_instagram_ad_requirements) {
         html += '<div class="extra content"><div class="ui labeled icon fluid tiny button add-image-to-image-pool-button" data-image-id="' + image.id + '"><i class="checkmark icon"></i>Add</div></div>';
       }
@@ -442,20 +442,9 @@ $(document).ready(function() {
     html += '<div class="ui segment filenames-list">Filenames: ';
     html += getFilenames(selectedImages) + '</div>';
 
-    if (filenameStartswithRestriction == 'tfl') {
-      html += '<h3 class="ui block header">Selected images from "This Free Life" campaign</h3>';
-    }
-    if (filenameStartswithRestriction == 'fe') {
-      html += '<h3 class="ui block header">Selected images from "Fresh Empire" campaign</h3>';
-    }
-    html += getImageCardsHtml(selectedImages, 'remove', filenameStartswithRestriction, readonly);
+    html += '<h3 class="ui block header">Selected images from this campaign</h3>';
 
-    if (filenameStartswithRestriction == 'tfl') {
-      html += '<h3 class="ui block header">Unselected images from "This Free Life" campaign</h3>';
-    }
-    if (filenameStartswithRestriction == 'fe') {
-      html += '<h3 class="ui block header">Unselected images from "Fresh Empire" campaign</h3>';
-    }
+    html += getImageCardsHtml(selectedImages, 'remove', filenameStartswithRestriction, readonly);
     html += getImageCardsHtml(unselectedImages, 'add', filenameStartswithRestriction, readonly);
 
     return html;
@@ -608,12 +597,6 @@ $(document).ready(function() {
     });
   }
   
-  
-
-  /* Under Construction */
-  /* Under Construction */
-  /* Under Construction */
-
   function setUpSaveNoteFormEvents() {
     $('.button.save-note').click(function(event){
       var $inputForm = $(this).parent();
@@ -662,23 +645,41 @@ $(document).ready(function() {
       e.preventDefault();
       var targetUrl = $(this).attr('href');
       var experimentId = $('.paginated-content').data('experiment-id');
+      var model = $('.paginated-content#model').data('model');
       var page = '';
       if (targetUrl.includes("page=")){
         page = targetUrl.match(/page=(\d+)/)[1];
       }
-
-      $.ajax({
-        url: '/experiments/' + experimentId + '/messages_page.html',
-        data: { page: page },
-        success: function(res){
-          $('.paginated-content').html(res);
-          setUpAjaxPagination();
-          setUpSaveCampaignIdFormEvents();
-          setUpEditCampaignIdLabelEvents();
-          setUpSaveNoteFormEvents();
-          setUpEditNoteEvents();
-        }
-      });
+      if (model == 'comment'){
+        $.ajax({
+          url: '/experiments/' + experimentId + '/comments_page.html',
+          data: { page: page },
+          success: function(res){
+            $('.paginated-content').html(res);
+            setUpAjaxPagination();
+            $('.ui.dropdown').dropdown({
+              onChange: function() {
+                var commentId = $(this).data("comment-id");
+                $("#edit-comment-codes-" + commentId).find('.save-comment-codes').first().removeClass('disabled');
+              }
+            });
+            setUpEditCommentCodesFormEvents();
+          }
+        });
+      } else {
+        $.ajax({
+          url: '/experiments/' + experimentId + '/messages_page.html',
+          data: { page: page },
+          success: function(res){
+            $('.paginated-content').html(res);
+            setUpAjaxPagination();
+            setUpSaveCampaignIdFormEvents();
+            setUpEditCampaignIdLabelEvents();
+            setUpSaveNoteFormEvents();
+            setUpEditNoteEvents();
+          }
+        });
+      }
     });
   }
 
@@ -710,7 +711,7 @@ $(document).ready(function() {
     historyType: 'hash',
     context: 'parent'
   });
-  $('.table').tablesort();
+  $('.table.sortable').tablesort();
   $('.ui.dropdown').dropdown({
     onChange: function() {
       var imageId = $(this).data("image-id");

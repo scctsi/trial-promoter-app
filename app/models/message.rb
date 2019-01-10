@@ -224,8 +224,8 @@ class Message < ActiveRecord::Base
     message
   end
 
-  def get_sessions(start_of_experiment, end_of_experiment, exclude_ip_address_list = [])
-    visits = Visit.where(utm_content: self.to_param).to_a
+  def get_sessions(exclude_ip_address_list = [])
+    visits = Visit.where(utm_content: to_param).to_a
     visits.reject!{ |visit| exclude_ip_address_list.include?(visit.ip) }
     return visits.select{ |session| session.started_at.between?(start_of_experiment, end_of_experiment) }
   end
@@ -236,5 +236,17 @@ class Message < ActiveRecord::Base
       goal_count += 1 if Ahoy::Event.where(visit_id: session.id).where(name: "Converted").count > 0
     end
     return goal_count 
+  end
+  
+  def self.find_by_published_text(published_text)
+    messages = Message.joins(:buffer_update).where("published_text like ?", published_text.squish)
+
+    raise ActiveRecord::RecordNotUnique, '' if messages.length > 1
+
+    return messages.first
+  end
+  
+  def experiment
+    Experiment.find_by_param(experiment_list[0])
   end
 end

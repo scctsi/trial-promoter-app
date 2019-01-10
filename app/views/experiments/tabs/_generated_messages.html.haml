@@ -1,25 +1,26 @@
 .ui.buttons
-  - if @experiment.disable_message_generation?
-    .tooltip{ "data-tooltip" => "This experiment has already started distributing messages. You can no longer generate messages for this experiment.", "data-position" => "right center" }
-      %a.ui.labeled.icon.disabled.button
+  - if current_user.role == 'administrator'
+    - if @experiment.disable_message_generation?
+      .tooltip{ "data-tooltip" => "This experiment has already started distributing messages. You can no longer generate messages for this experiment.", "data-position" => "right center" }
+        %a.ui.labeled.icon.disabled.button
+          %i.send.icon
+          Generate messages
+      .or
+      %a.ui.labeled.icon.button{ href: "/experiments/#{@experiment.id}/send_to_buffer" }
+        %i.rocket.icon
+        Send to Buffer
+    - else
+      %a#generate-messages-button.ui.primary.labeled.icon.button
         %i.send.icon
         Generate messages
-    .or
-    %a.ui.labeled.icon.button{ href: "/experiments/#{@experiment.id}/send_to_buffer" }
-      %i.rocket.icon
-      Send to Buffer
-  - else
-    %a#generate-messages-button.ui.primary.labeled.icon.button
-      %i.send.icon
-      Generate messages
-    .or
-    %a.ui.labeled.icon.button{ href: "/experiments/#{@experiment.id}/send_to_buffer" }
-      %i.rocket.icon
-      Send to Buffer
-- if @experiment.message_distribution_start_date.nil?
-  .ui.negative.message
-    .header
-      Please enter the message generation start date
+      .or
+      %a.ui.labeled.icon.button{ href: "/experiments/#{@experiment.id}/send_to_buffer" }
+        %i.rocket.icon
+        Send to Buffer
+  - if @experiment.message_distribution_start_date.nil?
+    .ui.negative.message
+      .header
+        Please enter the message generation start date
 - if @messages.count == 0
   .ui.message
     .header

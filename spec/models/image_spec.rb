@@ -67,8 +67,7 @@ RSpec.describe Image do
       
       @images.each { |image| image.reload }
       expect(@images[0].duplicates.count).to eq(2)
-      expect(@images[0].duplicates[0]).to eq(@images[3])
-      expect(@images[0].duplicates[1]).to eq(@images[2])
+      expect(@images[0].duplicates).to match_array([@images[2], @images[3]])
       expect(@images[0].duplicated_image).to be_nil
       expect(@images[2].duplicated_image).to eq(@images[0])
       expect(@images[3].duplicated_image).to eq(@images[0])
@@ -120,16 +119,34 @@ RSpec.describe Image do
     expect(image).to have_received(:delete_image_from_s3)
   end
 
-  it 'asks S3 to delete the corresponding object during the before destroy callback' do
+  xit 'asks S3 to delete the corresponding object during the before destroy callback' do
+    experiment = create(:experiment)
     image = create(:image)
+    image.experiment_list.add(experiment.to_param)
+    image.save
     s3_client_double = double('s3_client')
     allow(s3_client_double).to receive(:delete)
     allow(s3_client_double).to receive(:bucket).and_return('bucket')
     allow(s3_client_double).to receive(:key).and_return('key')
     allow(S3Client).to receive(:new).and_return(s3_client_double)
 
-    image.delete_image_from_s3
+    image.delete_image_from_s3 
 
     expect(s3_client_double).to have_received(:delete).with('bucket', 'key')
+  end
+  
+  it "parameterizes id and the experiments's param together" do
+    experiment = build(:experiment, name: 'TCORS 2')
+    image = build(:image, experiment_list: experiment.to_param)
+
+    expect(image.experiment_list[0]).to eq(experiment.to_param)
+  end
+  
+  it "returns the tagged experiment" do
+    experiment = create(:experiment, name: 'TCORS 2')
+    image = build(:image)
+    image.experiment_list.add(experiment.to_param)
+
+    expect(image.experiment).to eq(experiment)
   end
 end

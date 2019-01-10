@@ -1,7 +1,7 @@
 - grouped_messages = @messages.group_by{ |message| message.message_template.experiment_variables["theme"] }
 - grouped_messages.each do |theme, messages_by_theme|
   %h3.ui.dividing.header
-    = theme.titleize
+    = theme.titleize if theme
   - messages_by_theme.each do |message|
     .ui.items
       .item

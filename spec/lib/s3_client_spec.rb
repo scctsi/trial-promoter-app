@@ -4,10 +4,10 @@ require 'yaml'
 RSpec.describe S3Client do
   describe "(development only tests)", :development_only_tests => true do
     before do
+      experiment = build(:experiment)
       secrets = YAML.load_file("#{Rails.root}/spec/secrets/secrets.yml")
-      allow(Setting).to receive(:[]).with(:aws_access_key_id).and_return(secrets['aws_access_key_id'])
-      allow(Setting).to receive(:[]).with(:aws_secret_access_key).and_return(secrets['aws_secret_access_key'])
-      @s3_client = S3Client.new
+      experiment.set_aws_key(secrets['aws_access_key_id'], secrets['aws_secret_access_key'])
+      @s3_client = S3Client.new(experiment)
     end
 
     it 'correctly calculates the bucket name for a URL' do
