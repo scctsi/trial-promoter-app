@@ -23,6 +23,7 @@ class Experiment < ActiveRecord::Base
   include ActiveModel::Validations
 
   serialize :image_codes, Array
+  serialize :ip_exclusion_list, Array
   serialize :comment_codes, Array
   validates_with ExperimentValidator
   validates :name, presence: true

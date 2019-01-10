@@ -171,9 +171,9 @@ class Message < ActiveRecord::Base
     save
   end
 
-  def calculate_website_goal_rate(exclude_ip_address_list = [])
+  def calculate_website_goal_rate
     calculate_goal_count
-    calculate_session_count(exclude_ip_address_list)
+    calculate_session_count
 
     if website_session_count == 0
       self.website_goal_rate = nil
@@ -184,9 +184,10 @@ class Message < ActiveRecord::Base
     save
   end
 
-  def calculate_goal_count(exclude_ip_address_list = [])
+  def calculate_goal_count(ip_exclusion_list = [])
     goal_count = 0
-    sessions = get_sessions(exclude_ip_address_list)
+    # Getting sessions from arbitrary beginning of time to end of time - for entire duration of experiment
+    sessions = get_sessions(DateTime.new(1970, 1, 1), DateTime.new(2100, 1, 1), ip_exclusion_list)
     # Converted event is in the Ahoy code.
     # For the TCORS experiment, the 'Converted' event occurs in main.js file of website (Fresh Empire or This Free Life)
     # when user scrolls or clicks on navigation bar
@@ -198,8 +199,8 @@ class Message < ActiveRecord::Base
     save
   end
 
-  def calculate_session_count(exclude_ip_address_list = [])
-    sessions = get_sessions(exclude_ip_address_list)
+  def calculate_session_count(ip_exclusion_list = [])
+    sessions = get_sessions(DateTime.new(1970, 1, 1), DateTime.new(2100, 1, 1), ip_exclusion_list)
     self.website_session_count = sessions.count
 
     save
@@ -226,7 +227,15 @@ class Message < ActiveRecord::Base
   def get_sessions(exclude_ip_address_list = [])
     visits = Visit.where(utm_content: to_param).to_a
     visits.reject!{ |visit| exclude_ip_address_list.include?(visit.ip) }
-    return visits
+    return visits.select{ |session| session.started_at.between?(start_of_experiment, end_of_experiment) }
+  end
+  
+  def get_goal_count(sessions)
+    goal_count = 0
+    sessions.each do |session|
+      goal_count += 1 if Ahoy::Event.where(visit_id: session.id).where(name: "Converted").count > 0
+    end
+    return goal_count 
   end
   
   def self.find_by_published_text(published_text)
