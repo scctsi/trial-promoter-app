@@ -3,10 +3,12 @@
     Home
   %i.right.angle.icon.divider
   .active.section
-    #{@experiment.name} Pilot Project Workspace
+    #{@experiment.name} Workspace
 .ui.divider
 %h2.ui.center.aligned.header
-  #{@experiment.name} Pilot Project Workspace
+  #{@experiment.name} Workspace
+%h2.ui.center.aligned.header.pi-name
+  PI: #{@experiment.pi_first_name} #{@experiment.pi_last_name}
 #experiment
   .ui.top.attached.tabular.menu
     %a{ class: 'item', 'data-tab': 'setup' }
