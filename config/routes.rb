@@ -94,4 +94,5 @@ Rails.application.routes.draw do
   
   # FacebookSessions routes
   get '/auth/facebook/callback', to: 'facebook_sessions#facebook_create'
+  get '/auth/facebook/log_out', to: 'facebook_sessions#facebook_destroy'
 end
