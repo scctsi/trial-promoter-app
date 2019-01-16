@@ -1,5 +1,5 @@
 .ui.items
-  - @instagram_messages = @messages.select{ |message| message.social_media_profile.platform == :instagram}
+  - @instagram_messages = @messages.select{ |message| message.platform == :instagram}
   - @instagram_messages.each do |message|
     .item
       .ui.small.image
@@ -31,4 +31,3 @@
               %td= message.metric_instagram_likes
               %td= message.metric_instagram_shares
               %td= message.metric_instagram_comments
-
