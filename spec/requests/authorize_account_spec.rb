@@ -20,8 +20,8 @@ describe "authorizing accounts", type: :request do
         }
       }
       Rails.application.env_config["omniauth.auth"] = OmniAuth.config.mock_auth[:twitter]
-      Rails.application.env_config["omniauth.params"] = { "experiment_id": @experiment.id.to_s}
-  end
+      Rails.application.env_config["omniauth.params"] = { experiment_id: @experiment.id.to_s }
+    end
     
     it 'does stuff' do
       visit '/'
@@ -29,11 +29,9 @@ describe "authorizing accounts", type: :request do
       
       
       
+      
     # mock_auth_hash
     # click_link "Sign in"
-    # page.should have_content("mockuser")  # user name
-    # page.should have_css('img', :src => 'mock_user_thumbnail_url') # user image
-    # page.should have_content("Sign out")
     end
   end
 end
