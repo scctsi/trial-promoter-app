@@ -1,51 +1,54 @@
 .ui.items
   - @twitter_messages = @messages.select{ |message| message.social_media_profile.platform == :twitter}
-  - @twitter_messages.each do |message|
-    .item
-      .ui.tiny.image
-        -if message.image
-          = image_tag "#{message.image.url}"
-        -else
-          = image_tag "no-image.png"
-      .content
-        .ui.header.h6
-          Message:
-        %br
-        = message.content
-        .ui.right.basic.label
-          = message.medium
-        %br
-        .ui.three.column.grid
-          .column
-            .row
-              .ui.row
-                .statistic
+  - if @twitter_messages.count > 0
+    - @twitter_messages.each do |message|
+      .item
+        .ui.tiny.image
+          -if message.image
+            = image_tag "#{message.image.url}"
+          -else
+            = image_tag "no-image.png"
+        .content
+          .ui.header.h6
+            Message:
+          %br
+          = message.content
+          .ui.right.basic.label
+            = message.medium
+          %br
+          .ui.three.column.grid
+            .column
+              .row
+                .ui.row
+                  .statistic
+                    .value
+                      %i.like.icon
+                      = message.send(:metric_twitter_likes).to_s + " Likes"
+                  .statistic
+                    .value
+                      %i.share.icon
+                      = message.send(:metric_twitter_retweets).to_s + " Retweets"
+                  .statistic
+                    .value
+                      %i.comment.icon
+                      = message.comments.count.to_s + " Replies"
+            .column
+              .ui.mini.statistics
+                .teal.statistic
+                  .label
+                    Click rate 
                   .value
-                    %i.like.icon
-                    = message.send(:metric_twitter_likes).to_s + " Likes"
-                .statistic
-                  .value
-                    %i.share.icon
-                    = message.send(:metric_twitter_retweets).to_s + " Retweets"
-                .statistic
-                  .value
-                    %i.comment.icon
-                    = message.comments.count.to_s + " Replies"
-          .column
-            .ui.mini.statistics
-              .teal.statistic
+                    = message.click_rate.to_s + '%'
+                  .label
+                    (message click rate)
+            .column
+              .ui.teal.mini.statistic
                 .label
-                  Click rate 
+                  Conversion rate 
                 .value
-                  = message.click_rate.to_s + '%'
+                  = message.calculate_goal_rate
                 .label
-                  (message click rate)
-          .column
-            .ui.teal.mini.statistic
-              .label
-                Conversion rate 
-              .value
-                = message.calculate_goal_rate
-              .label
-                (website click rate)
+                  (website click rate)
+  -else
+    = render partial: 'experiments/tabs/dashboard/messages_by_platform/no_message_placeholder'
 
