@@ -2,7 +2,7 @@ class FacebookSessionsController < ApplicationController
   skip_after_action :verify_authorized
   
   def facebook_create
-    experiment_id = request.env["omniauth.params"]["state"]
+    experiment_id = request.env["omniauth.params"][:experiment_id]
     token = request.env["omniauth.auth"]["credentials"]["token"]
     experiment = Experiment.find(experiment_id)
     experiment.set_facebook_keys(token)

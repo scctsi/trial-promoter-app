@@ -17,10 +17,10 @@
               Dashboard
         %td
           - if !experiment.settings(:facebook).client_access_token.nil?
-            %a.ui.facebook.button{ href: "/auth/facebook/log_out?state=#{experiment.id}", method: :delete }
+            %a.ui.facebook.button{ href: "/auth/facebook/log_out?experiment_id=#{experiment.id}", method: :delete }
               %i.facebook.icon
               Log out
           - else
-            %a.ui.facebook.button{ href: "/auth/facebook?state=#{experiment.id}" }
+            %a.ui.facebook.button{ href: "/auth/facebook?experiment_id=#{experiment.id}" }
               %i.facebook.icon
               Facebook
