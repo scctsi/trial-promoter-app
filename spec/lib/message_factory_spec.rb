@@ -177,7 +177,7 @@ RSpec.describe MessageFactory do
     end
   end
 
-  it 'creates a set of messages given five message templates, 3 social networks, 2 mediums, images for all messages, 3 cycles, 5 messages per network per day (random hashtags)' do
+  xit 'creates a set of messages given five message templates, 3 social networks, 2 mediums, images for all messages, 3 cycles, 5 messages per network per day (random hashtags)' do
     message_generation_parameter_set = MessageGenerationParameterSet.new do |m|
       m.social_network_choices = [:facebook, :instagram, :twitter]
       m.medium_choices = ['ad', 'organic']
