@@ -2,19 +2,12 @@
   %thead
     %tr
       %th Name
-      %th Start
-      %th End
       %th Access
+      %th
   %tbody
     - experiments.includes(:message_generation_parameter_set).each do |experiment|
       %tr
         %td= experiment.name
-        %td
-          - if !experiment.message_distribution_start_date.nil?
-            = experiment.message_distribution_start_date.strftime('%B %d, %Y')
-        %td
-          - if !experiment.end_date.nil?
-            = experiment.end_date.strftime('%B %d, %Y')
         %td
           .ui.buttons
             %a.ui.button.workspace-button{ href: "#{experiment_path(experiment)}#/setup" }
@@ -22,3 +15,12 @@
             .or
             %a.ui.button.dashboard-button{ href: "#{experiment_path(experiment)}#/dashboard" }
               Dashboard
+        %td
+          - if !experiment.settings(:facebook).client_access_token.nil?
+            %a.ui.facebook.button{ href: "/auth/facebook/log_out?experiment_id=#{experiment.id}", method: :delete }
+              %i.facebook.icon
+              Log out
+          - else
+            %a.ui.facebook.button{ href: "/auth/facebook?experiment_id=#{experiment.id}" }
+              %i.facebook.icon
+              Facebook

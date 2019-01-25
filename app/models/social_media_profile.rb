@@ -23,8 +23,8 @@ class SocialMediaProfile < ActiveRecord::Base
 
   validates :service_id, presence: true
   validates :service_username, presence: true
-  validates :platform, presence: true
-  enumerize :platform, in: [:facebook, :instagram, :twitter]
+  # validates :platform, presence: true
+  enumerize :platform, in: [:facebook, :twitter]
   has_and_belongs_to_many :experiments
   has_many :analytics_files
   has_many :messages

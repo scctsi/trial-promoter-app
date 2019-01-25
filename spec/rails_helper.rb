@@ -39,6 +39,8 @@ Shoulda::Matchers.configure do |config|
 end
 
 RSpec.configure do |config|
+  config.include Capybara::DSL
+  config.include Devise::Test::IntegrationHelpers, type: :request
   config.include Devise::Test::ControllerHelpers, type: :controller
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
@@ -73,6 +75,13 @@ RSpec.configure do |config|
     config.filter_run_excluding :development_only_tests => true
   end
 
+  # Omniauth configuration
+  OmniAuth.config.test_mode = true
+  OmniAuth.config.mock_auth[:facebook] = OmniAuth::AuthHash.new({
+    :provider => 'facebook',
+    :uid => '123545'
+  })
+  
   # Additional factory_girl configuration
   config.include FactoryGirl::Syntax::Methods
   config.before(:suite) do
