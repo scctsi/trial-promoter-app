@@ -651,44 +651,26 @@ $(document).ready(function() {
       if (targetUrl.includes("page=")){
         page = targetUrl.match(/page=(\d+)/)[1];
       }
-      // if (model == 'comment'){
-      //   $.ajax({
-      //     url: '/experiments/' + experimentId + '/comments_page.html',
-      //     data: { page: page },
-      //     success: function(res){
-      //       $('.paginated-content').html(res);
-      //       setUpAjaxPagination();
-      //       $('.ui.dropdown').dropdown({
-      //         onChange: function() {
-      //           var commentId = $(this).data("comment-id");
-      //           $("#edit-comment-codes-" + commentId).find('.save-comment-codes').first().removeClass('disabled');
-      //         }
-      //       });
-      //       setUpEditCommentCodesFormEvents();
-      //     }
-      //   });
-      // } else {
-        $.ajax({
-          url: '/experiments/' + experimentId + '/' + model + '_page.html',
-          data: { page: page },
-          success: function(res){
-            paginatedContent.html(res);
-            setUpAjaxPagination();
-            setUpSaveCampaignIdFormEvents();
-            setUpEditCampaignIdLabelEvents();
-            setUpSaveNoteFormEvents();
-            setUpEditNoteEvents();
-            
-            $('.ui.dropdown').dropdown({
-              onChange: function() {
-                var commentId = $(this).data("comment-id");
-                $("#edit-comment-codes-" + commentId).find('.save-comment-codes').first().removeClass('disabled');
-              }
-            });
-            setUpEditCommentCodesFormEvents();
-          }
-        });
-      // }
+      $.ajax({
+        url: '/experiments/' + experimentId + '/' + model + '_page.html',
+        data: { page: page },
+        success: function(res){
+          paginatedContent.html(res);
+          setUpAjaxPagination();
+          setUpSaveCampaignIdFormEvents();
+          setUpEditCampaignIdLabelEvents();
+          setUpSaveNoteFormEvents();
+          setUpEditNoteEvents();
+          
+          $('.ui.dropdown').dropdown({
+            onChange: function() {
+              var commentId = $(this).data("comment-id");
+              $("#edit-comment-codes-" + commentId).find('.save-comment-codes').first().removeClass('disabled');
+            }
+          });
+          setUpEditCommentCodesFormEvents();
+        }
+      });
     });
   }
 
