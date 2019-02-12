@@ -5,7 +5,7 @@ RSpec.describe MessagePolicy, type: :policy do
 
   let(:message) { build(:message) }
 
-  context "for an initial user" do
+  context "for a user with no role" do
     let(:user) { create(:user) }
 
     it { should_not be_permitted_to(:edit_campaign_id) }
@@ -14,7 +14,7 @@ RSpec.describe MessagePolicy, type: :policy do
     it { should_not be_permitted_to(:new_note) }
   end
 
-  context "for a administrator" do
+  context "for an administrator" do
     let(:user) { create(:administrator) }
 
     it { should be_permitted_to(:edit_campaign_id) }
