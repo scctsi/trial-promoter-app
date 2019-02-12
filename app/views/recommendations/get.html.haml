@@ -5,17 +5,22 @@
   #recommendations
     .ui.top.attached.tabular.menu
       %a{ class: 'active item', 'data-tab': 'messages' }
-        Messages
+        Find effective messages
       %a{ class: 'item', 'data-tab': 'images' }
-        Images
+        Image resources
       %a{ class: 'item', 'data-tab': 'irb' }
-        IRB documents
+        IRB boilerplate
     .ui.bottom.attached.active.tab.segment{ 'data-tab': 'messages' }
       = render partial: 'message_recommender', locals: { experiment: @experiment }
     .ui.bottom.attached.tab.segment{ 'data-tab': 'images' }
-      .ui.medium.header
-        If you're looking for images for your messages, we suggest using one of these sites:
       .ui.relaxed.divided.list
+        .item
+          %i.large.image.outline.middle.aligned.icon
+          .content
+            %a{:class => "header", :href => "https://unsplash.com"}
+              Unsplash
+            .description
+              Beautiful, free photos. Gifted by the world’s most generous community of photographers.
         .item
           %i.large.image.outline.middle.aligned.icon
           .content
