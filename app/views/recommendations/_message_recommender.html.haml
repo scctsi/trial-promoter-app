@@ -1,7 +1,7 @@
 %form.message-recommender.ui.form
   .fields
     .six.wide.field
-      %label Condition
+      %label Health topic/Disease
       %select.ui.fluid.search.dropdown{:id => "condition", :name => "condition"}
         %option{:value => ""}
           Select condition
@@ -18,7 +18,7 @@
       .ui.primary.button.bottom.attached{:tabindex => "0"} 
         Recommend messages
 #image-recommendations
-  %h3 Messages by conversion rate
+  %h3 Examples (by conversion rate; useful for maximizing signups)
   .ui.items
     .item
       .ui.small.image
@@ -41,7 +41,7 @@
                 %td
                   .ui.label.basic.teal
                     2% Goal rate
-  %h3 Messages by click rate (Useful for traffic)
+  %h3 Examples (by click rate; useful for maximizing traffic)
   .ui.items
     .item
       .ui.small.image
