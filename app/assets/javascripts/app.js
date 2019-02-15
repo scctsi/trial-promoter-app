@@ -218,14 +218,13 @@ $(document).ready(function() {
   }
 
   function setUpPopupInfo() {
-    $('.ui.fluid.huge.teal.labeled.icon.button.start-experiment-button').popup({
+    $('.start-experiment-button').popup({
       title   : 'What is an experiment?',
       content : 'An experiment applies scientific study design techniques and allows you to set up a project to test a hypothesis.'
     });
 
-    $('.ui.fluid.huge.teal.labeled.icon.button.start-campaign-button').popup({
-      title   : 'What is a campaign?',
-      content : 'A campaign allows you to promote one or multiple types of contents (news, research studies, research findings, award announcements, etc.) without applying scientific study design techniques.'
+    $('.help-getting-started-button').popup({
+      content : 'Resources to help you plan, design and execute your experiment such as IRB protocol templates, message templates, and images.'
     });
 
     $('.url.label').popup();
