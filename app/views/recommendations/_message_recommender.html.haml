@@ -1,22 +1,53 @@
 %form.message-recommender.ui.form
-  .fields
-    .six.wide.field
-      %label Health topic/Disease
-      %select.ui.fluid.search.dropdown{:id => "condition", :name => "condition"}
-        %option{:value => ""}
-          Select condition
-        %option{:value => "1"}
-          Smoking
-        %option{:value => "2"}
-          Health effects of wildfire
-        %option{:value => "3"}
-          Cannabis
-    .six.wide.intervention.field.disabled
-      %label Intervention
-      %select.ui.fluid.search.dropdown{:id => "intervention", :name => "intervention"}
-    .four.wide.field
-      .ui.primary.button.bottom.attached{:tabindex => "0"} 
-        Recommend messages
+  .ui.message
+    .header
+      Note
+    .ui.bulleted.list
+      .item
+        Intervention types: Trial Promoter uses the interventions defined <a href="https://prsinfo.clinicaltrials.gov/definitions.html" target="_blank">in clinicaltrials.gov</a>
+  .field
+    %label Health topic/Disease
+    %select.ui.labeled.fluid.search.dropdown{:id => "condition", :name => "condition"}
+      %option{:value => ""}
+        Select condition
+      %option{:value => "1"}
+        Smoking
+      %option{:value => "2"}
+        Health effects of wildfire
+      %option{:value => "3"}
+        Cannabis
+  .field
+    %label Intervention type/data collection methodology
+    %select.ui.fluid.search.dropdown{:id => "intervention", :name => "intervention"}
+      %option{:value => ""}
+        Select intervention type/data collection methodology
+      %option{:value => "1"}
+        Drug: Including placebo
+      %option{:value => "2"}
+        Device: Including sham
+      %option{:value => "3"}
+        Biological/Vaccine
+      %option{:value => "4"}
+        Procedure/Surgery
+      %option{:value => "5"}
+        Behavioral: For example, psychotherapy, lifestyle counseling
+      %option{:value => "6"}
+        Genetic: Including gene transfer, stem cell and recombinant DNA
+      %option{:value => "7"}
+        Dietary Supplement: For example, vitamins, minerals
+      %option{:value => "8"}
+        Combination Product: Combining a drug and device, a biological product and device; a drug and biological product; or a drug, biological product, and device
+      %option{:value => "9"}
+        Diagnostic Test: For example, imaging, in-vitro
+      %option{:value => "10"}
+        Other
+      %option{:value => "11"}
+        Data collection
+      %option{:value => "10"}
+        Survey
+  .four.wide.field
+    .ui.primary.button.bottom.attached{:tabindex => "0"} 
+      Recommend messages
 #image-recommendations
   %h3 Examples (by conversion rate; useful for maximizing signups)
   .ui.items
