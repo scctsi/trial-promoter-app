@@ -691,36 +691,36 @@ $(document).ready(function() {
       $('#image-recommendations').show();
     });
     
-    $('.form.message-recommender #condition').dropdown({
-      onChange: function(val) {
-        $('.form.message-recommender #intervention').dropdown('clear');
-        if (val == '1') {
-          $('.form.message-recommender #intervention').html(
-            '<option value="">Select intervention</option>' +
-            '<option value="1">Information dissemination: Website</option>' +
-            '<option value="2">Drug: Oxycontin</option>'
-          );
-          $('.form.message-recommender #intervention').dropdown('refresh');
-          $('.form.message-recommender .intervention').removeClass('disabled');
-        }
-        if (val == '2') {
-          $('.form.message-recommender #intervention').html(
-            '<option value="">Select intervention</option>' +
-            '<option value="1">Information dissemination and gathering: Smartphone app</option>'
-          );
-          $('.form.message-recommender #intervention').dropdown('refresh');
-          $('.form.message-recommender .intervention').removeClass('disabled');
-        }
-        if (val == '3') {
-          $('.form.message-recommender #intervention').html(
-            '<option value="">Select intervention</option>' +
-            '<option value="1">Information gathering: Long survey</option>'
-          );
-          $('.form.message-recommender #intervention').dropdown('refresh');
-          $('.form.message-recommender .intervention').removeClass('disabled');
-        }
-      }
-    });    
+    // $('.form.message-recommender #condition').dropdown({
+    //   onChange: function(val) {
+    //     $('.form.message-recommender #intervention').dropdown('clear');
+    //     if (val == '1') {
+    //       $('.form.message-recommender #intervention').html(
+    //         '<option value="">Select intervention</option>' +
+    //         '<option value="1">Information dissemination: Website</option>' +
+    //         '<option value="2">Drug: Oxycontin</option>'
+    //       );
+    //       $('.form.message-recommender #intervention').dropdown('refresh');
+    //       $('.form.message-recommender .intervention').removeClass('disabled');
+    //     }
+    //     if (val == '2') {
+    //       $('.form.message-recommender #intervention').html(
+    //         '<option value="">Select intervention</option>' +
+    //         '<option value="1">Information dissemination and gathering: Smartphone app</option>'
+    //       );
+    //       $('.form.message-recommender #intervention').dropdown('refresh');
+    //       $('.form.message-recommender .intervention').removeClass('disabled');
+    //     }
+    //     if (val == '3') {
+    //       $('.form.message-recommender #intervention').html(
+    //         '<option value="">Select intervention</option>' +
+    //         '<option value="1">Information gathering: Long survey</option>'
+    //       );
+    //       $('.form.message-recommender #intervention').dropdown('refresh');
+    //       $('.form.message-recommender .intervention').removeClass('disabled');
+    //     }
+    //   }
+    // });    
   }
   
   // Initialize
