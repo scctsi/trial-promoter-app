@@ -1,0 +1,42 @@
+%h2.header
+  %i.assistive.listening.systems.icon
+  Listening
+- if current_user.role.administrator?  
+  .ui.placeholder.segment
+    .ui.two.column.very.relaxed.stackable.grid
+      .column
+        %h3.header
+          Upload and process existing data set
+        .ui.big.button.fluid 
+          %i.upload.icon
+          Upload files
+        .ui.message
+          .header
+            Note
+          %p
+            Trial Promoter will process the uploaded files, removing non-English tweets and tweets made by bot accounts. Once the files have been processed, Trial Promoter will send you an email to download the final data set.
+      .middle.aligned.column
+        %h3.header
+          Get data set from Twitter
+        .ui.big.button.fluid.get-data-set-twitter-button
+          %i.twitter.icon
+          Get data set
+    .ui.vertical.divider
+      Or
+  .ui.placeholder.segment.get-data-set-twitter-interface
+    %h3.header
+      Get data set from Twitter
+    .ui.progress
+      .bar
+        .progress
+      .label Twitter API usage (for current month)
+    .ui.form
+      .field
+        .search
+          .ui.icon.input
+            %input.prompt{ type: "text", placeholder: "Enter search terms or hashtags" }
+            %i.search.icon
+      .ui.small.button.primary
+        Estimate number of tweets
+      .ui.small.button.negative.get-data-set-twitter-final-button
+        Get data set

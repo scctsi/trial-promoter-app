@@ -4,7 +4,17 @@
     Home
   %a.item{:href => experiments_path, :class => current_page?(experiments_path) ? "active" : ""}
     %i.line.chart.outline.icon
-    Experiments
+    Ongoing experiments
   %a.item{:href => recommendations_path, :class => current_page?(recommendations_path) ? "active" : ""}
     %i.thumbs.up.outline.icon
     Help getting started
+  %a.item{:href => listening_path, :class => current_page?(listening_path) ? "active" : ""}
+    %i.assistive.listening.systems.icon
+    Listening
+  %a.item{:href => ads_specifications_path, :class => current_page?(ads_specifications_path) ? "active" : ""}
+    %i.file.alternate.icon
+    Ad specifications
+  %a.item{:href => ads_previews_path, :class => current_page?(ads_previews_path) ? "active" : ""}
+    %i.eye.icon
+    Ad previews
+    

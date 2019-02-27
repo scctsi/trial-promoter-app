@@ -226,6 +226,10 @@ $(document).ready(function() {
     $('.help-getting-started-button').popup({
       content : 'Resources to help you plan, design and execute your experiment such as IRB protocol templates, message templates, and images.'
     });
+    
+    $('.get-data-set-twitter-final-button').popup({
+      content: "WARNING: Getting this data set will consume 15% of this month's quota, leaving 65% of this month's quote left. It will take 2 days to process this data set."
+    });
 
     $('.url.label').popup();
   }
@@ -723,6 +727,14 @@ $(document).ready(function() {
     // });    
   }
   
+  function setUpListening() {
+    $('.get-data-set-twitter-interface').hide();
+    
+    $('.get-data-set-twitter-button').click(function() {
+      $('.get-data-set-twitter-interface').show();
+    });
+  }
+  
   // Initialize
   setUpSaveCampaignIdFormEvents();
   setUpEditCampaignIdLabelEvents();
@@ -766,6 +778,9 @@ $(document).ready(function() {
 
   // Set up special onChange for intervention dropdown in message recommender
   setUpMessageRecommender();
+  
+  // Set up social media listening interface
+  setUpListening();
 
   // Lazyload for images
   $("img").lazyload({

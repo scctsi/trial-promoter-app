@@ -93,4 +93,11 @@ Rails.application.routes.draw do
   
   # Recommendations 
   get 'recommendations/', to: 'recommendations#get'
+
+  # Listening 
+  get 'listening/', to: 'listening#index'
+  
+  # Ads
+  get 'ads/previews', to: 'ads#previews'
+  get 'ads/specifications', to: 'ads#specifications'
 end

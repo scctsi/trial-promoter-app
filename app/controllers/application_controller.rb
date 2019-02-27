@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
 
   before_action :authenticate_user!
   after_action :verify_authorized, unless: :devise_controller?, except: :index
-  after_action :verify_policy_scoped, only: :index
+  after_action :verify_policy_scoped, only: :index, unless: -> { controller_name == 'listening' }
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
   def set_timezone
