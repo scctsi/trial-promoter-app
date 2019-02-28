@@ -61,7 +61,6 @@ table.message-generation-parameter-set td.collapsing {
 // -----------------------------
 // Start theme changes for TCORS
 // -----------------------------
-
 body {
   background: #DBFCFF;
 }
@@ -114,3 +113,59 @@ body {
 // ---------------------------
 // End theme changes for TCORS
 // ---------------------------
+
+// -----------------------------
+// Start platform ad preview CSS
+// -----------------------------
+
+.google-ad {
+  font-family: arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.42857;
+  line-height: 18px;
+}
+
+.google-ad h3 {
+  margin: 0;
+  padding: 0;
+}
+
+.google-ad h3 a {
+  font-family: arial, sans-serif;
+  font-size: 18px; 
+  font-weight: normal;
+  color: #1a0dab;
+}
+
+.google-ad h3 a:hover {
+  color: #1a0dab;
+  text-decoration: underline;
+}
+
+.google-ad span.ad-tag {
+  background-color: #fff;
+  border-radius: 2px;
+  color: #006621;
+  display: inline-block;
+  font-size: 12px;
+  border: 1px solid #006621;
+  padding: 0 2px 0 2px;
+  line-height: 14px;
+  vertical-align: baseline;
+  margin-left: 0;
+  margin-right: 5px;
+}
+
+.google-ad span.display-url {
+  color: #006621;
+  white-space: nowrap;
+}
+
+.google-ad span.description {
+  color: #545454;
+  font-size: small;
+}
+
+// -----------------------------
+// End platform ad preview CSS
+// -----------------------------

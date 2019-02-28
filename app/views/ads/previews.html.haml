@@ -1,0 +1,37 @@
+%h2.header
+  %i.eye.icon
+  Ad previews
+- if current_user.role.administrator?  
+  .ui.placeholder.segment
+    .ui.styled.fluid.accordion
+      .active.title
+        %i.dropdown.icon
+        Google
+      .active.content
+        .google-ad
+          %h3.headline
+            %a{ href: ""} 
+              Headline 1 | Headline 2 | Headline 3
+          .url-line
+            %span.ad-tag
+              Ad
+            %span.display-url
+              www.example.com/landing-pages/cancer.html
+              %span.fa.fa-caret-down
+          %div
+            %span.description
+              This is the first description.
+            %span.description
+              This is the second description.
+            %span.description
+              This is the third description.
+      .title
+        %i.dropdown.icon
+        Facebook
+      .content
+      .title
+        %i.dropdown.icon
+        Reddit
+      .content
+    
+    

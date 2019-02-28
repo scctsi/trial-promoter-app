@@ -764,6 +764,7 @@ $(document).ready(function() {
     context: false
   });
   $('.table.sortable').tablesort();
+  $('.ui.accordion').accordion();
 
   // TODO: Make this more specific to the image coding interface and rething coding interface
   // $('.ui.dropdown').dropdown({

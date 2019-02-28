@@ -1,0 +1,46 @@
+%h2.header
+  %i.file.alternate.icon
+  Ad specifications
+- if current_user.role.administrator?  
+  .ui.placeholder.segment
+    .ui.styled.fluid.accordion
+      .active.title
+        %i.dropdown.icon
+        Google
+      .active.content
+        %h4
+          Format: Expanded text ad (English)
+        %table.ui.celled.table
+          %thead
+            %tr
+              %th Field
+              %th Max length
+            %tr
+              %td Headline 1
+              %td 30 characters
+            %tr
+              %td Headline 2
+              %td 30 characters
+            %tr
+              %td Headline 3
+              %td 30 characters
+            %tr
+              %td Description 1
+              %td 90 characters
+            %tr
+              %td Description 2
+              %td 90 characters
+            %tr
+              %td Path 1
+              %td 15 characters
+            %tr
+              %td Path 2
+              %td 15 characters
+      .title
+        %i.dropdown.icon
+        Facebook
+      .content
+      .title
+        %i.dropdown.icon
+        Reddit
+      .content
