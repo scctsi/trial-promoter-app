@@ -29,14 +29,58 @@
     .ui.progress
       .bar
         .progress
-      .label Twitter API usage (for current month)
-    .ui.form
-      .field
-        .search
-          .ui.icon.input
-            %input.prompt{ type: "text", placeholder: "Enter search terms or hashtags" }
-            %i.search.icon
-      .ui.small.button.primary
-        Estimate number of tweets
-      .ui.small.button.negative.get-data-set-twitter-final-button
-        Get data set
+      .label Twitter API usage (for March 2019; Usage will reset on April 1st 2019)
+    .ui.placeholder.teal.segment
+      .ui.form
+        .field
+          .search
+            .ui.icon.input
+              %input.prompt{ type: "text", placeholder: "Enter search terms or hashtags" }
+              %i.search.icon
+        .field
+          .ui.checkbox
+            %input{ type: "checkbox", checked: "checked" }
+            %label Exclude retweets
+        .ui.small.button.primary
+          Get estimate of number of tweets
+    %h4.header
+      Search history (Unfulfilled)
+    %table.ui.celled.table
+      %thead
+        %tr
+          %th Search query
+          %th Estimated number of tweets
+          %th Estimated processing time
+          %th Actions
+      %tbody
+        %tr
+          %td "Psoriasis" AND "#psoriasissm" BETWEEN 1/1/2018 and 1/1/2019 EXCLUDING retweets
+          %td 158,213
+          %td 4 days
+          %td 
+            .ui.mini.red.labeled.icon.button
+              %i.download.icon
+              153,213 tweets
+            .ui.horizontal.divider 
+              OR
+            .ui.mini.labeled.icon.button
+              %i.close.icon
+              Remove
+    %h4.header
+      Previous searches (fulfilled)
+    %table.ui.celled.table
+      %thead
+        %tr
+          %th Search query
+          %th Estimated number of tweets
+          %th Estimated processing time
+          %th Actions
+      %tbody
+        %tr
+          %td "Breast cancer" OR "Colon cancer" BETWEEN 1/1/2018 and 1/1/2019 EXCLUDING retweets
+          %td 125,213
+          %td 4 days
+          %td 
+            .ui.mini.labeled.icon.button
+              %i.download.icon
+              153,213 tweets

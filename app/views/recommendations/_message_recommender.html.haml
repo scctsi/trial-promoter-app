@@ -45,7 +45,107 @@
         Data collection
       %option{:value => "10"}
         Survey
-  .four.wide.field
+  %table.ui.celled.table
+    %thead
+      %tr
+        %th{ colspan: 3 } 
+          .ui.radio.checkbox
+            %input{ type: "radio" }
+            %label Facebook
+      %tr 
+        %th Category
+        %th Study criteria
+        %th Social media criteria
+    %tbody
+      %tr.positive
+        %td Gender
+        %td Women
+        %td Women
+      %tr
+        %td Age
+        %td 13+
+        %td 18 to 65
+      %tr.negative
+        %td Population
+        %td Pregnant women
+        %td Not allowed
+    %tfoot
+      %tr
+        %th{ colspan: 3 } Criteria match: 50% (1 + 0.5 + 0 / 3)
+  %table.ui.celled.table
+    %thead
+      %tr
+        %th{ colspan: 3 } 
+          .ui.radio.checkbox
+            %input{ type: "radio" }
+            %label Reddit
+      %tr 
+        %th Category
+        %th Study criteria
+        %th Social media criteria
+    %tbody
+      %tr.positive
+        %td Gender
+        %td Men and Women
+        %td Men and Women
+      %tr
+        %td Age
+        %td 18+
+        %td 18+
+      %tr.negative
+        %td Population
+        %td Healthy volunteers
+        %td No targeting
+    %tfoot
+      %tr
+        %th{ colspan: 3 } Criteria match: 100% (1 + 1 + 1 / 3)
+  .ui.horizontal.divider
+    OR
+  .ui.cards
+    .ui.card
+      .content
+        .header
+          .ui.radio.checkbox
+            %input{ type: "radio" }
+            %label Facebook
+        .description
+          .ui.list
+            .item
+              .header Gender
+              Men
+            .item
+              .header Age
+              18+
+    .ui.card
+      .content
+        .header
+          .ui.radio.checkbox
+            %input{ type: "radio" }
+            %label Reddit
+        .description
+          .ui.list
+            .item
+              .header Gender
+              Men
+            .item
+              .header Age
+              18+
+    .ui.card
+      .content
+        .header
+          .ui.radio.checkbox
+            %input{ type: "radio" }
+            %label Google AdWords
+        .description
+          .ui.list
+            .item
+              .header Gender
+              N/A
+            .item
+              .header Age
+              N/A
+  .ui.horizontal.divider
+  .field
     .ui.primary.button.bottom.attached{:tabindex => "0"} 
       Recommend messages
 #image-recommendations

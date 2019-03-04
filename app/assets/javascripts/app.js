@@ -227,8 +227,9 @@ $(document).ready(function() {
       content : 'Resources to help you plan, design and execute your experiment such as IRB protocol templates, message templates, and images.'
     });
     
-    $('.get-data-set-twitter-final-button').popup({
-      content: "WARNING: Getting this data set will consume 15% of this month's quota, leaving 65% of this month's quote left. It will take 2 days to process this data set."
+    // Remove this popup. Just for a prototype.
+    $('.mini.red.labeled.icon.button').popup({
+      content: "WARNING: Getting this data set will consume 15% of this month's quota, leaving 65% of this month's quote left."
     });
 
     $('.url.label').popup();
