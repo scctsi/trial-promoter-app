@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180814173241) do
+ActiveRecord::Schema.define(version: 20190305233716) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -316,6 +316,14 @@ ActiveRecord::Schema.define(version: 20180814173241) do
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
     t.string   "allowed_mediums"
+  end
+
+  create_table "social_media_specifications", force: :cascade do |t|
+    t.string "platform"
+    t.string "post_type"
+    t.string "format"
+    t.string "placement"
+    t.text   "description"
   end
 
   create_table "taggings", force: :cascade do |t|
