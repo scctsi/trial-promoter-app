@@ -1,14 +1,23 @@
 class TrackingUrl
-  def self.utm_parameters(message)
+  def self.utm_parameters(message_or_post)
     utm_parameters = {}
-    
-    utm_parameters[:source] = message.platform
-    utm_parameters[:medium] = message.medium
-    utm_parameters[:campaign] = message.message_generating.to_param
-    utm_parameters[:term] = nil
-    utm_parameters[:content] = message.to_param
-    
-    utm_parameters
+
+    case message_or_post
+      when Message
+        utm_parameters[:source] = message_or_post.platform
+        utm_parameters[:medium] = message_or_post.medium
+        utm_parameters[:campaign] = message_or_post.message_generating.to_param
+        utm_parameters[:term] = nil
+        utm_parameters[:content] = message_or_post.to_param
+      when Post
+        utm_parameters[:source] = message_or_post.post_template.social_media_specification.platform
+        utm_parameters[:medium] = message_or_post.post_template.social_media_specification.post_type
+        utm_parameters[:campaign] = message_or_post.experiment.to_param
+        utm_parameters[:term] = nil
+        utm_parameters[:content] = message_or_post.to_param
+    end
+        
+    return utm_parameters
   end
 
   def self.campaign_url(message)
