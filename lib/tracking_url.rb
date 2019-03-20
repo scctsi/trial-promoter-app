@@ -20,15 +20,29 @@ class TrackingUrl
     return utm_parameters
   end
 
-  def self.campaign_url(message)
-    # Pull out any anchor link in the message's promoted website url and move it to the end of the campaign URL
-    anchor_link = ''
-    if !message.promoted_website_url.index('#').nil?
-      anchor_link = message.promoted_website_url[message.promoted_website_url.index('#')..-1]
-      # Strip out the anchor link
-      message.promoted_website_url[message.promoted_website_url.index('#')..-1] = ''
-    end
+  def self.campaign_url(message_or_post)
 
-    "#{message.promoted_website_url}?utm_source=#{utm_parameters(message)[:source]}&utm_campaign=#{utm_parameters(message)[:campaign]}&utm_medium=#{utm_parameters(message)[:medium]}&utm_term=#{utm_parameters(message)[:term]}&utm_content=#{utm_parameters(message)[:content]}#{anchor_link}"
+    case message_or_post
+      when Message
+        # Pull out any anchor link in the message's promoted website url and move it to the end of the campaign URL
+        anchor_link = ''
+        if !message_or_post.promoted_website_url.index('#').nil?
+          anchor_link = message_or_post.promoted_website_url[message_or_post.promoted_website_url.index('#')..-1]
+          # Strip out the anchor link
+          message_or_post.promoted_website_url[message_or_post.promoted_website_url.index('#')..-1] = ''
+        end
+
+        "#{message_or_post.promoted_website_url}?utm_source=#{utm_parameters(message_or_post)[:source]}&utm_campaign=#{utm_parameters(message_or_post)[:campaign]}&utm_medium=#{utm_parameters(message_or_post)[:medium]}&utm_term=#{utm_parameters(message_or_post)[:term]}&utm_content=#{utm_parameters(message_or_post)[:content]}#{anchor_link}"
+      when Post
+        # Pull out any anchor link in the posts's website url and move it to the end of the campaign URL
+        anchor_link = ''
+        if !message_or_post.content[:website_url].index('#').nil?
+          anchor_link = message_or_post.content[:website_url][message_or_post.content[:website_url].index('#')..-1]
+          # Strip out the anchor link
+          message_or_post.content[:website_url][message_or_post.content[:website_url].index('#')..-1] = ''
+        end
+
+        "#{message_or_post.content[:website_url]}?utm_source=#{utm_parameters(message_or_post)[:source]}&utm_campaign=#{utm_parameters(message_or_post)[:campaign]}&utm_medium=#{utm_parameters(message_or_post)[:medium]}&utm_term=#{utm_parameters(message_or_post)[:term]}&utm_content=#{utm_parameters(message_or_post)[:content]}#{anchor_link}"
+      end
   end
 end

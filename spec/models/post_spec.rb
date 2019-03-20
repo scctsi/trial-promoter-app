@@ -13,4 +13,19 @@ describe Post do
 
     expect(post.to_param).to eq("#{experiment.to_param}-post-#{post.id.to_s}")
   end
+  
+  it "uses an ActiveRecord store for the content" do
+    post = Post.new
+    post.content[:headline] = "Headline"
+    post.content[:description] = "Description"
+    post.post_template = create(:post_template)
+    post.experiment = create(:experiment)
+
+    post.save
+    
+    post.reload
+    expect(post.content[:headline]).to eq("Headline")
+    expect(post.content['description']).to eq("Description")
+  end
+
 end

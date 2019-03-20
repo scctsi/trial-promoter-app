@@ -3,7 +3,8 @@ class Post < ActiveRecord::Base
   validates :experiment, presence: true
   belongs_to :post_template
   validates :post_template, presence: true
-  
+  store :content, coder: JSON
+
   def to_param
     "#{experiment.to_param}-post-#{id.to_s}"
   end

@@ -51,7 +51,7 @@ RSpec.describe TrackingUrl do
     expect(campaign_url).to eq("#{@post.content[:website_url]}?utm_source=#{utm_parameters[:source]}&utm_campaign=#{utm_parameters[:campaign]}&utm_medium=#{utm_parameters[:medium]}&utm_term=#{utm_parameters[:term]}&utm_content=#{utm_parameters[:content]}")
   end
   
-  it 'appends anchor links to the end when creating a campaign URL' do
+  it 'appends anchor links to the end when creating a campaign URL for a message' do
     # REF: http://stackoverflow.com/questions/29994275/utm-tags-and-anchors-in-url
     @message.promoted_website_url = 'http://example.com/#anchor-link'
     utm_parameters = TrackingUrl.utm_parameters(@message)
@@ -59,5 +59,15 @@ RSpec.describe TrackingUrl do
     campaign_url = TrackingUrl.campaign_url(@message)
 
     expect(campaign_url).to eq("#{@message.promoted_website_url}?utm_source=#{utm_parameters[:source]}&utm_campaign=#{utm_parameters[:campaign]}&utm_medium=#{utm_parameters[:medium]}&utm_term=#{utm_parameters[:term]}&utm_content=#{utm_parameters[:content]}#anchor-link")
+  end
+
+  it 'appends anchor links to the end when creating a campaign URL for a post' do
+    # REF: http://stackoverflow.com/questions/29994275/utm-tags-and-anchors-in-url
+    @post.content[:website_url] = 'http://example.com/#anchor-link'
+    utm_parameters = TrackingUrl.utm_parameters(@post)
+    
+    campaign_url = TrackingUrl.campaign_url(@post)
+
+    expect(campaign_url).to eq("#{@post.content[:website_url]}?utm_source=#{utm_parameters[:source]}&utm_campaign=#{utm_parameters[:campaign]}&utm_medium=#{utm_parameters[:medium]}&utm_term=#{utm_parameters[:term]}&utm_content=#{utm_parameters[:content]}#anchor-link")
   end
 end
