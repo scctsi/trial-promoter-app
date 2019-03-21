@@ -1,24 +1,30 @@
 %table.ui.celled.striped.table
   %thead
     %tr
-      %th{ colspan: "6" } 
+      %th{ colspan: "7" } 
         %h3 Facebook (Ad)
     %tr
+      %th Database ID
       %th Text
       %th Headline
       %th Link Description
       %th Call to Action
       %th Website URL
-      %th Actions
+      %th Image pool
   %tbody
     - @experiment.post_templates.each do |post_template|
       %tr
+        %td= post_template.id
         %td= post_template.content[:text]
         %td= post_template.content[:headline]
         %td= post_template.content[:link_description]
         %td= post_template.content[:call_to_action]
         %td= post_template.content[:website_url]
         %td
+          - post_template.image_pool.each do |image_id|
+            - image = Image.find(image_id)
+            = image_tag "#{image.url}", width: '150', height: '150', lazy: true
+
 //       %tr
 //         %td= message_template.content
 //         %td= message_template.platforms.map{ |platform| platform.titleize }.join(', ')

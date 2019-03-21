@@ -11,7 +11,7 @@ describe Post do
     post_template = create(:post_template, experiment: experiment)
     post = create(:post, post_template: post_template, experiment: experiment)
 
-    expect(post.to_param).to eq("#{experiment.to_param}-post-#{post.id.to_s}")
+    expect(post.to_param).to eq("#{experiment.to_param}-post-#{post.id}")
   end
   
   it "uses an ActiveRecord store for the content" do

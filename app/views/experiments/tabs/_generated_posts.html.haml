@@ -1,48 +1,25 @@
-.ui.buttons
-  - if current_user.role == 'administrator'
-    - if @experiment.disable_message_generation?
-      .tooltip{ "data-tooltip" => "This experiment has already started distributing posts. You can no longer generate posts for this experiment.", "data-position" => "right center" }
-        %a.ui.labeled.icon.disabled.button
-          %i.send.icon
-          Generate posts
-      .or
-      %a.ui.labeled.icon.button{ href: "/experiments/#{@experiment.id}/send_to_buffer" }
-        %i.rocket.icon
-        Send to Buffer
-    - else
-      %a#generate-messages-button.ui.primary.labeled.icon.button
-        %i.send.icon
-        Generate posts
-      .or
-      %a.ui.labeled.icon.button{ href: "/experiments/#{@experiment.id}/send_to_buffer" }
-        %i.rocket.icon
-        Send to Buffer
-  - if @experiment.message_distribution_start_date.nil?
-    .ui.negative.message
-      .header
-        Please enter the post generation start date
-- if @posts.count == 0
-  .ui.message
-    .header
-    %p When you have set up the post generation parameters and imported all required information, you are ready to generate the posts for the experiment.
-- else
-  .ui.message
-    .header
-      Note
-    .ui.bulleted.list
-      .item
-        Randomization: Trial Promoter uses two methods for randomization. The posts are shuffled into a random sequence using a Fisher-Yates shuffle <a href="http://dl.acm.org/citation.cfm?doid=364520.364540" target="_blank">[1]</a>. The selection of hashtags (if applicable) and the images (if applicable) are randomized using a sampling method <a href="https://ruby-doc.org/core-2.2.0/Array.html#method-i-sample" target="_blank">[2]</a>.
-      .item
-        Post generation: When you click on "Generate  posts", all existing posts for this experiment will be deleted and then regenerated.
-      .item
-        Editing restriction: Set up, post templates, and generation will be locked 3 days before the experiment is scheduled to start.
-      .item
-        Send to Buffer: Trial Promoter sends messages to Buffer nightly (up to a week in advance). Please click on "Send to Buffer" to immediately send the messages scheduled for the next 7 days to Buffer.
-    .ui.mini.list
-      .item
-        <sup><a href="http://dl.acm.org/citation.cfm?doid=364520.364540" target="_blank">1</a></sup> Durstenfeld, R. "Algorithm 235: Random Permutation." Communications of the ACM. ACM, 1 July 1964. Web. 29 Mar. 2017.
-      .item
-        <sup><a href="https://ruby-doc.org/core-2.2.0/Array.html#method-i-sample" target="_blank">2</a></sup> "Class: Array (Ruby 2.2.0)." Ruby Language Documentation, n.d. Web. 29 Mar. 2017.
-  = render partial: 'shared/messages', locals: { messages: @messages, experiment_id: @experiment.id }
-// = render partial: 'message_generation_confirmation_modal', locals: { total: @experiment.message_generation_parameter_set.expected_generated_message_count(MessageTemplate.belonging_to(@experiment).count), experiment_id: @experiment.id }
-// = render partial: 'message_generation_progress_modal', locals: { total: @experiment.message_generation_parameter_set.expected_generated_message_count(MessageTemplate.belonging_to(@experiment).count), experiment_id: @experiment.id }
+%table.ui.celled.striped.table
+  %thead
+    %tr
+      %th{ colspan: "7" } 
+        %h3 Facebook (Ad)
+    %tr
+      %th Database ID
+      %th Text
+      %th Headline
+      %th Link Description
+      %th Call to Action
+      %th Campaign URL
+      %th Image
+  %tbody
+    - @experiment.posts.each do |post|
+      %tr
+        %td= post.id
+        %td= post.content[:text]
+        %td= post.content[:headline]
+        %td= post.content[:link_description]
+        %td= post.content[:call_to_action]
+        %td= post.content[:campaign_url]
+        %td
+          - image = Image.find(post.content[:image])
+          = image_tag "#{image.url}", width: '150', height: '150', lazy: true

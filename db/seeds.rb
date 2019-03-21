@@ -33,6 +33,7 @@ post_template.content[:headline] = 'Contact her today!'
 post_template.content[:link_description] = 'Monetary incentives available'
 post_template.content[:call_to_action] = 'Learn More'
 post_template.content[:website_url] = 'http://www.filipinofamilyhealth.com/'
+post_template.image_pool = [618, 619]
 post_template.save
 
 post_template = PostTemplate.new
@@ -43,6 +44,7 @@ post_template.content[:headline] = 'Get in touch today!'
 post_template.content[:link_description] = 'Monetary incentives available'
 post_template.content[:call_to_action] = 'Learn More'
 post_template.content[:website_url] = 'http://www.filipinofamilyhealth.com/'
+post_template.image_pool = [620, 621]
 post_template.save
 
 post_template = PostTemplate.new
@@ -53,6 +55,7 @@ post_template.content[:headline] = 'Sign up today! It’s free.'
 post_template.content[:link_description] = 'Monetary incentives available'
 post_template.content[:call_to_action] = 'Contact Us'
 post_template.content[:website_url] = 'http://www.filipinofamilyhealth.com/'
+post_template.image_pool = [622]
 post_template.save
 
 post_template = PostTemplate.new
@@ -63,4 +66,5 @@ post_template.content[:headline] = 'Sign up today! It’s free.'
 post_template.content[:link_description] = 'Monetary incentives available '
 post_template.content[:call_to_action] = 'Contact Us'
 post_template.content[:website_url] = 'http://www.filipinofamilyhealth.com/'
+post_template.image_pool = [623, 624]
 post_template.save

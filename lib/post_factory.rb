@@ -8,19 +8,34 @@ class PostFactory
     experiment.reload
     experiment.posts.destroy_all
     
-    post_templates = experiment.post_templates
     shuffled_post_templates = experiment.post_templates.shuffle
-    
-    shuffled_post_templates.each do |post_template|
-      post = Post.new
-      post.experiment = experiment
-      post.post_template = post_template
-      post.content = post_template.content
-      post.save
+    continue = true
+
+    while continue        
+      shuffled_post_templates.each do |post_template|
+        post = Post.new
+        post.experiment = experiment
+        post.post_template = post_template
+        post.content = post_template.content
+        post.content[:campaign_url] = TrackingUrl.campaign_url(post)
+        
+        # Use up all the images
+        if !post_template.image_pool.nil? && post_template.image_pool.length > 0
+          post.content[:image] = post_template.image_pool[0]
+          post_template.image_pool.shift
+        end
+        
+        post.save
+      end
+      
+      shuffled_post_templates = shuffled_post_templates.select{ |post_template| post_template.image_pool.length > 0 }
+      continue = false if shuffled_post_templates.length == 0
     end
+    
+    return generated_posts
   end
   
-    # Initial setup
+  # Initial setup
   #   parameters = get_message_generation_parameters(experiment)
   #   message_index = 1
   #   publish_date = experiment.message_distribution_start_date

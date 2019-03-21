@@ -11,6 +11,8 @@ RSpec.describe TrackingUrl do
     post_template.social_media_specification = social_media_specification
     @post = Post.new
     @post.post_template = post_template
+    @post.experiment = create(:experiment)
+    @post.save
   end
   
   it 'returns a hash of UTM parameters for a message' do

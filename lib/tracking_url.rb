@@ -15,13 +15,13 @@ class TrackingUrl
         utm_parameters[:campaign] = message_or_post.experiment.to_param
         utm_parameters[:term] = nil
         utm_parameters[:content] = message_or_post.to_param
+        p message_or_post.to_param
     end
         
     return utm_parameters
   end
 
   def self.campaign_url(message_or_post)
-
     case message_or_post
       when Message
         # Pull out any anchor link in the message's promoted website url and move it to the end of the campaign URL
