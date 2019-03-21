@@ -513,6 +513,41 @@ $(document).ready(function() {
       });
     });
   }
+  
+  function setUpFacebookAdPreviews() {
+    // Modal for image labeling
+    $('.preview-facebook-ad').click(function(){
+      var text = $(this).data('text');
+      var headline = $(this).data('headline');
+      var linkDescription = $(this).data('link-description');
+      var callToAction = $(this).data('call-to-action');
+      var campaignUrl = $(this).data('campaign-url');
+      var imageUrl = $(this).data('image-url');
+      var html = getFacebookAdHtml(text, headline, linkDescription, callToAction, campaignUrl, imageUrl);
+      
+      $('#facebook-ad-preview article').html(html);
+      $('#facebook-ad-preview').modal('setting', 'transition', 'Vertical Flip').modal({ blurring: true }).modal('show');
+    });
+  }
+  
+  function getFacebookAdHtml(text, headline, linkDescription, callToAction, campaignUrl, imageUrl) {
+    var html = "<header><div class='controls'><button class='facebook-button'><i class='thumbs up icon'></i>Like Page</button></div>";
+    
+    var a = document.createElement('a');
+    a.href = campaignUrl;
+
+    html += "<div class='profile'><img class='avatar'><div class='profile-title'><a class='name'>Your Page Here</a><a class='sponsored'>Sponsored</a></div></div>";
+    html += '</header>';
+    html += "<p class='message'>" + text + "</p>";
+    html += '<main>';
+    html += "<div class='image'><img src='" + imageUrl + "'></div>";
+    html += "<div class='details'><p class='headline'>" + headline + "</p><p class='description'>" + linkDescription + "</p>";
+    html += "<footer><div class='controls'><button class='facebook-button'>" + callToAction + "</button></div><p class='caption'>" + a.hostname + "</p></footer></div>";
+
+    html += '</main>';
+
+    return html;
+  }
 
   function setUpSaveCampaignIdFormEvents() {
     //Add campaign id to fb and instagram ads
@@ -684,6 +719,33 @@ $(document).ready(function() {
     });
   }
 
+  function setUpCopyToClipboard() {
+    $('.copy-to-clipboard').click(function(){
+      copyStringToClipboard($(this).data('text-to-copy'));
+      
+      $('.copy-to-clipboard').removeClass('green');
+      $(this).addClass('green');
+    });
+  }
+  
+  function copyStringToClipboard(str) {
+    // REF: https://techoverflow.net/2018/03/30/copying-strings-to-the-clipboard-using-pure-javascript/
+    // Create new element
+    var el = document.createElement('textarea');
+    // Set value (string to be copied)
+    el.value = str;
+    // Set non-editable to avoid focus and move outside of view
+    el.setAttribute('readonly', '');
+    el.style = {position: 'absolute', left: '-9999px'};
+    document.body.appendChild(el);
+    // Select text inside element
+    el.select();
+    // Copy text to clipboard
+    document.execCommand('copy');
+    // Remove temporary element
+    document.body.removeChild(el);
+  }
+  
   function setUpMessageRecommender() {
     $('#image-recommendations').hide();
 
@@ -744,6 +806,8 @@ $(document).ready(function() {
   setUpPusherChannels();
   setUpAsyncMessageGeneration();
   setUpImagePoolViewing();
+  setUpFacebookAdPreviews();
+  setUpCopyToClipboard();
 
   // Set up Semantic UI
   $('.menu .item').tab({
