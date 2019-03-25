@@ -24,7 +24,7 @@ end
 if PostTemplate.count == 0
   PostTemplate.destroy_all 
   
-  experiment = Experiment.where(name: "Filipino Family Health Initiative: The Incredible Years for Parents of School Age Children")[0]
+  experiment = Experiment.where(name: "Filipino Family Health Initiative")[0]
   
   post_template = PostTemplate.new
   post_template.experiment = experiment
