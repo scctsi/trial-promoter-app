@@ -39,8 +39,11 @@ RSpec.describe Experiment, type: :model do
   it { is_expected.to serialize(:image_codes).as(Array) }
   it { is_expected.to serialize(:comment_codes).as(Array) }
   it { is_expected.to have_and_belong_to_many(:users) }
+<<<<<<< HEAD
   it { is_expected.to have_many(:post_templates) }
   it { is_expected.to have_many(:posts) }
+=======
+>>>>>>> 9c74c1f9566183b932fe0740bae0085ed3e5485e
   
   it 'returns an array of all possible times in a day' do 
     expect(Experiment.allowed_times.count).to be(12 * 60 * 2)

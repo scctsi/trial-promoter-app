@@ -4,7 +4,7 @@
       %th Name
       %th Access
   %tbody
-    - experiments.each do |experiment|
+    - experiments.includes(:message_generation_parameter_set).each do |experiment|
       %tr
         %td= experiment.name
         %td

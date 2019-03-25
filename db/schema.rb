@@ -11,7 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20190315225957) do
+=======
+ActiveRecord::Schema.define(version: 20190305233716) do
+>>>>>>> 9c74c1f9566183b932fe0740bae0085ed3e5485e
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -296,6 +300,7 @@ ActiveRecord::Schema.define(version: 20190315225957) do
     t.datetime "updated_at",    null: false
   end
 
+<<<<<<< HEAD
   create_table "post_templates", force: :cascade do |t|
     t.text     "content"
     t.text     "image_pool"
@@ -313,6 +318,8 @@ ActiveRecord::Schema.define(version: 20190315225957) do
     t.datetime "updated_at"
   end
 
+=======
+>>>>>>> 9c74c1f9566183b932fe0740bae0085ed3e5485e
   create_table "settings", force: :cascade do |t|
     t.string   "var",         null: false
     t.text     "value"
@@ -336,6 +343,7 @@ ActiveRecord::Schema.define(version: 20190315225957) do
   end
 
   create_table "social_media_specifications", force: :cascade do |t|
+<<<<<<< HEAD
     t.string   "platform"
     t.string   "post_type"
     t.string   "format"
@@ -343,6 +351,13 @@ ActiveRecord::Schema.define(version: 20190315225957) do
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
+=======
+    t.string "platform"
+    t.string "post_type"
+    t.string "format"
+    t.string "placement"
+    t.text   "description"
+>>>>>>> 9c74c1f9566183b932fe0740bae0085ed3e5485e
   end
 
   create_table "taggings", force: :cascade do |t|
