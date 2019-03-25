@@ -6,6 +6,8 @@ class CreateSocialMediaSpecifications < ActiveRecord::Migration
       t.string :format
       t.string :placement
       t.text :description
+      
+      t.timestamps
     end
   end
 end

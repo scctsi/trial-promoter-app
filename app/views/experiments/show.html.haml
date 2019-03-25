@@ -15,10 +15,10 @@
       Setup
     %a{ class: 'item', 'data-tab': 'images' }
       Images
-    %a{ class: 'item', 'data-tab': 'message-templates' }
-      Message templates
-    %a{ class: 'item', 'data-tab': 'generated-messages' }
-      Generated messages
+    %a{ class: 'item', 'data-tab': 'post-templates' }
+      Post templates
+    %a{ class: 'item', 'data-tab': 'generated-posts' }
+      Generated posts
     %a{ class: 'item', 'data-tab': 'dashboard' }
       Dashboard
     - if current_user.role.include?('administrator')
@@ -30,10 +30,10 @@
     = render partial: 'experiments/tabs/setup'
   .ui.bottom.attached.tab.segment{ 'data-tab': 'images' }
     = render partial: 'experiments/tabs/images'
-  .ui.bottom.attached.tab.segment{ 'data-tab': 'message-templates' }
-    = render partial: 'experiments/tabs/message_templates'
-  .ui.bottom.attached.tab.segment{ 'data-tab': 'generated-messages' }
-    = render partial: 'experiments/tabs/generated_messages'
+  .ui.bottom.attached.tab.segment{ 'data-tab': 'post-templates' }
+    = render partial: 'experiments/tabs/post_templates'
+  .ui.bottom.attached.tab.segment{ 'data-tab': 'generated-posts' }
+    = render partial: 'experiments/tabs/generated_posts'
   .ui.bottom.attached.tab.segment{ 'data-tab': 'dashboard' }
     = render partial: 'experiments/tabs/dashboard'
   .ui.bottom.attached.tab.segment{ 'data-tab': 'analytics-file-uploads' }
