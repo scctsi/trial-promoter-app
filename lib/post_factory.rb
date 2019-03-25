@@ -17,7 +17,6 @@ class PostFactory
         post.experiment = experiment
         post.post_template = post_template
         post.content = post_template.content
-        post.content[:campaign_url] = TrackingUrl.campaign_url(post)
         
         # Use up all the images
         if !post_template.image_pool.nil? && post_template.image_pool.length > 0
@@ -25,6 +24,9 @@ class PostFactory
           post_template.image_pool.shift
         end
         
+        post.save
+        # NOTE: The campaign URL needs the persisted ID, so we can only generate the campaign URL after persisting
+        post.content[:campaign_url] = TrackingUrl.campaign_url(post)
         post.save
       end
       

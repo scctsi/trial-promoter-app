@@ -6,7 +6,7 @@ class Post < ActiveRecord::Base
   store :content, coder: JSON
 
   def to_param
-    "#{experiment.to_param}-post-#{id.to_s}"
+    "#{experiment.to_param}-post-#{id}"
   end
 end
 

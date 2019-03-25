@@ -15,7 +15,6 @@ class TrackingUrl
         utm_parameters[:campaign] = message_or_post.experiment.to_param
         utm_parameters[:term] = nil
         utm_parameters[:content] = message_or_post.to_param
-        p message_or_post.to_param
     end
         
     return utm_parameters
