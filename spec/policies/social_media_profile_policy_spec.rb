@@ -5,7 +5,7 @@ RSpec.describe SocialMediaProfilePolicy, type: :policy do
 
   let(:social_media_profile) { create(:social_media_profile) }
 
-  context "for an initial user" do
+  context "for a user with no role" do
     let(:user) { create(:user) }
 
     it { should_not be_permitted_to(:sync_with_buffer) }
@@ -14,7 +14,7 @@ RSpec.describe SocialMediaProfilePolicy, type: :policy do
     it { should_not be_permitted_to(:update) }
   end
 
-  context "for a administrator" do
+  context "for an administrator" do
     let(:user) { create(:administrator) }
 
     it { should be_permitted_to(:sync_with_buffer) }

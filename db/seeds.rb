@@ -6,31 +6,63 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
-require 'csv'
-require 'net/http'
-require 'roo'
+# Seed Facebook specifications
+specifications = SocialMediaSpecification.where(platform: :facebook, post_type: :ad, format: :single_image, placement: :news_feed)
 
-comments = Comment.select{ |comment| comment.message.platform == :twitter || comment.message.platform == :instagram }
-comments.each{ |comment| comment.destroy }
-
-CSV.parse(Net::HTTP.get(URI.parse('https://s3-us-west-1.amazonaws.com/scctsi-tp-production/1-tcors/comments/instagram_comments.csv'))) do |row|
-  comment = Comment.new(message_id: row[0], comment_date: row[2], comment_text: row[1], commentator_username: row[3])
-  if !(row[0].nil?)
-    comment.save
-    message = Message.find(row[0])
-    message.comments << comment
-    message.save
-  end
+if specifications.count == 0
+  specification = SocialMediaSpecification.new
+  
+  specification.platform = :facebook
+  specification.post_type = :ad
+  specification.format = :single_image
+  specification.placement = :news_feed
+  
+  specification.save
 end
 
-message_id_sheet = Roo::Spreadsheet.open('https://s3-us-west-1.amazonaws.com/scctsi-tp-production/1-tcors/comments/message_ids_for_twitter_ad_comments.xlsx')
-message_ids = message_id_sheet.sheet(0)
-for index in (2..message_ids.last_row)
-  comment = Comment.new(message_id: message_ids.cell(index, 1), comment_date: message_ids.cell(index, 3), comment_text: message_ids.cell(index, 2), commentator_username: message_ids.cell(index, 4))
-  if !(comment.message_id.nil?)
-    comment.save
-    message = Message.find(comment.message_id)
-    message.comments << comment
-    message.save
-  end
+# Seed some post templates for Facebook news feed ads
+if PostTemplate.count == 0
+  PostTemplate.destroy_all 
+  
+  experiment = Experiment.where(name: "Filipino Family Health Initiative: The Incredible Years for Parents of School Age Children")[0]
+  
+  post_template = PostTemplate.new
+  post_template.experiment = experiment
+  post_template.social_media_specification = SocialMediaSpecification.first
+  post_template.content[:text] = 'Give your children the skills they’ll need to tackle life’s toughest challenges. Come join a community study for parents of Filipino kids 8-12.'
+  post_template.content[:headline] = 'Contact her today!'
+  post_template.content[:link_description] = 'Monetary incentives available'
+  post_template.content[:call_to_action] = 'Learn More'
+  post_template.content[:website_url] = 'http://www.filipinofamilyhealth.com/'
+  post_template.save
+  
+  post_template = PostTemplate.new
+  post_template.experiment = experiment
+  post_template.social_media_specification = SocialMediaSpecification.first
+  post_template.content[:text] = 'How important is the academic and social success of your child to you?  Come join a community study led by Dr. Joyce Javier that may help improve the well-being of Filipino youth.'
+  post_template.content[:headline] = 'Get in touch today!'
+  post_template.content[:link_description] = 'Monetary incentives available'
+  post_template.content[:call_to_action] = 'Learn More'
+  post_template.content[:website_url] = 'http://www.filipinofamilyhealth.com/'
+  post_template.save
+  
+  post_template = PostTemplate.new
+  post_template.experiment = experiment
+  post_template.social_media_specification = SocialMediaSpecification.first
+  post_template.content[:text] = 'Suicide is the leading cause of death among Asian and Pacific Islander teens in the U.S.? Come join a community study led by Dr. Joyce Javier to learn how to raise mentally strong kids.'
+  post_template.content[:headline] = 'Sign up today! It’s free.'
+  post_template.content[:link_description] = 'Monetary incentives available'
+  post_template.content[:call_to_action] = 'Contact Us'
+  post_template.content[:website_url] = 'http://www.filipinofamilyhealth.com/'
+  post_template.save
+  
+  post_template = PostTemplate.new
+  post_template.experiment = experiment
+  post_template.social_media_specification = SocialMediaSpecification.first
+  post_template.content[:text] = 'The majority of college students are not prepared to deal with disappointment, anxiety, and loneliness. Learn how to best prepare your child through this community study. For parents with kids 8-12 years.'
+  post_template.content[:headline] = 'Sign up today! It’s free.'
+  post_template.content[:link_description] = 'Monetary incentives available '
+  post_template.content[:call_to_action] = 'Contact Us'
+  post_template.content[:website_url] = 'http://www.filipinofamilyhealth.com/'
+  post_template.save
 end

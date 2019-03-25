@@ -218,14 +218,13 @@ $(document).ready(function() {
   }
 
   function setUpPopupInfo() {
-    $('.ui.fluid.huge.teal.labeled.icon.button.start-experiment-button').popup({
+    $('.start-experiment-button').popup({
       title   : 'What is an experiment?',
       content : 'An experiment applies scientific study design techniques and allows you to set up a project to test a hypothesis.'
     });
 
-    $('.ui.fluid.huge.teal.labeled.icon.button.start-campaign-button').popup({
-      title   : 'What is a campaign?',
-      content : 'A campaign allows you to promote one or multiple types of contents (news, research studies, research findings, award announcements, etc.) without applying scientific study design techniques.'
+    $('.help-getting-started-button').popup({
+      content : 'Resources to help you plan, design and execute your experiment such as IRB protocol templates, message templates, and images.'
     });
 
     $('.url.label').popup();
@@ -286,17 +285,19 @@ $(document).ready(function() {
   }
 
   function setUpPusherChannels() {
-    var pusherKey = $('body').data('pusher-key');
-    var pusher = new Pusher(pusherKey); // uses your APP KEY
-    var channel = pusher.subscribe('progress');
-    channel.bind('progress', function(data) {
-      $('.ui.progress').progress('increment');
-
-      if(data.value === data.total) {
-        $('.ui.progress').progress('set success');
-        $('#message-generation-progress .approve.button').show();
-      }
-    });
+    if (typeof $('body').data('pusher-key') !== "undefined") {
+      var pusherKey = $('body').data('pusher-key');
+      var pusher = new Pusher(pusherKey); // uses your APP KEY
+      var channel = pusher.subscribe('progress');
+      channel.bind('progress', function(data) {
+        $('.ui.progress').progress('increment');
+  
+        if(data.value === data.total) {
+          $('.ui.progress').progress('set success');
+          $('#message-generation-progress .approve.button').show();
+        }
+      });
+    }
   }
 
   function generateMessages(experimentId, totalMessageCount) {
@@ -512,6 +513,41 @@ $(document).ready(function() {
       });
     });
   }
+  
+  function setUpFacebookAdPreviews() {
+    // Modal for image labeling
+    $('.preview-facebook-ad').click(function(){
+      var text = $(this).data('text');
+      var headline = $(this).data('headline');
+      var linkDescription = $(this).data('link-description');
+      var callToAction = $(this).data('call-to-action');
+      var campaignUrl = $(this).data('campaign-url');
+      var imageUrl = $(this).data('image-url');
+      var html = getFacebookAdHtml(text, headline, linkDescription, callToAction, campaignUrl, imageUrl);
+      
+      $('#facebook-ad-preview article').html(html);
+      $('#facebook-ad-preview').modal('setting', 'transition', 'Vertical Flip').modal({ blurring: true }).modal('show');
+    });
+  }
+  
+  function getFacebookAdHtml(text, headline, linkDescription, callToAction, campaignUrl, imageUrl) {
+    var html = "<header><div class='controls'><button class='facebook-button'><i class='thumbs up icon'></i>Like Page</button></div>";
+    
+    var a = document.createElement('a');
+    a.href = campaignUrl;
+
+    html += "<div class='profile'><img class='avatar'><div class='profile-title'><a class='name'>Your Page Here</a><a class='sponsored'>Sponsored</a></div></div>";
+    html += '</header>';
+    html += "<p class='message'>" + text + "</p>";
+    html += '<main>';
+    html += "<div class='image'><img src='" + imageUrl + "'></div>";
+    html += "<div class='details'><p class='headline'>" + headline + "</p><p class='description'>" + linkDescription + "</p>";
+    html += "<footer><div class='controls'><button class='facebook-button'>" + callToAction + "</button></div><p class='caption'>" + a.hostname + "</p></footer></div>";
+
+    html += '</main>';
+
+    return html;
+  }
 
   function setUpSaveCampaignIdFormEvents() {
     //Add campaign id to fb and instagram ads
@@ -683,6 +719,72 @@ $(document).ready(function() {
     });
   }
 
+  function setUpCopyToClipboard() {
+    $('.copy-to-clipboard').click(function(){
+      copyStringToClipboard($(this).data('text-to-copy'));
+      
+      $('.copy-to-clipboard').removeClass('green');
+      $(this).addClass('green');
+    });
+  }
+  
+  function copyStringToClipboard(str) {
+    // REF: https://techoverflow.net/2018/03/30/copying-strings-to-the-clipboard-using-pure-javascript/
+    // Create new element
+    var el = document.createElement('textarea');
+    // Set value (string to be copied)
+    el.value = str;
+    // Set non-editable to avoid focus and move outside of view
+    el.setAttribute('readonly', '');
+    el.style = {position: 'absolute', left: '-9999px'};
+    document.body.appendChild(el);
+    // Select text inside element
+    el.select();
+    // Copy text to clipboard
+    document.execCommand('copy');
+    // Remove temporary element
+    document.body.removeChild(el);
+  }
+  
+  function setUpMessageRecommender() {
+    $('#image-recommendations').hide();
+
+    $('.form.message-recommender .button').click(function() {
+      $('#image-recommendations').show();
+    });
+    
+    // $('.form.message-recommender #condition').dropdown({
+    //   onChange: function(val) {
+    //     $('.form.message-recommender #intervention').dropdown('clear');
+    //     if (val == '1') {
+    //       $('.form.message-recommender #intervention').html(
+    //         '<option value="">Select intervention</option>' +
+    //         '<option value="1">Information dissemination: Website</option>' +
+    //         '<option value="2">Drug: Oxycontin</option>'
+    //       );
+    //       $('.form.message-recommender #intervention').dropdown('refresh');
+    //       $('.form.message-recommender .intervention').removeClass('disabled');
+    //     }
+    //     if (val == '2') {
+    //       $('.form.message-recommender #intervention').html(
+    //         '<option value="">Select intervention</option>' +
+    //         '<option value="1">Information dissemination and gathering: Smartphone app</option>'
+    //       );
+    //       $('.form.message-recommender #intervention').dropdown('refresh');
+    //       $('.form.message-recommender .intervention').removeClass('disabled');
+    //     }
+    //     if (val == '3') {
+    //       $('.form.message-recommender #intervention').html(
+    //         '<option value="">Select intervention</option>' +
+    //         '<option value="1">Information gathering: Long survey</option>'
+    //       );
+    //       $('.form.message-recommender #intervention').dropdown('refresh');
+    //       $('.form.message-recommender .intervention').removeClass('disabled');
+    //     }
+    //   }
+    // });    
+  }
+  
   // Initialize
   setUpSaveCampaignIdFormEvents();
   setUpEditCampaignIdLabelEvents();
@@ -704,23 +806,30 @@ $(document).ready(function() {
   setUpPusherChannels();
   setUpAsyncMessageGeneration();
   setUpImagePoolViewing();
+  setUpFacebookAdPreviews();
+  setUpCopyToClipboard();
 
   // Set up Semantic UI
   $('.menu .item').tab({
     history: true,
     historyType: 'hash',
-    context: 'parent'
+    context: false
   });
   $('.table.sortable').tablesort();
-  $('.ui.dropdown').dropdown({
-    onChange: function() {
-      var imageId = $(this).data("image-id");
-      $("#edit-image-codes-" + imageId).find('.save-image-codes').first().removeClass('disabled');
+
+  // TODO: Make this more specific to the image coding interface and rething coding interface
+  // $('.ui.dropdown').dropdown({
+  //   onChange: function() {
+  //     var imageId = $(this).data("image-id");
+  //     $("#edit-image-codes-" + imageId).find('.save-image-codes').first().removeClass('disabled');
       
-      var commentId = $(this).data("comment-id");
-      $("#edit-comment-codes-" + commentId).find('.save-comment-codes').first().removeClass('disabled');
-    }
-  });
+  //     var commentId = $(this).data("comment-id");
+  //     $("#edit-comment-codes-" + commentId).find('.save-comment-codes').first().removeClass('disabled');
+  //   }
+  // });
+
+  // Set up special onChange for intervention dropdown in message recommender
+  setUpMessageRecommender();
 
   // Lazyload for images
   $("img").lazyload({
