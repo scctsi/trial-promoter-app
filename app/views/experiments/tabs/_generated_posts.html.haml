@@ -4,8 +4,9 @@
       %th{ colspan: "9" } 
         %h3 Facebook (Ad)
     %tr
-      %th A/B
+      %th A/B testing
       %th ID
+      %th Ad name
       %th Content
 
       // %th Text
@@ -25,6 +26,7 @@
           - if index == 1
             .ui.blue.circular.label B
         %td= post.id
+        %td= post.to_param
         %td
           .ui.middle.relaxed.aligned.list
             - ["Text", "Headline", "Link description", "Call to action", "Campaign URL"].each do |content_part|
