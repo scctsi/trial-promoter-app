@@ -2,19 +2,12 @@
   %thead
     %tr
       %th{ colspan: "9" } 
-        %h3 Facebook (Ad)
+        %h3 Facebook Ad (News Feed)
     %tr
       %th A/B testing
       %th ID
       %th Ad name
-      %th Content
-
-      // %th Text
-      // %th Headline
-      // %th Link Description
-      // %th Call to Action
-      // %th Campaign URL
-      
+      %th Post content
       %th Image
       %th Actions
   %tbody
@@ -42,7 +35,7 @@
           - image = Image.find(post.content[:image])
           = image_tag "#{image.url}", width: '150', height: '150', lazy: true
         %td
-          %a.preview-facebook-ad.ui.labeled.icon.button{ 'data-text': post.content[:text], 'data-headline': post.content[:headline], 'data-link-description': post.content[:link_description], 'data-call-to-action': post.content[:call_to_action], 'data-campaign-url': post.content[:campaign_url], 'data-image-url': image.url}
+          %a.preview-facebook-ad.ui.labeled.basic.grey.icon.button{ 'data-text': post.content[:text], 'data-headline': post.content[:headline], 'data-link-description': post.content[:link_description], 'data-call-to-action': post.content[:call_to_action], 'data-campaign-url': post.content[:campaign_url], 'data-image-url': image.url}
             %i.eye.icon
             Preview
 .ui.modal#facebook-ad-preview

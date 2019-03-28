@@ -9,8 +9,8 @@
         %td= experiment.name
         %td
           .ui.buttons
-            %a.ui.button.workspace-button{ href: "#{experiment_path(experiment)}#/setup" }
+            %a.ui.button{ href: "#{experiment_path(experiment)}#/setup" }
               Workspace
             .or
-            %a.ui.button.dashboard-button{ href: "#{experiment_path(experiment)}#/dashboard" }
+            %a.ui.button{ href: "#{experiment_path(experiment)}#/dashboard" }
               Dashboard

@@ -63,32 +63,29 @@ table.message-generation-parameter-set td.collapsing {
 // -----------------------------
 
 body {
-  background: #DBFCFF;
+  background: #FAF9F7;
 }
 
-// Change color of primary buttons to yellow, turquoise for hover
+// Change color of primary buttons to shade of cyan
 .ui.teal.button, .ui.primary.button, .ui.submit.button {
-  background-color: #F4E04D;
-  color: #000000;
+  background-color: #2CB1BC;
+  color: #FFFFFF;
 }
 
+// Change color of primary buttons to shade of cyan
 .ui.teal.button:hover, .ui.primary.button:hover, .ui.submit.button:hover {
-  background-color: lighten(#F4E04D, 5%);
+  background-color: #14919B;
+  color: #FFFFFF;
+}
+
+// Left hand navigation menu
+.ui.vertical.labeled.icon.menu a {
+  background: #FADB5F;
   color: #000000;
 }
 
-.ui.teal.button:active, .ui.primary.button:active, ui.submit.button:active {
-  background-color: lighten(#F4E04D, 5%);
-  color: #000000;
-}
-
-.ui.teal.button:focus, .ui.primary.button:focus, ui.submit.button:focus {
-  background-color: lighten(#F4E04D, 5%);
-  color: #000000;
-}
-
-.ui.teal.button:target, .ui.primary.button:target, ui.submit.button:target {
-  background-color: lighten(#F4E04D, 5%);
+.ui.vertical.labeled.icon.menu a.active {
+  background: #FCE588;
   color: #000000;
 }
 
