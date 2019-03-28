@@ -7,11 +7,11 @@
   %a#images-upload-button.ui.primary.labeled.icon.button{ 'data-experiment-id': @experiment.id, 'data-experiment-param': @experiment.to_param }
     %i.upload.icon
     Import images
-%a.ui.labeled.basic.grey.labeled.icon.button{ href: "/images/check_validity_for_instagram_ads" }
+%a.ui.labeled.basic.labeled.icon.button{ href: "/images/check_validity_for_instagram_ads" }
   %i.image.icon
   Check image sizes (for instagram ads)
 - if current_user.role == 'administrator'
-  %a#images-add-button.ui.basic.grey.labeled.icon.button{ 'data-experiment-id': @experiment.id, 'data-experiment-param': @experiment.to_param }
+  %a#images-add-button.ui.basic.labeled.icon.button{ 'data-experiment-id': @experiment.id, 'data-experiment-param': @experiment.to_param }
     %i.image.icon
     Add images
 .ui.success.message.hidden.ask-refresh-page
