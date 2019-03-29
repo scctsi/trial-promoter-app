@@ -810,12 +810,16 @@ $(document).ready(function() {
   setUpCopyToClipboard();
 
   // Set up Semantic UI
+  // Semantic UI - Menus
   $('.menu .item').tab({
     history: true,
     historyType: 'hash',
     context: false
   });
+  // Semantic UI - Sortable tables
   $('.table.sortable').tablesort();
+  // Semantic UI - Accordions
+  $('.ui.accordion').accordion();
 
   // TODO: Make this more specific to the image coding interface and rething coding interface
   // $('.ui.dropdown').dropdown({

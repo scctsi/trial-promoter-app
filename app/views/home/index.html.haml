@@ -16,5 +16,8 @@
 - if @experiments.count > 0
   %h3.ui.header
     Ongoing experiments
-  = render partial: 'shared/experiments', locals: {experiments: @experiments }
+  = render partial: 'shared/experiments', locals: { experiments: @experiments }
+%h3.ui.header
+  Ongoing A/B tests
+= render partial: 'ab_tests', locals: { experiments: @experiments }
 

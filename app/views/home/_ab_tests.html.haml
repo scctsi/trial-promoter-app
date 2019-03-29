@@ -1,0 +1,17 @@
+.ui.fluid.styled.accordion
+  - experiments.each do |experiment|
+    .title
+      %i.dropdown.icon
+      = experiment.name
+    .content
+      .ui.segment
+        .ui.two.column.very.relaxed.grid
+          .column
+            %h3.heading
+              A
+          .column 
+            %h3.heading
+              B
+        .ui.vertical.divider
+          vs
+
