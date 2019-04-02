@@ -94,9 +94,6 @@ GEM
     browser (2.3.0)
     buftok (0.2.0)
     builder (3.2.3)
-    bullet (5.7.5)
-      activesupport (>= 3.0.0)
-      uniform_notifier (~> 1.11.0)
     byebug (9.0.6)
     cocoon (1.2.9)
     codeclimate-test-reporter (1.0.8)
@@ -257,6 +254,8 @@ GEM
     multi_json (1.12.1)
     multi_xml (0.6.0)
     multipart-post (2.0.0)
+    mutations (0.9.0)
+      activesupport
     naught (1.1.0)
     nenv (0.3.0)
     nokogiri (1.8.2)
@@ -426,7 +425,6 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.4)
-    uniform_notifier (1.11.0)
     user_agent_parser (2.3.1)
     uuidtools (2.1.5)
     vcr (3.0.3)
@@ -456,7 +454,6 @@ DEPENDENCIES
   better_errors
   binding_of_caller
   bitly
-  bullet
   byebug
   cocoon
   codeclimate-test-reporter (~> 1.0.0)
@@ -479,6 +476,7 @@ DEPENDENCIES
   koala
   lazyload-rails
   ledermann-rails-settings
+  mutations
   nokogiri (= 1.8.2)
   pg
   puma
