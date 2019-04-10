@@ -21,4 +21,5 @@ class Metric < ActiveRecord::Base
   enumerize :source, in: [:buffer, :twitter, :facebook, :instagram, :google_analytics], predicates: true
 
   belongs_to :message
+  belongs_to :post
 end

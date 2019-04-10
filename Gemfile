@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 ruby '2.3.3'
 
+gem 'abanalyzer'
 gem 'acts-as-taggable-on', '~> 4.0'
 gem 'addressable'
 gem 'ahoy_matey'

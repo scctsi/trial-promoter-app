@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190329220157) do
+ActiveRecord::Schema.define(version: 20190402211622) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -286,6 +286,7 @@ ActiveRecord::Schema.define(version: 20190329220157) do
     t.integer  "message_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer  "post_id"
   end
 
   create_table "modifications", force: :cascade do |t|
@@ -343,6 +344,15 @@ ActiveRecord::Schema.define(version: 20190329220157) do
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "split_test_results", force: :cascade do |t|
+    t.integer  "split_test_id"
+    t.integer  "winning_variation_id"
+    t.integer  "losing_variation_id"
+    t.datetime "stop_time"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
   end
 
   create_table "split_tests", force: :cascade do |t|

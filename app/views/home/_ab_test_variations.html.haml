@@ -1,0 +1,65 @@
+.ui.two.column.grid
+  .column
+    .ui.segment
+      - if !winning_variation.nil? && winning_variation == variation_a
+        .ui.ribbon.large.fluid.green.label
+          Variation A
+      - elsif !losing_variation.nil? && winning_variation == variation_a
+        .ui.ribbon.large.fluid.red.label
+          Variation A
+      - else
+        .ui.ribbon.large.fluid.teal.label
+          Variation A
+      .ui.horizontal.segments
+        .ui.segment
+          .ui.mini.statistic
+            .value
+              = number_with_delimiter(MetricsManager.get_metric_value(variation_a, :facebook, :impressions), delimiter: ',')
+            .label
+              Impressions
+        .ui.segment
+          .ui.mini.statistic
+            .value
+              = MetricsManager.get_metric_value(variation_a, :facebook, :link_clicks)
+            .label
+              Link clicks
+        .ui.segment
+          .ui.mini.statistic
+            .value
+              = MetricsManager.get_metric_value(variation_a, :facebook, :results)
+            .label
+              Landing page views
+      - image = Image.find(variation_a.content[:image])
+      = render partial: 'shared/facebook_ad_preview', locals: {text: variation_a.content[:text], headline: variation_a.content[:headline], link_description: variation_a.content[:link_description], call_to_action: variation_a.content[:call_to_action], campaign_url: 'Some campaign URL', image_url: image.url}
+  .column
+    .ui.segment
+      - if !winning_variation.nil? && winning_variation == variation_b
+        .ui.ribbon.large.fluid.green.label
+          Variation B
+      - elsif !losing_variation.nil? && losing_variation == variation_b
+        .ui.ribbon.large.fluid.red.label
+          Variation B
+      - else
+        .ui.ribbon.large.fluid.teal.label
+          Variation B
+      .ui.horizontal.segments
+        .ui.segment
+          .ui.mini.statistic
+            .value
+              = number_with_delimiter(MetricsManager.get_metric_value(variation_b, :facebook, :impressions), delimiter: ',')
+            .label
+              Impressions
+        .ui.segment
+          .ui.mini.statistic
+            .value
+              = MetricsManager.get_metric_value(variation_b, :facebook, :link_clicks)
+            .label
+              Link clicks
+        .ui.segment
+          .ui.mini.statistic
+            .value
+              = MetricsManager.get_metric_value(variation_b, :facebook, :results)
+            .label
+              Landing page views
+      - image = Image.find(variation_b.content[:image])
+      = render partial: 'shared/facebook_ad_preview', locals: {text: variation_b.content[:text], headline: variation_b.content[:headline], link_description: variation_b.content[:link_description], call_to_action: variation_b.content[:call_to_action], campaign_url: 'Some campaign URL', image_url: image.url}

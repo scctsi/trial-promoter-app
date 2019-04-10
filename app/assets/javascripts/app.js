@@ -784,7 +784,15 @@ $(document).ready(function() {
     //   }
     // });    
   }
-  
+
+  function setUpCalculateABTestingResults() {
+    $('.calculate-ab-test-button').click(function() {
+      abba = new Abba.Abba('Variation A', $(this).data('variation-a-successes'), $(this).data('variation-a-trials'));
+      abba.addVariation('Variation B', $(this).data('variation-b-successes'), $(this).data('variation-b-trials'));
+      abba.renderTo($('#results'));
+    });
+  }
+    
   // Initialize
   setUpSaveCampaignIdFormEvents();
   setUpEditCampaignIdLabelEvents();
@@ -808,6 +816,7 @@ $(document).ready(function() {
   setUpImagePoolViewing();
   setUpFacebookAdPreviews();
   setUpCopyToClipboard();
+  setUpCalculateABTestingResults();
 
   // Set up Semantic UI
   // Semantic UI - Menus

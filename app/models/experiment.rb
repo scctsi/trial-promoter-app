@@ -37,6 +37,7 @@ class Experiment < ActiveRecord::Base
   has_and_belongs_to_many :users
   has_many :post_templates
   has_many :posts
+  has_many :split_tests
 
   accepts_nested_attributes_for :message_generation_parameter_set, update_only: true
   

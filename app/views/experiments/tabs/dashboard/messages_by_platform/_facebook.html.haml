@@ -1,17 +1,18 @@
 .ui.items
-  - @facebook_messages = @messages.select{ |message| message.social_media_profile.platform == :facebook}
-  - @facebook_messages.each do |message|
+  - @facebook_posts = @experiment.posts.select{ |post| post.post_template.social_media_specification.platform == :facebook}
+  - @facebook_posts.each do |post|
     .item
       .ui.small.image
-        -if message.image
-          = image_tag "#{message.image.url}"
+        -if post.content[:image]
+          - image = Image.find(post.content[:image])
+          = image_tag "#{image.url}"
         -else
           = image_tag "no-image.png"
       .content
         .description
           .ui.left.basic.label
-            = message.medium
-          = message.content
+            = post.post_template.social_media_specification.post_type
+          = post.content[:text]
         .extra
           %table.ui.very.basic.compact.table
             %thead
@@ -23,12 +24,21 @@
               %th Comments
             %tbody
               %tr
-                %td= message.metric_facebook_clicks
-                %td= message.percentage_facebook_clicks_impressions
+                %td= 0
+                %td= 0
                 %td
                   .ui.label.basic.teal
-                    = message.percentage_facebook_clicks_impressions.to_s + "%"
+                    = "0%"
                     Click rate
-                %td= message.metric_facebook_likes
-                %td= message.metric_facebook_shares
-                %td= message.metric_facebook_comments
+                %td= 0
+                %td= 0
+                %td= 0
+                // %td= message.metric_facebook_clicks
+                // %td= message.percentage_facebook_clicks_impressions
+                // %td
+                //   .ui.label.basic.teal
+                //     = message.percentage_facebook_clicks_impressions.to_s + "%"
+                //     Click rate
+                // %td= message.metric_facebook_likes
+                // %td= message.metric_facebook_shares
+                // %td= message.metric_facebook_comments

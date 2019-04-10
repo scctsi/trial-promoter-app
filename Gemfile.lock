@@ -18,6 +18,8 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
+    abanalyzer (1.0.0)
+      statistics2 (= 0.54)
     actionmailer (4.2.6)
       actionpack (= 4.2.6)
       actionview (= 4.2.6)
@@ -403,6 +405,7 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
+    statistics2 (0.54)
     swearjar (1.2.0)
     thor (0.19.4)
     thread_safe (0.3.6)
@@ -446,6 +449,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  abanalyzer
   acts-as-taggable-on (~> 4.0)
   addressable
   ahoy_matey

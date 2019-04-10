@@ -4,22 +4,4 @@
       %i.dropdown.icon
       = split_test.experiment.name
     .content
-      .ui.icon.message
-        %i.notched.circle.loading.icon
-        .content
-          .header
-            A/B test is still running!
-          %p We're still running!
-      .ui.two.column.very.relaxed.grid
-        .column
-          .ui.segment
-            .ui.ribbon.large.fluid.teal.label{ style: "margin-bottom: 15px;" }
-              Variation A
-            - image = Image.find(split_test.variation_a.content[:image])
-            = render partial: 'shared/facebook_ad_preview', locals: {text: split_test.variation_a.content[:text], headline: split_test.variation_a.content[:headline], link_description: split_test.variation_a.content[:link_description], call_to_action: split_test.variation_a.content[:call_to_action], campaign_url: 'Some campaign URL', image_url: image.url}
-        .column
-          .ui.segment
-            .ui.ribbon.large.fluid.teal.label{ style: "margin-bottom: 15px;" }
-              Variation B
-            - image = Image.find(split_test.variation_b.content[:image])
-            = render partial: 'shared/facebook_ad_preview', locals: {text: split_test.variation_b.content[:text], headline: split_test.variation_b.content[:headline], link_description: split_test.variation_b.content[:link_description], call_to_action: split_test.variation_b.content[:call_to_action], campaign_url: 'Some campaign URL', image_url: image.url}
+      = render partial: 'ab_test', locals: {split_test: split_test}
