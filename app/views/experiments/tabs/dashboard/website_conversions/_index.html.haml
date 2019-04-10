@@ -1,0 +1,22 @@
+#conversion_platforms
+  .ui.top.attached.tabular.menu
+    %a{ class: 'item', 'data-tab': 'dashboard/website-conversions/facebook' }
+      %i.facebook.icon
+      Facebook
+    %a{ class: 'item', 'data-tab': 'dashboard/website-conversions/instagram' }
+      %i.instagram.icon
+      Instagram
+    %a{ class: 'item', 'data-tab': 'dashboard/website-conversions/twitter' }
+      %i.twitter.icon
+      Twitter
+    %a{ class: 'item', 'data-tab': 'dashboard/website-conversions/google' }
+      %i.google.icon
+      Google
+  .ui.bottom.attached.tab.segment{ 'data-tab': 'dashboard/website-conversions/facebook' }
+    = render partial: 'experiments/tabs/dashboard/website_conversions/facebook'
+  .ui.bottom.attached.tab.segment{ 'data-tab': 'dashboard/website-conversions/instagram' }
+    = render partial: 'experiments/tabs/dashboard/website_conversions/instagram'
+  .ui.bottom.attached.tab.segment{ 'data-tab': 'dashboard/website-conversions/twitter' }
+    = render partial: 'experiments/tabs/dashboard/website_conversions/twitter'
+  .ui.bottom.attached.tab.segment{ 'data-tab': 'dashboard/website-conversions/google' }
+    = render partial: 'experiments/tabs/dashboard/website_conversions/google'

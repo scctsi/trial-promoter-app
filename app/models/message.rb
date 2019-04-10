@@ -170,6 +170,13 @@ class Message < ActiveRecord::Base
 
     save
   end
+  
+  def calculate_goal_rate
+    return "N/A" if self.metrics[0].nil? || self.metrics[0][:data]["ga:sessions"].nil?
+    goal_rate = self.metrics[0][:data]["ga:goals"] / self.metrics[0][:data]["ga:sessions"]
+    return (goal_rate.to_f*100).to_s + '%'
+  end
+  
 
   def calculate_website_goal_rate(exclude_ip_address_list = [])
     calculate_goal_count

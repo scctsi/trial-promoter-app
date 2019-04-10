@@ -1,0 +1,37 @@
+.ui.link.four.stackable.centered.cards
+  .ui.horizontal.divider.header
+    %br
+    Most effective messages (by click rate)
+  - @top_messages_by_click_rate[0..4].each do |message|
+    .card
+      .content
+        .header
+          .left.floated
+            = message.social_media_profile.platform_icon
+          .right.floated.meta
+            = message.scheduled_date_time.strftime("%b %-d, %Y @ %l:%M %p")
+      .content
+        = message.content
+      .ui.medium.image
+        -if message.image
+          = image_tag "#{message.image.url}"
+        -else
+          = image_tag "no-image.png"
+      .content
+        = render partial: 'shared/hash', locals: { hash: message.message_template.experiment_variables.reject{|k,v| k == 'stem_id'} }
+      .extra.content
+        .ui.label.basic.teal
+          -if message.click_rate.nil?
+            = 'N/A'
+          -elsif message.click_rate == 0.0 |
+            = "0 %"
+          -else
+            = number_with_precision(message.click_rate / 100, precision: 3, significant: true)
+          \% click rate
+        %br
+          (
+          = message.send("metric_#{message.platform}_clicks".to_sym)
+          clicks /
+          #{message.impressions}
+          = message.send("metric_#{message.platform}_impressions".to_sym)
+          impressions )
