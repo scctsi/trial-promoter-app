@@ -1,0 +1,26 @@
+.ui.items
+  - @messages.each do |message|
+    .item
+      .ui.small.image
+        -if message.image
+          = image_tag "#{message.image.url}"
+        -else
+          = image_tag "no-image.png"
+      .content
+        .description
+          .ui.left.basic.label
+            = message.medium
+          = message.content
+        .extra
+          %table.ui.very.basic.compact.table
+            %thead
+              %th Conversions
+              %th Users
+              %th Sessions
+              %th Average Session Duration
+            %tbody
+              %tr
+                %td= MetricsManager.get_metric_value(message, :google_analytics, 'ga:users')
+                %td= MetricsManager.get_metric_value(message, :google_analytics, 'ga:users')
+                %td= MetricsManager.get_metric_value(message, :google_analytics, 'ga:sessions')
+                %td= MetricsManager.get_metric_value(message, :google_analytics, 'ga:avgSessionDuration')

@@ -1,0 +1,43 @@
+.ui.items
+  .item
+    .ui.tiny.image
+      = image_tag "no-image.png"
+    .content
+      .ui.header.h6
+        Message:
+      %br
+      = 'N/A'
+      %br
+      .ui.three.column.grid
+        .column
+          .row
+            .ui.row
+              .statistic
+                .value
+                  %i.like.icon
+                  = 'N/A Likes'
+              .statistic
+                .value
+                  %i.share.icon
+                  = 'N/A Retweets'
+              .statistic
+                .value
+                  %i.comment.icon
+                  = 'N/A Replies'
+        .column
+          .ui.mini.statistics
+            .teal.statistic
+              .label
+                Click rate 
+              .value
+                = 'N/A'
+              .label
+                (message click rate)
+        .column
+          .ui.teal.mini.statistic
+            .label
+              Conversion rate 
+            .value
+              = 'N/A'
+            .label
+              (website click rate)
