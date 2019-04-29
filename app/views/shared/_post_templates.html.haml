@@ -1,0 +1,70 @@
+- facebook_post_templates = @experiment.post_templates.select { |post_template| post_template.social_media_specification.platform == :facebook }
+- google_post_templates = @experiment.post_templates.select { |post_template| post_template.social_media_specification.platform == :google }
+- twitter_post_templates = @experiment.post_templates.select { |post_template| post_template.social_media_specification.platform == :twitter }
+%table.ui.celled.striped.table
+  %thead
+    %tr
+      %th{ colspan: "7" } 
+        %h3 Facebook Ad (News Feed)
+    %tr
+      %th Database ID
+      %th Text
+      %th Headline
+      %th Link Description
+      %th Call to Action
+      %th Website URL
+      %th Image pool
+  %tbody
+    - facebook_post_templates.each do |post_template|
+      %tr
+        %td= post_template.id
+        %td= post_template.content[:text]
+        %td= post_template.content[:headline]
+        %td= post_template.content[:link_description]
+        %td= post_template.content[:call_to_action]
+        %td= post_template.content[:website_url]
+        %td
+          - post_template.image_pool.each do |image_id|
+            - image = Image.find(image_id)
+            = image_tag "#{image.url}", width: '150', height: '150', lazy: true
+%table.ui.celled.striped.table
+  %thead
+    %tr
+      %th{ colspan: "7" } 
+        %h3 Google Ad (Search Network)
+    %tr
+      %th Database ID
+      %th Headline 1
+      %th Description 1
+      %th Description 2
+      %th Website URL
+  %tbody
+    - google_post_templates.each do |post_template|
+      %tr
+        %td= post_template.id
+        %td= post_template.content[:headline_1]
+        %td= post_template.content[:description_1]
+        %td= post_template.content[:description_2]
+        %td= post_template.content[:website_url]
+%table.ui.celled.striped.table
+  %thead
+    %tr
+      %th{ colspan: "7" } 
+        %h3 Twitter Organic (Timeline)
+    %tr
+      %th Database ID
+      %th Text
+      %th Hashtags
+      %th Website URL
+      %th Image pool
+  %tbody
+    - twitter_post_templates.each do |post_template|
+      %tr
+        %td= post_template.id
+        %td= post_template.content[:text]
+        %td= post_template.content[:hashtags]
+        %td= post_template.content[:website_url]
+        %td
+          - post_template.image_pool.each do |image_id|
+            - image = Image.find(image_id)
+            = image_tag "#{image.url}", width: '150', height: '150', lazy: true

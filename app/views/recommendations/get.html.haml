@@ -1,0 +1,40 @@
+%h2.header
+  %i.thumbs.up.outline.icon
+  Recommendations
+- if current_user.role.administrator?  
+  #recommendations
+    .ui.top.attached.tabular.menu
+      %a{ class: 'active item', 'data-tab': 'messages' }
+        Find effective messages
+      %a{ class: 'item', 'data-tab': 'images' }
+        Image resources
+      %a{ class: 'item', 'data-tab': 'irb' }
+        IRB boilerplate
+    .ui.bottom.attached.active.tab.segment{ 'data-tab': 'messages' }
+      = render partial: 'message_recommender', locals: { experiment: @experiment }
+    .ui.bottom.attached.tab.segment{ 'data-tab': 'images' }
+      .ui.relaxed.divided.list
+        .item
+          %i.large.image.outline.middle.aligned.icon
+          .content
+            %a{:class => "header", :href => "https://unsplash.com"}
+              Unsplash
+            .description
+              Beautiful, free photos. Gifted by the world’s most generous community of photographers.
+        .item
+          %i.large.image.outline.middle.aligned.icon
+          .content
+            %a{:class => "header", :href => "https://pixabay.com/en/"}
+              Pixabay
+            .description
+              Over 1.5 million royalty free stock photos and videos
+        .item
+          %i.large.image.outline.middle.aligned.icon
+          .content
+            %a{:class => "header", :href => "https://commons.wikimedia.org/wiki/Main_Page"}
+              Wikimedia Commons
+            .description
+              A collection of freely usable media files to which anyone can contribute
+    .ui.bottom.attached.tab.segment{ 'data-tab': 'irb' }
+      Download boilterplate text that you can use to submit to the IRB for approval of your messages and images <a href="">here</a>.
+

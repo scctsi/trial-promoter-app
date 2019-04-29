@@ -1,12 +1,18 @@
 %h2.header
   Home
 - if current_user.role.administrator?    
-  .ui.container
-    .ui.two.column.middle.aligned.grid
+  .ui.segment
+    .ui.two.column.very.relaxed.grid
       .column
         %a.ui.fluid.huge.teal.labeled.icon.button.start-experiment-button{:href => new_experiment_path}
           %i.line.chart.icon
           Start a new experiment
+      .column
+        %a.ui.basic.fluid.huge.labeled.icon.button.help-getting-started-button{:href => recommendations_path}
+          %i.thumbs.up.outline.icon
+          Help getting started
+    .ui.vertical.divider
+      or
 - if @experiments.count > 0
   %h3.ui.header
     Ongoing experiments

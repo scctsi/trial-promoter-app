@@ -1,0 +1,103 @@
+%form.message-recommender.ui.form
+  .ui.message
+    .header
+      Note
+    .ui.bulleted.list
+      .item
+        Intervention types: Trial Promoter uses the interventions defined <a href="https://prsinfo.clinicaltrials.gov/definitions.html" target="_blank">in clinicaltrials.gov</a>
+  .field
+    %label Health topic/Disease
+    %select.ui.labeled.fluid.search.dropdown{:id => "condition", :name => "condition"}
+      %option{:value => ""}
+        Select condition
+      %option{:value => "1"}
+        Smoking
+      %option{:value => "2"}
+        Health effects of wildfire
+      %option{:value => "3"}
+        Cannabis
+  .field
+    %label Intervention type/data collection methodology
+    %select.ui.fluid.search.dropdown{:id => "intervention", :name => "intervention"}
+      %option{:value => ""}
+        Select intervention type/data collection methodology
+      %option{:value => "1"}
+        Drug: Including placebo
+      %option{:value => "2"}
+        Device: Including sham
+      %option{:value => "3"}
+        Biological/Vaccine
+      %option{:value => "4"}
+        Procedure/Surgery
+      %option{:value => "5"}
+        Behavioral: For example, psychotherapy, lifestyle counseling
+      %option{:value => "6"}
+        Genetic: Including gene transfer, stem cell and recombinant DNA
+      %option{:value => "7"}
+        Dietary Supplement: For example, vitamins, minerals
+      %option{:value => "8"}
+        Combination Product: Combining a drug and device, a biological product and device; a drug and biological product; or a drug, biological product, and device
+      %option{:value => "9"}
+        Diagnostic Test: For example, imaging, in-vitro
+      %option{:value => "10"}
+        Other
+      %option{:value => "11"}
+        Data collection
+      %option{:value => "10"}
+        Survey
+  .four.wide.field
+    .ui.primary.button.bottom.attached{:tabindex => "0"} 
+      Recommend messages
+#image-recommendations
+  %h3 Examples (by conversion rate; useful for maximizing signups)
+  .ui.items
+    .item
+      .ui.small.image
+        %img{:src => "https://s3-us-west-1.amazonaws.com/scctsi-tp-production/1-tcors/images/WEWWqL6MTVuzIoWlavRA_fe-FE_HustlePlaybook_33.jpg"}/
+      .content
+        .description
+          .ui.left.basic.label
+            organic
+          3 out of 4 teen smokers become adult smokers. Teens underestimate how addictive #cigarettes are. http://go.befreeoftobacco.org/n6t
+        .extra
+          %table.ui.very.basic.compact.table
+            %thead
+              %th Goals
+              %th Sessions
+              %th Primary outcome measure
+            %tbody
+              %tr
+                %td 2
+                %td 100
+                %td
+                  .ui.label.basic.teal
+                    2% Goal rate
+  %h3 Examples (by click rate; useful for maximizing traffic)
+  .ui.items
+    .item
+      .ui.small.image
+        %img{:src => "https://s3-us-west-1.amazonaws.com/scctsi-tp-production/1-tcors/images/ohX3BeARsGYnF1RhGnSj_fe-CvudM3WWIAAx8wG.jpg"}/
+      .content
+        .description
+          .ui.left.basic.label
+            ad
+          Even if someone doesn't smoke, they could be breathing in the deadly mix by being around smokers. http://go.befreeoftobacco.org/n6m #smoking
+        .extra
+          %table.ui.very.basic.compact.table
+            %thead
+              %th Clicks
+              %th Impressions
+              %th Primary outcome measure
+              %th Likes
+              %th Shares
+              %th Comments
+            %tbody
+              %tr
+                %td 3
+                %td 100
+                %td
+                  .ui.label.basic.teal
+                    3% Click rate
+                %td N/A
+                %td 0
+                %td 0

@@ -1,7 +1,10 @@
-.ui.fluid.vertical.labeled.icon.pointing.menu
+.ui.fluid.vertical.labeled.icon.menu
   %a.item{:href => root_path, :class => current_page?(root_path) ? "active" : ""}
     %i.home.icon
     Home
   %a.item{:href => experiments_path, :class => current_page?(experiments_path) ? "active" : ""}
     %i.line.chart.outline.icon
     Experiments
+  %a.item{:href => recommendations_path, :class => current_page?(recommendations_path) ? "active" : ""}
+    %i.thumbs.up.outline.icon
+    Help getting started

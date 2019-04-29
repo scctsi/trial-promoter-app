@@ -1,34 +1,53 @@
 .ui.items
   - @facebook_messages = @messages.select{ |message| message.social_media_profile.platform == :facebook}
-  - @facebook_messages.each do |message|
-    .item
-      .ui.small.image
-        -if message.image
-          = image_tag "#{message.image.url}"
-        -else
-          = image_tag "no-image.png"
-      .content
-        .description
-          .ui.left.basic.label
-            = message.medium
+  - if @facebook_messages.count > 0
+    - @facebook_messages.each do |message|
+      .item
+        .ui.tiny.image
+          -if message.image
+            = image_tag "#{message.image.url}"
+          -else
+            = image_tag "no-image.png"
+        .content
+          .ui.header.h6
+            Message:
+          %br
           = message.content
-        .extra
-          %table.ui.very.basic.compact.table
-            %thead
-              %th Clicks
-              %th Impressions
-              %th Primary outcome measure
-              %th Likes
-              %th Shares
-              %th Comments
-            %tbody
-              %tr
-                %td= message.metric_facebook_clicks
-                %td= message.percentage_facebook_clicks_impressions
-                %td
-                  .ui.label.basic.teal
-                    = message.percentage_facebook_clicks_impressions.to_s + "%"
-                    Click rate
-                %td= message.metric_facebook_likes
-                %td= message.metric_facebook_shares
-                %td= message.metric_facebook_comments
+          .ui.right.basic.label
+            = message.medium
+          %br
+          .ui.three.column.grid
+            .column
+              .row
+                .ui.row
+                  .statistic
+                    .value
+                      %i.like.icon
+                      = message.send(:metric_facebook_likes).to_s + " Likes"
+                  .statistic
+                    .value
+                      %i.share.icon
+                      = message.send(:metric_facebook_retweets).to_s + " Retweets"
+                  .statistic
+                    .value
+                      %i.comment.icon
+                      = message.comments.count.to_s + " Replies"
+            .column
+              .ui.mini.statistics
+                .teal.statistic
+                  .label
+                    Click rate 
+                  .value
+                    = message.click_rate.to_s + '%'
+                  .label
+                    (message click rate)
+            .column
+              .ui.teal.mini.statistic
+                .label
+                  Conversion rate 
+                .value
+                  = message.calculate_goal_rate
+                .label
+                  (website click rate)
+  -else
+    = render partial: 'experiments/tabs/dashboard/messages_by_platform/no_message_placeholder'                  

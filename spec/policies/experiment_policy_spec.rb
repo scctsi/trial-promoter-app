@@ -28,7 +28,7 @@ RSpec.describe ExperimentPolicy, type: :policy do
     end
   end
 
-  context "for a administrator" do
+  context "for an administrator" do
     before(:each) do
       @experiments = create_list(:experiment, 2) 
       @user = create(:administrator)

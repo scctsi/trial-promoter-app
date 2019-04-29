@@ -90,4 +90,7 @@ Rails.application.routes.draw do
   # Data dictionaries
   resources :data_dictionaries do
   end
+  
+  # Recommendations 
+  get 'recommendations/', to: 'recommendations#get'
 end

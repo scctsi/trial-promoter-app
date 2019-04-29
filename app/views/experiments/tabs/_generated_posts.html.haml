@@ -1,0 +1,140 @@
+- facebook_posts = @experiment.posts.select { |post| post.post_template.social_media_specification.platform == :facebook }
+- google_posts = @experiment.posts.select { |post| post.post_template.social_media_specification.platform == :google }
+- twitter_posts = @experiment.posts.select { |post| post.post_template.social_media_specification.platform == :twitter }
+%table.ui.celled.striped.table
+  %thead
+    %tr
+      %th{ colspan: "9" } 
+        %h3 Facebook Ad (News Feed)
+    %tr
+      %th A/B testing
+      %th ID
+      %th Ad name
+      %th Post content
+      %th Image
+      %th Actions
+  %tbody
+    - facebook_posts.each.with_index do |post, index|
+      %tr
+        %td
+          - if index == 0
+            .ui.blue.circular.label A
+          - if index == 1
+            .ui.blue.circular.label B
+        %td= post.id
+        %td= post.to_param
+        %td
+          .ui.middle.relaxed.aligned.list
+            - ["Text", "Headline", "Link description", "Call to action", "Campaign URL"].each do |content_part|
+              .item
+                .right.floated.content
+                  %a.copy-to-clipboard.ui.mini.icon.button{ 'data-text-to-copy': post.content[content_part.gsub(' ', '_').downcase.to_sym] } 
+                    %i.copy.outline.icon
+                .content
+                  %strong 
+                    #{content_part}:
+                  = post.content[content_part.gsub(' ', '_').downcase.to_sym]
+        %td
+          - image = Image.find(post.content[:image])
+          = image_tag "#{image.url}", width: '150', height: '150', lazy: true
+        %td
+          %a.preview-facebook-ad.ui.labeled.basic.icon.button{ 'data-text': post.content[:text], 'data-headline': post.content[:headline], 'data-link-description': post.content[:link_description], 'data-call-to-action': post.content[:call_to_action], 'data-campaign-url': post.content[:campaign_url], 'data-image-url': image.url}
+            %i.eye.icon
+            Preview
+.ui.modal#facebook-ad-preview
+  %i.close.icon
+  .content
+    .facebook-ad.newsfeed
+      %article
+      %footer
+        .stats
+          %span.reactions
+            %i.small.circular.inverted.blue.thumbs.up.icon
+          %span.count 20
+          %span.social
+            %span.comments
+              500 Comments
+            %span.shares
+              100 Shares
+        %hr
+        .actions
+          %span.like
+            %i.thumbs.up.icon
+            Like
+          %span.comment
+            %i.comment.icon
+            Comment
+          %span.share
+            %i.share.icon
+            Share
+%table.ui.celled.striped.table
+  %thead
+    %tr
+      %th{ colspan: "9" } 
+        %h3 Google Ad (Search Network)
+    %tr
+      %th A/B testing
+      %th ID
+      %th Ad name
+      %th Post content
+      %th Actions
+  %tbody
+    - google_posts.each.with_index do |post, index|
+      %tr
+        %td
+          - if index == 0
+            .ui.blue.circular.label A
+          - if index == 1
+            .ui.blue.circular.label B
+        %td= post.id
+        %td= post.to_param
+        %td
+          .ui.middle.relaxed.aligned.list
+            - ["Headline 1", "Description 1", "Description 2", "Campaign URL"].each do |content_part|
+              .item
+                .right.floated.content
+                  %a.copy-to-clipboard.ui.mini.icon.button{ 'data-text-to-copy': post.content[content_part.gsub(' ', '_').downcase.to_sym] } 
+                    %i.copy.outline.icon
+                .content
+                  %strong 
+                    #{content_part}:
+                  = post.content[content_part.gsub(' ', '_').downcase.to_sym]
+        %td
+          %a.preview-google-ad.ui.labeled.basic.icon.button{ 'data-headline1': post.content[:headline_1], 'data-description1': post.content[:description_1], 'data-description2': post.content[:description_2], 'data-campaign-url': post.content[:campaign_url][0..(post.content[:campaign_url].index('?') - 1)] }
+            %i.eye.icon
+            Preview
+%table.ui.celled.striped.table
+  %thead
+    %tr
+      %th{ colspan: "9" } 
+        %h3 Twitter Organic (Timeline)
+    %tr
+      %th ID
+      %th Ad name
+      %th Post content
+      %th Actions
+  %tbody
+    - twitter_posts.each.with_index do |post, index|
+      %tr
+        %td= post.id
+        %td= post.to_param
+        %td
+          .ui.middle.relaxed.aligned.list
+            - ["Text", "Hashtags", "Campaign URL"].each do |content_part|
+              .item
+                .right.floated.content
+                  %a.copy-to-clipboard.ui.mini.icon.button{ 'data-text-to-copy': post.content[content_part.gsub(' ', '_').downcase.to_sym] } 
+                    %i.copy.outline.icon
+                .content
+                  %strong 
+                    #{content_part}:
+                  = post.content[content_part.gsub(' ', '_').downcase.to_sym]
+        %td
+          %a.preview-twitter-organic.ui.labeled.basic.icon.button
+            %i.eye.icon
+            Preview
+.ui.modal#google-ad-preview
+  %i.close.icon
+  .content
+    .google-ad.expanded-text-ad
+

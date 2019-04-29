@@ -40,7 +40,7 @@ RSpec.describe MessageTemplatePolicy, type: :policy do
     it { should_not be_permitted_to(:remove_image_from_image_pool) }
   end
 
-  context "for a administrator" do
+  context "for an administrator" do
     before(:each) do
       @user = build(:administrator)
     end

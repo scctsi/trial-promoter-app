@@ -35,6 +35,8 @@ class Experiment < ActiveRecord::Base
   has_many :modifications
   has_and_belongs_to_many :social_media_profiles
   has_and_belongs_to_many :users
+  has_many :post_templates
+  has_many :posts
 
   accepts_nested_attributes_for :message_generation_parameter_set, update_only: true
   
