@@ -100,7 +100,7 @@
                     #{content_part}:
                   = post.content[content_part.gsub(' ', '_').downcase.to_sym]
         %td
-          %a.preview-google-ad.ui.labeled.basic.icon.button
+          %a.preview-google-ad.ui.labeled.basic.icon.button{ 'data-headline1': post.content[:headline_1], 'data-description1': post.content[:description_1], 'data-description2': post.content[:description_2], 'data-campaign-url': post.content[:campaign_url][0..(post.content[:campaign_url].index('?') - 1)] }
             %i.eye.icon
             Preview
 %table.ui.celled.striped.table
@@ -133,3 +133,8 @@
           %a.preview-twitter-organic.ui.labeled.basic.icon.button
             %i.eye.icon
             Preview
+.ui.modal#google-ad-preview
+  %i.close.icon
+  .content
+    .google-ad.expanded-text-ad
+

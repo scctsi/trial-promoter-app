@@ -515,7 +515,6 @@ $(document).ready(function() {
   }
   
   function setUpFacebookAdPreviews() {
-    // Modal for image labeling
     $('.preview-facebook-ad').click(function(){
       var text = $(this).data('text');
       var headline = $(this).data('headline');
@@ -549,6 +548,29 @@ $(document).ready(function() {
     return html;
   }
 
+  function setUpGoogleAdPreviews() {
+    $('.preview-google-ad').click(function(){
+      var text = $(this).data('text');
+      var headline1 = $(this).data('headline1');
+      var description1 = $(this).data('description1');
+      var description2 = $(this).data('description2');
+      var campaignUrl = $(this).data('campaign-url');
+      var html = getGoogleAdHtml(headline1, description1, description2, campaignUrl);
+      
+      $('#google-ad-preview .google-ad.expanded-text-ad').html(html);
+      $('#google-ad-preview').modal('setting', 'transition', 'Vertical Flip').modal({ blurring: true }).modal('show');
+    });
+  }
+
+  function getGoogleAdHtml(headline1, description1, description2, campaignUrl) {
+    var html = '<h3 class="headline"><a>' + headline1 + '</a></h3>';
+    
+    html += '<div class="url-line"><span class="ad-tag">Ad</span><span class="display-url">' + campaignUrl + '<span class="fa fa-caret-down"></span></div>';
+    html += '<div><span class="description">' + description1 + '</span><span class="description">' + description2 + '</span></div>';
+    
+    return html;
+  }
+  
   function setUpSaveCampaignIdFormEvents() {
     //Add campaign id to fb and instagram ads
     $('.button.save-id').click(function(event){
@@ -807,6 +829,7 @@ $(document).ready(function() {
   setUpAsyncMessageGeneration();
   setUpImagePoolViewing();
   setUpFacebookAdPreviews();
+  setUpGoogleAdPreviews();
   setUpCopyToClipboard();
 
   // Set up Semantic UI
