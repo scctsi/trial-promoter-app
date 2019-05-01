@@ -36,7 +36,7 @@
                   = post.content[content_part.gsub(' ', '_').downcase.to_sym]
         %td
           - image = Image.find(post.content[:image])
-          = image_tag "#{image.url}", width: '150', height: '150', lazy: true
+          = image_tag "#{image.url}", width: '150', lazy: true
         %td
           %a.preview-facebook-ad.ui.labeled.basic.icon.button{ 'data-text': post.content[:text], 'data-headline': post.content[:headline], 'data-link-description': post.content[:link_description], 'data-call-to-action': post.content[:call_to_action], 'data-campaign-url': post.content[:campaign_url], 'data-image-url': image.url}
             %i.eye.icon
