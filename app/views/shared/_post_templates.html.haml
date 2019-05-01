@@ -26,7 +26,7 @@
         %td
           - post_template.image_pool.each do |image_id|
             - image = Image.find(image_id)
-            = image_tag "#{image.url}", width: '150', height: '150', lazy: true
+            = image_tag "#{image.url}", width: '150', lazy: true
 %table.ui.celled.striped.table
   %thead
     %tr
@@ -67,4 +67,4 @@
         %td
           - post_template.image_pool.each do |image_id|
             - image = Image.find(image_id)
-            = image_tag "#{image.url}", width: '150', height: '150', lazy: true
+            = image_tag "#{image.url}", width: '150', lazy: true

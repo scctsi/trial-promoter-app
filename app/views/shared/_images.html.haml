@@ -20,7 +20,7 @@
         %tr.center.aligned{ :class => "#{row_class}" }
           %td= image.id
           %td
-            = image_tag "#{image.url}", width: '150', height: '150', lazy: true
+            = image_tag "#{image.url}", width: '150', lazy: true
           %td= image.original_filename
           %td
             - if image.width.nil? || image.height.nil?
@@ -52,8 +52,8 @@
         %tr.center.aligned
           %td= image.id
           %td
-            = image_tag "#{image.url}", width: '150', height: '150', lazy: true
+            = image_tag "#{image.url}", width: '150', lazy: true
           %td= image.original_filename
           %td
-            = image_tag "#{image.duplicated_image.url}", width: '150', height: '150', lazy: true
+            = image_tag "#{image.duplicated_image.url}", width: '150', lazy: true
           

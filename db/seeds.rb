@@ -233,63 +233,6 @@ if experiment.post_templates.select{ |pt| pt.social_media_specification.platform
   post_template.save
 end
 
-# Image pool
-post_template = PostTemplate.find(17)
-post_template.image_pool = [626, 635]
-post_template.save
-
-post_template = PostTemplate.find(18)
-post_template.image_pool = [625, 637]
-post_template.save
-
-post_template = PostTemplate.find(19)
-post_template.image_pool = [629, 638]
-post_template.save
-
-post_template = PostTemplate.find(20)
-post_template.image_pool = [636, 631]
-post_template.save
-
-post_template = PostTemplate.find(21)
-post_template.image_pool = [627, 633]
-post_template.save
-
-post_template = PostTemplate.find(22)
-post_template.image_pool = [634, 628]
-post_template.save
-
-post_template = PostTemplate.find(23)
-post_template.image_pool = [630, 632]
-post_template.save
-
-post_template = PostTemplate.find(33)
-post_template.image_pool = [626, 635]
-post_template.save
-
-post_template = PostTemplate.find(34)
-post_template.image_pool = [625, 637]
-post_template.save
-
-post_template = PostTemplate.find(35)
-post_template.image_pool = [629, 638]
-post_template.save
-
-post_template = PostTemplate.find(36)
-post_template.image_pool = [636, 631]
-post_template.save
-
-post_template = PostTemplate.find(37)
-post_template.image_pool = [627, 633]
-post_template.save
-
-post_template = PostTemplate.find(38)
-post_template.image_pool = [634, 628]
-post_template.save
-
-post_template = PostTemplate.find(39)
-post_template.image_pool = [630, 632]
-post_template.save
-
 # if PostTemplate.count == 0
 #   experiment = Experiment.where(name: "Filipino Family Health Initiative")[0]
   
