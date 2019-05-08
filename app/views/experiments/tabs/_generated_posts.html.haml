@@ -90,7 +90,7 @@
         %td= post.to_param
         %td
           .ui.middle.relaxed.aligned.list
-            - ["Headline 1", "Description 1", "Description 2", "Campaign URL"].each do |content_part|
+            - ["Headline 1", "Headline 2", "Headline 3", "Description 1", "Description 2", "Campaign URL"].each do |content_part|
               .item
                 .right.floated.content
                   %a.copy-to-clipboard.ui.mini.icon.button{ 'data-text-to-copy': post.content[content_part.gsub(' ', '_').downcase.to_sym] } 
