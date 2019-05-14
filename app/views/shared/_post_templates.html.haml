@@ -24,10 +24,7 @@
           %td= post_template.content[:link_description]
           %td= post_template.content[:call_to_action]
           %td= post_template.content[:website_url]
-          %td
-            - post_template.image_pool.each do |image_id|
-              - image = Image.find(image_id)
-              = image_tag "#{image.url}", width: '150', lazy: true
+          %td= render partial: 'shared/image_pool', locals: { experiment: @experiment, image_pool: post_template.image_pool }
 - if google_post_templates.count > 0
   %table.ui.celled.striped.table
     %thead
@@ -71,7 +68,4 @@
           %td= post_template.content[:text]
           %td= post_template.content[:hashtags]
           %td= post_template.content[:website_url]
-          %td
-            - post_template.image_pool.each do |image_id|
-              - image = Image.find(image_id)
-              = image_tag "#{image.url}", width: '150', lazy: true
+          %td= render partial: 'shared/image_pool', locals: { experiment: @experiment, image_pool: post_template.image_pool }
