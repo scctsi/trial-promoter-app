@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190315225957) do
+ActiveRecord::Schema.define(version: 20190520222544) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -175,6 +175,12 @@ ActiveRecord::Schema.define(version: 20190315225957) do
     t.boolean  "use_click_meter",                              default: false
     t.string   "pi_first_name"
     t.string   "pi_last_name"
+    t.string   "official_title",                  limit: 1000
+    t.string   "recruitment_period"
+    t.string   "channels"
+    t.string   "target_audience"
+    t.string   "budget"
+    t.string   "accrual_target"
   end
 
   create_table "experiments_social_media_profiles", force: :cascade do |t|
@@ -286,6 +292,7 @@ ActiveRecord::Schema.define(version: 20190315225957) do
     t.integer  "message_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer  "post_id"
   end
 
   create_table "modifications", force: :cascade do |t|
@@ -343,6 +350,23 @@ ActiveRecord::Schema.define(version: 20190315225957) do
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "split_test_results", force: :cascade do |t|
+    t.integer  "split_test_id"
+    t.integer  "winning_variation_id"
+    t.integer  "losing_variation_id"
+    t.datetime "stop_time"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
+  create_table "split_tests", force: :cascade do |t|
+    t.integer  "experiment_id"
+    t.integer  "variation_a_id"
+    t.integer  "variation_b_id"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
   end
 
   create_table "taggings", force: :cascade do |t|

@@ -8,7 +8,6 @@
         %th{ colspan: "9" } 
           %h3 Facebook Ad (News Feed)
       %tr
-        %th A/B testing
         %th ID
         %th Ad name
         %th Post content
@@ -17,11 +16,6 @@
     %tbody
       - facebook_posts.each.with_index do |post, index|
         %tr
-          %td
-            - if index == 0
-              .ui.blue.circular.label A
-            - if index == 1
-              .ui.blue.circular.label B
           %td= post.id
           %td= post.to_param
           %td
@@ -75,7 +69,6 @@
         %th{ colspan: "9" } 
           %h3 Google Ad (Search Network)
       %tr
-        %th A/B testing
         %th ID
         %th Ad name
         %th Post content
@@ -83,11 +76,6 @@
     %tbody
       - google_posts.each.with_index do |post, index|
         %tr
-          %td
-            - if index == 0
-              .ui.blue.circular.label A
-            - if index == 1
-              .ui.blue.circular.label B
           %td= post.id
           %td= post.to_param
           %td
@@ -115,7 +103,6 @@
         %th ID
         %th Ad name
         %th Post content
-        %th Actions
     %tbody
       - twitter_posts.each.with_index do |post, index|
         %tr
@@ -132,10 +119,6 @@
                     %strong 
                       #{content_part}:
                     = post.content[content_part.gsub(' ', '_').downcase.to_sym]
-          %td
-            %a.preview-twitter-organic.ui.labeled.basic.icon.button
-              %i.eye.icon
-              Preview
   .ui.modal#google-ad-preview
     %i.close.icon
     .content

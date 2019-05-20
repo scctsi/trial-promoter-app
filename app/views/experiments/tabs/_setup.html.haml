@@ -1,4 +1,26 @@
 %a.ui.primary.labeled.icon.button{ :href => edit_experiment_path(@experiment) }
   %i.industry.icon
   Change experiment setup
-= render partial: 'shared/message_generation_parameter_set', locals: { message_generation_parameter_set: @experiment.message_generation_parameter_set }
+%table.ui.very.basic.collapsing.table.message-generation-parameter-set
+  %tbody
+    %tr
+      %td.collapsing Official title
+      %td= @experiment.official_title
+    %tr
+      %td.collapsing PI name
+      %td= #{@experiment.pi_first_name} #{@experiment.pi_last_name}
+    %tr
+      %td.collapsing Recruitment period
+      %td= @experiment.recruitment_period
+    %tr
+      %td.collapsing Channels
+      %td= @experiment.channels
+    %tr
+      %td.collapsing Target audience
+      %td= @experiment.target_audience
+    %tr
+      %td.collapsing Budget
+      %td= @experiment.budget
+    %tr
+      %td.collapsing Accrual target
+      %td= @experiment.accrual_target
