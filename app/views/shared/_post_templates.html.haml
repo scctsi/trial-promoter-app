@@ -19,7 +19,7 @@
       - facebook_post_templates.each do |post_template|
         %tr
           %td= post_template.id
-          %td= post_template.content[:text]
+          %td= simple_format(post_template.content[:text])
           %td= post_template.content[:headline]
           %td= post_template.content[:link_description]
           %td= post_template.content[:call_to_action]

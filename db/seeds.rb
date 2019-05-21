@@ -13,80 +13,80 @@ SocialMediaSpecification.where(platform: :google, post_type: :ad, format: :text,
 # Seed Twitter (organic) specifications
 SocialMediaSpecification.where(platform: :twitter, post_type: :organic, format: :tweet, placement: :timeline).first_or_create
 
-experiment = Experiment.where(name: "MiDAS")[0]
+experiment = Experiment.where(name: "Stroke and fall risk")[0]
 
-# Seed MiDAS post templates
+# # Seed Stroke post templates
 # Facebook post templates
 if experiment.post_templates.select{ |pt| pt.social_media_specification.platform == :facebook }.count == 0
   # Facebook post templates
   post_template = PostTemplate.new
   post_template.experiment = experiment
   post_template.social_media_specification = SocialMediaSpecification.where(platform: :facebook, post_type: :ad, format: :single_image, placement: :news_feed)[0]
-  post_template.content[:text] = 'Curious about how smoking can affect your mood? New study is looking into this and looking for participants. Any smoker 21+ can join. Depression may increase smoking dependence and might make it harder to quit. We want to better understand the connection to develop better programs that help smokers to quit. You do NOT need to be diagnosed with depression to participate in this study.'
-  post_template.content[:headline] = 'Join today.'
-  post_template.content[:link_description] = 'Rewards available'
+  post_template.content[:text] = "What's the best way to help people get back on their feet after a stroke? A new study at USC hopes to find out. If you or someone you know is interested in participating in this study, please message us today!\r\n\r\nA stroke can affect your balance and sensation, and the way in which these systems work together. Usually your body can overcome mild problems, but if they are more severe, your body will be unable to work effectively and you will probably feel unsteady.\r\n\r\nExercise and balance retraining are very effective ways to treat balance problems."
+  post_template.content[:headline] = 'Getting Stroke Survivors Back On Their Feet.'
+  post_template.content[:link_description] = 'Participants will be compensated for their time.'
+  post_template.content[:call_to_action] = 'Send Message'
+  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
+  post_template.save
+
+  post_template = PostTemplate.new
+  post_template.experiment = experiment
+  post_template.social_media_specification = SocialMediaSpecification.where(platform: :facebook, post_type: :ad, format: :single_image, placement: :news_feed)[0]
+  post_template.content[:text] = "Join new study on new ways to lower the risk of falling in stroke survivors. Please contact us today if interested. Compensation available.\r\n\r\nBalance involves proper coordination of our bodies in our surroundings. It affects most day-to-day activities, such as moving around and reaching for objects.\r\n\r\nExercise and balance retraining are very effective ways to treat balance problems."
+  post_template.content[:headline] = 'USC Seeks Stroke Survivors'
+  post_template.content[:link_description] = 'Seeking stroke survivors to participate in research study'
+  post_template.content[:call_to_action] = 'Contact Us'
+  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
+  post_template.save
+
+  post_template = PostTemplate.new
+  post_template.experiment = experiment
+  post_template.social_media_specification = SocialMediaSpecification.where(platform: :facebook, post_type: :ad, format: :single_image, placement: :news_feed)[0]
+  post_template.content[:text] = "Difficulty with balance after stroke? If you or someone you know has had a stroke, contact us today! Rewards available.\r\n\r\nBalance involves proper coordination of our bodies in our surroundings. It affects most day-to-day activities, such as moving around and reaching for objects.\r\n\r\nExercise and balance retraining are very effective ways to treat balance problems."
+  post_template.content[:headline] = 'How to Restore Balance after Stroke?'
+  post_template.content[:link_description] = 'USC looks to answer this question in a new clinical study'
+  post_template.content[:call_to_action] = 'Send Message'
+  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
+  post_template.save
+
+  post_template = PostTemplate.new
+  post_template.experiment = experiment
+  post_template.social_media_specification = SocialMediaSpecification.where(platform: :facebook, post_type: :ad, format: :single_image, placement: :news_feed)[0]
+  post_template.content[:text] = "Can the right way of walking help reduce the risk of falling in stroke patients? USC hopes to find the answer with a new clinical study. Contact us today if you’re a stroke patient interested in participating.\r\n\r\nA stroke can affect your balance and sensation, and the way in which these systems work together.  Usually your body can overcome mild problems, but if they are more severe, your body will be unable to work effectively and you will probably feel unsteady.\r\n\r\nExercise and balance retraining are very effective ways to treat balance problems."
+  post_template.content[:headline] = 'Compensation available for time'
+  post_template.content[:link_description] = 'Study Hopes to Decrease Fall Risk After Stroke'
   post_template.content[:call_to_action] = 'Learn More'
-  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/midas-study-how-depression-can-effect-smoker'
+  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
   post_template.save
 
   post_template = PostTemplate.new
   post_template.experiment = experiment
   post_template.social_media_specification = SocialMediaSpecification.where(platform: :facebook, post_type: :ad, format: :single_image, placement: :news_feed)[0]
-  post_template.content[:text] = 'Looking for volunteers to help us learn more about the link between mood and smoking.'
-  post_template.content[:headline] = 'Join and earn some cash'
-  post_template.content[:link_description] = 'Any smoker 21+ can join'
-  post_template.content[:call_to_action] = 'Sign Up'
-  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/midas-study-how-depression-can-effect-smoker'
-  post_template.save
-
-  post_template = PostTemplate.new
-  post_template.experiment = experiment
-  post_template.social_media_specification = SocialMediaSpecification.where(platform: :facebook, post_type: :ad, format: :single_image, placement: :news_feed)[0]
-  post_template.content[:text] = 'Help us! USC is conducting a study on the link between smoking and mood.'
+  post_template.content[:text] = "Can something as simple as changing walking patterns reduce the risk of falling for stroke patients? This is the main focus of a new clinical study being conducted by USC.\r\n\r\nA stroke can affect your balance and sensation, and the way in which these systems work together.  Usually your body can overcome mild problems, but if they are more severe, your body will be unable to work effectively and you will probably feel unsteady.\r\n\r\nExercise and balance retraining are very effective ways to treat balance problems."
   post_template.content[:headline] = 'Sign up today!'
-  post_template.content[:link_description] = 'Cash rewards available'
+  post_template.content[:link_description] = 'Participants will be rewarded for their effort and time.'
   post_template.content[:call_to_action] = 'Sign Up'
-  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/midas-study-how-depression-can-effect-smoker'
+  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
   post_template.save
 
   post_template = PostTemplate.new
   post_template.experiment = experiment
   post_template.social_media_specification = SocialMediaSpecification.where(platform: :facebook, post_type: :ad, format: :single_image, placement: :news_feed)[0]
-  post_template.content[:text] = 'Are you a smoker? Participate in a study at USC and earn some cash!'
-  post_template.content[:headline] = 'Sign up today!'
-  post_template.content[:link_description] = 'Join and earn some cash'
+  post_template.content[:text] = "More years together! New study at USC is looking at better ways to help stroke survivors prevent falls and injuries. Stroke survivors 18 and older are invited to join. Compensation is available.\r\n\r\nIf you’re a stroke survivor interested in joining the study, contact us today!\r\n\r\nA stroke can affect your balance and sensation, and the way in which these systems work together.  Usually your body can overcome mild problems, but if they are more severe, your body will be unable to work effectively and you will probably feel unsteady."
+  post_template.content[:headline] = 'Seeking Stroke Survivors for Study'
+  post_template.content[:link_description] = 'If you’re a stroke survivor interested in joining the study, contact us today!'
   post_template.content[:call_to_action] = 'Learn More'
-  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/midas-study-how-depression-can-effect-smoker'
+  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
   post_template.save
 
   post_template = PostTemplate.new
   post_template.experiment = experiment
   post_template.social_media_specification = SocialMediaSpecification.where(platform: :facebook, post_type: :ad, format: :single_image, placement: :news_feed)[0]
-  post_template.content[:text] = 'Trying to quit smoking? At USC, we’re looking at the link between depression and quitting. If you volunteer for our study, you’ll be compensated! '
-  post_template.content[:headline] = 'Sign up today!'
-  post_template.content[:link_description] = 'Participation is rewarded.'
-  post_template.content[:call_to_action] = 'Sign Up'
-  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/midas-study-how-depression-can-effect-smoker'
-  post_template.save
-
-  post_template = PostTemplate.new
-  post_template.experiment = experiment
-  post_template.social_media_specification = SocialMediaSpecification.where(platform: :facebook, post_type: :ad, format: :single_image, placement: :news_feed)[0]
-  post_template.content[:text] = 'Did you know depression may affect your ability to quit smoking? Learn more by joining our study at USC. Depression may increase smoking dependence and might make it harder to quit. We want to better understand the connection to develop better programs that help smokers to quit. You do NOT need to be diagnosed with depression to participate in this study.'
-  post_template.content[:headline] = 'Quit smoking today.'
-  post_template.content[:link_description] = 'Join and earn some cash'
-  post_template.content[:call_to_action] = 'Sign Up'
-  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/midas-study-how-depression-can-effect-smoker'
-  post_template.save
-
-  post_template = PostTemplate.new
-  post_template.experiment = experiment
-  post_template.social_media_specification = SocialMediaSpecification.where(platform: :facebook, post_type: :ad, format: :single_image, placement: :news_feed)[0]
-  post_template.content[:text] = 'Depression and smoking can go hand in hand. If you’re trying to quit, we can help!'
-  post_template.content[:headline] = 'Join our study'
-  post_template.content[:link_description] = 'Join and earn some cash'
-  post_template.content[:call_to_action] = 'Learn More'
-  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/midas-study-how-depression-can-effect-smoker'
+  post_template.content[:text] = "Stroke survivors have a higher risk of falling down and getting injured. A new study at USC hopes to find ways of decreasing this risk. Looking for stroke survivors.\r\n\r\nA stroke can affect your balance and sensation, and the way in which these systems work together.  Usually your body can overcome mild problems, but if they are more severe, your boy will be unable to work effectively and you will probably feel unsteady.\r\n\r\nExercise and balance retraining are very effective ways to treat balance problems."
+  post_template.content[:headline] = 'If you’re interested in participating in this study, please contact us today!'
+  post_template.content[:link_description] = 'Participants will be compensated for their time.'
+  post_template.content[:call_to_action] = 'Contact Us'
+  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
   post_template.save
 end
 
@@ -95,86 +95,157 @@ if experiment.post_templates.select{ |pt| pt.social_media_specification.platform
   post_template = PostTemplate.new
   post_template.experiment = experiment
   post_template.social_media_specification = SocialMediaSpecification.where(platform: :google, post_type: :ad, format: :text, placement: :search_network)[0]
-  post_template.content[:headline_1] = 'Smoking & Depression Study'
-  post_template.content[:headline_2] = 'For 21+ year olds'
-  post_template.content[:headline_3] = 'Compensation available'
-  post_template.content[:description_1] = 'Curious about how smoking can affect your mood?Curious about how smoking can affect your mood?'
-  post_template.content[:description_2] = 'New study is looking into this and looking for participants. Rewards available.'
-  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/midas-study-how-depression-can-effect-smoker'
-  post_template.save
-
-  post_template = PostTemplate.new
-  post_template.experiment = experiment
-  post_template.social_media_specification = SocialMediaSpecification.where(platform: :google, post_type: :ad, format: :text, placement: :search_network)[0]
-  post_template.content[:headline_1] = 'Smoking & Mood Study'
-  post_template.content[:headline_2] = 'For 21+ year olds'
-  post_template.content[:headline_3] = 'Compensation available'
-  post_template.content[:description_1] = 'Looking for volunteers to help us learn more about the link between mood and smoking.'
-  post_template.content[:description_2] = 'Join and earn some cash. Any smoker 21+ can join'
-  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/midas-study-how-depression-can-effect-smoker'
-  post_template.save
-
-  post_template = PostTemplate.new
-  post_template.experiment = experiment
-  post_template.social_media_specification = SocialMediaSpecification.where(platform: :google, post_type: :ad, format: :text, placement: :search_network)[0]
-  post_template.content[:headline_1] = 'Smoking & People’s Mood'
-  post_template.content[:headline_2] = 'Compensation available'
-  post_template.content[:headline_3] = 'For 21+ year olds'
-  post_template.content[:description_1] = 'Help us! USC is conducting a study on the link between smoking and mood.'
-  post_template.content[:description_2] = 'Rewards for participation. Sign up today!'
-  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/midas-study-how-depression-can-effect-smoker'
-  post_template.save
-
-  post_template = PostTemplate.new
-  post_template.experiment = experiment
-  post_template.social_media_specification = SocialMediaSpecification.where(platform: :google, post_type: :ad, format: :text, placement: :search_network)[0]
-  post_template.content[:headline_1] = 'Study on Smoking & Depression'
-  post_template.content[:headline_2] = 'For 21+ and up'
-  post_template.content[:headline_3] = 'Compensation available'
-  post_template.content[:description_1] = 'Are you a smoker? Participate in a study at USC and earn some cash!'
-  post_template.content[:description_2] = 'Learn more and sign up to participate in our study!'
-  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/midas-study-how-depression-can-effect-smoker'
-  post_template.save
-
-  post_template = PostTemplate.new
-  post_template.experiment = experiment
-  post_template.social_media_specification = SocialMediaSpecification.where(platform: :google, post_type: :ad, format: :text, placement: :search_network)[0]
-  post_template.content[:headline_1] = 'Smoking & Depression Study'
-  post_template.content[:headline_2] = 'For 21+ year olds'
-  post_template.content[:headline_3] = 'Compensation available'
-  post_template.content[:description_1] = 'Trying to quit smoking? At USC, we’re looking at the link between depression and quitting.'
-  post_template.content[:description_2] = 'If you volunteer for our study, you’ll be compensated. Sign up today!'
-  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/midas-study-how-depression-can-effect-smoker'
-  post_template.save
-
-  post_template = PostTemplate.new
-  post_template.experiment = experiment
-  post_template.social_media_specification = SocialMediaSpecification.where(platform: :google, post_type: :ad, format: :text, placement: :search_network)[0]
-  post_template.content[:headline_1] = 'Study on Mood & Smoking'
-  post_template.content[:headline_2] = 'For 21+ year old volunteers'
+  post_template.content[:headline_1] = 'Study for Stroke Survivors'
+  post_template.content[:headline_2] = 'Research on decreasing falls'
   post_template.content[:headline_3] = 'Compensation Available'
-  post_template.content[:description_1] = 'Did you know depression may affect your ability to quit smoking?'
-  post_template.content[:description_2] = 'Rewards available for signing up at USC to quit smoking today!'
-  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/midas-study-how-depression-can-effect-smoker'
+  post_template.content[:description_1] = "What's the best way to help people get back on their feet after a stroke?"
+  post_template.content[:description_2] = 'A new study at USC hopes to find out. Join our study!'
+  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
   post_template.save
 
   post_template = PostTemplate.new
   post_template.experiment = experiment
   post_template.social_media_specification = SocialMediaSpecification.where(platform: :google, post_type: :ad, format: :text, placement: :search_network)[0]
-  post_template.content[:headline_1] = 'USC Study on Smoking & Mood'
-  post_template.content[:headline_2] = 'For 21+ year old volunteers'
-  post_template.content[:headline_3] = 'Compensation available'
-  post_template.content[:description_1] = 'Depression and smoking can go hand in hand. If you’re trying to quit, we can help!'
-  post_template.content[:description_2] = 'Compensation available for joining our study.'
-  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/midas-study-how-depression-can-effect-smoker'
+  post_template.content[:headline_1] = 'USC Seeks Stroke Survivors'
+  post_template.content[:headline_2] = 'Research to decrease falls'
+  post_template.content[:headline_3] = 'Compensation for volunteers'
+  post_template.content[:description_1] = "Join new study on new ways to lower the risk of falling in stroke survivors."
+  post_template.content[:description_2] = 'Please contact us today if interested. Compensation available.'
+  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
+  post_template.save
+
+  post_template = PostTemplate.new
+  post_template.experiment = experiment
+  post_template.social_media_specification = SocialMediaSpecification.where(platform: :google, post_type: :ad, format: :text, placement: :search_network)[0]
+  post_template.content[:headline_1] = 'Restore Balance after Stroke'
+  post_template.content[:headline_2] = 'Join USC Research'
+  post_template.content[:headline_3] = 'Compensation Available'
+  post_template.content[:description_1] = "Difficulty with balance after stroke? USC looks to answer this question in a new study."
+  post_template.content[:description_2] = 'If you or someone you know has had a stroke, contact us today!'
+  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
+  post_template.save
+
+  post_template = PostTemplate.new
+  post_template.experiment = experiment
+  post_template.social_media_specification = SocialMediaSpecification.where(platform: :google, post_type: :ad, format: :text, placement: :search_network)[0]
+  post_template.content[:headline_1] = 'Decrease falls after stroke'
+  post_template.content[:headline_2] = 'Join USC Study'
+  post_template.content[:headline_3] = 'Compensation for participants'
+  post_template.content[:description_1] = "Can the right way of walking help reduce the risk of falling in stroke patients?"
+  post_template.content[:description_2] = 'Contact us today if you’re a stroke patient interested in participating.'
+  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
+  post_template.save
+
+  post_template = PostTemplate.new
+  post_template.experiment = experiment
+  post_template.social_media_specification = SocialMediaSpecification.where(platform: :google, post_type: :ad, format: :text, placement: :search_network)[0]
+  post_template.content[:headline_1] = 'Stroke Survivor Study'
+  post_template.content[:headline_2] = 'Decrease fall risk'
+  post_template.content[:headline_3] = 'Compensation Available'
+  post_template.content[:description_1] = "Can something as simple as changing walking patterns reduce the risk of falling for stroke patients?"
+  post_template.content[:description_2] = 'This is the main focus of a new clinical study being conducted by USC. Sign up today!'
+  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
+  post_template.save
+
+  post_template = PostTemplate.new
+  post_template.experiment = experiment
+  post_template.social_media_specification = SocialMediaSpecification.where(platform: :google, post_type: :ad, format: :text, placement: :search_network)[0]
+  post_template.content[:headline_1] = 'Seeking Stroke Survivors'
+  post_template.content[:headline_2] = 'Research at USC'
+  post_template.content[:headline_3] = 'Compensation for participants'
+  post_template.content[:description_1] = "Study at USC is looking at better ways to help stroke survivors prevent falls & injuries."
+  post_template.content[:description_2] = "Stroke survivors 18 and older are invited to join. Compensation is available."
+  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
+  post_template.save
+
+  post_template = PostTemplate.new
+  post_template.experiment = experiment
+  post_template.social_media_specification = SocialMediaSpecification.where(platform: :google, post_type: :ad, format: :text, placement: :search_network)[0]
+  post_template.content[:headline_1] = 'Need Stroke Survivors!'
+  post_template.content[:headline_2] = 'Research opportunity at USC'
+  post_template.content[:headline_3] = 'Compensation Available'
+  post_template.content[:description_1] = "Stroke survivors have a higher risk of falling down and getting injured."
+  post_template.content[:description_2] = 'A new study at USC hopes to find ways of decreasing this risk. Contact us today!'
+  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
   post_template.save
 end
+
+#   post_template = PostTemplate.new
+#   post_template.experiment = experiment
+#   post_template.social_media_specification = SocialMediaSpecification.where(platform: :google, post_type: :ad, format: :text, placement: :search_network)[0]
+#   post_template.content[:headline_1] = 'Smoking & Mood Study'
+#   post_template.content[:headline_2] = 'For 21+ year olds'
+#   post_template.content[:headline_3] = 'Compensation available'
+#   post_template.content[:description_1] = 'Looking for volunteers to help us learn more about the link between mood and smoking.'
+#   post_template.content[:description_2] = 'Join and earn some cash. Any smoker 21+ can join'
+#   post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/midas-study-how-depression-can-effect-smoker'
+#   post_template.save
+
+#   post_template = PostTemplate.new
+#   post_template.experiment = experiment
+#   post_template.social_media_specification = SocialMediaSpecification.where(platform: :google, post_type: :ad, format: :text, placement: :search_network)[0]
+#   post_template.content[:headline_1] = 'Smoking & People’s Mood'
+#   post_template.content[:headline_2] = 'Compensation available'
+#   post_template.content[:headline_3] = 'For 21+ year olds'
+#   post_template.content[:description_1] = 'Help us! USC is conducting a study on the link between smoking and mood.'
+#   post_template.content[:description_2] = 'Rewards for participation. Sign up today!'
+#   post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/midas-study-how-depression-can-effect-smoker'
+#   post_template.save
+
+#   post_template = PostTemplate.new
+#   post_template.experiment = experiment
+#   post_template.social_media_specification = SocialMediaSpecification.where(platform: :google, post_type: :ad, format: :text, placement: :search_network)[0]
+#   post_template.content[:headline_1] = 'Study on Smoking & Depression'
+#   post_template.content[:headline_2] = 'For 21+ and up'
+#   post_template.content[:headline_3] = 'Compensation available'
+#   post_template.content[:description_1] = 'Are you a smoker? Participate in a study at USC and earn some cash!'
+#   post_template.content[:description_2] = 'Learn more and sign up to participate in our study!'
+#   post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/midas-study-how-depression-can-effect-smoker'
+#   post_template.save
+
+#   post_template = PostTemplate.new
+#   post_template.experiment = experiment
+#   post_template.social_media_specification = SocialMediaSpecification.where(platform: :google, post_type: :ad, format: :text, placement: :search_network)[0]
+#   post_template.content[:headline_1] = 'Smoking & Depression Study'
+#   post_template.content[:headline_2] = 'For 21+ year olds'
+#   post_template.content[:headline_3] = 'Compensation available'
+#   post_template.content[:description_1] = 'Trying to quit smoking? At USC, we’re looking at the link between depression and quitting.'
+#   post_template.content[:description_2] = 'If you volunteer for our study, you’ll be compensated. Sign up today!'
+#   post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/midas-study-how-depression-can-effect-smoker'
+#   post_template.save
+
+#   post_template = PostTemplate.new
+#   post_template.experiment = experiment
+#   post_template.social_media_specification = SocialMediaSpecification.where(platform: :google, post_type: :ad, format: :text, placement: :search_network)[0]
+#   post_template.content[:headline_1] = 'Study on Mood & Smoking'
+#   post_template.content[:headline_2] = 'For 21+ year old volunteers'
+#   post_template.content[:headline_3] = 'Compensation Available'
+#   post_template.content[:description_1] = 'Did you know depression may affect your ability to quit smoking?'
+#   post_template.content[:description_2] = 'Rewards available for signing up at USC to quit smoking today!'
+#   post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/midas-study-how-depression-can-effect-smoker'
+#   post_template.save
+
+#   post_template = PostTemplate.new
+#   post_template.experiment = experiment
+#   post_template.social_media_specification = SocialMediaSpecification.where(platform: :google, post_type: :ad, format: :text, placement: :search_network)[0]
+#   post_template.content[:headline_1] = 'USC Study on Smoking & Mood'
+#   post_template.content[:headline_2] = 'For 21+ year old volunteers'
+#   post_template.content[:headline_3] = 'Compensation available'
+#   post_template.content[:description_1] = 'Depression and smoking can go hand in hand. If you’re trying to quit, we can help!'
+#   post_template.content[:description_2] = 'Compensation available for joining our study.'
+#   post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/midas-study-how-depression-can-effect-smoker'
+#   post_template.save
+# end
 
 # Image pool
 image_ids = Image.belonging_to(experiment).map(&:id).to_a
 experiment.post_templates.each do | post_template |
-  post_template.image_pool = image_ids
-  post_template.save
+  if post_template.social_media_specification.platform == :google
+    # No image pools for Google ads
+  else
+    post_template.image_pool = image_ids
+    post_template.save
+  end
 end
 
 # # Seed MAMITA post templates

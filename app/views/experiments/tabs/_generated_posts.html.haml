@@ -28,7 +28,7 @@
                   .content
                     %strong 
                       #{content_part}:
-                    = post.content[content_part.gsub(' ', '_').downcase.to_sym]
+                    = simple_format(post.content[content_part.gsub(' ', '_').downcase.to_sym])
           %td
             - image = Image.find(post.content[:image])
             = image_tag "#{image.url}", width: '150', lazy: true
