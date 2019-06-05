@@ -13,162 +13,279 @@ SocialMediaSpecification.where(platform: :google, post_type: :ad, format: :text,
 # Seed Twitter (organic) specifications
 SocialMediaSpecification.where(platform: :twitter, post_type: :organic, format: :tweet, placement: :timeline).first_or_create
 
-experiment = Experiment.where(name: "Stroke and fall risk")[0]
+experiment = Experiment.where(name: "Project Cal Teens")[0]
 
-# # Seed Stroke post templates
+# Seed Project Cal Teen post templates
 # Facebook post templates
 if experiment.post_templates.select{ |pt| pt.social_media_specification.platform == :facebook }.count == 0
   # Facebook post templates
+  # Parents
   post_template = PostTemplate.new
   post_template.experiment = experiment
   post_template.social_media_specification = SocialMediaSpecification.where(platform: :facebook, post_type: :ad, format: :single_image, placement: :news_feed)[0]
-  post_template.content[:text] = "What's the best way to help people get back on their feet after a stroke? A new study at USC hopes to find out. If you or someone you know is interested in participating in this study, please message us today!\r\n\r\nA stroke can affect your balance and sensation, and the way in which these systems work together. Usually your body can overcome mild problems, but if they are more severe, your body will be unable to work effectively and you will probably feel unsteady.\r\n\r\nExercise and balance retraining are very effective ways to treat balance problems."
-  post_template.content[:headline] = 'Getting Stroke Survivors Back On Their Feet.'
-  post_template.content[:link_description] = 'Participants will be compensated for their time.'
-  post_template.content[:call_to_action] = 'Send Message'
-  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
-  post_template.save
-
-  post_template = PostTemplate.new
-  post_template.experiment = experiment
-  post_template.social_media_specification = SocialMediaSpecification.where(platform: :facebook, post_type: :ad, format: :single_image, placement: :news_feed)[0]
-  post_template.content[:text] = "Join new study on new ways to lower the risk of falling in stroke survivors. Please contact us today if interested. Compensation available.\r\n\r\nBalance involves proper coordination of our bodies in our surroundings. It affects most day-to-day activities, such as moving around and reaching for objects.\r\n\r\nExercise and balance retraining are very effective ways to treat balance problems."
-  post_template.content[:headline] = 'USC Seeks Stroke Survivors'
-  post_template.content[:link_description] = 'Seeking stroke survivors to participate in research study'
-  post_template.content[:call_to_action] = 'Contact Us'
-  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
-  post_template.save
-
-  post_template = PostTemplate.new
-  post_template.experiment = experiment
-  post_template.social_media_specification = SocialMediaSpecification.where(platform: :facebook, post_type: :ad, format: :single_image, placement: :news_feed)[0]
-  post_template.content[:text] = "Difficulty with balance after stroke? If you or someone you know has had a stroke, contact us today! Rewards available.\r\n\r\nBalance involves proper coordination of our bodies in our surroundings. It affects most day-to-day activities, such as moving around and reaching for objects.\r\n\r\nExercise and balance retraining are very effective ways to treat balance problems."
-  post_template.content[:headline] = 'How to Restore Balance after Stroke?'
-  post_template.content[:link_description] = 'USC looks to answer this question in a new clinical study'
-  post_template.content[:call_to_action] = 'Send Message'
-  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
-  post_template.save
-
-  post_template = PostTemplate.new
-  post_template.experiment = experiment
-  post_template.social_media_specification = SocialMediaSpecification.where(platform: :facebook, post_type: :ad, format: :single_image, placement: :news_feed)[0]
-  post_template.content[:text] = "Can the right way of walking help reduce the risk of falling in stroke patients? USC hopes to find the answer with a new clinical study. Contact us today if you’re a stroke patient interested in participating.\r\n\r\nA stroke can affect your balance and sensation, and the way in which these systems work together.  Usually your body can overcome mild problems, but if they are more severe, your body will be unable to work effectively and you will probably feel unsteady.\r\n\r\nExercise and balance retraining are very effective ways to treat balance problems."
-  post_template.content[:headline] = 'Compensation available for time'
-  post_template.content[:link_description] = 'Study Hopes to Decrease Fall Risk After Stroke'
+  post_template.content[:text] = "New study to better understand teens’ choices about drug use. Whether your child has used drugs or not, their opinions are important to us. Ages 13-17."
+  post_template.content[:headline] = 'Ask your teen to take this survey!'
+  post_template.content[:link_description] = 'Gift cards for teens available'
   post_template.content[:call_to_action] = 'Learn More'
-  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
+  post_template.content[:website_url] = 'https://project-cal-teens.sc-ctsi.org/parents'
   post_template.save
 
   post_template = PostTemplate.new
   post_template.experiment = experiment
   post_template.social_media_specification = SocialMediaSpecification.where(platform: :facebook, post_type: :ad, format: :single_image, placement: :news_feed)[0]
-  post_template.content[:text] = "Can something as simple as changing walking patterns reduce the risk of falling for stroke patients? This is the main focus of a new clinical study being conducted by USC.\r\n\r\nA stroke can affect your balance and sensation, and the way in which these systems work together.  Usually your body can overcome mild problems, but if they are more severe, your body will be unable to work effectively and you will probably feel unsteady.\r\n\r\nExercise and balance retraining are very effective ways to treat balance problems."
-  post_template.content[:headline] = 'Sign up today!'
-  post_template.content[:link_description] = 'Participants will be rewarded for their effort and time.'
-  post_template.content[:call_to_action] = 'Sign Up'
-  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
-  post_template.save
-
-  post_template = PostTemplate.new
-  post_template.experiment = experiment
-  post_template.social_media_specification = SocialMediaSpecification.where(platform: :facebook, post_type: :ad, format: :single_image, placement: :news_feed)[0]
-  post_template.content[:text] = "More years together! New study at USC is looking at better ways to help stroke survivors prevent falls and injuries. Stroke survivors 18 and older are invited to join. Compensation is available.\r\n\r\nIf you’re a stroke survivor interested in joining the study, contact us today!\r\n\r\nA stroke can affect your balance and sensation, and the way in which these systems work together.  Usually your body can overcome mild problems, but if they are more severe, your body will be unable to work effectively and you will probably feel unsteady."
-  post_template.content[:headline] = 'Seeking Stroke Survivors for Study'
-  post_template.content[:link_description] = 'If you’re a stroke survivor interested in joining the study, contact us today!'
+  post_template.content[:text] = "California teens’ opinions and habits. New study to create programs to help teens make better choices about drug use. Looking for participants ages 13-17."
+  post_template.content[:headline] = 'Ask your teen to take this survey!'
+  post_template.content[:link_description] = 'Gift cards available'
   post_template.content[:call_to_action] = 'Learn More'
-  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
+  post_template.content[:website_url] = 'https://project-cal-teens.sc-ctsi.org/parents'
   post_template.save
 
   post_template = PostTemplate.new
   post_template.experiment = experiment
   post_template.social_media_specification = SocialMediaSpecification.where(platform: :facebook, post_type: :ad, format: :single_image, placement: :news_feed)[0]
-  post_template.content[:text] = "Stroke survivors have a higher risk of falling down and getting injured. A new study at USC hopes to find ways of decreasing this risk. Looking for stroke survivors.\r\n\r\nA stroke can affect your balance and sensation, and the way in which these systems work together.  Usually your body can overcome mild problems, but if they are more severe, your boy will be unable to work effectively and you will probably feel unsteady.\r\n\r\nExercise and balance retraining are very effective ways to treat balance problems."
-  post_template.content[:headline] = 'If you’re interested in participating in this study, please contact us today!'
-  post_template.content[:link_description] = 'Participants will be compensated for their time.'
-  post_template.content[:call_to_action] = 'Contact Us'
-  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
+  post_template.content[:text] = "Your child’s opinions can help us develop programs to teach all teens to make healthier choices. Ages 13-17."
+  post_template.content[:headline] = 'Ask your teen to take this survey!'
+  post_template.content[:link_description] = 'Gift cards available'
+  post_template.content[:call_to_action] = 'Learn More'
+  post_template.content[:website_url] = 'https://project-cal-teens.sc-ctsi.org/parents'
+  post_template.save
+
+  # Teens
+  post_template = PostTemplate.new
+  post_template.experiment = experiment
+  post_template.social_media_specification = SocialMediaSpecification.where(platform: :facebook, post_type: :ad, format: :single_image, placement: :news_feed)[0]
+  post_template.content[:text] = "Tell us what you think. Only this survey stands between you and a gift card. Looking for teens’ opinions, ages 13-17."
+  post_template.content[:headline] = 'Take the survey today!'
+  post_template.content[:link_description] = 'Get a gift card'
+  post_template.content[:call_to_action] = 'Learn More'
+  post_template.content[:website_url] = 'https://project-cal-teens.sc-ctsi.org/teens'
+  post_template.save
+  
+  post_template = PostTemplate.new
+  post_template.experiment = experiment
+  post_template.social_media_specification = SocialMediaSpecification.where(platform: :facebook, post_type: :ad, format: :single_image, placement: :news_feed)[0]
+  post_template.content[:text] = "Are you 13-17 years old? Help us do research by taking our survey and earning a gift card."
+  post_template.content[:headline] = 'Take this survey today!'
+  post_template.content[:link_description] = 'Get a gift card'
+  post_template.content[:call_to_action] = 'Learn More'
+  post_template.content[:website_url] = 'https://project-cal-teens.sc-ctsi.org/teens'
+  post_template.save
+  
+  post_template = PostTemplate.new
+  post_template.experiment = experiment
+  post_template.social_media_specification = SocialMediaSpecification.where(platform: :facebook, post_type: :ad, format: :single_image, placement: :news_feed)[0]
+  post_template.content[:text] = "Teens from across California participate in Project Cal Teens. We want to hear from you too, and you get a gift card. Ages 13-17."
+  post_template.content[:headline] = 'Participate today!'
+  post_template.content[:link_description] = 'Get a gift card'
+  post_template.content[:call_to_action] = 'Learn More'
+  post_template.content[:website_url] = 'https://project-cal-teens.sc-ctsi.org/teens'
+  post_template.save
+  
+  post_template = PostTemplate.new
+  post_template.experiment = experiment
+  post_template.social_media_specification = SocialMediaSpecification.where(platform: :facebook, post_type: :ad, format: :single_image, placement: :news_feed)[0]
+  post_template.content[:text] = "We want to hear from you too. Teens from across California participate in Project Cal Teens. Ages 13-17."
+  post_template.content[:headline] = 'Participate today!'
+  post_template.content[:link_description] = 'Get a gift card'
+  post_template.content[:call_to_action] = 'Learn More'
+  post_template.content[:website_url] = 'https://project-cal-teens.sc-ctsi.org/teens'
+  post_template.save
+  
+  post_template = PostTemplate.new
+  post_template.experiment = experiment
+  post_template.social_media_specification = SocialMediaSpecification.where(platform: :facebook, post_type: :ad, format: :single_image, placement: :news_feed)[0]
+  post_template.content[:text] = "California teens: take a survey, help our research, earn a gift card!"
+  post_template.content[:headline] = 'Take the survey today!'
+  post_template.content[:link_description] = 'Get a gift card'
+  post_template.content[:call_to_action] = 'Learn More'
+  post_template.content[:website_url] = 'https://project-cal-teens.sc-ctsi.org/teens'
+  post_template.save
+  
+  post_template = PostTemplate.new
+  post_template.experiment = experiment
+  post_template.social_media_specification = SocialMediaSpecification.where(platform: :facebook, post_type: :ad, format: :single_image, placement: :news_feed)[0]
+  post_template.content[:text] = "Let us know what you think. Your opinion matters. Teens from across California participate in Project Cal Teens. Ages 13-17."
+  post_template.content[:headline] = 'Participate today!'
+  post_template.content[:link_description] = 'Get a gift card'
+  post_template.content[:call_to_action] = 'Learn More'
+  post_template.content[:website_url] = 'https://project-cal-teens.sc-ctsi.org/teens'
+  post_template.save
+  
+  post_template = PostTemplate.new
+  post_template.experiment = experiment
+  post_template.social_media_specification = SocialMediaSpecification.where(platform: :facebook, post_type: :ad, format: :single_image, placement: :news_feed)[0]
+  post_template.content[:text] = "Your thoughts for a gift card, and a gift card for your thoughts – take our research survey and see for yourself!"
+  post_template.content[:headline] = 'Participate today!'
+  post_template.content[:link_description] = 'Get a gift card'
+  post_template.content[:call_to_action] = 'Learn More'
+  post_template.content[:website_url] = 'https://project-cal-teens.sc-ctsi.org/teens'
+  post_template.save
+  
+  post_template = PostTemplate.new
+  post_template.experiment = experiment
+  post_template.social_media_specification = SocialMediaSpecification.where(platform: :facebook, post_type: :ad, format: :single_image, placement: :news_feed)[0]
+  post_template.content[:text] = "California teens 13-17, let us know what you think! Participate in Cal Teens Research and take our survey for a gift card."
+  post_template.content[:headline] = 'Participate today!'
+  post_template.content[:link_description] = 'Get a gift card'
+  post_template.content[:call_to_action] = 'Learn More'
+  post_template.content[:website_url] = 'https://project-cal-teens.sc-ctsi.org/teens'
   post_template.save
 end
 
-if experiment.post_templates.select{ |pt| pt.social_media_specification.platform == :google }.count == 0
-  # Google post templates
-  post_template = PostTemplate.new
-  post_template.experiment = experiment
-  post_template.social_media_specification = SocialMediaSpecification.where(platform: :google, post_type: :ad, format: :text, placement: :search_network)[0]
-  post_template.content[:headline_1] = 'Study for Stroke Survivors'
-  post_template.content[:headline_2] = 'Research on decreasing falls'
-  post_template.content[:headline_3] = 'Compensation Available'
-  post_template.content[:description_1] = "What's the best way to help people get back on their feet after a stroke?"
-  post_template.content[:description_2] = 'A new study at USC hopes to find out. Join our study!'
-  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
-  post_template.save
+# # # Seed Stroke post templates
+# # Facebook post templates
+# if experiment.post_templates.select{ |pt| pt.social_media_specification.platform == :facebook }.count == 0
+#   # Facebook post templates
+#   post_template = PostTemplate.new
+#   post_template.experiment = experiment
+#   post_template.social_media_specification = SocialMediaSpecification.where(platform: :facebook, post_type: :ad, format: :single_image, placement: :news_feed)[0]
+#   post_template.content[:text] = "What's the best way to help people get back on their feet after a stroke? A new study at USC hopes to find out. If you or someone you know is interested in participating in this study, please message us today!\r\n\r\nA stroke can affect your balance and sensation, and the way in which these systems work together. Usually your body can overcome mild problems, but if they are more severe, your body will be unable to work effectively and you will probably feel unsteady.\r\n\r\nExercise and balance retraining are very effective ways to treat balance problems."
+#   post_template.content[:headline] = 'Getting Stroke Survivors Back On Their Feet.'
+#   post_template.content[:link_description] = 'Participants will be compensated for their time.'
+#   post_template.content[:call_to_action] = 'Send Message'
+#   post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
+#   post_template.save
 
-  post_template = PostTemplate.new
-  post_template.experiment = experiment
-  post_template.social_media_specification = SocialMediaSpecification.where(platform: :google, post_type: :ad, format: :text, placement: :search_network)[0]
-  post_template.content[:headline_1] = 'USC Seeks Stroke Survivors'
-  post_template.content[:headline_2] = 'Research to decrease falls'
-  post_template.content[:headline_3] = 'Compensation for volunteers'
-  post_template.content[:description_1] = "Join new study on new ways to lower the risk of falling in stroke survivors."
-  post_template.content[:description_2] = 'Please contact us today if interested. Compensation available.'
-  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
-  post_template.save
+#   post_template = PostTemplate.new
+#   post_template.experiment = experiment
+#   post_template.social_media_specification = SocialMediaSpecification.where(platform: :facebook, post_type: :ad, format: :single_image, placement: :news_feed)[0]
+#   post_template.content[:text] = "Join new study on new ways to lower the risk of falling in stroke survivors. Please contact us today if interested. Compensation available.\r\n\r\nBalance involves proper coordination of our bodies in our surroundings. It affects most day-to-day activities, such as moving around and reaching for objects.\r\n\r\nExercise and balance retraining are very effective ways to treat balance problems."
+#   post_template.content[:headline] = 'USC Seeks Stroke Survivors'
+#   post_template.content[:link_description] = 'Seeking stroke survivors to participate in research study'
+#   post_template.content[:call_to_action] = 'Contact Us'
+#   post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
+#   post_template.save
 
-  post_template = PostTemplate.new
-  post_template.experiment = experiment
-  post_template.social_media_specification = SocialMediaSpecification.where(platform: :google, post_type: :ad, format: :text, placement: :search_network)[0]
-  post_template.content[:headline_1] = 'Restore Balance after Stroke'
-  post_template.content[:headline_2] = 'Join USC Research'
-  post_template.content[:headline_3] = 'Compensation Available'
-  post_template.content[:description_1] = "Difficulty with balance after stroke? USC looks to answer this question in a new study."
-  post_template.content[:description_2] = 'If you or someone you know has had a stroke, contact us today!'
-  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
-  post_template.save
+#   post_template = PostTemplate.new
+#   post_template.experiment = experiment
+#   post_template.social_media_specification = SocialMediaSpecification.where(platform: :facebook, post_type: :ad, format: :single_image, placement: :news_feed)[0]
+#   post_template.content[:text] = "Difficulty with balance after stroke? If you or someone you know has had a stroke, contact us today! Rewards available.\r\n\r\nBalance involves proper coordination of our bodies in our surroundings. It affects most day-to-day activities, such as moving around and reaching for objects.\r\n\r\nExercise and balance retraining are very effective ways to treat balance problems."
+#   post_template.content[:headline] = 'How to Restore Balance after Stroke?'
+#   post_template.content[:link_description] = 'USC looks to answer this question in a new clinical study'
+#   post_template.content[:call_to_action] = 'Send Message'
+#   post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
+#   post_template.save
 
-  post_template = PostTemplate.new
-  post_template.experiment = experiment
-  post_template.social_media_specification = SocialMediaSpecification.where(platform: :google, post_type: :ad, format: :text, placement: :search_network)[0]
-  post_template.content[:headline_1] = 'Decrease falls after stroke'
-  post_template.content[:headline_2] = 'Join USC Study'
-  post_template.content[:headline_3] = 'Compensation for participants'
-  post_template.content[:description_1] = "Can the right way of walking help reduce the risk of falling in stroke patients?"
-  post_template.content[:description_2] = 'Contact us today if you’re a stroke patient interested in participating.'
-  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
-  post_template.save
+#   post_template = PostTemplate.new
+#   post_template.experiment = experiment
+#   post_template.social_media_specification = SocialMediaSpecification.where(platform: :facebook, post_type: :ad, format: :single_image, placement: :news_feed)[0]
+#   post_template.content[:text] = "Can the right way of walking help reduce the risk of falling in stroke patients? USC hopes to find the answer with a new clinical study. Contact us today if you’re a stroke patient interested in participating.\r\n\r\nA stroke can affect your balance and sensation, and the way in which these systems work together.  Usually your body can overcome mild problems, but if they are more severe, your body will be unable to work effectively and you will probably feel unsteady.\r\n\r\nExercise and balance retraining are very effective ways to treat balance problems."
+#   post_template.content[:headline] = 'Compensation available for time'
+#   post_template.content[:link_description] = 'Study Hopes to Decrease Fall Risk After Stroke'
+#   post_template.content[:call_to_action] = 'Learn More'
+#   post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
+#   post_template.save
 
-  post_template = PostTemplate.new
-  post_template.experiment = experiment
-  post_template.social_media_specification = SocialMediaSpecification.where(platform: :google, post_type: :ad, format: :text, placement: :search_network)[0]
-  post_template.content[:headline_1] = 'Stroke Survivor Study'
-  post_template.content[:headline_2] = 'Decrease fall risk'
-  post_template.content[:headline_3] = 'Compensation Available'
-  post_template.content[:description_1] = "Can something as simple as changing walking patterns reduce the risk of falling for stroke patients?"
-  post_template.content[:description_2] = 'This is the main focus of a new clinical study being conducted by USC. Sign up today!'
-  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
-  post_template.save
+#   post_template = PostTemplate.new
+#   post_template.experiment = experiment
+#   post_template.social_media_specification = SocialMediaSpecification.where(platform: :facebook, post_type: :ad, format: :single_image, placement: :news_feed)[0]
+#   post_template.content[:text] = "Can something as simple as changing walking patterns reduce the risk of falling for stroke patients? This is the main focus of a new clinical study being conducted by USC.\r\n\r\nA stroke can affect your balance and sensation, and the way in which these systems work together.  Usually your body can overcome mild problems, but if they are more severe, your body will be unable to work effectively and you will probably feel unsteady.\r\n\r\nExercise and balance retraining are very effective ways to treat balance problems."
+#   post_template.content[:headline] = 'Sign up today!'
+#   post_template.content[:link_description] = 'Participants will be rewarded for their effort and time.'
+#   post_template.content[:call_to_action] = 'Sign Up'
+#   post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
+#   post_template.save
 
-  post_template = PostTemplate.new
-  post_template.experiment = experiment
-  post_template.social_media_specification = SocialMediaSpecification.where(platform: :google, post_type: :ad, format: :text, placement: :search_network)[0]
-  post_template.content[:headline_1] = 'Seeking Stroke Survivors'
-  post_template.content[:headline_2] = 'Research at USC'
-  post_template.content[:headline_3] = 'Compensation for participants'
-  post_template.content[:description_1] = "Study at USC is looking at better ways to help stroke survivors prevent falls & injuries."
-  post_template.content[:description_2] = "Stroke survivors 18 and older are invited to join. Compensation is available."
-  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
-  post_template.save
+#   post_template = PostTemplate.new
+#   post_template.experiment = experiment
+#   post_template.social_media_specification = SocialMediaSpecification.where(platform: :facebook, post_type: :ad, format: :single_image, placement: :news_feed)[0]
+#   post_template.content[:text] = "More years together! New study at USC is looking at better ways to help stroke survivors prevent falls and injuries. Stroke survivors 18 and older are invited to join. Compensation is available.\r\n\r\nIf you’re a stroke survivor interested in joining the study, contact us today!\r\n\r\nA stroke can affect your balance and sensation, and the way in which these systems work together.  Usually your body can overcome mild problems, but if they are more severe, your body will be unable to work effectively and you will probably feel unsteady."
+#   post_template.content[:headline] = 'Seeking Stroke Survivors for Study'
+#   post_template.content[:link_description] = 'If you’re a stroke survivor interested in joining the study, contact us today!'
+#   post_template.content[:call_to_action] = 'Learn More'
+#   post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
+#   post_template.save
 
-  post_template = PostTemplate.new
-  post_template.experiment = experiment
-  post_template.social_media_specification = SocialMediaSpecification.where(platform: :google, post_type: :ad, format: :text, placement: :search_network)[0]
-  post_template.content[:headline_1] = 'Need Stroke Survivors!'
-  post_template.content[:headline_2] = 'Research opportunity at USC'
-  post_template.content[:headline_3] = 'Compensation Available'
-  post_template.content[:description_1] = "Stroke survivors have a higher risk of falling down and getting injured."
-  post_template.content[:description_2] = 'A new study at USC hopes to find ways of decreasing this risk. Contact us today!'
-  post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
-  post_template.save
-end
+#   post_template = PostTemplate.new
+#   post_template.experiment = experiment
+#   post_template.social_media_specification = SocialMediaSpecification.where(platform: :facebook, post_type: :ad, format: :single_image, placement: :news_feed)[0]
+#   post_template.content[:text] = "Stroke survivors have a higher risk of falling down and getting injured. A new study at USC hopes to find ways of decreasing this risk. Looking for stroke survivors.\r\n\r\nA stroke can affect your balance and sensation, and the way in which these systems work together.  Usually your body can overcome mild problems, but if they are more severe, your boy will be unable to work effectively and you will probably feel unsteady.\r\n\r\nExercise and balance retraining are very effective ways to treat balance problems."
+#   post_template.content[:headline] = 'If you’re interested in participating in this study, please contact us today!'
+#   post_template.content[:link_description] = 'Participants will be compensated for their time.'
+#   post_template.content[:call_to_action] = 'Contact Us'
+#   post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
+#   post_template.save
+# end
+
+# if experiment.post_templates.select{ |pt| pt.social_media_specification.platform == :google }.count == 0
+#   # Google post templates
+#   post_template = PostTemplate.new
+#   post_template.experiment = experiment
+#   post_template.social_media_specification = SocialMediaSpecification.where(platform: :google, post_type: :ad, format: :text, placement: :search_network)[0]
+#   post_template.content[:headline_1] = 'Study for Stroke Survivors'
+#   post_template.content[:headline_2] = 'Research on decreasing falls'
+#   post_template.content[:headline_3] = 'Compensation Available'
+#   post_template.content[:description_1] = "What's the best way to help people get back on their feet after a stroke?"
+#   post_template.content[:description_2] = 'A new study at USC hopes to find out. Join our study!'
+#   post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
+#   post_template.save
+
+#   post_template = PostTemplate.new
+#   post_template.experiment = experiment
+#   post_template.social_media_specification = SocialMediaSpecification.where(platform: :google, post_type: :ad, format: :text, placement: :search_network)[0]
+#   post_template.content[:headline_1] = 'USC Seeks Stroke Survivors'
+#   post_template.content[:headline_2] = 'Research to decrease falls'
+#   post_template.content[:headline_3] = 'Compensation for volunteers'
+#   post_template.content[:description_1] = "Join new study on new ways to lower the risk of falling in stroke survivors."
+#   post_template.content[:description_2] = 'Please contact us today if interested. Compensation available.'
+#   post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
+#   post_template.save
+
+#   post_template = PostTemplate.new
+#   post_template.experiment = experiment
+#   post_template.social_media_specification = SocialMediaSpecification.where(platform: :google, post_type: :ad, format: :text, placement: :search_network)[0]
+#   post_template.content[:headline_1] = 'Restore Balance after Stroke'
+#   post_template.content[:headline_2] = 'Join USC Research'
+#   post_template.content[:headline_3] = 'Compensation Available'
+#   post_template.content[:description_1] = "Difficulty with balance after stroke? USC looks to answer this question in a new study."
+#   post_template.content[:description_2] = 'If you or someone you know has had a stroke, contact us today!'
+#   post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
+#   post_template.save
+
+#   post_template = PostTemplate.new
+#   post_template.experiment = experiment
+#   post_template.social_media_specification = SocialMediaSpecification.where(platform: :google, post_type: :ad, format: :text, placement: :search_network)[0]
+#   post_template.content[:headline_1] = 'Decrease falls after stroke'
+#   post_template.content[:headline_2] = 'Join USC Study'
+#   post_template.content[:headline_3] = 'Compensation for participants'
+#   post_template.content[:description_1] = "Can the right way of walking help reduce the risk of falling in stroke patients?"
+#   post_template.content[:description_2] = 'Contact us today if you’re a stroke patient interested in participating.'
+#   post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
+#   post_template.save
+
+#   post_template = PostTemplate.new
+#   post_template.experiment = experiment
+#   post_template.social_media_specification = SocialMediaSpecification.where(platform: :google, post_type: :ad, format: :text, placement: :search_network)[0]
+#   post_template.content[:headline_1] = 'Stroke Survivor Study'
+#   post_template.content[:headline_2] = 'Decrease fall risk'
+#   post_template.content[:headline_3] = 'Compensation Available'
+#   post_template.content[:description_1] = "Can something as simple as changing walking patterns reduce the risk of falling for stroke patients?"
+#   post_template.content[:description_2] = 'This is the main focus of a new clinical study being conducted by USC. Sign up today!'
+#   post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
+#   post_template.save
+
+#   post_template = PostTemplate.new
+#   post_template.experiment = experiment
+#   post_template.social_media_specification = SocialMediaSpecification.where(platform: :google, post_type: :ad, format: :text, placement: :search_network)[0]
+#   post_template.content[:headline_1] = 'Seeking Stroke Survivors'
+#   post_template.content[:headline_2] = 'Research at USC'
+#   post_template.content[:headline_3] = 'Compensation for participants'
+#   post_template.content[:description_1] = "Study at USC is looking at better ways to help stroke survivors prevent falls & injuries."
+#   post_template.content[:description_2] = "Stroke survivors 18 and older are invited to join. Compensation is available."
+#   post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
+#   post_template.save
+
+#   post_template = PostTemplate.new
+#   post_template.experiment = experiment
+#   post_template.social_media_specification = SocialMediaSpecification.where(platform: :google, post_type: :ad, format: :text, placement: :search_network)[0]
+#   post_template.content[:headline_1] = 'Need Stroke Survivors!'
+#   post_template.content[:headline_2] = 'Research opportunity at USC'
+#   post_template.content[:headline_3] = 'Compensation Available'
+#   post_template.content[:description_1] = "Stroke survivors have a higher risk of falling down and getting injured."
+#   post_template.content[:description_2] = 'A new study at USC hopes to find ways of decreasing this risk. Contact us today!'
+#   post_template.content[:website_url] = 'https://clinicaltrials.keckmedicine.org/clinical-and-behavioral-assessment-of-fall-risk-during-walking'
+#   post_template.save
+# end
 
 #   post_template = PostTemplate.new
 #   post_template.experiment = experiment
