@@ -1,0 +1,25 @@
+.ui.horizontal.divider.header
+  Most effective messages (by click rate)
+.ui.link.three.stackable.centered.cards
+  .ui.horizontal.divider
+  - @top_posts_by_click_rate[0..4].each do |post|
+    .card
+      .content
+        .header
+          .left.floated
+            = post.post_template.social_media_specification.platform.titlecase
+      .ui.image.centered
+        - image = Image.find(post.content[:image])
+        -if image
+          = image_tag "#{image.url}"
+        -else
+          = image_tag "no-image.png"
+      .content
+        = post.content[:text]
+      .extra.content
+        .ui.label.basic.teal
+          -if post.click_rate.nil?
+            = 'N/A'
+          -else
+            = number_with_precision(post.click_rate * 100, precision: 3, significant: true)
+          \% click rate

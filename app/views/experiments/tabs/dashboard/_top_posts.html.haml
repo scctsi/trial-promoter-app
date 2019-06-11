@@ -1,0 +1,9 @@
+.ui.top.attached.tabular.menu
+  %a{ class: 'item', 'data-tab': 'click-rate' }
+    By click rate
+  %a{ class: 'item', 'data-tab': 'goal-rate' }
+    By goal rate
+.ui.bottom.attached.tab.segment{ 'data-tab': 'click-rate' }
+  = render partial: 'experiments/tabs/dashboard/top_posts/click_rate'
+.ui.bottom.attached.tab.segment{ 'data-tab': 'goal-rate' }
+  = render partial: 'experiments/tabs/dashboard/top_posts/goal_rate'
