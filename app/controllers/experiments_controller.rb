@@ -21,7 +21,10 @@ class ExperimentsController < ApplicationController
     @top_messages_by_click_rate = Message.where('message_generating_id = ? AND click_rate is not null', @experiment.id).order('click_rate desc')
     @top_messages_by_website_goal_rate = Message.where('message_generating_id = ? AND website_goal_rate is not null', @experiment.id).order('website_goal_rate desc, website_session_count desc')
     @comments = Comment.includes(:message).where(messages: {:message_generating_id => @experiment.id}).page(params[:page]).per(20).order('toxicity_score ASC')
-
+    # TODO: Test this
+    @top_posts_by_click_rate = Post.where('experiment_id = ? AND click_rate is not null', @experiment.id).order('click_rate desc')
+    @top_posts_by_goal_rate = Post.where('experiment_id = ? AND goal_rate is not null', @experiment.id).order('goal_rate desc')
+    
     respond_to do |format|
       format.html
       format.json { render :layout => false }

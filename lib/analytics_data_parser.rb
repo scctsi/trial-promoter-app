@@ -36,8 +36,13 @@ class AnalyticsDataParser
     parsed_data.each do |post_param, metrics|
       post = Post.find_by_param(post_param)
       post.metrics << Metric.new(source: platform, data: metrics)
+
+      # Step 6: Calculate click rates
+      post.click_rate = (metrics[:results].to_f / metrics[:impressions].to_f)
+
       post.save
     end
+    
   end
   
   def self.convert_to_parseable_data(content, platform, medium)
