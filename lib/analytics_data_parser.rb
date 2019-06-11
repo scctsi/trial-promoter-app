@@ -42,7 +42,6 @@ class AnalyticsDataParser
 
       post.save
     end
-    
   end
   
   def self.convert_to_parseable_data(content, platform, medium)

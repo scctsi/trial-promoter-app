@@ -7,21 +7,37 @@ class MetricsManager
     return 'N/A'
   end
 
-  def self.update_metrics(data, source)
-    data.each do |key, value|
-      if source == :google_analytics
-        message = Message.find_by_param(key)
-      else
-        message = Message.find_by_alternative_identifier(key)
+  def self.update_metrics(data, source, klass = Message)
+    if klass == Post
+      data.each do |key, value|
+        post = Post.find_by_param(key)
+        if !(post.nil?)
+          metrics = post.metrics.select{ |metric| metric.source == source }
+          if metrics.count > 0
+            metrics[0].data = value
+            metrics[0].save
+          else
+            post.metrics << Metric.new(source: source, data: value)
+            post.save
+          end
+        end
       end
-      if !(message.nil?)
-        metrics = message.metrics.select{ |metric| metric.source == source }
-        if metrics.count > 0
-          metrics[0].data = value
-          metrics[0].save
+    else
+      data.each do |key, value|
+        if source == :google_analytics
+          message = Message.find_by_param(key)
         else
-          message.metrics << Metric.new(source: source, data: value)
-          message.save
+          message = Message.find_by_alternative_identifier(key)
+        end
+        if !(message.nil?)
+          metrics = message.metrics.select{ |metric| metric.source == source }
+          if metrics.count > 0
+            metrics[0].data = value
+            metrics[0].save
+          else
+            message.metrics << Metric.new(source: source, data: value)
+            message.save
+          end
         end
       end
     end

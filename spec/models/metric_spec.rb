@@ -17,5 +17,6 @@ RSpec.describe Metric, type: :model do
   it { is_expected.to validate_presence_of :source }
   it { is_expected.to enumerize(:source).in(:buffer, :twitter, :facebook, :instagram, :google_analytics) }
   it { is_expected.to belong_to(:message) }
+  it { is_expected.to belong_to(:post) }
   it { is_expected.to serialize(:data).as(Hash) }
 end

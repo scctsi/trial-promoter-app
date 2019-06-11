@@ -1,0 +1,20 @@
+- if split_test.results.count > 0
+  .ui.info.icon.message
+    %i.check.circle.icon
+    .content
+      .header
+        A/B test has finished running!
+      %p We're done!
+  = render partial: 'ab_test_variations', locals: {variation_a: split_test.variation_a, variation_b: split_test.variation_b, winning_variation: split_test.results[0].winning_variation, losing_variation: split_test.results[0].losing_variation}
+- else
+  .ui.icon.message
+    %i.notched.circle.loading.icon
+    .content
+      .header
+        A/B test is still running!
+      %p We're still running!
+      %a.ui.basic.labeled.icon.button.calculate-ab-test-button{ 'data-variation-a-successes': "#{MetricsManager.get_metric_value(split_test.variation_a, :facebook, :results)}", 'data-variation-a-trials': "#{MetricsManager.get_metric_value(split_test.variation_a, :facebook, :impressions)}", 'data-variation-b-successes': "#{MetricsManager.get_metric_value(split_test.variation_b, :facebook, :results)}", 'data-variation-b-trials': "#{MetricsManager.get_metric_value(split_test.variation_b, :facebook, :impressions)}" }
+        %i.calculator.icon
+        Calculate
+      #results
+  = render partial: 'ab_test_variations', locals: {variation_a: split_test.variation_a, variation_b: split_test.variation_b, winning_variation: nil, losing_variation: nil}

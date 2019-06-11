@@ -1,6 +1,6 @@
 - if @experiment.disable_import?
   .tooltip{ "data-tooltip" => "Post templates cannot be imported once messages have been generated.", "data-position" => "right center" }
-    %a.ui.labeled.icon.disabled.button
+    %a.ui.labeled.basic.icon.disabled.button
       %i.upload.icon
       Import post templates
   %a#example-button.ui.labeled.basic.icon.button{ href: asset_path('example.xlsx') }
@@ -10,9 +10,15 @@
   %a#message-templates-file-upload-button.ui.primary.labeled.icon.button{ 'data-experiment-id': @experiment.id }
     %i.upload.icon
     Import post templates
+<<<<<<< HEAD
   %a#example-button.ui.labeled.basic.icon.button{ href: asset_path('example.xlsx') }
     %i.download.icon
     Download sample Excel file
+=======
+%a#example-button.ui.labeled.basic.icon.button{ href: asset_path('example.xlsx') }
+  %i.download.icon
+  Download sample Excel file
+>>>>>>> implement-ab-testing
 .ui.success.message.hidden.ask-refresh-page
   .header
     %p Your upload was successful. Please refresh the page to see the post templates.

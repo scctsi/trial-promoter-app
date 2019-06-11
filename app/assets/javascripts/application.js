@@ -22,4 +22,9 @@
 //= require jquery.address-1.6.min
 //= require tablesort
 //= require cocoon
+//= require protovis-min
+//= require hash
+//= require jstat-min
+//= require stats
+//= require render
 //= require_tree .

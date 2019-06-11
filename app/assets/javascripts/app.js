@@ -806,7 +806,15 @@ $(document).ready(function() {
     //   }
     // });    
   }
-  
+
+  function setUpCalculateABTestingResults() {
+    $('.calculate-ab-test-button').click(function() {
+      abba = new Abba.Abba('Variation A', $(this).data('variation-a-successes'), $(this).data('variation-a-trials'));
+      abba.addVariation('Variation B', $(this).data('variation-b-successes'), $(this).data('variation-b-trials'));
+      abba.renderTo($('#results'));
+    });
+  }
+    
   // Initialize
   setUpSaveCampaignIdFormEvents();
   setUpEditCampaignIdLabelEvents();
@@ -831,14 +839,19 @@ $(document).ready(function() {
   setUpFacebookAdPreviews();
   setUpGoogleAdPreviews();
   setUpCopyToClipboard();
+  setUpCalculateABTestingResults();
 
   // Set up Semantic UI
+  // Semantic UI - Menus
   $('.menu .item').tab({
     history: true,
     historyType: 'hash',
     context: false
   });
+  // Semantic UI - Sortable tables
   $('.table.sortable').tablesort();
+  // Semantic UI - Accordions
+  $('.ui.accordion').accordion();
 
   // TODO: Make this more specific to the image coding interface and rething coding interface
   // $('.ui.dropdown').dropdown({

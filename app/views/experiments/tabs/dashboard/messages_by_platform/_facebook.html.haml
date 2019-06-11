@@ -1,53 +1,44 @@
 .ui.items
-  - @facebook_messages = @messages.select{ |message| message.social_media_profile.platform == :facebook}
-  - if @facebook_messages.count > 0
-    - @facebook_messages.each do |message|
+  - @facebook_posts = @experiment.posts.select{ |post| post.post_template.social_media_specification.platform == :facebook}
+  - if @facebook_posts.count > 0
+    - @facebook_posts.each do |post|
       .item
         .ui.tiny.image
-          -if message.image
-            = image_tag "#{message.image.url}"
+          -if post.content[:image]
+            - image = Image.find(post.content[:image])
+            = image_tag "#{image.url}"
           -else
             = image_tag "no-image.png"
         .content
-          .ui.header.h6
-            Message:
-          %br
-          = message.content
+          = post.content[:text]
           .ui.right.basic.label
-            = message.medium
-          %br
-          .ui.three.column.grid
-            .column
-              .row
-                .ui.row
-                  .statistic
+            = post.post_template.social_media_specification.platform
+          %table.ui.very.basic.table
+            %thead
+              %tr
+                %th Likes
+                %th Shares
+                %th Comments
+                %th Landing page views
+                %th Clicks
+                %th Impressions
+                %th Click rate
+                %th Conversion rate
+            %tbody
+              %tr
+                %td= MetricsManager.get_metric_value(post, :facebook, :likes)
+                %td= MetricsManager.get_metric_value(post, :facebook, :shares)
+                %td= MetricsManager.get_metric_value(post, :facebook, :comments)
+                %td= MetricsManager.get_metric_value(post, :facebook, :results).to_s
+                %td= MetricsManager.get_metric_value(post, :facebook, :link_clicks).to_s
+                %td= number_with_delimiter(MetricsManager.get_metric_value(post, :facebook, :impressions))
+                %td 
+                  .ui.mini.teal.statistic
                     .value
-                      %i.like.icon
-                      = message.send(:metric_facebook_likes).to_s + " Likes"
-                  .statistic
+                      1%
+                %td 
+                  .ui.mini.teal.statistic
                     .value
-                      %i.share.icon
-                      = message.send(:metric_facebook_retweets).to_s + " Retweets"
-                  .statistic
-                    .value
-                      %i.comment.icon
-                      = message.comments.count.to_s + " Replies"
-            .column
-              .ui.mini.statistics
-                .teal.statistic
-                  .label
-                    Click rate 
-                  .value
-                    = message.click_rate.to_s + '%'
-                  .label
-                    (message click rate)
-            .column
-              .ui.teal.mini.statistic
-                .label
-                  Conversion rate 
-                .value
-                  = message.calculate_goal_rate
-                .label
-                  (website click rate)
+                      1%
   -else
     = render partial: 'experiments/tabs/dashboard/messages_by_platform/no_message_placeholder'                  

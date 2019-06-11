@@ -1,0 +1,7 @@
+.ui.fluid.accordion
+  - SplitTest.all.each do |split_test|
+    .title
+      %i.dropdown.icon
+      = split_test.experiment.name
+    .content
+      = render partial: 'ab_test', locals: {split_test: split_test}

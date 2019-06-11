@@ -41,7 +41,8 @@ RSpec.describe Experiment, type: :model do
   it { is_expected.to have_and_belong_to_many(:users) }
   it { is_expected.to have_many(:post_templates) }
   it { is_expected.to have_many(:posts) }
-  
+  it { is_expected.to have_many(:split_tests) }
+
   it 'returns an array of all possible times in a day' do 
     expect(Experiment.allowed_times.count).to be(12 * 60 * 2)
   end
