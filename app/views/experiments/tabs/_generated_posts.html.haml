@@ -5,7 +5,6 @@
   %table.ui.celled.striped.table
     %thead
       %tr
-<<<<<<< HEAD
         %th{ colspan: "9" } 
           %h3 Facebook Ad (News Feed)
       %tr
@@ -55,41 +54,6 @@
           %hr
           .actions
             %span.like
-=======
-        %td
-          - if index == 0
-            .ui.blue.circular.label A
-          - if index == 1
-            .ui.blue.circular.label B
-        %td= post.id
-        %td= post.to_param
-        %td
-          .ui.middle.relaxed.aligned.list
-            - ["Text", "Headline", "Link description", "Call to action", "Campaign URL"].each do |content_part|
-              .item
-                .right.floated.content
-                  %a.copy-to-clipboard.ui.mini.icon.button{ 'data-text-to-copy': post.content[content_part.gsub(' ', '_').downcase.to_sym] } 
-                    %i.copy.outline.icon
-                .content
-                  %strong 
-                    #{content_part}:
-                  = post.content[content_part.gsub(' ', '_').downcase.to_sym]
-        %td
-          - image = Image.find(post.content[:image])
-          = image_tag "#{image.url}", width: '150', lazy: true
-        %td
-          %a.preview-facebook-ad.ui.labeled.basic.icon.button{ 'data-text': post.content[:text], 'data-headline': post.content[:headline], 'data-link-description': post.content[:link_description], 'data-call-to-action': post.content[:call_to_action], 'data-campaign-url': post.content[:campaign_url], 'data-image-url': image.url}
-            %i.eye.icon
-            Preview
-.ui.modal#facebook-ad-preview
-  %i.close.icon
-  .content
-    .facebook-ad.newsfeed
-      %article
-        %header
-          .controls
-            %button.facebook-button
->>>>>>> implement-ab-testing
               %i.thumbs.up.icon
               Like
             %span.comment
